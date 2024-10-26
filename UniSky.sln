@@ -3,49 +3,96 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35303.130
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniSky", "UniSky\UniSky.csproj", "{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "UniSky.Shared", "UniSky\UniSky.Shared\UniSky.Shared.shproj", "{6279C845-92F8-4333-AB99-3D213163593C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniSky.Mobile", "UniSky\UniSky.Mobile\UniSky.Mobile.csproj", "{DF2A7D4F-B102-4261-97A6-C213068E0409}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniSky.Uwp", "UniSky\UniSky.UWP\UniSky.Uwp.csproj", "{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|ARM = Debug|ARM
 		Debug|ARM64 = Debug|ARM64
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
 		Release|ARM = Release|ARM
 		Release|ARM64 = Release|ARM64
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}.Debug|ARM.ActiveCfg = Debug|ARM
-		{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}.Debug|ARM.Build.0 = Debug|ARM
-		{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}.Debug|ARM.Deploy.0 = Debug|ARM
-		{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}.Debug|ARM64.ActiveCfg = Debug|ARM64
-		{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}.Debug|ARM64.Build.0 = Debug|ARM64
-		{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}.Debug|ARM64.Deploy.0 = Debug|ARM64
-		{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}.Debug|x64.ActiveCfg = Debug|x64
-		{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}.Debug|x64.Build.0 = Debug|x64
-		{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}.Debug|x64.Deploy.0 = Debug|x64
-		{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}.Debug|x86.ActiveCfg = Debug|x86
-		{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}.Debug|x86.Build.0 = Debug|x86
-		{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}.Debug|x86.Deploy.0 = Debug|x86
-		{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}.Release|ARM.ActiveCfg = Release|ARM
-		{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}.Release|ARM.Build.0 = Release|ARM
-		{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}.Release|ARM.Deploy.0 = Release|ARM
-		{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}.Release|ARM64.ActiveCfg = Release|ARM64
-		{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}.Release|ARM64.Build.0 = Release|ARM64
-		{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}.Release|ARM64.Deploy.0 = Release|ARM64
-		{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}.Release|x64.ActiveCfg = Release|x64
-		{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}.Release|x64.Build.0 = Release|x64
-		{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}.Release|x64.Deploy.0 = Release|x64
-		{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}.Release|x86.ActiveCfg = Release|x86
-		{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}.Release|x86.Build.0 = Release|x86
-		{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}.Release|x86.Deploy.0 = Release|x86
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Debug|ARM.Build.0 = Debug|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Debug|ARM.Deploy.0 = Debug|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Debug|ARM64.Deploy.0 = Debug|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Debug|x64.Build.0 = Debug|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Debug|x64.Deploy.0 = Debug|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Debug|x86.Build.0 = Debug|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Debug|x86.Deploy.0 = Debug|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Release|ARM.ActiveCfg = Release|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Release|ARM.Build.0 = Release|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Release|ARM.Deploy.0 = Release|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Release|ARM64.Build.0 = Release|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Release|ARM64.Deploy.0 = Release|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Release|x64.ActiveCfg = Release|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Release|x64.Build.0 = Release|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Release|x64.Deploy.0 = Release|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Release|x86.ActiveCfg = Release|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Release|x86.Build.0 = Release|Any CPU
+		{DF2A7D4F-B102-4261-97A6-C213068E0409}.Release|x86.Deploy.0 = Release|Any CPU
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Debug|Any CPU.Build.0 = Debug|x64
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Debug|Any CPU.Deploy.0 = Debug|x64
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Debug|ARM.ActiveCfg = Debug|ARM
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Debug|ARM.Build.0 = Debug|ARM
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Debug|ARM.Deploy.0 = Debug|ARM
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Debug|ARM64.Build.0 = Debug|ARM64
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Debug|ARM64.Deploy.0 = Debug|ARM64
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Debug|x64.ActiveCfg = Debug|x64
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Debug|x64.Build.0 = Debug|x64
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Debug|x64.Deploy.0 = Debug|x64
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Debug|x86.ActiveCfg = Debug|x86
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Debug|x86.Build.0 = Debug|x86
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Debug|x86.Deploy.0 = Debug|x86
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Release|Any CPU.ActiveCfg = Release|x64
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Release|Any CPU.Build.0 = Release|x64
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Release|Any CPU.Deploy.0 = Release|x64
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Release|ARM.ActiveCfg = Release|ARM
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Release|ARM.Build.0 = Release|ARM
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Release|ARM.Deploy.0 = Release|ARM
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Release|ARM64.ActiveCfg = Release|ARM64
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Release|ARM64.Build.0 = Release|ARM64
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Release|ARM64.Deploy.0 = Release|ARM64
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Release|x64.ActiveCfg = Release|x64
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Release|x64.Build.0 = Release|x64
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Release|x64.Deploy.0 = Release|x64
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Release|x86.ActiveCfg = Release|x86
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Release|x86.Build.0 = Release|x86
+		{75D6C4AA-A4FB-4EB3-B94D-CA6736681C94}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ED6590DF-960E-4A50-AF64-6EFD821A4920}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		UniSky\UniSky.Shared\UniSky.Shared.projitems*{6279c845-92f8-4333-ab99-3d213163593c}*SharedItemsImports = 13
+		UniSky\UniSky.Shared\UniSky.Shared.projitems*{75d6c4aa-a4fb-4eb3-b94d-ca6736681c94}*SharedItemsImports = 4
+		UniSky\UniSky.Shared\UniSky.Shared.projitems*{df2a7d4f-b102-4261-97a6-c213068e0409}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

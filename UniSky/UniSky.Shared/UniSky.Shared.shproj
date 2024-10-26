@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>6279c845-92f8-4333-ab99-3d213163593c</ProjectGuid>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\CodeSharing\Microsoft.CodeSharing.Common.Default.props" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\CodeSharing\Microsoft.CodeSharing.Common.props" />
+  <PropertyGroup />
+  <Import Project="UniSky.Shared.projitems" Label="Shared" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\CodeSharing\Microsoft.CodeSharing.CSharp.targets" />
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Controls\Compose\ComposeDialog.xaml" />
+    <UpToDateCheckInput Remove="DataTemplates\Feeds.xaml" />
+    <UpToDateCheckInput Remove="Pages\FeedsPage.xaml" />
+    <UpToDateCheckInput Remove="Pages\HomePage.xaml" />
+    <UpToDateCheckInput Remove="Pages\LoginPage.xaml" />
+    <UpToDateCheckInput Remove="RootPage.xaml" />
+    <UpToDateCheckInput Remove="Templates\NavigationViewStyles.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <_Globbed_Compile Remove="Controls\Compose\ComposeDialog.xaml.cs" />
+    <_Globbed_Compile Remove="Converters\Static.cs" />
+    <_Globbed_Compile Remove="DataTemplates\Feeds.xaml.cs" />
+    <_Globbed_Compile Remove="DataTemplates\PostEmbedTemplateSelector.cs" />
+    <_Globbed_Compile Remove="Extensions\SynchronizationContextExtensions.cs" />
+    <_Globbed_Compile Remove="Helpers\Composition\BirdAnimation.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\CanvasPathBuilderExtensions.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\CanvasPathGeometry.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\CanvasStroke.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\CompositorGeometryExtensions.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\Core\CanvasRoundRect.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\Core\GeometryTypeDefinitions.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\Core\PathElementFactory.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\Core\RegexFactory.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\CultureShield.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\Elements\Path\AbstractPathElement.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\Elements\Path\ArcElement.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\Elements\Path\CanvasEllipseFigure.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\Elements\Path\CanvasPathFigure.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\Elements\Path\CanvasPolygonFigure.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\Elements\Path\CanvasRectangleFigure.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\Elements\Path\ClosePathElement.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\Elements\Path\CubicBezierElement.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\Elements\Path\FillRuleElement.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\Elements\Path\HorizontalLineElement.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\Elements\Path\ICanvasPathElement.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\Elements\Path\LineElement.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\Elements\Path\MoveToElement.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\Elements\Path\QuadraticBezierElement.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\Elements\Path\SmoothCubicBezierElement.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\Elements\Path\SmoothQuadraticBezierElement.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\Elements\Path\VerticalLineElement.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\ICanvasStroke.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\Parsers\CanvasGeometryParser.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\Scalar.cs" />
+    <_Globbed_Compile Remove="Helpers\Geometry\Utils.cs" />
+    <_Globbed_Compile Remove="Helpers\JsonContext.cs" />
+    <_Globbed_Compile Remove="Models\LoginModel.cs" />
+    <_Globbed_Compile Remove="Models\SessionModel.cs" />
+    <_Globbed_Compile Remove="Pages\FeedsPage.xaml.cs" />
+    <_Globbed_Compile Remove="Pages\HomePage.xaml.cs" />
+    <_Globbed_Compile Remove="Pages\LoginPage.xaml.cs" />
+    <_Globbed_Compile Remove="RootPage.xaml.cs" />
+    <_Globbed_Compile Remove="Services\INavigationService.cs" />
+    <_Globbed_Compile Remove="Services\INavigationServiceLocator.cs" />
+    <_Globbed_Compile Remove="Services\IProtocolService.cs" />
+    <_Globbed_Compile Remove="Services\LoginService.cs" />
+    <_Globbed_Compile Remove="Services\NavigationService.cs" />
+    <_Globbed_Compile Remove="Services\NavigationServiceLocator.cs" />
+    <_Globbed_Compile Remove="Services\ProtocolService.cs" />
+    <_Globbed_Compile Remove="Services\SessionService.cs" />
+    <_Globbed_Compile Remove="ViewModels\Compose\ComposeViewModel.cs" />
+    <_Globbed_Compile Remove="ViewModels\Error\ATErrorViewModel.cs" />
+    <_Globbed_Compile Remove="ViewModels\Error\ErrorViewModel.cs" />
+    <_Globbed_Compile Remove="ViewModels\Error\ExceptionViewModel.cs" />
+    <_Globbed_Compile Remove="ViewModels\FeedsViewModel.cs" />
+    <_Globbed_Compile Remove="ViewModels\Feeds\FeedItemCollection.cs" />
+    <_Globbed_Compile Remove="ViewModels\Feeds\FeedViewModel.cs" />
+    <_Globbed_Compile Remove="ViewModels\HomeViewModel.cs" />
+    <_Globbed_Compile Remove="ViewModels\LoginViewModel.cs" />
+    <_Globbed_Compile Remove="ViewModels\Post\PostEmbedImagesViewModel.cs" />
+    <_Globbed_Compile Remove="ViewModels\Post\PostEmbedImageViewModel.cs" />
+    <_Globbed_Compile Remove="ViewModels\Post\PostEmbedViewModel.cs" />
+    <_Globbed_Compile Remove="ViewModels\Post\PostViewModel.cs" />
+    <_Globbed_Compile Remove="ViewModels\Profile\ProfileViewModel.cs" />
+    <_Globbed_Compile Remove="ViewModels\RootViewModel.cs" />
+    <_Globbed_Compile Remove="ViewModels\ViewModelBase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <_Globbled_Page Remove="Controls\Compose\ComposeDialog.xaml" />
+    <_Globbled_Page Remove="DataTemplates\Feeds.xaml" />
+    <_Globbled_Page Remove="Pages\FeedsPage.xaml" />
+    <_Globbled_Page Remove="Pages\HomePage.xaml" />
+    <_Globbled_Page Remove="Pages\LoginPage.xaml" />
+    <_Globbled_Page Remove="RootPage.xaml" />
+    <_Globbled_Page Remove="Templates\NavigationViewStyles.xaml" />
+  </ItemGroup>
+</Project>
