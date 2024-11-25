@@ -12,7 +12,8 @@ namespace UniSky.Converters
             => a == b;
         public static bool AtLeast(int a, int b)
             => a >= b;
-
+        public static bool Not(bool x)
+            => !x;
         public static bool NotNull(object x)
             => x is not null;
 

@@ -4,7 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UniSky" 
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
-    xmlns:media="using:Microsoft.UI.Xaml.Media">
+    xmlns:media="using:Microsoft.UI.Xaml.Media"
+    xmlns:sheets="using:UniSky.Controls.Sheet">
 
     <Application.Resources>
         <controls:XamlControlsResources ControlsResourcesVersion="Version1">
@@ -14,11 +15,15 @@
                         <!-- Styles -->
                         <ResourceDictionary Source="/Templates/NavigationViewStyles.xaml"/>
                         <ResourceDictionary Source="/Templates/ButtonStyles.xaml"/>
+                        <ResourceDictionary Source="/Templates/TextBoxStyles.xaml"/>
                         <ResourceDictionary Source="/Templates/MediaTransportControlsStyles.xaml"/>
 
                         <!-- Templates -->
                         <FeedTemplates xmlns="using:UniSky.Templates"/>
-                     </ResourceDictionary.MergedDictionaries>
+
+                        <!-- Controls -->
+                        <ResourceDictionary Source="/Templates/SheetControlStyles.xaml"/>
+                    </ResourceDictionary.MergedDictionaries>
                     <ResourceDictionary.ThemeDictionaries>
                         <ResourceDictionary x:Key="Dark">
                             <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" Color="#FF080808" />
@@ -41,7 +46,9 @@
                     <CornerRadius x:Key="ControlCornerRadius">0,0,0,0</CornerRadius>
 
                     <x:Double x:Key="ControlContentThemeFontSize">14</x:Double>
-                    <x:Double x:Key="ContentControlFontSize">14</x:Double>                    
+                    <x:Double x:Key="ContentControlFontSize">14</x:Double>
+
+                    <Style TargetType="sheets:SheetControl" BasedOn="{StaticResource DefaultSheetControlStyle}"/>
                 </ResourceDictionary>
             </controls:XamlControlsResources.MergedDictionaries>
         </controls:XamlControlsResources>
