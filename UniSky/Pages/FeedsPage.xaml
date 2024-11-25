@@ -24,7 +24,8 @@
 
     <Grid x:Name="RootGrid">
         <Pivot x:Name="FeedsPivot"
-               ItemsSource="{x:Bind ViewModel.Feeds}">
+               ItemsSource="{x:Bind ViewModel.Feeds}"
+               ScrollViewer.IsVerticalScrollChainingEnabled="True">
             <Pivot.HeaderTemplate>
                 <DataTemplate>
                     <TextBlock x:Name="PivotHeaderText"

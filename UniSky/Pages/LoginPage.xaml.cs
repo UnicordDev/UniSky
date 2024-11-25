@@ -35,6 +35,11 @@ public sealed partial class LoginPage : Page
         this.ViewModel = ActivatorUtilities.CreateInstance<LoginViewModel>(Ioc.Default);
     }
 
+    protected override void OnNavigatedTo(NavigationEventArgs e)
+    {
+        this.Frame.BackStack.Clear();
+    }
+
     public bool IsNotNull(object o) 
         => o is not null;
 

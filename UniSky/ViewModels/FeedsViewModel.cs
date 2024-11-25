@@ -2,16 +2,21 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using FishyFlip.Lexicon.App.Bsky.Actor;
 using FishyFlip.Lexicon.App.Bsky.Feed;
 using FishyFlip.Models;
 using FishyFlip.Tools;
 using Microsoft.Extensions.Logging;
+using Microsoft.Toolkit.Uwp.UI.Extensions;
 using UniSky.Controls.Compose;
+using UniSky.Controls.Sheet;
 using UniSky.Extensions;
+using UniSky.Pages;
 using UniSky.Services;
 using UniSky.ViewModels.Feeds;
+using Windows.UI.Xaml;
 
 namespace UniSky.ViewModels;
 
@@ -37,8 +42,8 @@ public partial class FeedsViewModel : ViewModelBase
     [RelayCommand]
     public async Task Post()
     {
-        var dialog = new ComposeDialog();
-        await dialog.ShowAsync();
+        var sheetsService = Ioc.Default.GetRequiredService<ISheetService>();
+        await sheetsService.ShowAsync<ComposeSheet>();
     }
 
     private async Task LoadAsync()
