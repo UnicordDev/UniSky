@@ -122,10 +122,10 @@
     <value>Посты</value>
   </data>
   <data name="FollowersRun.Text" xml:space="preserve">
-    <value>Следователи</value>
+    <value>Подписчики</value>
   </data>
   <data name="FollowingRun.Text" xml:space="preserve">
-    <value>Следователь</value>
+    <value>Подписчик</value>
   </data>
   <data name="FeedPosts" xml:space="preserve">
     <value>Посты</value>
@@ -149,7 +149,7 @@
     <value>Лайк</value>
   </data>
   <data name="ReplyingToRun.Text" xml:space="preserve">
-    <value>Отвечаете на</value>
+    <value>Отвечает</value>
   </data>
   <data name="AppName" xml:space="preserve">
     <value>Unisky</value>
