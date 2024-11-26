@@ -12,7 +12,7 @@ namespace UniSky.Helpers.Composition;
 
 internal static class BirdAnimation
 {
-    public static void RunBirdAnimation(Frame frame)
+    public static void RunBirdAnimation(FrameworkElement frame)
     {
         // TODO: fallback to a shape visual
         if (!ApiInformation.IsMethodPresent(typeof(Compositor).FullName, "CreateGeometricClip"))

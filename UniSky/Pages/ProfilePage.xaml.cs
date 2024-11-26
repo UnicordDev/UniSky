@@ -11,6 +11,7 @@ using Microsoft.Toolkit.Uwp.UI.Extensions;
 using UniSky.Services;
 using UniSky.ViewModels;
 using UniSky.ViewModels.Profile;
+using Windows.UI;
 using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -131,10 +132,20 @@ public sealed partial class ProfilePage : Page
             Source = new CompositionEffectSourceParameter("source")
         };
 
+        var effect = new ExposureEffect()
+        {
+            Name = "tint",
+            Source = new CompositionEffectSourceParameter("source"),
+        };
+
         var blurBrush = _compositor.CreateEffectFactory(blurEffect, ["blur.BlurAmount"])
             .CreateBrush();
 
+        //var tintBrush = _compositor.CreateEffectFactory(effect, ["tint.Exposure"])
+        //    .CreateBrush();
+
         blurBrush.SetSourceParameter("source", _compositor.CreateBackdropBrush());
+        //tintBrush.SetSourceParameter("source", blurBrush);
 
         _blurredBackgroundImageVisual.Brush = blurBrush;
         ElementCompositionPreview.SetElementChildVisual(ProfileBanner, _blurredBackgroundImageVisual);
@@ -145,7 +156,10 @@ public sealed partial class ProfilePage : Page
 
         // animate the blurriness with respect to progress
         var blurAnimation = EF.Lerp(0, 20, progressNode);
-        _blurredBackgroundImageVisual.Brush.Properties.StartAnimation("blur.BlurAmount", blurAnimation);
+        blurBrush.Properties.StartAnimation("blur.BlurAmount", blurAnimation);
+
+        //var tintAnimation = EF.Lerp(0, -0.25f, progressNode);
+        //tintBrush.Properties.StartAnimation("tint.Exposure", tintAnimation);
 
         // move everything with the scroll viewer, make it sticky
         var headerTranslationAnimation = EF.Conditional(progressNode < 1, 0, -scrollingProperties.Translation.Y - pixelsToMoveNode);

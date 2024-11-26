@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Uwp.UI.Extensions;
+using UniSky.Controls.Sheet;
 using UniSky.Services;
 using UniSky.ViewModels;
 using UniSky.ViewModels.Feeds;
@@ -38,10 +39,10 @@ public sealed partial class FeedsPage : Page
     {
         base.OnNavigatedTo(e);
 
+        this.ViewModel = ActivatorUtilities.CreateInstance<FeedsViewModel>(Ioc.Default);
+
         var safeAreaService = Ioc.Default.GetRequiredService<ISafeAreaService>();
         safeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
-
-        this.ViewModel = ActivatorUtilities.CreateInstance<FeedsViewModel>(Ioc.Default);
     }
 
     private void OnSafeAreaUpdated(object sender, SafeAreaUpdatedEventArgs e)

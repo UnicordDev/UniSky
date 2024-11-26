@@ -18,7 +18,6 @@
     </d:Page.DataContext>
 
     <Grid>
-
         <ListView x:Name="RootList"
               ItemsSource="{Binding SelectedFeed.Items}" 
               ItemTemplate="{StaticResource FeedItemContentTemplate}"

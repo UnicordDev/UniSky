@@ -140,12 +140,20 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Compose\ComposeDialog.xaml.cs">
-      <DependentUpon>ComposeDialog.xaml</DependentUpon>
+    <Compile Include="Controls\Compose\ComposeDiscardDraftDialog.xaml.cs">
+      <DependentUpon>ComposeDiscardDraftDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Compose\ComposeSheet.xaml.cs">
+      <DependentUpon>ComposeSheet.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ConstrainedBox\AspectRatioConstraint.cs" />
     <Compile Include="Controls\ConstrainedBox\ConstrainedBox.cs" />
     <Compile Include="Controls\ConstrainedBox\ConstrainedBox.Properties.cs" />
+    <Compile Include="Controls\RadialProgressBar\RadialProgressBar.cs" />
+    <Compile Include="Controls\Sheet\SheetControl.cs" />
+    <Compile Include="Controls\Sheet\SheetRootControl.xaml.cs">
+      <DependentUpon>SheetRootControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\Static.cs" />
     <Compile Include="DataTemplates\PostEmbedTemplateSelector.cs" />
     <Compile Include="Extensions\HairlineBorder.cs" />
@@ -181,6 +189,16 @@
     <Compile Include="Helpers\Geometry\Parsers\CanvasGeometryParser.cs" />
     <Compile Include="Helpers\Geometry\Scalar.cs" />
     <Compile Include="Helpers\Geometry\Utils.cs" />
+    <Compile Include="Helpers\Shadows\AttachedCardShadow.cs" />
+    <Compile Include="Helpers\Shadows\AttachedDropShadow.cs" />
+    <Compile Include="Helpers\Shadows\AttachedShadowBase.cs" />
+    <Compile Include="Helpers\Shadows\AttachedShadowElementContext.cs" />
+    <Compile Include="Helpers\Shadows\Effects.cs" />
+    <Compile Include="Helpers\Shadows\IAlphaMaskProvider.cs" />
+    <Compile Include="Helpers\Shadows\IAttachedShadow.cs" />
+    <Compile Include="Helpers\Shadows\TypedResourceKey.cs" />
+    <Compile Include="Helpers\StringExtensions.cs" />
+    <Compile Include="Helpers\UIElementExtensions.cs" />
     <Compile Include="Helpers\UrlHelpers.cs" />
     <Compile Include="Pages\ProfilePage.xaml.cs">
       <DependentUpon>ProfilePage.xaml</DependentUpon>
@@ -189,11 +207,13 @@
     <Compile Include="Services\INavigationServiceLocator.cs" />
     <Compile Include="Services\IProtocolService.cs" />
     <Compile Include="Services\ISafeAreaService.cs" />
+    <Compile Include="Services\ISheetService.cs" />
     <Compile Include="Services\NavigationServiceLocator.cs" />
     <Compile Include="DataTemplates\FeedTemplates.xaml.cs">
       <DependentUpon>FeedTemplates.xaml</DependentUpon>
     </Compile>
     <Compile Include="Services\SafeAreaService.cs" />
+    <Compile Include="Services\SheetService.cs" />
     <Compile Include="ViewModels\Compose\ComposeViewModel.cs" />
     <Compile Include="ViewModels\Error\ExceptionViewModel.cs" />
     <Compile Include="ViewModels\Post\PostEmbedVideoViewModel.cs" />
@@ -346,7 +366,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Controls\Compose\ComposeDialog.xaml">
+    <Page Include="Controls\Compose\ComposeDiscardDraftDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Compose\ComposeSheet.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\RadialProgressBar\RadialProgressBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Sheet\SheetRootControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -385,6 +417,14 @@
     <Page Include="Templates\NavigationViewStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Templates\TextBoxStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Sheet\SheetControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -445,7 +485,9 @@
       <Name>UniSky.Models</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Themes\" />
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
