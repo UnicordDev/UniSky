@@ -72,10 +72,7 @@ internal class SafeAreaService : ISafeAreaService
             Update();
         }
 
-        remove
-        {
-            _event -= value;
-        }
+        remove => _event -= value;
     }
 
     private void CoreTitleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)

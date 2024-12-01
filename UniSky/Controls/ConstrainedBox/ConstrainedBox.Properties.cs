@@ -16,8 +16,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
         /// </summary>
         public double ScaleX
         {
-            get { return (double)GetValue(ScaleXProperty); }
-            set { SetValue(ScaleXProperty, value); }
+            get => (double)GetValue(ScaleXProperty);
+            set => SetValue(ScaleXProperty, value);
         }
 
         /// <summary>
@@ -31,8 +31,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
         /// </summary>
         public double ScaleY
         {
-            get { return (double)GetValue(ScaleYProperty); }
-            set { SetValue(ScaleYProperty, value); }
+            get => (double)GetValue(ScaleYProperty);
+            set => SetValue(ScaleYProperty, value);
         }
 
         /// <summary>
@@ -46,8 +46,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
         /// </summary>
         public int MultipleX
         {
-            get { return (int)GetValue(MultipleXProperty); }
-            set { SetValue(MultipleXProperty, value); }
+            get => (int)GetValue(MultipleXProperty);
+            set => SetValue(MultipleXProperty, value);
         }
 
         /// <summary>
@@ -61,8 +61,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
         /// </summary>
         public int MultipleY
         {
-            get { return (int)GetValue(MultipleYProperty); }
-            set { SetValue(MultipleYProperty, value); }
+            get => (int)GetValue(MultipleYProperty);
+            set => SetValue(MultipleYProperty, value);
         }
 
         /// <summary>
@@ -76,15 +76,15 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
         /// </summary>
         public AspectRatioConstraint AspectRatio
         {
-            get { return (AspectRatioConstraint)GetValue(AspectRatioProperty); }
-            set { SetValue(AspectRatioProperty, value); }
+            get => (AspectRatioConstraint)GetValue(AspectRatioProperty);
+            set => SetValue(AspectRatioProperty, value);
         }
 
         /// <summary>
         /// Identifies the <see cref="AspectRatio"/> property.
         /// </summary>
         public static readonly DependencyProperty AspectRatioProperty =
-            DependencyProperty.Register(nameof(AspectRatio), typeof(AspectRatioConstraint), typeof(ConstrainedBox), new PropertyMetadata(null, ConstraintPropertyChanged));
+            DependencyProperty.Register(nameof(AspectRatio), typeof(AspectRatioConstraint), typeof(ConstrainedBox), new PropertyMetadata(default(AspectRatioConstraint), ConstraintPropertyChanged));
 
         private bool _propertyUpdating;
 

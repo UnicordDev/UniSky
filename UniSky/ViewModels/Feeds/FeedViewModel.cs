@@ -49,6 +49,7 @@ public partial class FeedViewModel : ViewModelBase
 
     public async Task RefreshAsync(Deferral? deferral = null)
     {
+        this.Error = null;
         await this.Items.RefreshAsync();
         deferral?.Complete();
     }

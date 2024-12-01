@@ -65,6 +65,6 @@ public sealed partial class RootPage : Page
             service.Navigate<LoginPage>();
         }
 
-        BirdAnimation.RunBirdAnimation(RootFrame);
+        BirdAnimation.RunBirdAnimation(SheetRoot);
     }
 }

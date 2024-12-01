@@ -141,15 +141,10 @@ public class FeedItemCollection : ObservableCollection<PostViewModel>, ISupportI
             {
                 foreach (var item in posts)
                 {
-                    if (item.Reply is null || item.Reason is ReasonRepost)
-                    {
-                        if (!ids.Contains(item.Post.Cid))
-                            Add(new PostViewModel(item));
-                    }
-                    else
+                    if (item.Reply is { Parent: PostView } && item.Reason is not ReasonRepost)
                     {
                         var reply = item.Reply;
-                        var root = (PostView)reply.Root;
+                        //var root = (PostView)reply.Root;
                         var parent = (PostView)reply.Parent;
 
                         if (!ids.Contains(parent.Cid))
@@ -159,6 +154,11 @@ public class FeedItemCollection : ObservableCollection<PostViewModel>, ISupportI
 
                             ids.Add(parent.Cid);
                         }
+                    }
+                    else
+                    {
+                        if (!ids.Contains(item.Post.Cid))
+                            Add(new PostViewModel(item));
                     }
                 }
             });

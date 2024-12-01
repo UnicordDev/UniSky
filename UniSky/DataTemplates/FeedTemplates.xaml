@@ -9,13 +9,33 @@
                     xmlns:converters="using:UniSky.Converters"
                     xmlns:extensions="using:UniSky.Extensions"
                     xmlns:feeds="using:UniSky.ViewModels.Feeds" 
-                    xmlns:posts="using:UniSky.ViewModels.Posts" xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+                    xmlns:posts="using:UniSky.ViewModels.Posts" 
+                    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
                     x:DefaultBindMode="OneWay">
 
     <!-- TODO: un-steal these colours -->
     <SolidColorBrush x:Key="LikeBrush">#ea4298</SolidColorBrush>
     <SolidColorBrush x:Key="RetweetBrush">#5cefaa</SolidColorBrush>
 
+    <MenuFlyout x:Key="FeedItemMoreButtonFlyout"
+                w1809:Placement="BottomEdgeAlignedRight"
+                not1809:Placement="Bottom">
+        <MenuFlyoutItem Text="Share" Command="{Binding ShareCommand}">
+            <MenuFlyoutItem.Icon>
+                <FontIcon Glyph="&#xE72D;" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
+            </MenuFlyoutItem.Icon>
+        </MenuFlyoutItem>
+        <MenuFlyoutItem Text="Copy Text" Icon="Copy" Command="{Binding CopyTextCommand}"/>
+        <MenuFlyoutItem Text="Copy Link" Icon="Link" Command="{Binding CopyLinkCommand}"/>
+        <MenuFlyoutSeparator/>
+        <MenuFlyoutItem Text="Mute Thread" Icon="Mute"/>
+        <MenuFlyoutItem Text="Hide Post" Icon="Clear"/>
+        <MenuFlyoutSeparator/>
+        <MenuFlyoutItem Foreground="{StaticResource SystemControlErrorTextForegroundBrush}" 
+                        Text="Report Post"
+                        Icon="ReportHacked"/>
+    </MenuFlyout>
+    
     <Style x:Key="FeedItemActionButtonStyle" TargetType="Button">
         <Setter Property="Padding" Value="8"/>
         <Setter Property="Margin" Value="0,0,8,0"/>
@@ -114,7 +134,7 @@
                     </VisualStateGroup>
                 </VisualStateManager.VisualStateGroups>
 
-                <controls:ConstrainedBox AspectRatio="{Binding AspectRatio}">
+                <controls:ConstrainedBox AspectRatio="{x:Bind AspectRatio}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -131,7 +151,7 @@
                                 Padding="0"
                                 Style="{ThemeResource CleanButtonStyle}">
                             <Image x:Name="PART_Image1A" Stretch="Uniform"
-                                   Source="{Binding Image1.ThumbnailUrl}"
+                                   Source="{x:Bind Image1.ThumbnailUrl}"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Left"/>
                         </Button>
@@ -142,7 +162,7 @@
                                 Padding="0"
                                 Style="{ThemeResource CleanButtonStyle}">
                             <Image Stretch="UniformToFill"
-                                   Source="{Binding Image2.ThumbnailUrl}"
+                                   Source="{x:Bind Image2.ThumbnailUrl}"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"/>
                         </Button>
@@ -153,7 +173,7 @@
                                 Padding="0"
                                 Style="{ThemeResource CleanButtonStyle}">
                             <Image Stretch="UniformToFill"
-                                   Source="{Binding Image3.ThumbnailUrl}"
+                                   Source="{x:Bind Image3.ThumbnailUrl}"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"/>
                         </Button>
@@ -164,7 +184,7 @@
                                 Padding="0"
                                 Style="{ThemeResource CleanButtonStyle}">
                             <Image Stretch="UniformToFill"
-                                   Source="{Binding Image4.ThumbnailUrl}"
+                                   Source="{x:Bind Image4.ThumbnailUrl}"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"/>
                         </Button>
@@ -181,7 +201,7 @@
                                 AreTransportControlsEnabled="True"
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Left"
-                                Stretch="Uniform" >
+                                Stretch="Uniform">
                 <MediaPlayerElement.TransportControls>
                     <MediaTransportControls Style="{StaticResource MediaTransportControlsStyle}"/>
                 </MediaPlayerElement.TransportControls>
@@ -202,6 +222,7 @@
 
             <Grid x:Name="RetweetContainer"
                   x:Load="{x:Bind converters:Static.NotNull(RetweetedBy)}"
+                  x:Phase="1"
                   Margin="34,0,0,4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -223,6 +244,7 @@
 
             <Grid x:Name="ReplyContainer"
                   x:Load="{x:Bind ShowReplyContainer}"
+                  x:Phase="1"
                   Margin="34,0,0,4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -273,6 +295,7 @@
 
                     <Border x:Name="ReplyLine"
                             x:Load="{x:Bind ShowReplyLine}"
+                            x:Phase="1"
                             BorderThickness="2,0,0,0"
                             BorderBrush="{StaticResource SystemControlSeparatorBrush}"
                             Grid.RowSpan="4"
@@ -298,7 +321,8 @@
                                VerticalAlignment="Top"/>
 
                     <Grid x:Name="EmbedContentContainer"
-                          x:Load="{x:Bind converters:Static.NotNull(Embed)}">
+                          x:Load="{x:Bind converters:Static.NotNull(Embed)}"
+                          x:Phase="2">
                         <ContentControl x:Name="EmbedContent"
                                             Margin="0,4,0,4"
                                             ContentTemplateSelector="{StaticResource PostEmbedTemplateSelector}"
@@ -316,13 +340,15 @@
                         <Button x:Name="RepliesButton"
                                 x:Uid="PostReplyButton"
                                 Grid.Column="0"
-                                Style="{StaticResource FeedItemActionButtonStyle}">
+                                Style="{StaticResource FeedItemActionButtonStyle}"
+                                Command="{x:Bind ReplyCommand}">
                             <StackPanel Orientation="Horizontal">
                                 <Viewbox Height="14">
                                     <TextBlock>&#xE97A;</TextBlock>
                                 </Viewbox>
                                 <TextBlock x:Name="RepliesText"
                                            x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Replies), Mode=OneWay}"
+                                           x:Phase="3"
                                            Text="{x:Bind Replies, Mode=OneWay}"
                                            Margin="8,-1,0,0"
                                            FontSize="12"
@@ -340,6 +366,7 @@
                                 </Viewbox>
                                 <TextBlock x:Name="RetweetsText"
                                            x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Retweets), Mode=OneWay}"
+                                           x:Phase="3"
                                            Text="{x:Bind Retweets, Mode=OneWay}"
                                            Margin="8,-1,0,0"
                                            FontSize="12"
@@ -359,6 +386,7 @@
                                 </Viewbox>
                                 <TextBlock x:Name="LikesText"
                                            x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Likes), Mode=OneWay}"
+                                           x:Phase="3"
                                            Text="{x:Bind Likes, Mode=OneWay}"
                                            Margin="8,-1,0,0"
                                            FontSize="12"
@@ -372,26 +400,8 @@
                                 Style="{StaticResource FeedItemActionButtonStyle}"
                                 HorizontalAlignment="Right"
                                 Grid.Column="3"
-                                Margin="8,0,0,0">
-                            <Button.Flyout>
-                                <MenuFlyout w1809:Placement="BottomEdgeAlignedRight"
-                                            not1809:Placement="Bottom">
-                                    <MenuFlyoutItem Text="Share" Command="{Binding ShareCommand}">
-                                        <MenuFlyoutItem.Icon>
-                                            <FontIcon Glyph="&#xE72D;" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
-                                        </MenuFlyoutItem.Icon>
-                                    </MenuFlyoutItem>
-                                    <MenuFlyoutItem Text="Copy Text" Icon="Copy" Command="{Binding CopyTextCommand}"/>
-                                    <MenuFlyoutItem Text="Copy Link" Icon="Link" Command="{Binding CopyLinkCommand}"/>
-                                    <MenuFlyoutSeparator/>
-                                    <MenuFlyoutItem Text="Mute Thread" Icon="Mute"/>
-                                    <MenuFlyoutItem Text="Hide Post" Icon="Clear"/>
-                                    <MenuFlyoutSeparator/>
-                                    <MenuFlyoutItem Foreground="{StaticResource SystemControlErrorTextForegroundBrush}" 
-                                                     Text="Report Post"
-                                                     Icon="ReportHacked"/>
-                                </MenuFlyout>
-                            </Button.Flyout>
+                                Margin="8,0,0,0"
+                                Flyout="{StaticResource FeedItemMoreButtonFlyout}">
 
                             <Viewbox Height="14">
                                 <TextBlock>&#xE712;</TextBlock>

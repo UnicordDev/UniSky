@@ -24,7 +24,8 @@
 
     <Grid x:Name="RootGrid">
         <Pivot x:Name="FeedsPivot"
-               ItemsSource="{x:Bind ViewModel.Feeds}">
+               ItemsSource="{x:Bind ViewModel.Feeds}"
+               ScrollViewer.IsVerticalScrollChainingEnabled="True">
             <Pivot.HeaderTemplate>
                 <DataTemplate>
                     <TextBlock x:Name="PivotHeaderText"
@@ -84,11 +85,17 @@
                         </mux:RefreshContainer>
 
                         <!-- TODO: move this into a DataTemplate w/ selector of type FeedItemErrorViewModel or similar -->
-                        <StackPanel x:Name="timelineLoadFailure" 
-                                    x:Load="{x:Bind IsErrored}">
-                            <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="100" Text="&#xE783;" Margin="0,0,0,10"/>
-                            <TextBlock Text="Unable to fetch timeline!" Style="{StaticResource TitleTextBlockStyle}"/>
-                            <Button Content="Try again" Style="{ThemeResource TextBlockButtonStyle}" />
+                        <StackPanel x:Name="TimelineLoadFailure"
+                                    x:Load="{x:Bind IsErrored}"
+                                    Padding="16"
+                                    HorizontalAlignment="Center">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" 
+                                       FontSize="96" 
+                                       Text="&#xE783;" 
+                                       Margin="0,0,0,8"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Unable to fetch timeline!" TextAlignment="Center" Style="{StaticResource TitleTextBlockStyle}"/>
+                            <Button Content="Try again" HorizontalAlignment="Center" Style="{ThemeResource TextBlockButtonStyle}" />
                         </StackPanel>
 
                     </Grid>

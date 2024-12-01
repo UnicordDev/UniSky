@@ -22,8 +22,8 @@ public sealed partial class LoginPage : Page
 {
     public LoginViewModel ViewModel
     {
-        get { return (LoginViewModel)GetValue(ViewModelProperty); }
-        set { SetValue(ViewModelProperty, value); }
+        get => (LoginViewModel)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
     }
 
     public static readonly DependencyProperty ViewModelProperty =
@@ -33,6 +33,11 @@ public sealed partial class LoginPage : Page
     {
         this.InitializeComponent();
         this.ViewModel = ActivatorUtilities.CreateInstance<LoginViewModel>(Ioc.Default);
+    }
+
+    protected override void OnNavigatedTo(NavigationEventArgs e)
+    {
+        this.Frame.BackStack.Clear();
     }
 
     public bool IsNotNull(object o) 

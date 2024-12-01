@@ -21,8 +21,8 @@ public sealed partial class HomePage : Page
 {
     public HomeViewModel ViewModel
     {
-        get { return (HomeViewModel)GetValue(ViewModelProperty); }
-        set { SetValue(ViewModelProperty, value); }
+        get => (HomeViewModel)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
     }
 
     public static readonly DependencyProperty ViewModelProperty =
