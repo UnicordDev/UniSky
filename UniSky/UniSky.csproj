@@ -208,13 +208,18 @@
     <Compile Include="Services\INavigationServiceLocator.cs" />
     <Compile Include="Services\IProtocolService.cs" />
     <Compile Include="Services\ISafeAreaService.cs" />
+    <Compile Include="Services\ISettingsService.cs" />
     <Compile Include="Services\ISheetService.cs" />
+    <Compile Include="Services\IThemeService.cs" />
     <Compile Include="Services\NavigationServiceLocator.cs" />
     <Compile Include="DataTemplates\FeedTemplates.xaml.cs">
       <DependentUpon>FeedTemplates.xaml</DependentUpon>
     </Compile>
     <Compile Include="Services\SafeAreaService.cs" />
+    <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\SheetService.cs" />
+    <Compile Include="Services\ThemeService.cs" />
+    <Compile Include="Themes\ThemeResources.cs" />
     <Compile Include="ViewModels\Compose\ComposeViewModel.cs" />
     <Compile Include="ViewModels\Error\ExceptionViewModel.cs" />
     <Compile Include="ViewModels\Post\PostEmbedVideoViewModel.cs" />
@@ -411,6 +416,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Templates\custom-twitter\Icons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Templates\Icons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Templates\MediaTransportControlsStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -424,6 +437,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Sheet\SheetControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Backport\NavigationView_rs1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Fluent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Performance.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -486,9 +511,7 @@
       <Name>UniSky.Models</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Themes\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
