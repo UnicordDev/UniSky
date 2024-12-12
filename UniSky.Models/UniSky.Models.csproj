@@ -12,16 +12,14 @@
   </ItemGroup>
 
   <Target Name="SetSourceRevisionId" BeforeTargets="InitializeSourceControlInformation">
-    <Exec Command="git describe --long --always --dirty --exclude=* --abbrev=7" ConsoleToMSBuild="True" IgnoreExitCode="False">
+    <Exec Condition="'$(SourceRevisionCommit)' == ''" Command="git describe --long --always --dirty --exclude=* --abbrev=7" ConsoleToMSBuild="True" IgnoreExitCode="False">
       <Output PropertyName="SourceRevisionCommit" TaskParameter="ConsoleOutput"/>
     </Exec>
-    <Exec Command="git branch --show-current" ConsoleToMSBuild="True" IgnoreExitCode="True">
+    <Exec Condition="'$(SourceRevisionBranch)' == ''" Command="git branch --show-current" ConsoleToMSBuild="True" IgnoreExitCode="True">
       <Output PropertyName="SourceRevisionBranch" TaskParameter="ConsoleOutput"/>
     </Exec>
 
     <PropertyGroup>
-      <SourceRevisionBranch Condition="'$(SourceRevisionBranch)' == ''">$(REF_NAME)</SourceRevisionBranch>
-      
       <SourceRevisionId Condition="'$(SourceRevisionBranch)' == 'master' Or '$(SourceRevisionBranch)' == 'main' Or '$(SourceRevisionBranch)' == ''">$(SourceRevisionCommit)</SourceRevisionId>
       <SourceRevisionId Condition="'$(SourceRevisionBranch)' != 'master' And '$(SourceRevisionBranch)' != 'main' And '$(SourceRevisionBranch)' != ''">$(SourceRevisionCommit) ($(SourceRevisionBranch))</SourceRevisionId>
     </PropertyGroup>
