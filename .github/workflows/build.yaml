@@ -69,6 +69,7 @@ jobs:
         Appx_Package_Build_Mode: SideloadOnly
         Appx_Package_Dir: Packages\
         Configuration: ${{ matrix.configuration }}
+        REF_NAME: ${{ github.ref_name }}
 
     # Remove the pfx
     - name: Cleanup

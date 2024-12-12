@@ -15,15 +15,16 @@
     <Exec Command="git describe --long --always --dirty --exclude=* --abbrev=7" ConsoleToMSBuild="True" IgnoreExitCode="False">
       <Output PropertyName="SourceRevisionCommit" TaskParameter="ConsoleOutput"/>
     </Exec>
-    <Exec Command="git symbolic-ref --short HEAD" ConsoleToMSBuild="True" IgnoreExitCode="False">
+    <Exec Command="git branch --show-current" ConsoleToMSBuild="True" IgnoreExitCode="True">
       <Output PropertyName="SourceRevisionBranch" TaskParameter="ConsoleOutput"/>
     </Exec>
 
     <PropertyGroup>
-      <SourceRevisionId Condition="'$(SourceRevisionBranch)' == 'master' Or '$(SourceRevisionBranch)' == 'main'">$(SourceRevisionCommit)</SourceRevisionId>
-      <SourceRevisionId Condition="'$(SourceRevisionBranch)' != 'master' And '$(SourceRevisionBranch)' != 'main'">$(SourceRevisionCommit) ($(SourceRevisionBranch))</SourceRevisionId>
+      <SourceRevisionBranch Condition="'$(SourceRevisionBranch)' == ''">$(REF_NAME)</SourceRevisionBranch>
+      
+      <SourceRevisionId Condition="'$(SourceRevisionBranch)' == 'master' Or '$(SourceRevisionBranch)' == 'main' Or '$(SourceRevisionBranch)' == ''">$(SourceRevisionCommit)</SourceRevisionId>
+      <SourceRevisionId Condition="'$(SourceRevisionBranch)' != 'master' And '$(SourceRevisionBranch)' != 'main' And '$(SourceRevisionBranch)' != ''">$(SourceRevisionCommit) ($(SourceRevisionBranch))</SourceRevisionId>
     </PropertyGroup>
   </Target>
 
 </Project>
- 
