@@ -70,7 +70,7 @@ jobs:
         Appx_Package_Dir: Packages\
         Configuration: ${{ matrix.configuration }}
         Head_Ref: ${{ github.head_ref }}
-        Sha: ${{ github.head_ref }}
+        Sha: ${{ github.sha }}
 
     # Remove the pfx
     - name: Cleanup
