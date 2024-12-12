@@ -148,6 +148,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Constants.cs" />
     <Compile Include="Controls\Compose\ComposeAddAltTextDialog.xaml.cs">
       <DependentUpon>ComposeAddAltTextDialog.xaml</DependentUpon>
     </Compile>
@@ -165,6 +166,9 @@
     </Compile>
     <Compile Include="Controls\RadialProgressBar\RadialProgressBar.cs" />
     <Compile Include="Controls\RichTextBlock\RichTextBlock.cs" />
+    <Compile Include="Controls\Settings\SettingsSheet.xaml.cs">
+      <DependentUpon>SettingsSheet.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Sheet\SheetControl.cs" />
     <Compile Include="Controls\Sheet\SheetRootControl.xaml.cs">
       <DependentUpon>SheetRootControl.xaml</DependentUpon>
@@ -229,6 +233,9 @@
     <Compile Include="Pages\SearchPage.xaml.cs">
       <DependentUpon>SearchPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Services\INavigationService.cs" />
     <Compile Include="Services\INavigationServiceLocator.cs" />
     <Compile Include="Services\IProtocolService.cs" />
@@ -272,6 +279,7 @@
     <Compile Include="ViewModels\Search\SearchPageViewModel.cs" />
     <Compile Include="ViewModels\Search\SearchPostsCollection.cs" />
     <Compile Include="ViewModels\Search\SearchProfileCollection.cs" />
+    <Compile Include="ViewModels\Settings\SettingsViewModel.cs" />
     <Compile Include="ViewModels\Text\RichTextViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Pages\FeedsPage.xaml.cs">
@@ -435,6 +443,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Controls\Settings\SettingsSheet.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Sheet\SheetRootControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -462,6 +474,10 @@
     <Page Include="Pages\SearchPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\SettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="RootPage.xaml">
       <Generator>MSBuild:Compile</Generator>

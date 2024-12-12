@@ -25,9 +25,6 @@ namespace UniSky.ViewModels.Profile;
 public partial class ProfilePageViewModel : ProfileViewModel
 {
     [ObservableProperty]
-    private string bannerUrl;
-
-    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Followers))]
     private int followerCount;
     [ObservableProperty]
@@ -81,8 +78,6 @@ public partial class ProfilePageViewModel : ProfileViewModel
             Populate(detailed);
         }
 
-        Task.Run(LoadAsync);
-
         Feeds =
         [
             new ProfileFeedViewModel(this, "posts_no_replies", profile, protocol),
@@ -92,7 +87,7 @@ public partial class ProfilePageViewModel : ProfileViewModel
 
         SelectedFeed = Feeds[0];
 
-        // TODO: calculate the brightness of the banner image
+        Task.Run(LoadAsync);
     }
 
     private async Task LoadAsync()
@@ -132,15 +127,9 @@ public partial class ProfilePageViewModel : ProfileViewModel
     {
         base.Populate(profile);
 
-        this.id = profile.Did;
-        this.AvatarUrl = profile.Avatar;
-        this.Name = string.IsNullOrWhiteSpace(profile.DisplayName) ? profile.Handle.ToString() : profile.DisplayName;
-        this.Handle = $"@{profile.Handle}";
-        this.BannerUrl = profile.Banner;
         this.FollowerCount = (int)profile.FollowersCount;
         this.FollowingCount = (int)profile.FollowsCount;
         this.PostCount = (int)profile.PostsCount;
-        this.Bio = profile.Description?.Trim();
     }
 
     protected override void OnLoadingChanged(bool value)

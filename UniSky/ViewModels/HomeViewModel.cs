@@ -10,10 +10,12 @@ using FishyFlip.Models;
 using FishyFlip.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using UniSky.Controls.Settings;
 using UniSky.Extensions;
 using UniSky.Models;
 using UniSky.Pages;
 using UniSky.Services;
+using UniSky.ViewModels.Profile;
 using Windows.Foundation.Metadata;
 using Windows.Phone;
 using Windows.Storage;
@@ -76,6 +78,8 @@ public partial class HomeViewModel : ViewModelBase
     public bool ProfileSelected
         => Page == HomePages.Profile;
 
+    public ProfileViewDetailed Profile => profile;
+
     public HomeViewModel(
         string profile,
         SessionService sessionService,
@@ -105,6 +109,7 @@ public partial class HomeViewModel : ViewModelBase
             .WithLogger(atLogger)
             .EnableAutoRenewSession(true)
             .WithSessionRefreshInterval(TimeSpan.FromMinutes(30))
+            .WithUserAgent(Constants.UserAgent)
             .Build();
 
         protocolService.SetProtocol(protocol);
@@ -215,6 +220,13 @@ public partial class HomeViewModel : ViewModelBase
             .HandleResult();
 
         NotificationCount = (int)notifications.Count;
+    }
+
+    [RelayCommand]
+    private async Task OpenSettingsAsync()
+    {
+        var sheetService = ServiceContainer.Scoped.GetRequiredService<ISheetService>();
+        await sheetService.ShowAsync<SettingsSheet>();
     }
 
     private async void OnNotificationTimerTick(object sender, object e)

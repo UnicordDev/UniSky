@@ -1,20 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FishyFlip.Lexicon.App.Bsky.Actor;
-using FishyFlip.Tools;
-using Microsoft.Extensions.Logging;
-using UniSky.Services;
-using Windows.UI.Xaml.Data;
+﻿using UniSky.Services;
 
 namespace UniSky.ViewModels.Notifications;
 
 public partial class NotificationsPageViewModel : ViewModelBase
 {
     private IProtocolService protocolService;
-
 
     public NotificationsCollection Notifications { get; }
 

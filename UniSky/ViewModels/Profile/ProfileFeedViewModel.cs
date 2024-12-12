@@ -16,14 +16,11 @@ public partial class ProfileFeedViewModel : FeedViewModel
     [ObservableProperty]
     private bool selected;
 
-    private string filterType;
-
     public ProfileFeedViewModel(ProfilePageViewModel parent, string filterType, ATObject profile, IProtocolService protocolService)
         : base(FeedType.Author, protocolService)
     {
         this.parent = parent;
         this.parent.PropertyChanged += OnParentPropertyChanged;
-        this.filterType = filterType;
 
         var resources = ResourceLoader.GetForCurrentView();
         this.Name = filterType switch

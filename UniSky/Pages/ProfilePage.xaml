@@ -130,12 +130,12 @@
                                    Grid.Row="0"
                                    Style="{ThemeResource SubtitleTextBlockStyle}" 
                                    Text="{Binding Name}"
-                                   MaxLines="1"/>
+                                   TextWrapping="NoWrap"/>
                         <TextBlock x:Name="HandleBlock" 
                                    Grid.Row="1"
                                    Style="{ThemeResource BaseTextBlockStyle}" 
                                    Text="{Binding Handle}"
-                                   MaxLines="1"/>
+                                   TextWrapping="NoWrap"/>
                         <TextBlock x:Name="InfoBlock" 
                                    Grid.Row="2"
                                    Grid.ColumnSpan="2"
@@ -155,7 +155,9 @@
                                 Grid.RowSpan="3"/>
 
                         <Button x:Name="FollowButton"
+                                x:Load="{x:Bind converters:Static.Not(ViewModel.IsMe), Mode=OneWay}"
                                 Style="{ThemeResource AccentButtonStyle}"
+                                Command="{Binding FollowCommand}"
                                 Grid.Column="1"
                                 Grid.RowSpan="2"
                                 VerticalAlignment="Center">
@@ -223,11 +225,11 @@
                                    Grid.Row="0"
                                    Style="{ThemeResource SubtitleTextBlockStyle}" 
                                    Text="{Binding Name}"
-                                   MaxLines="1"/>
+                                   TextWrapping="NoWrap"/>
                         <TextBlock x:Name="ScrolledHandleBlock" Style="{ThemeResource CaptionTextBlockStyle}" 
                                    Grid.Row="1"
                                    Text="{Binding Handle}"
-                                   MaxLines="1"/>
+                                   TextWrapping="NoWrap"/>
 
                         <Border Background="Transparent"
                                 Tapped="ProfileContainer_Tapped"
@@ -237,6 +239,7 @@
 
                         <Button x:Name="ScrolledFollowButton"
                                 Style="{ThemeResource ButtonRevealStyle}"
+                                Command="{Binding FollowCommand}"
                                 Grid.Column="1"
                                 Grid.RowSpan="2"
                                 VerticalAlignment="Center">

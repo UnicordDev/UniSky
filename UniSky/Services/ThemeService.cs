@@ -10,17 +10,10 @@ public enum AppTheme
     OLED
 }
 
-internal class ThemeService : IThemeService
+internal class ThemeService(ISettingsService settings) : IThemeService
 {
     private const string Themes_AppTheme = "AppTheme";
     private const string Themes_AppThemeSetOnLaunch = "AppThemeSet";
-
-    private readonly ISettingsService settings;
-
-    public ThemeService(ISettingsService settings)
-    {
-        this.settings = settings;
-    }
 
     public AppTheme GetTheme()
     {

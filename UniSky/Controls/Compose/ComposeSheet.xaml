@@ -59,7 +59,7 @@
 
             <TextBlock Text="{Binding Error.Message, FallbackValue='Something went wrong!'}"
                        TextWrapping="Wrap"
-                       Margin="8"
+                       Margin="8,7,8,9"
                        Grid.Column="1"
                        MaxLines="2"/>
         </Grid>

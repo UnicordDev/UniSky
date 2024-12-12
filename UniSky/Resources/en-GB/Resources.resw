@@ -261,4 +261,16 @@
   <data name="NotificationRetweetSingle" xml:space="preserve">
     <value>{0} reposted</value>
   </data>
+  <data name="ProfileBlocked" xml:space="preserve">
+    <value>Blocked</value>
+  </data>
+  <data name="ProfileInvalidHandle" xml:space="preserve">
+    <value>Invalid Handle</value>
+  </data>
+  <data name="ProfileUserBlocked" xml:space="preserve">
+    <value>You are blocking this user</value>
+  </data>
+  <data name="ProfileYouAreBlocked" xml:space="preserve">
+    <value>You are blocked by this user</value>
+  </data>
 </root>

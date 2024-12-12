@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
+using FishyFlip.Models;
 using UniSky.ViewModels.Error;
 
 namespace UniSky.ViewModels;
@@ -73,15 +74,17 @@ public abstract partial class ViewModelBase : ObservableObject
         this.OnLoadingChanged(value);
     }
 
-    protected virtual void SetErrored(Exception ex)
+    protected virtual void SetErrored(object e)
     {
         this.syncContext.Post(o =>
         {
-            if (ex != null)
-                this.Error = new ExceptionViewModel((Exception)o);
+            if (o is Exception ex)
+                this.Error = new ExceptionViewModel(ex);
+            if (o is ATError e)
+                this.Error = new ATErrorViewModel(e);
             else
                 this.Error = null;
-        }, ex);
+        }, e);
     }
 
     protected void OnPropertyChanged(params string[] names)

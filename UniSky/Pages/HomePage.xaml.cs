@@ -78,10 +78,16 @@ public sealed partial class HomePage : Page
         Margin = new Thickness(e.SafeArea.Bounds.Left, 0, e.SafeArea.Bounds.Right, e.SafeArea.Bounds.Bottom);
     }
 
-    private void NavigationView_ItemInvoked(MUXC.NavigationView sender, MUXC.NavigationViewItemInvokedEventArgs args)
+    private async void NavigationView_ItemInvoked(MUXC.NavigationView sender, MUXC.NavigationViewItemInvokedEventArgs args)
     {
         if (args.InvokedItemContainer?.Tag is HomePages page)
             ViewModel.Page = page;
+
+        if (args.IsSettingsInvoked)
+        {
+            ViewModel.Page = ViewModel.Page;
+            await ViewModel.OpenSettingsCommand.ExecuteAsync(null);
+        }
     }
 
     private void FooterToggleButton_Checked(object sender, RoutedEventArgs e)

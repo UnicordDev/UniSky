@@ -55,6 +55,7 @@ public partial class LoginViewModel : ViewModelBase
 
             var builder = new ATProtocolBuilder()
                 .EnableAutoRenewSession(true)
+                .WithUserAgent(Constants.UserAgent)
                 .WithInstanceUrl(new Uri(Host));
 
             using var protocol = builder.Build();

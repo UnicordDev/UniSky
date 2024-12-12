@@ -81,31 +81,30 @@ public class AppWindowSheetController : ISheetController
         var environment = applicationView.WindowingEnvironment;
         if (environment.Kind == WindowingEnvironmentKind.Overlapped)
         {
+            var visibleCenter = new Point(currentViewRect.X + (currentViewRect.Width / 2), currentViewRect.Y + currentViewRect.Height / 2);
+
             var regions = environment.GetDisplayRegions();
             var currentRegion = regions[0];
             foreach (var region in regions)
             {
                 var regionRect = new Rect(region.WorkAreaOffset, region.WorkAreaSize);
-                if (regionRect.Contains(new Point(applicationView.VisibleBounds.X, applicationView.VisibleBounds.Y)))
+                if (regionRect.Contains(visibleCenter))
                     currentRegion = region;
             }
 
             var currentDisplayOffset = currentRegion.WorkAreaOffset;
             var currentDisplaySize = currentRegion.WorkAreaSize;
-            currentViewRect = new Rect(
-                currentViewRect.X - currentDisplayOffset.X,
-                currentViewRect.Y - currentDisplayOffset.Y,
-                currentViewRect.Width,
-                currentViewRect.Height);
-
+            var currentDisplayRect = new Rect(currentDisplayOffset, currentDisplaySize);
             var currentDisplayCenter = currentDisplaySize.Width / 2;
-            var offset = (currentViewRect.Left + Math.Max(currentViewRect.Width / 2, initialSize.Width / 2)) - currentDisplayCenter;
 
-            if (applicationView.AdjacentToLeftDisplayEdge && applicationView.AdjacentToRightDisplayEdge)
+            var offsetFromLeftEdge = Math.Max(0, applicationView.VisibleBounds.Left - currentDisplayRect.Left);
+            var offsetFromRightEdge = Math.Max(0, currentDisplayRect.Right - applicationView.VisibleBounds.Right);
+            if ((applicationView.AdjacentToLeftDisplayEdge && applicationView.AdjacentToRightDisplayEdge) ||
+                Math.Max(offsetFromLeftEdge, offsetFromRightEdge) < initialSize.Width) // not enough space 
             {
                 appWindow.RequestMoveRelativeToDisplayRegion(currentRegion, new Point((currentDisplayCenter - (initialSize.Width / 2)) + 20, 150));
             }
-            else if (offset < 0)
+            else if (offsetFromRightEdge > offsetFromLeftEdge)
             {
                 // right
                 appWindow.RequestMoveRelativeToCurrentViewContent(new Point(applicationView.VisibleBounds.Width + 8, 0));

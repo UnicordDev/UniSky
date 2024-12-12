@@ -11,4 +11,19 @@
     <PackageReference Include="System.Text.Json" Version="9.0.0" />
   </ItemGroup>
 
+  <Target Name="SetSourceRevisionId" BeforeTargets="InitializeSourceControlInformation">
+    <Exec Command="git describe --long --always --dirty --exclude=* --abbrev=7" ConsoleToMSBuild="True" IgnoreExitCode="False">
+      <Output PropertyName="SourceRevisionCommit" TaskParameter="ConsoleOutput"/>
+    </Exec>
+    <Exec Command="git symbolic-ref --short HEAD" ConsoleToMSBuild="True" IgnoreExitCode="False">
+      <Output PropertyName="SourceRevisionBranch" TaskParameter="ConsoleOutput"/>
+    </Exec>
+
+    <PropertyGroup>
+      <SourceRevisionId Condition="'$(SourceRevisionBranch)' == 'master' Or '$(SourceRevisionBranch)' == 'main'">$(SourceRevisionCommit)</SourceRevisionId>
+      <SourceRevisionId Condition="'$(SourceRevisionBranch)' != 'master' And '$(SourceRevisionBranch)' != 'main'">$(SourceRevisionCommit) ($(SourceRevisionBranch))</SourceRevisionId>
+    </PropertyGroup>
+  </Target>
+
 </Project>
+ 

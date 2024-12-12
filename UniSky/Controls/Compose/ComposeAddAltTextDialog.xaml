@@ -29,6 +29,7 @@
                  TextWrapping="Wrap"
                  AcceptsReturn="True"
                  MaxLength="2000"
+                 MaxHeight="200"
                  Text="{Binding AltText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             
         </TextBox>

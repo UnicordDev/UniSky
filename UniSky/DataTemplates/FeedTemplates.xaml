@@ -120,7 +120,7 @@
                                Style="{ThemeResource BaseTextBlockStyle}" 
                                Text="{Binding Title}"
                                VerticalAlignment="Bottom"
-                               MaxLines="1"/>
+                               TextWrapping="NoWrap"/>
 
                     <TextBlock x:Name="SubtitleBlock"
                                Visibility="{Binding Description, Converter={StaticResource VisibilityConverter}}"
@@ -137,7 +137,7 @@
                            Text="{Binding Source}"
                            Style="{ThemeResource CaptionTextBlockStyle}" 
                            Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
-                           MaxLines="1"
+                           TextWrapping="NoWrap"
                            Margin="8,0,8,8"/>
             </Grid>
         </Button>

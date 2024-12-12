@@ -50,7 +50,7 @@
                            Style="{ThemeResource BaseTextBlockStyle}" 
                            Text="{Binding Name}"
                            VerticalAlignment="Bottom"
-                           MaxLines="1"/>
+                           TextWrapping="NoWrap"/>
                 
                 <TextBlock Grid.Row="1"
                            Grid.Column="1"
@@ -58,7 +58,7 @@
                            Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
                            Text="{Binding Handle}"
                            VerticalAlignment="Top"
-                           MaxLines="1"/>
+                           TextWrapping="NoWrap"/>
 
                 <Button Style="{ThemeResource ButtonRevealStyle}"
                         Margin="4,0,0,0"

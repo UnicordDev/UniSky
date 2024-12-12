@@ -26,13 +26,16 @@ internal class SheetService : ISheetService
         this.sheetRoot = Window.Current.Content.FindDescendant<SheetRootControl>();
     }
 
-    public async Task<ISheetController> ShowAsync<T>(object parameter = null) where T : SheetControl, new()
+    public Task<ISheetController> ShowAsync<T>(object parameter = null) where T : SheetControl, new()
+        => ShowAsync<T>(() => new T(), parameter);
+
+    public async Task<ISheetController> ShowAsync<T>(Func<SheetControl> factory, object parameter = null) where T : SheetControl
     {
         if (sheetRoot != null && !settingsService.Read("WindowedSheets", AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop"))
         {
             var safeArea = ServiceContainer.Scoped.GetRequiredService<ISafeAreaService>();
 
-            var control = new T();
+            var control = factory();
             var controller = new SheetRootController(sheetRoot, safeArea);
 
             control.SetSheetController(controller);
@@ -44,18 +47,18 @@ internal class SheetService : ISheetService
         {
             if (ApiInformation.IsApiContractPresent(typeof(UniversalApiContract).FullName, 8, 0))
             {
-                return await ShowSheetForAppWindow<T>(parameter);
+                return await ShowSheetForAppWindow<T>(factory, parameter);
             }
             else
             {
-                return await ShowSheetForCoreWindow<T>(parameter);
+                return await ShowSheetForCoreWindow<T>(factory, parameter);
             }
         }
     }
 
-    private async Task<ISheetController> ShowSheetForAppWindow<T>(object parameter) where T : SheetControl, new()
+    private async Task<ISheetController> ShowSheetForAppWindow<T>(Func<SheetControl> factory, object parameter) where T : SheetControl
     {
-        var control = new T();
+        var control = factory();
         var appWindow = await AppWindow.TryCreateAsync();
 
         var controller = new AppWindowSheetController(appWindow, control);
@@ -71,7 +74,7 @@ internal class SheetService : ISheetService
         return controller;
     }
 
-    private static async Task<ISheetController> ShowSheetForCoreWindow<T>(object parameter) where T : SheetControl, new()
+    private static async Task<ISheetController> ShowSheetForCoreWindow<T>(Func<SheetControl> factory, object parameter) where T : SheetControl
     {
         ISheetController controller = null;
 
@@ -82,7 +85,7 @@ internal class SheetService : ISheetService
         {
             newViewId = ApplicationView.GetForCurrentView().Id;
 
-            var control = new T();
+            var control = factory();
             controller = new ApplicationViewSheetController(control, currentViewId, newViewId);
             control.SetSheetController(controller);
 
