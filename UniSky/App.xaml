@@ -27,6 +27,7 @@
                         <FeedTemplates xmlns="using:UniSky.Templates"/>
 
                         <!-- Controls -->
+                        <ResourceDictionary Source="/Controls/Overlay/GenericOverlayControl.xaml"/>
                         <ResourceDictionary Source="/Controls/Sheet/SheetControl.xaml"/>
                         <ResourceDictionary Source="/Controls/RadialProgressBar/RadialProgressBar.xaml"/>
                     </ResourceDictionary.MergedDictionaries>
