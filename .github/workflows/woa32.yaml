@@ -51,7 +51,7 @@ jobs:
         $xml.Load($file)
 
         $node = $xml.SelectSingleNode('//PackageReference[@Include="Microsoft.UI.Xaml"]/Version')
-        $node.InnerText = "2.7.4-prerelease.221117002"
+        $node.InnerXml = "2.7.4-prerelease.221117002"
         $xml.Save($file)
 
 
