@@ -50,7 +50,10 @@ jobs:
         $file = (Resolve-Path "$env:ProjectFile_Name")
         $xml.Load($file)
 
-        $node = $xml.SelectSingleNode('//PackageReference[@Include="Microsoft.UI.Xaml"]/Version')
+        $nsmgr = [System.Xml.XmlNamespaceManager]::new($xml.NameTable)
+        $nsmgr.AddNamespace("msbuild", "http://schemas.microsoft.com/developer/msbuild/2003");
+
+        $node = $xml.SelectSingleNode('//msbuild:PackageReference[@Include="Microsoft.UI.Xaml"]/msbuild:Version', $nsmgr)
         $node.InnerXml = "2.7.4-prerelease.221117002"
         $xml.Save($file)
 
