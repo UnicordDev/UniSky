@@ -2,14 +2,13 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using UniSky.Controls.Overlay;
-using UniSky.Controls.Sheet;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.Core.Preview;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 
-namespace UniSky.Services;
+namespace UniSky.Services.Overlay;
 
 internal class ApplicationViewOverlayController : IOverlayController
 {
@@ -17,6 +16,7 @@ internal class ApplicationViewOverlayController : IOverlayController
     private readonly int hostViewId;
     private readonly int viewId;
     private readonly ISettingsService settingsService;
+    private readonly IOverlaySizeProvider overlaySizeProvider;
 
     private readonly string settingsKey;
     private bool hasActivated = false;
@@ -24,11 +24,13 @@ internal class ApplicationViewOverlayController : IOverlayController
 
     public ApplicationViewOverlayController(OverlayControl control,
                                             int hostViewId,
-                                            int viewId)
+                                            int viewId,
+                                            IOverlaySizeProvider overlaySizeProvider)
     {
         this.control = control;
         this.hostViewId = hostViewId;
         this.viewId = viewId;
+        this.overlaySizeProvider = overlaySizeProvider;
         this.settingsService = ServiceContainer.Scoped.GetRequiredService<ISettingsService>();
         this.settingsKey = "CoreWindow_LastSize_" + control.GetType().FullName.Replace(".", "_");
 
@@ -68,6 +70,13 @@ internal class ApplicationViewOverlayController : IOverlayController
         if (!hasActivated)
         {
             var initialSize = settingsService.Read(settingsKey, control.PreferredWindowSize);
+            if (overlaySizeProvider != null)
+            {
+                var size = overlaySizeProvider.GetDesiredSize();
+                if (size != null)
+                    initialSize = size.Value;
+            }
+
             var applicationView = ApplicationView.GetForCurrentView();
             applicationView.TryResizeView(initialSize);
 

@@ -2,14 +2,15 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using UniSky.Controls.Overlay;
+using UniSky.Helpers;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.WindowManagement;
 using Windows.UI.Xaml;
 
-namespace UniSky.Services;
+namespace UniSky.Services.Overlay;
 
-public class AppWindowOverlayController : IOverlayController
+internal class AppWindowOverlayController : IOverlayController
 {
     private readonly AppWindow appWindow;
     private readonly OverlayControl control;
@@ -18,7 +19,7 @@ public class AppWindowOverlayController : IOverlayController
     private readonly string settingsKey;
     private readonly long titlePropertyChangedRef;
 
-    public AppWindowOverlayController(AppWindow window, OverlayControl control)
+    public AppWindowOverlayController(AppWindow window, OverlayControl control, IOverlaySizeProvider overlaySizeProvider)
     {
         this.appWindow = window;
         this.control = control;
@@ -27,6 +28,12 @@ public class AppWindowOverlayController : IOverlayController
 
         this.settingsKey = "CoreWindow_LastSize_" + control.GetType().FullName.Replace(".", "_");
         var initialSize = settingsService.Read(settingsKey, control.PreferredWindowSize);
+        if (overlaySizeProvider != null)
+        {
+            var size = overlaySizeProvider.GetDesiredSize();
+            if (size != null)
+                initialSize = size.Value;
+        }
 
         appWindow.PersistedStateId = settingsKey;
         appWindow.CloseRequested += OnCloseRequested;
@@ -112,20 +119,28 @@ public class AppWindowOverlayController : IOverlayController
 
             var offsetFromLeftEdge = Math.Max(0, applicationView.VisibleBounds.Left - currentDisplayRect.Left);
             var offsetFromRightEdge = Math.Max(0, currentDisplayRect.Right - applicationView.VisibleBounds.Right);
+            var maxWidth = Math.Max(offsetFromLeftEdge, offsetFromRightEdge);
+            var maxHeight = Math.Min(currentDisplayRect.Height, applicationView.VisibleBounds.Height);
+
+            double width = initialSize.Width, height = initialSize.Height;
+            SizeHelpers.Scale(ref width, ref height, maxWidth, maxHeight);
+
             if ((applicationView.AdjacentToLeftDisplayEdge && applicationView.AdjacentToRightDisplayEdge) ||
-                Math.Max(offsetFromLeftEdge, offsetFromRightEdge) < initialSize.Width) // not enough space 
+                Math.Max(offsetFromLeftEdge, offsetFromRightEdge) < width) // not enough space 
             {
-                appWindow.RequestMoveRelativeToDisplayRegion(currentRegion, new Point((currentDisplayCenter - (initialSize.Width / 2)) + 20, 150));
+                appWindow.RequestMoveRelativeToDisplayRegion(currentRegion, new Point((currentDisplayCenter - (width / 2)) + 20, 150));
             }
             else if (offsetFromRightEdge > offsetFromLeftEdge)
             {
                 // right
+                appWindow.RequestSize(new Size(width, height));
                 appWindow.RequestMoveRelativeToCurrentViewContent(new Point(applicationView.VisibleBounds.Width + 8, 0));
             }
             else
             {
                 // left
-                appWindow.RequestMoveRelativeToCurrentViewContent(new Point(-initialSize.Width - 8, 0));
+                appWindow.RequestSize(new Size(width, height));
+                appWindow.RequestMoveRelativeToCurrentViewContent(new Point(-width - 8, 0));
             }
         }
     }

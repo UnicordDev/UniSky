@@ -419,4 +419,7 @@
     <value>@{0} on Bluesky</value>
     <comment>{0} = user handle</comment>
   </data>
+  <data name="GalleryControl.TitleContent" xml:space="preserve">
+    <value>GALLERY</value>
+  </data>
 </root>

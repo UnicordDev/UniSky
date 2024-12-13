@@ -4,8 +4,8 @@ using Windows.UI.Xaml;
 
 namespace UniSky.Services;
 
-public class SheetRootController(SheetRootControl rootControl,
-                                 ISafeAreaService safeAreaService) : IOverlayController
+internal class SheetRootController(SheetRootControl rootControl,
+                                   ISafeAreaService safeAreaService) : IOverlayController
 {
     public UIElement Root => rootControl;
     public bool IsStandalone => false;

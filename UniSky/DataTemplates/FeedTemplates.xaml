@@ -327,7 +327,9 @@
                                 Grid.Column="0"
                                 Margin="2"
                                 Padding="0"
-                                Style="{ThemeResource CleanButtonStyle}">
+                                Style="{ThemeResource CleanButtonStyle}"
+                                Command="{Binding ShowImageGalleryCommand}"
+                                CommandParameter="{Binding Image1}">
                             <Image x:Name="PART_Image1A" Stretch="Uniform"
                                    Source="{Binding Image1.ThumbnailUrl}"
                                    VerticalAlignment="Center"
@@ -338,7 +340,9 @@
                                 Grid.Column="1"
                                 Margin="2"
                                 Padding="0"
-                                Style="{ThemeResource CleanButtonStyle}">
+                                Style="{ThemeResource CleanButtonStyle}"
+                                Command="{Binding ShowImageGalleryCommand}"
+                                CommandParameter="{Binding Image2}">
                             <Image Stretch="UniformToFill"
                                    Source="{Binding Image2.ThumbnailUrl}"
                                    VerticalAlignment="Center"
@@ -349,7 +353,9 @@
                                 Grid.Column="0"
                                 Margin="2"
                                 Padding="0"
-                                Style="{ThemeResource CleanButtonStyle}">
+                                Style="{ThemeResource CleanButtonStyle}"
+                                Command="{Binding ShowImageGalleryCommand}"
+                                CommandParameter="{Binding Image3}">
                             <Image Stretch="UniformToFill"
                                    Source="{Binding Image3.ThumbnailUrl}"
                                    VerticalAlignment="Center"
@@ -360,7 +366,9 @@
                                 Grid.Column="1"
                                 Margin="2"
                                 Padding="0"
-                                Style="{ThemeResource CleanButtonStyle}">
+                                Style="{ThemeResource CleanButtonStyle}"
+                                Command="{Binding ShowImageGalleryCommand}"
+                                CommandParameter="{Binding Image4}">
                             <Image Stretch="UniformToFill"
                                    Source="{Binding Image4.ThumbnailUrl}"
                                    VerticalAlignment="Center"

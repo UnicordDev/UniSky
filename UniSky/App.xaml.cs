@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using UniSky.Extensions;
 using UniSky.Helpers.Localisation;
 using UniSky.Services;
+using UniSky.Services.Overlay;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
@@ -60,6 +61,7 @@ sealed partial class App : Application
         collection.AddSingleton<INavigationServiceLocator, NavigationServiceLocator>();
         collection.AddScoped<ISafeAreaService, ApplicationViewSafeAreaService>();
         collection.AddScoped<ISheetService, SheetService>();
+        collection.AddScoped<IGenericOverlayService, GenericOverlayService>();
 
         collection.AddTransient<LoginService>();
         collection.AddTransient<SessionService>();

@@ -4,12 +4,12 @@
     xmlns:local="using:UniSky.Controls.Overlay"
     xmlns:extensions="using:UniSky.Extensions">
 
-    <Style TargetType="local:GenericOverlayControl">
+    <Style x:Key="DefaultGenericOverlayStyle" TargetType="local:GenericOverlayControl">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:GenericOverlayControl">
                     <Grid x:Name="RootGrid"
-                            Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                          Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -17,7 +17,6 @@
                         </Grid.RowDefinitions>
                            
                         <Grid x:Name="TitleBarGrid"
-                              Height="48"
                               Background="{ThemeResource SystemControlBackgroundListLowBrush}"
                               BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
                               extensions:Hairline.BorderThickness="0,0,0,1">
@@ -48,12 +47,14 @@
                             <VisualStateGroup x:Name="WindowStates">
                                 <VisualState x:Name="Standard">
                                     <VisualState.Setters>
-                                        <Setter Target="TitleBarGrid.Visibility" Value="Visible"/>
+                                        <Setter Target="TitleBarGrid.Visibility" Value="Collapsed"/>
+                                        <Setter Target="SheetTitlePresenter.FontSize" Value="14"/>
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="FullWindow">
                                     <VisualState.Setters>
-                                        <Setter Target="TitleBarGrid.Visibility" Value="Collapsed"/>
+                                        <Setter Target="TitleBarGrid.Visibility" Value="Visible"/>
+                                        <Setter Target="SheetTitlePresenter.FontSize" Value="12"/>
                                     </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>

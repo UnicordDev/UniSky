@@ -12,7 +12,7 @@ using Windows.UI.Xaml.Hosting;
 
 namespace UniSky.Services.Overlay;
 
-public abstract class OverlayService
+internal abstract class OverlayService
 {
     protected async Task<IOverlayController> ShowOverlayForWindow<T>(Func<OverlayControl> factory, object parameter) where T : OverlayControl
     {
@@ -31,7 +31,7 @@ public abstract class OverlayService
         var control = factory();
         var appWindow = await AppWindow.TryCreateAsync();
 
-        var controller = new AppWindowOverlayController(appWindow, control);
+        var controller = new AppWindowOverlayController(appWindow, control, parameter as IOverlaySizeProvider);
         control.SetOverlayController(controller);
         control.InvokeShowing(parameter);
 
@@ -56,7 +56,7 @@ public abstract class OverlayService
             newViewId = ApplicationView.GetForCurrentView().Id;
 
             var control = factory();
-            controller = new ApplicationViewOverlayController(control, currentViewId, newViewId);
+            controller = new ApplicationViewOverlayController(control, currentViewId, newViewId, parameter as IOverlaySizeProvider);
             control.SetOverlayController(controller);
 
             Window.Current.Content = control;
