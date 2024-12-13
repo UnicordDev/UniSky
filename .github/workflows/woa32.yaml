@@ -57,7 +57,7 @@ jobs:
 
         # remove confirmAppClose rescap
         $node = $xml.SelectSingleNode('//rescap:Capability[@Name="confirmAppClose"]', $nsmgr)
-        $node.Parent.RemoveChild($node)
+        $node.ParentNode.RemoveChild($node)
 
         $xml.Save($file)
 
