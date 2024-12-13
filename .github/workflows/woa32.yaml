@@ -50,7 +50,7 @@ jobs:
         $file = (Resolve-Path "$env:ProjectFile_Name")
         $xml.Load($file)
 
-        $node = $xml.SelectSingleNode("//PackageReference[@Include="Microsoft.UI.Xaml"]/Version")
+        $node = $xml.SelectSingleNode('//PackageReference[@Include="Microsoft.UI.Xaml"]/Version')
         $node.InnerText = "2.7.4-prerelease.221117002"
         $xml.Save($file)
 
