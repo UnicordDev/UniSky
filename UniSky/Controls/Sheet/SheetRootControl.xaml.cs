@@ -68,8 +68,6 @@ namespace UniSky.Controls.Sheet
 
             VisualStateManager.GoToState(this, "Open", true);
 
-            Window.Current.SetTitleBar(TitleBar);
-
             var safeAreaService = ServiceContainer.Scoped.GetRequiredService<ISafeAreaService>();
             safeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
 

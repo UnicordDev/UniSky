@@ -45,8 +45,8 @@ public sealed partial class ProfilePage : Page
 
     public ProfilePageViewModel ViewModel
     {
-        get { return (ProfilePageViewModel)GetValue(ViewModelProperty); }
-        set { SetValue(ViewModelProperty, value); }
+        get => (ProfilePageViewModel)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
     }
 
     public static readonly DependencyProperty ViewModelProperty =

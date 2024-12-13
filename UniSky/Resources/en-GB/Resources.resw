@@ -209,7 +209,7 @@
   <data name="ComposeSheetSecondaryText.Text" xml:space="preserve">
     <value>Cancel</value>
   </data>
-  <data name="ComposeSheetTitle.Text" xml:space="preserve">
+  <data name="ComposeSheet.TitleContent" xml:space="preserve">
     <value>NEW POST</value>
   </data>
   <data name="E_FileUnavailable" xml:space="preserve">

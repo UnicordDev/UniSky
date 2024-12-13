@@ -11,14 +11,7 @@ using Windows.UI.Xaml;
 
 namespace UniSky.Services;
 
-public record class SafeAreaInfo(bool HasTitleBar, bool IsActive, Thickness Bounds, ElementTheme Theme);
-
-public class SafeAreaUpdatedEventArgs : EventArgs
-{
-    public SafeAreaInfo SafeArea { get; init; }
-}
-
-internal class CoreWindowSafeAreaService : ISafeAreaService
+internal class ApplicationViewSafeAreaService : ISafeAreaService
 {
     private readonly CoreWindow _window;
     private readonly ApplicationView _applicationView;
@@ -32,7 +25,7 @@ internal class CoreWindowSafeAreaService : ISafeAreaService
     public SafeAreaInfo State
         => _state;
 
-    public CoreWindowSafeAreaService()
+    public ApplicationViewSafeAreaService()
     {
         _window = CoreWindow.GetForCurrentThread();
         _window.SizeChanged += CoreWindow_SizeChanged;

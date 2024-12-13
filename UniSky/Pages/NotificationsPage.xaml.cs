@@ -14,8 +14,8 @@ public sealed partial class NotificationsPage : Page
 {
     public NotificationsPageViewModel ViewModel
     {
-        get { return (NotificationsPageViewModel)GetValue(ViewModelProperty); }
-        set { SetValue(ViewModelProperty, value); }
+        get => (NotificationsPageViewModel)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
     }
 
     public static readonly DependencyProperty ViewModelProperty =

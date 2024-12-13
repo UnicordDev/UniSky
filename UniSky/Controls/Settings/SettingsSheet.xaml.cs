@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
+using UniSky.Controls.Overlay;
 using UniSky.Controls.Sheet;
 using UniSky.Services;
 using UniSky.ViewModels.Settings;
@@ -19,12 +20,12 @@ public sealed partial class SettingsSheet : SheetControl
         this.Hiding += OnHiding;
     }
 
-    private void OnShowing(SheetControl sender, SheetShowingEventArgs args)
+    private void OnShowing(OverlayControl sender, OverlayShowingEventArgs args)
     {
         this.DataContext = ActivatorUtilities.CreateInstance<SettingsViewModel>(ServiceContainer.Scoped);
     }
 
-    private async void OnHiding(SheetControl sender, SheetHidingEventArgs args)
+    private async void OnHiding(OverlayControl sender, OverlayHidingEventArgs args)
     {
         if (!ApiInformation.IsMethodPresent("Windows.ApplicationModel.Core.CoreApplication", "RequestRestartAsync"))
             return;

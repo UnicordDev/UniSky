@@ -58,7 +58,7 @@ sealed partial class App : Application
         collection.AddSingleton<ITypedSettings, SettingsService>();
         collection.AddSingleton<IThemeService, ThemeService>();
         collection.AddSingleton<INavigationServiceLocator, NavigationServiceLocator>();
-        collection.AddScoped<ISafeAreaService, CoreWindowSafeAreaService>();
+        collection.AddScoped<ISafeAreaService, ApplicationViewSafeAreaService>();
         collection.AddScoped<ISheetService, SheetService>();
 
         collection.AddTransient<LoginService>();

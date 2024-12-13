@@ -16,8 +16,8 @@ namespace System.Windows.Shell.Aurora
     {
         public Color Color
         {
-            get { return (Color)GetValue(ColorProperty); }
-            set { SetValue(ColorProperty, value); }
+            get => (Color)GetValue(ColorProperty);
+            set => SetValue(ColorProperty, value);
         }
 
         public static readonly DependencyProperty ColorProperty =
@@ -25,8 +25,8 @@ namespace System.Windows.Shell.Aurora
 
         public TimeSpan AnimationDuration
         {
-            get { return (TimeSpan)GetValue(AnimationDurationProperty); }
-            set { SetValue(AnimationDurationProperty, value); }
+            get => (TimeSpan)GetValue(AnimationDurationProperty);
+            set => SetValue(AnimationDurationProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for AnimationDuration.  This enables animation, styling, binding, etc...

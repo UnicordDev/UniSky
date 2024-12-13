@@ -159,7 +159,7 @@
   <data name="ComposeSheetPrimaryText.Text" xml:space="preserve">
     <value>Tweet</value>
   </data>
-  <data name="ComposeSheetTitle.Text" xml:space="preserve">
+  <data name="ComposeSheet.TitleContent" xml:space="preserve">
     <value>NEW TWEET</value>
   </data>
   <data name="Notification_LikedTweetMultiple" xml:space="preserve">

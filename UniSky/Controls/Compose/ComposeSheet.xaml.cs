@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
+using UniSky.Controls.Overlay;
 using UniSky.Controls.Sheet;
 using UniSky.Services;
 using UniSky.ViewModels.Compose;
@@ -48,7 +49,7 @@ namespace UniSky.Controls.Compose
         public bool Not(bool b, bool a)
             => !a && !b;
 
-        private void OnShowing(SheetControl sender, SheetShowingEventArgs e)
+        private void OnShowing(OverlayControl sender, OverlayShowingEventArgs e)
         {
             var inputPane = InputPane.GetForCurrentView();
             inputPane.Showing += OnInputPaneShowing;
@@ -73,7 +74,7 @@ namespace UniSky.Controls.Compose
             }
         }
 
-        private void OnHidden(SheetControl sender, RoutedEventArgs args)
+        private void OnHidden(OverlayControl sender, RoutedEventArgs args)
         {
             var inputPane = InputPane.GetForCurrentView();
             inputPane.Showing -= OnInputPaneShowing;
@@ -89,12 +90,12 @@ namespace UniSky.Controls.Compose
             }
         }
 
-        private void OnShown(SheetControl sender, RoutedEventArgs args)
+        private void OnShown(OverlayControl sender, RoutedEventArgs args)
         {
             PrimaryTextBox.Focus(FocusState.Programmatic);
         }
 
-        private async void OnHiding(SheetControl sender, SheetHidingEventArgs e)
+        private async void OnHiding(OverlayControl sender, OverlayHidingEventArgs e)
         {
             var deferral = e.GetDeferral();
             try

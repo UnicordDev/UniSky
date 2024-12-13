@@ -15,8 +15,8 @@ public sealed partial class SearchPage : Page
 {
     public SearchPageViewModel ViewModel
     {
-        get { return (SearchPageViewModel)GetValue(ViewModelProperty); }
-        set { SetValue(ViewModelProperty, value); }
+        get => (SearchPageViewModel)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
     }
 
     public static readonly DependencyProperty ViewModelProperty =

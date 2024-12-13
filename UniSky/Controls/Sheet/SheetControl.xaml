@@ -50,8 +50,8 @@
                                               VerticalAlignment="Stretch"
                                               HorizontalContentAlignment="Stretch"
                                               VerticalContentAlignment="Stretch"
-                                              Content="{TemplateBinding SheetContent}"
-                                              ContentTemplate="{TemplateBinding SheetContentTemplate}"/>
+                                              Content="{TemplateBinding OverlayContent}"
+                                              ContentTemplate="{TemplateBinding OverlayContentTemplate}"/>
 
                             <Grid x:Name="ButtonsGrid"
                                   VerticalAlignment="Top"

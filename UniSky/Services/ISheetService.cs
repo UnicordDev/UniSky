@@ -6,7 +6,7 @@ namespace UniSky.Services
 {
     public interface ISheetService
     {
-        Task<ISheetController> ShowAsync<T>(object parameter = null) where T : SheetControl, new();
-        Task<ISheetController> ShowAsync<T>(Func<SheetControl> factory, object parameter = null) where T : SheetControl;
+        Task<IOverlayController> ShowAsync<T>(object parameter = null) where T : SheetControl, new();
+        Task<IOverlayController> ShowAsync<T>(Func<SheetControl> factory, object parameter = null) where T : SheetControl;
     }
 }

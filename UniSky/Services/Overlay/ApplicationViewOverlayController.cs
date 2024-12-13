@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using UniSky.Controls.Overlay;
 using UniSky.Controls.Sheet;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
@@ -10,19 +11,20 @@ using Windows.UI.Xaml;
 
 namespace UniSky.Services;
 
-internal class ApplicationViewSheetController : ISheetController
+internal class ApplicationViewOverlayController : IOverlayController
 {
-    private readonly SheetControl control;
+    private readonly OverlayControl control;
     private readonly int hostViewId;
     private readonly int viewId;
     private readonly ISettingsService settingsService;
 
     private readonly string settingsKey;
     private bool hasActivated = false;
+    private long titlePropertyChangedRef;
 
-    public ApplicationViewSheetController(SheetControl control,
-                                          int hostViewId,
-                                          int viewId)
+    public ApplicationViewOverlayController(OverlayControl control,
+                                            int hostViewId,
+                                            int viewId)
     {
         this.control = control;
         this.hostViewId = hostViewId;
@@ -47,6 +49,18 @@ internal class ApplicationViewSheetController : ISheetController
         coreWindow.SizeChanged += OnWindowSizeChanged;
         coreWindow.Activated += OnActivated;
         coreWindow.Closed += OnWindowClosed;
+
+        titlePropertyChangedRef = control.RegisterPropertyChangedCallback(OverlayControl.TitleContentProperty, OnTitleChanged);
+        OnTitleChanged(control, OverlayControl.TitleContentProperty);
+    }
+
+    private void OnTitleChanged(DependencyObject sender, DependencyProperty dp)
+    {
+        if (dp != OverlayControl.TitleContentProperty)
+            return;
+
+        var applicationView = ApplicationView.GetForCurrentView();
+        applicationView.Title = control.TitleContent?.ToString() ?? "";
     }
 
     private void OnActivated(CoreWindow sender, WindowActivatedEventArgs args)
@@ -70,6 +84,7 @@ internal class ApplicationViewSheetController : ISheetController
         if (await control.InvokeHidingAsync())
         {
             await ApplicationViewSwitcher.SwitchAsync(hostViewId, viewId, ApplicationViewSwitchingOptions.ConsolidateViews);
+            this.control.UnregisterPropertyChangedCallback(OverlayControl.TitleContentProperty, this.titlePropertyChangedRef);
             return true;
         }
 

@@ -3,7 +3,7 @@ using Windows.UI.Xaml;
 
 namespace UniSky.Services;
 
-public interface ISheetController
+public interface IOverlayController
 {
     UIElement Root { get; } 
     bool IsFullWindow { get; }

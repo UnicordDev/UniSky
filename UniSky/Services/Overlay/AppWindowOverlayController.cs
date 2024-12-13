@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using UniSky.Controls.Sheet;
+using UniSky.Controls.Overlay;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.WindowManagement;
@@ -9,15 +9,16 @@ using Windows.UI.Xaml;
 
 namespace UniSky.Services;
 
-public class AppWindowSheetController : ISheetController
+public class AppWindowOverlayController : IOverlayController
 {
     private readonly AppWindow appWindow;
-    private readonly SheetControl control;
+    private readonly OverlayControl control;
     private readonly ISettingsService settingsService;
 
     private readonly string settingsKey;
+    private readonly long titlePropertyChangedRef;
 
-    public AppWindowSheetController(AppWindow window, SheetControl control)
+    public AppWindowOverlayController(AppWindow window, OverlayControl control)
     {
         this.appWindow = window;
         this.control = control;
@@ -34,6 +35,9 @@ public class AppWindowSheetController : ISheetController
         appWindow.RequestSize(initialSize);
 
         PlaceAppWindow(initialSize);
+
+        this.titlePropertyChangedRef = this.control.RegisterPropertyChangedCallback(OverlayControl.TitleContentProperty, OnTitleChanged);
+        OnTitleChanged(this.control, OverlayControl.TitleContentProperty);
     }
 
     public UIElement Root => control;
@@ -62,6 +66,7 @@ public class AppWindowSheetController : ISheetController
 
     private void OnClosed(AppWindow sender, AppWindowClosedEventArgs args)
     {
+        control.UnregisterPropertyChangedCallback(OverlayControl.TitleContentProperty, titlePropertyChangedRef);
         control.InvokeHidden();
     }
 
@@ -72,6 +77,14 @@ public class AppWindowSheetController : ISheetController
             var settingsKey = "AppWindow_LastSize_" + control.GetType().FullName.Replace(".", "_");
             settingsService.Save(settingsKey, new Size(control.ActualSize.X, control.ActualSize.Y));
         }
+    }
+
+    private void OnTitleChanged(DependencyObject sender, DependencyProperty dp)
+    {
+        if (dp != OverlayControl.TitleContentProperty)
+            return;
+
+        appWindow.Title = control.TitleContent?.ToString() ?? "";
     }
 
     private void PlaceAppWindow(Size initialSize)

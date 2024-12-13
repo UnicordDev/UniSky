@@ -22,8 +22,8 @@ namespace UniSky.Controls
 
         public TextWrapping TextWrapping
         {
-            get { return (TextWrapping)GetValue(TextWrappingProperty); }
-            set { SetValue(TextWrappingProperty, value); }
+            get => (TextWrapping)GetValue(TextWrappingProperty);
+            set => SetValue(TextWrappingProperty, value);
         }
 
         public static readonly DependencyProperty TextWrappingProperty =
@@ -31,8 +31,8 @@ namespace UniSky.Controls
 
         public bool IsTextSelectionEnabled
         {
-            get { return (bool)GetValue(IsTextSelectionEnabledProperty); }
-            set { SetValue(IsTextSelectionEnabledProperty, value); }
+            get => (bool)GetValue(IsTextSelectionEnabledProperty);
+            set => SetValue(IsTextSelectionEnabledProperty, value);
         }
 
         public static readonly DependencyProperty IsTextSelectionEnabledProperty =
@@ -40,8 +40,8 @@ namespace UniSky.Controls
 
         public IList<FacetInline> Inlines
         {
-            get { return (IList<FacetInline>)GetValue(InlinesProperty); }
-            set { SetValue(InlinesProperty, value); }
+            get => (IList<FacetInline>)GetValue(InlinesProperty);
+            set => SetValue(InlinesProperty, value);
         }
 
         public static readonly DependencyProperty InlinesProperty =

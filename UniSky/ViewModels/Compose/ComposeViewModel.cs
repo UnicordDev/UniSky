@@ -67,10 +67,10 @@ public partial class ComposeViewModel : ViewModelBase
     public bool HasAttachments
         => AttachedFiles.Count > 0;
 
-    public ISheetController SheetController { get; }
+    public IOverlayController SheetController { get; }
 
     public ComposeViewModel(IProtocolService protocolService,
-                            ISheetController sheetController,
+                            IOverlayController sheetController,
                             ILogger<ComposeViewModel> logger,
                             PostViewModel replyTo = null)
     {

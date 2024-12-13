@@ -172,6 +172,9 @@
     <Compile Include="Controls\Settings\SettingsSheet.xaml.cs">
       <DependentUpon>SettingsSheet.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Overlay\OverlayHidingEventArgs.cs" />
+    <Compile Include="Controls\Overlay\OverlayShowingEventArgs.cs" />
+    <Compile Include="Controls\Overlay\OverlayControl.cs" />
     <Compile Include="Controls\Sheet\SheetControl.cs" />
     <Compile Include="Controls\Sheet\SheetRootControl.xaml.cs">
       <DependentUpon>SheetRootControl.xaml</DependentUpon>
@@ -247,14 +250,17 @@
     <Compile Include="DataTemplates\FeedTemplates.xaml.cs">
       <DependentUpon>FeedTemplates.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Services\Overlay\OverlayService.cs" />
     <Compile Include="Services\SafeArea\AppWindowSafeAreaService.cs" />
-    <Compile Include="Services\SafeArea\CoreWindowSafeAreaService.cs" />
+    <Compile Include="Services\SafeArea\ApplicationViewSafeAreaService.cs" />
     <Compile Include="Services\SafeArea\ISafeAreaService.cs" />
+    <Compile Include="Services\SafeArea\SafeAreaInfo.cs" />
+    <Compile Include="Services\SafeArea\SafeAreaUpdatedEventArgs.cs" />
     <Compile Include="Services\ServiceContainer.cs" />
     <Compile Include="Services\SettingsService.cs" />
-    <Compile Include="Services\Sheet\ApplicationViewSheetController.cs" />
-    <Compile Include="Services\Sheet\AppWindowSheetController.cs" />
-    <Compile Include="Services\Sheet\ISheetController.cs" />
+    <Compile Include="Services\Overlay\ApplicationViewOverlayController.cs" />
+    <Compile Include="Services\Overlay\AppWindowOverlayController.cs" />
+    <Compile Include="Services\Overlay\IOverlayController.cs" />
     <Compile Include="Services\Sheet\SheetRootController.cs" />
     <Compile Include="Services\Sheet\SheetService.cs" />
     <Compile Include="Services\ThemeService.cs" />

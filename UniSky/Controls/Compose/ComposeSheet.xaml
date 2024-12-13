@@ -1,4 +1,5 @@
 ﻿<sheet:SheetControl
+    x:Uid="ComposeSheet"
     x:Class="UniSky.Controls.Compose.ComposeSheet"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -17,9 +18,6 @@
     PrimaryButtonCommand="{x:Bind ViewModel.PostCommand}"
     IsPrimaryButtonEnabled="{x:Bind ViewModel.CanPost, Mode=OneWay}"
     SecondaryButtonCommand="{x:Bind ViewModel.HideCommand}">
-    <sheet:SheetControl.TitleContent>
-        <TextBlock x:Uid="ComposeSheetTitle" Text="NEW POST"/>
-    </sheet:SheetControl.TitleContent>
     <sheet:SheetControl.PrimaryButtonContent>
         <TextBlock x:Uid="ComposeSheetPrimaryText" Text="Post" Margin="8,0"/>
     </sheet:SheetControl.PrimaryButtonContent>
