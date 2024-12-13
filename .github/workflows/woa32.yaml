@@ -1,7 +1,7 @@
 # This workflow will build, sign, and package a WinUI 3 MSIX desktop application
 # built on .NET.
 
-name: Build
+name: WoA32
 
 on:
   push:
@@ -41,8 +41,19 @@ jobs:
         $version = [System.Version]::Parse($node.GetAttribute("Version"))
         $version = [System.Version]::new($version.Major, $version.Minor, $version.Build, $epoch.TotalMinutes);
         $node.SetAttribute("Version", $version.ToString())
+        
+        $node = $xml.GetElementsByTagName("TargetDeviceFamily", "http://schemas.microsoft.com/appx/manifest/foundation/windows10")[0]
+        $node.SetAttribute("MinVersion", "10.0.15035.0");
 
         $xml.Save($file)
+
+        $file = (Resolve-Path "$env:ProjectFile_Name")
+        $xml.Load($file)
+
+        $node = $xml.SelectSingleNode("//PackageReference[@Include="Microsoft.UI.Xaml"]/Version")
+        $node.InnerText = "2.7.4-prerelease.221117002"
+        $xml.Save($file)
+
 
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     - name: Load Certificate
