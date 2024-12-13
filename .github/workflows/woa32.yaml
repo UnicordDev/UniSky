@@ -93,7 +93,7 @@ jobs:
     - name: Build App Packages
       run: msbuild $env:ProjectFile_Name /p:Configuration=$env:Configuration /p:SourceRevisionBranch="$env:Head_Ref-woa32" /p:SourceRevisionCommit="$($env:Sha.Substring(0, 7))" /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxBundlePlatform="ARM" /p:AppxBundlePlatforms="ARM" /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true
       env:
-        Appx_Bundle: Always
+        Appx_Bundle: Never
         Appx_Package_Build_Mode: SideloadOnly
         Appx_Package_Dir: Packages\
         Configuration: ${{ matrix.configuration }}
