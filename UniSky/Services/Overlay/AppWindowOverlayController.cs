@@ -32,7 +32,7 @@ internal class AppWindowOverlayController : IOverlayController
         {
             var size = overlaySizeProvider.GetDesiredSize();
             if (size != null)
-                initialSize = size.Value;
+                initialSize = size.Value with { Height = size.Value.Height + 32 };
         }
 
         appWindow.PersistedStateId = settingsKey;
@@ -119,8 +119,8 @@ internal class AppWindowOverlayController : IOverlayController
 
             var offsetFromLeftEdge = Math.Max(0, applicationView.VisibleBounds.Left - currentDisplayRect.Left);
             var offsetFromRightEdge = Math.Max(0, currentDisplayRect.Right - applicationView.VisibleBounds.Right);
-            var maxWidth = Math.Max(offsetFromLeftEdge, offsetFromRightEdge);
-            var maxHeight = Math.Min(currentDisplayRect.Height, applicationView.VisibleBounds.Height);
+            var maxWidth = Math.Min(Math.Max(offsetFromLeftEdge, offsetFromRightEdge), currentDisplayRect.Width / 4.0 * 3.0);
+            var maxHeight = Math.Min(Math.Min(currentDisplayRect.Height, applicationView.VisibleBounds.Height), currentDisplayRect.Height / 4.0 * 3.0);
 
             double width = initialSize.Width, height = initialSize.Height;
             SizeHelpers.Scale(ref width, ref height, maxWidth, maxHeight);
@@ -128,6 +128,11 @@ internal class AppWindowOverlayController : IOverlayController
             if ((applicationView.AdjacentToLeftDisplayEdge && applicationView.AdjacentToRightDisplayEdge) ||
                 Math.Max(offsetFromLeftEdge, offsetFromRightEdge) < width) // not enough space 
             {
+                width = initialSize.Width;
+                height = initialSize.Height;
+                SizeHelpers.Scale(ref width, ref height, currentDisplayRect.Width / 4.0 * 3.0, currentDisplayRect.Height / 4.0 * 3.0);
+
+                appWindow.RequestSize(new Size(width, height));
                 appWindow.RequestMoveRelativeToDisplayRegion(currentRegion, new Point((currentDisplayCenter - (width / 2)) + 20, 150));
             }
             else if (offsetFromRightEdge > offsetFromLeftEdge)

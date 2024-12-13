@@ -10,31 +10,31 @@
                 <ControlTemplate TargetType="local:GenericOverlayControl">
                     <Grid x:Name="RootGrid"
                           Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
 
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                           
-                        <Grid x:Name="TitleBarGrid"
+                            <Grid x:Name="TitleBarGrid"
                               Background="{ThemeResource SystemControlBackgroundListLowBrush}"
                               BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
                               extensions:Hairline.BorderThickness="0,0,0,1">
 
-                            <ContentPresenter x:Name="SheetTitlePresenter"
-                                              Grid.ColumnSpan="3"
-                                              VerticalAlignment="Center"
-                                              HorizontalAlignment="Left"
-                                              Content="{TemplateBinding TitleContent}"
-                                              ContentTemplate="{TemplateBinding TitleContentTemplate}"
-                                              Margin="16,0"/>
+                                <ContentPresenter x:Name="SheetTitlePresenter"
+                                                  Grid.ColumnSpan="3"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Left"
+                                                  Content="{TemplateBinding TitleContent}"
+                                                  ContentTemplate="{TemplateBinding TitleContentTemplate}"
+                                                  Margin="16,0"/>
 
-                            <Border x:Name="TitleBarDragArea"
+                                <Border x:Name="TitleBarDragArea"
                                     Grid.ColumnSpan="3"
                                     Background="Transparent"/>
-                        </Grid>
+                            </Grid>
 
-                        <ContentPresenter x:Name="SheetContentPresenter"
+                            <ContentPresenter x:Name="SheetContentPresenter"
                                           Grid.Row="1"
                                           HorizontalAlignment="Stretch"
                                           VerticalAlignment="Stretch"
@@ -42,6 +42,7 @@
                                           VerticalContentAlignment="Stretch"
                                           Content="{TemplateBinding OverlayContent}"
                                           ContentTemplate="{TemplateBinding OverlayContentTemplate}"/>
+                        </Grid>
 
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="WindowStates">

@@ -183,7 +183,7 @@ public class SheetControl : OverlayControl
             titleBarGrid.Padding = new Thickness(0, e.SafeArea.Bounds.Top, 0, 4);
         }
 
-        Margin = new Thickness(e.SafeArea.Bounds.Left, 0, e.SafeArea.Bounds.Right, e.SafeArea.Bounds.Bottom);
+        Margin = e.SafeArea.Bounds with { Top = 0 };
     }
 
     protected virtual void OnBottomInsetsChanged(double leftInset, double rightInset) { }

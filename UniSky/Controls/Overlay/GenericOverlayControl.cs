@@ -22,10 +22,6 @@ public class GenericOverlayControl : OverlayControl
     {
         base.OnShown(args);
 
-        var TitleBarDragArea = this.FindDescendantByName("TitleBarDragArea");
-        Controller.SafeAreaService.SetTitleBar(TitleBarDragArea);
-        Controller.SafeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
-
         if (Controller.IsStandalone)
         {
             VisualStateManager.GoToState(this, "FullWindow", false);
@@ -34,6 +30,10 @@ public class GenericOverlayControl : OverlayControl
         {
             VisualStateManager.GoToState(this, "Standard", false);
         }
+
+        var TitleBarDragArea = this.FindDescendantByName("TitleBarDragArea");
+        Controller.SafeAreaService.SetTitleBar(TitleBarDragArea);
+        Controller.SafeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
     }
 
     protected override void OnHidden(RoutedEventArgs args)
@@ -46,8 +46,24 @@ public class GenericOverlayControl : OverlayControl
     private void OnSafeAreaUpdated(object sender, SafeAreaUpdatedEventArgs e)
     {
         var TitleBar = (Grid)this.FindDescendantByName("TitleBarGrid");
+        var TitlePresenter = (ContentPresenter)this.FindDescendantByName("SheetTitlePresenter");
+        if (TitleBar != null)
+        {
+            if (TitlePresenter != null)
+            {
+                if (e.SafeArea.HasTitleBar)
+                {
+                    TitlePresenter.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    TitlePresenter.Visibility = Visibility.Collapsed;
+                }
+            }
 
-        TitleBar.Height = e.SafeArea.Bounds.Top;
+            TitleBar.Height = e.SafeArea.Bounds.Top;
+        }
+
         Margin = e.SafeArea.Bounds with { Top = 0 };
     }
 }

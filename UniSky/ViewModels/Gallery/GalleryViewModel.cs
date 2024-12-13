@@ -17,25 +17,19 @@ public record ShowGalleryArgs(ViewImages ViewImages = null, EmbedImages EmbedIma
     {
         if (this is { ViewImages.Images: { } images })
         {
-            var maxSize = images.Where(m => m.AspectRatio != null)
-                                .OrderByDescending(m => m.AspectRatio.Width * m.AspectRatio.Height)
-                                .FirstOrDefault();
-
-            if (maxSize == null)
+            var selected = images[Index];
+            if (selected.AspectRatio == null)
                 return null;
 
-            return new Size(maxSize.AspectRatio.Width.Value, maxSize.AspectRatio.Height.Value);
+            return new Size(selected.AspectRatio.Width.Value, selected.AspectRatio.Height.Value);
         }
         else if (this is { EmbedImages.Images: { } embedImages })
         {
-            var maxSize = embedImages.Where(m => m.AspectRatio != null)
-                                     .OrderByDescending(m => m.AspectRatio.Width * m.AspectRatio.Height)
-                                     .FirstOrDefault();
-
-            if (maxSize == null)
+            var selected = embedImages[Index];
+            if (selected.AspectRatio == null)
                 return null;
 
-            return new Size(maxSize.AspectRatio.Width.Value, maxSize.AspectRatio.Height.Value);
+            return new Size(selected.AspectRatio.Width.Value, selected.AspectRatio.Height.Value);
         }
         else
         {
