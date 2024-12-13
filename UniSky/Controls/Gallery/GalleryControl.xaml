@@ -14,15 +14,21 @@
     d:DesignWidth="400"
     d:DataContext="{d:DesignInstance Type=gallery:GalleryViewModel}">
 
-    <Grid>
-        <FlipView x:Name="FlippyView"
+    <FlipView x:Name="FlippyView"
                   ItemsSource="{Binding Images}"
                   SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}">
-            <FlipView.ItemTemplate>
-                <DataTemplate>
-                    <Image Source="{Binding ImageUrl}"/>
-                </DataTemplate>
-            </FlipView.ItemTemplate>
-        </FlipView>
-    </Grid>
+        <FlipView.ItemTemplate>
+            <DataTemplate>
+                <ScrollViewer x:Name="OutputScrollViewer" 
+                              HorizontalScrollBarVisibility="Auto"
+                              ZoomMode="Enabled"
+                              MinZoomFactor="1.0">
+                    <Viewbox MaxWidth="{Binding ViewportWidth, ElementName=OutputScrollViewer, Mode=OneWay}"  
+                             MaxHeight="{Binding ViewportHeight, ElementName=OutputScrollViewer, Mode=OneWay}">
+                        <Image Source="{Binding ImageUrl}"/>
+                    </Viewbox>
+                </ScrollViewer>
+            </DataTemplate>
+        </FlipView.ItemTemplate>
+    </FlipView>
 </overlay:GenericOverlayControl>
