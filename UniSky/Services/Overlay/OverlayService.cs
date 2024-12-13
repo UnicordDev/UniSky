@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using UniSky.Controls.Overlay;
 using Windows.ApplicationModel.Core;
+using Windows.Foundation;
+using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.WindowManagement;
@@ -15,6 +14,18 @@ namespace UniSky.Services.Overlay;
 
 public abstract class OverlayService
 {
+    protected async Task<IOverlayController> ShowOverlayForWindow<T>(Func<OverlayControl> factory, object parameter) where T : OverlayControl
+    {
+        if (ApiInformation.IsApiContractPresent(typeof(UniversalApiContract).FullName, 8, 0))
+        {
+            return await ShowOverlayForAppWindow<T>(factory, parameter);
+        }
+        else
+        {
+            return await ShowOverlayForCoreWindow<T>(factory, parameter);
+        }
+    }
+
     protected async Task<IOverlayController> ShowOverlayForAppWindow<T>(Func<OverlayControl> factory, object parameter) where T : OverlayControl
     {
         var control = factory();

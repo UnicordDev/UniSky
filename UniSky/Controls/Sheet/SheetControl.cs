@@ -117,7 +117,7 @@ public class SheetControl : OverlayControl
 
     protected override void OnHidden(RoutedEventArgs args)
     {
-        if (Controller.IsFullWindow)
+        if (Controller.IsStandalone)
         {
             Controller.SafeAreaService.SafeAreaUpdated -= OnSafeAreaUpdated;
         }
@@ -129,7 +129,7 @@ public class SheetControl : OverlayControl
     {
         base.OnApplyTemplate();
 
-        if (Controller != null && Controller.IsFullWindow)
+        if (Controller != null && Controller.IsStandalone)
         {
             VisualStateManager.GoToState(this, "FullWindow", false);
             var titleBarDragArea = this.FindDescendantByName("TitleBarDragArea");

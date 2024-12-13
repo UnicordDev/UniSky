@@ -76,7 +76,7 @@ internal class ApplicationViewOverlayController : IOverlayController
     }
 
     public UIElement Root => control;
-    public bool IsFullWindow => true;
+    public bool IsStandalone => true;
     public ISafeAreaService SafeAreaService { get; }
 
     public async Task<bool> TryHideSheetAsync()
