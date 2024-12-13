@@ -164,7 +164,7 @@
     <Compile Include="Controls\Gallery\GalleryControl.xaml.cs">
       <DependentUpon>GalleryControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Overlay\GenericOverlayControl.cs" />
+    <Compile Include="Controls\Overlay\StandardOverlayControl.cs" />
     <Compile Include="Controls\PreviewPaneAuroraControl.xaml.cs">
       <DependentUpon>PreviewPaneAuroraControl.xaml</DependentUpon>
     </Compile>
@@ -254,7 +254,7 @@
     <Compile Include="DataTemplates\FeedTemplates.xaml.cs">
       <DependentUpon>FeedTemplates.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Services\Overlay\GenericOverlayService.cs" />
+    <Compile Include="Services\Overlay\StandardOverlayService.cs" />
     <Compile Include="Services\Overlay\OverlayService.cs" />
     <Compile Include="Services\SafeArea\AppWindowSafeAreaService.cs" />
     <Compile Include="Services\SafeArea\ApplicationViewSafeAreaService.cs" />
@@ -452,7 +452,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Overlay\GenericOverlayControl.xaml">
+    <Page Include="Controls\Overlay\StandardOverlayControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

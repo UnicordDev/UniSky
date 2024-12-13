@@ -14,14 +14,14 @@ public interface IOverlaySizeProvider
     Size? GetDesiredSize();
 }
 
-public interface IGenericOverlayService
+public interface IStandardOverlayService
 {
-    Task<IOverlayController> ShowAsync<T>(object parameter = null) where T : GenericOverlayControl, new();
+    Task<IOverlayController> ShowAsync<T>(object parameter = null) where T : StandardOverlayControl, new();
 }
 
-internal class GenericOverlayService : OverlayService, IGenericOverlayService
+internal class StandardOverlayService : OverlayService, IStandardOverlayService
 {
-    public Task<IOverlayController> ShowAsync<T>(object parameter = null) where T : GenericOverlayControl, new()
+    public Task<IOverlayController> ShowAsync<T>(object parameter = null) where T : StandardOverlayControl, new()
     {
         return base.ShowOverlayForWindow<T>(() => new T(), parameter);
     }

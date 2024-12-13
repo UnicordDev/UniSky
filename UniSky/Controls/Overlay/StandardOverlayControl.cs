@@ -11,11 +11,11 @@ using Windows.UI.Xaml.Controls;
 
 namespace UniSky.Controls.Overlay;
 
-public class GenericOverlayControl : OverlayControl
+public class StandardOverlayControl : OverlayControl
 {
-    public GenericOverlayControl()
+    public StandardOverlayControl()
     {
-        this.DefaultStyleKey = typeof(GenericOverlayControl);
+        this.DefaultStyleKey = typeof(StandardOverlayControl);
     }
 
     protected override void OnShown(RoutedEventArgs args)

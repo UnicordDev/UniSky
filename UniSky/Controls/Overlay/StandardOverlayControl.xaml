@@ -4,10 +4,10 @@
     xmlns:local="using:UniSky.Controls.Overlay"
     xmlns:extensions="using:UniSky.Extensions">
 
-    <Style x:Key="DefaultGenericOverlayStyle" TargetType="local:GenericOverlayControl">
+    <Style x:Key="DefaultGenericOverlayStyle" TargetType="local:StandardOverlayControl">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="local:GenericOverlayControl">
+                <ControlTemplate TargetType="local:StandardOverlayControl">
                     <Grid x:Name="RootGrid"
                           Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
                         <Grid>

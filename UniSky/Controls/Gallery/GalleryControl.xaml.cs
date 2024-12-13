@@ -19,7 +19,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UniSky.Controls.Gallery;
 
-public sealed partial class GalleryControl : GenericOverlayControl
+public sealed partial class GalleryControl : StandardOverlayControl
 {
     public GalleryControl()
     {

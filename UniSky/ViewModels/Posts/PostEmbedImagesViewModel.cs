@@ -27,6 +27,7 @@ public partial class PostEmbedImagesViewModel : PostEmbedViewModel
     [ObservableProperty]
     private AspectRatioConstraint aspectRatio;
 
+    private readonly ATIdentifier id;
     private readonly EmbedImages embed;
     private readonly ViewImages embedView;
 
@@ -47,6 +48,9 @@ public partial class PostEmbedImagesViewModel : PostEmbedViewModel
 
     public PostEmbedImagesViewModel(ATIdentifier id, EmbedImages embed) : base(embed)
     {
+        this.id = id;
+        this.embed = embed;
+
         Count = embed.Images.Count;
         Images = embed.Images.Select(i => new PostEmbedImageViewModel(this, id, i)).ToArray();
 
@@ -57,11 +61,11 @@ public partial class PostEmbedImagesViewModel : PostEmbedViewModel
 
         var firstRatio = embed.Images[0].AspectRatio;
         SetAspectRatio(firstRatio);
-        this.embed = embed;
     }
 
     public PostEmbedImagesViewModel(ViewImages embed) : base(embed)
     {
+        this.embedView = embed;
         Count = embed.Images.Count;
         Images = embed.Images.Select(i => new PostEmbedImageViewModel(this, i)).ToArray();
 
@@ -72,7 +76,6 @@ public partial class PostEmbedImagesViewModel : PostEmbedViewModel
 
         var firstRatio = embed.Images[0].AspectRatio;
         SetAspectRatio(firstRatio);
-        embedView = embed;
     }
 
     private void SetAspectRatio(AspectRatio firstRatio)
@@ -101,7 +104,7 @@ public partial class PostEmbedImagesViewModel : PostEmbedViewModel
         if (idx == -1)
             idx = 0;
 
-        var genericOverlay = ServiceContainer.Scoped.GetRequiredService<IGenericOverlayService>();
-        await genericOverlay.ShowAsync<GalleryControl>(new ShowGalleryArgs(embedView, embed, idx));
+        var genericOverlay = ServiceContainer.Scoped.GetRequiredService<IStandardOverlayService>();
+        await genericOverlay.ShowAsync<GalleryControl>(new ShowGalleryArgs(id, embedView, embed, idx));
     }
 }

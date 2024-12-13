@@ -1,4 +1,4 @@
-﻿<overlay:GenericOverlayControl
+﻿<overlay:StandardOverlayControl
     x:Uid="GalleryControl"
     x:Class="UniSky.Controls.Gallery.GalleryControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -31,4 +31,4 @@
             </DataTemplate>
         </FlipView.ItemTemplate>
     </FlipView>
-</overlay:GenericOverlayControl>
+</overlay:StandardOverlayControl>

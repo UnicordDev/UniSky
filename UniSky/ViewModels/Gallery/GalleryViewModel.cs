@@ -6,34 +6,41 @@ using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FishyFlip.Lexicon.App.Bsky.Embed;
+using FishyFlip.Models;
 using UniSky.Services.Overlay;
 using Windows.Foundation;
 
 namespace UniSky.ViewModels.Gallery;
 
-public record ShowGalleryArgs(ViewImages ViewImages = null, EmbedImages EmbedImages = null, int Index = 0) : IOverlaySizeProvider
+public record ShowGalleryArgs(ATIdentifier Identifier = null,
+                              ViewImages ViewImages = null,
+                              EmbedImages EmbedImages = null,
+                              int Index = 0) : IOverlaySizeProvider
 {
     public Size? GetDesiredSize()
     {
-        if (this is { ViewImages.Images: { } images })
+        switch (this)
         {
-            var selected = images[Index];
-            if (selected.AspectRatio == null)
-                return null;
+            case { ViewImages.Images: { } images }:
+                {
+                    var selected = images[Index];
+                    if (selected.AspectRatio == null)
+                        return null;
 
-            return new Size(selected.AspectRatio.Width.Value, selected.AspectRatio.Height.Value);
-        }
-        else if (this is { EmbedImages.Images: { } embedImages })
-        {
-            var selected = embedImages[Index];
-            if (selected.AspectRatio == null)
-                return null;
+                    return new Size(selected.AspectRatio.Width.Value, selected.AspectRatio.Height.Value);
+                }
 
-            return new Size(selected.AspectRatio.Width.Value, selected.AspectRatio.Height.Value);
-        }
-        else
-        {
-            throw new InvalidOperationException("At least one of ViewImages/EmbedImages must be specified");
+            case { EmbedImages.Images: { } embedImages }:
+                {
+                    var selected = embedImages[Index];
+                    if (selected.AspectRatio == null)
+                        return null;
+
+                    return new Size(selected.AspectRatio.Width.Value, selected.AspectRatio.Height.Value);
+                }
+
+            default:
+                throw new InvalidOperationException("At least one of ViewImages/EmbedImages must be specified");
         }
     }
 }
@@ -48,9 +55,10 @@ public partial class GalleryImageViewModel : ViewModelBase
         ImageUrl = image.Fullsize;
     }
 
-    public GalleryImageViewModel(Image image)
+    public GalleryImageViewModel(ATIdentifier id, Image image)
     {
         // TODO: this 
+        ImageUrl = $"https://cdn.bsky.app/img/feed_fullsize/plain/{id}/{image.ImageValue.Ref.Link}@jpeg";
     }
 }
 
@@ -63,23 +71,30 @@ public partial class GalleryViewModel : ViewModelBase
 
     public GalleryViewModel(ShowGalleryArgs args)
     {
-        if (args is { ViewImages.Images: { } images })
+        switch (args)
         {
-            foreach (var image in images)
-            {
-                Images.Add(new GalleryImageViewModel(image));
-            }
-        }
-        else if (args is { EmbedImages.Images: { } embedImages })
-        {
-            foreach (var image in embedImages)
-            {
-                Images.Add(new GalleryImageViewModel(image));
-            }
-        }
-        else
-        {
-            throw new InvalidOperationException("At least one of ViewImages/EmbedImages must be specified");
+            case { ViewImages.Images: { } images }:
+                {
+                    foreach (var image in images)
+                    {
+                        Images.Add(new GalleryImageViewModel(image));
+                    }
+
+                    break;
+                }
+
+            case { EmbedImages.Images: { } embedImages, Identifier: { } id }:
+                {
+                    foreach (var image in embedImages)
+                    {
+                        Images.Add(new GalleryImageViewModel(id, image));
+                    }
+
+                    break;
+                }
+
+            default:
+                throw new InvalidOperationException("At least one of ViewImages/EmbedImages must be specified");
         }
 
         SelectedIndex = Math.Clamp(args.Index, 0, Images.Count - 1);

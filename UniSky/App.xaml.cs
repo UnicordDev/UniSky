@@ -61,7 +61,7 @@ sealed partial class App : Application
         collection.AddSingleton<INavigationServiceLocator, NavigationServiceLocator>();
         collection.AddScoped<ISafeAreaService, ApplicationViewSafeAreaService>();
         collection.AddScoped<ISheetService, SheetService>();
-        collection.AddScoped<IGenericOverlayService, GenericOverlayService>();
+        collection.AddScoped<IStandardOverlayService, StandardOverlayService>();
 
         collection.AddTransient<LoginService>();
         collection.AddTransient<SessionService>();

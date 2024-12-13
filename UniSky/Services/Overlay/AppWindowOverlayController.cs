@@ -32,7 +32,7 @@ internal class AppWindowOverlayController : IOverlayController
         {
             var size = overlaySizeProvider.GetDesiredSize();
             if (size != null)
-                initialSize = size.Value with { Height = size.Value.Height + 32 };
+                initialSize = size.Value with { Height = size.Value.Height };
         }
 
         appWindow.PersistedStateId = settingsKey;
@@ -132,19 +132,19 @@ internal class AppWindowOverlayController : IOverlayController
                 height = initialSize.Height;
                 SizeHelpers.Scale(ref width, ref height, currentDisplayRect.Width / 4.0 * 3.0, currentDisplayRect.Height / 4.0 * 3.0);
 
-                appWindow.RequestSize(new Size(width, height));
+                appWindow.RequestSize(new Size(width, height + 32));
                 appWindow.RequestMoveRelativeToDisplayRegion(currentRegion, new Point((currentDisplayCenter - (width / 2)) + 20, 150));
             }
             else if (offsetFromRightEdge > offsetFromLeftEdge)
             {
                 // right
-                appWindow.RequestSize(new Size(width, height));
+                appWindow.RequestSize(new Size(width, height + 32));
                 appWindow.RequestMoveRelativeToCurrentViewContent(new Point(applicationView.VisibleBounds.Width + 8, 0));
             }
             else
             {
                 // left
-                appWindow.RequestSize(new Size(width, height));
+                appWindow.RequestSize(new Size(width, height + 32));
                 appWindow.RequestMoveRelativeToCurrentViewContent(new Point(-width - 8, 0));
             }
         }
