@@ -32,18 +32,32 @@ jobs:
 
     - name: Adjust Package Version
       run: |
+        $appx = 'http://schemas.microsoft.com/appx/manifest/foundation/windows10'
+        $rescap = 'http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities'
+        $msbuild = 'http://schemas.microsoft.com/developer/msbuild/2003'
+
         $epoch = (Get-Date) - ([System.DateTime]::new(2024, 11, 01))
         $file = (Resolve-Path "$env:Project_Name/Package.appxmanifest")
         $xml = [System.Xml.XmlDocument]::new()
         $xml.Load($file)
 
-        $node = $xml.GetElementsByTagName("Identity", "http://schemas.microsoft.com/appx/manifest/foundation/windows10")[0]
+        $nsmgr = [System.Xml.XmlNamespaceManager]::new($xml.NameTable)
+        $nsmgr.AddNamespace("appx", $appx);
+        $nsmgr.AddNamespace("rescap", $rescap);
+
+        # adjust package version
+        $node = $xml.GetElementsByTagName("Identity", $appx)[0]
         $version = [System.Version]::Parse($node.GetAttribute("Version"))
         $version = [System.Version]::new($version.Major, $version.Minor, $version.Build, $epoch.TotalMinutes);
         $node.SetAttribute("Version", $version.ToString())
         
-        $node = $xml.GetElementsByTagName("TargetDeviceFamily", "http://schemas.microsoft.com/appx/manifest/foundation/windows10")[0]
+        # adjust target versionk
+        $node = $xml.GetElementsByTagName("TargetDeviceFamily", $appx)[0]
         $node.SetAttribute("MinVersion", "10.0.15035.0");
+
+        # remove confirmAppClose rescap
+        $node = $xml.SelectSingleNode('//rescap:Capability[@Name="confirmAppClose"]', $nsmgr)
+        $node.Parent.RemoveChild($node)
 
         $xml.Save($file)
 
@@ -51,7 +65,7 @@ jobs:
         $xml.Load($file)
 
         $nsmgr = [System.Xml.XmlNamespaceManager]::new($xml.NameTable)
-        $nsmgr.AddNamespace("msbuild", "http://schemas.microsoft.com/developer/msbuild/2003");
+        $nsmgr.AddNamespace("msbuild", $msbuild);
 
         $node = $xml.SelectSingleNode('//msbuild:PackageReference[@Include="Microsoft.UI.Xaml"]/msbuild:Version', $nsmgr)
         $node.InnerXml = "2.7.4-prerelease.221117002"
@@ -77,7 +91,7 @@ jobs:
 
     # Create the app package by building and packaging the project
     - name: Build App Packages
-      run: msbuild $env:ProjectFile_Name /p:Configuration=$env:Configuration /p:SourceRevisionBranch="$env:Head_Ref" /p:SourceRevisionCommit="$($env:Sha.Substring(0, 7))" /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxBundlePlatforms="x86|x64|ARM|ARM64" /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true
+      run: msbuild $env:ProjectFile_Name /p:Configuration=$env:Configuration /p:SourceRevisionBranch="$env:Head_Ref-woa32" /p:SourceRevisionCommit="$($env:Sha.Substring(0, 7))" /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxBundlePlatforms="x86|x64|ARM|ARM64" /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true
       env:
         Appx_Bundle: Always
         Appx_Package_Build_Mode: SideloadOnly
