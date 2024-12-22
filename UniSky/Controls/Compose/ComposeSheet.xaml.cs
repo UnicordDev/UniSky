@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using Microsoft.Extensions.DependencyInjection;
 using UniSky.Controls.Overlay;
 using UniSky.Controls.Sheet;
@@ -12,153 +13,163 @@ using Windows.Foundation.Metadata;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Input;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace UniSky.Controls.Compose
+namespace UniSky.Controls.Compose;
+
+public sealed partial class ComposeSheet : SheetControl
 {
-    public sealed partial class ComposeSheet : SheetControl
+    private readonly ResourceLoader strings;
+    private readonly ComposeInputHelper inputHelper;
+
+    public ComposeViewModel ViewModel
     {
-        private readonly ResourceLoader strings;
+        get => (ComposeViewModel)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
 
-        public ComposeViewModel ViewModel
+    public static readonly DependencyProperty ViewModelProperty =
+        DependencyProperty.Register("ViewModel", typeof(ComposeViewModel), typeof(ComposeSheet), new PropertyMetadata(null));
+
+
+    public ComposeSheet()
+         : base()
+    {
+        this.InitializeComponent();
+        this.Showing += OnShowing;
+        this.Shown += OnShown;
+        this.Hiding += OnHiding;
+        this.Hidden += OnHidden;
+        this.strings = ResourceLoader.GetForCurrentView();
+        this.inputHelper = new ComposeInputHelper(ContentGrid, PrimaryTextBox, TextBoxPopup);
+    }
+
+    protected override void OnKeyDown(KeyRoutedEventArgs e)
+    {
+        this.inputHelper.OnKeyDown(this, e);
+        base.OnKeyDown(e);
+    }
+
+    protected override void OnBottomInsetsChanged(double leftInset, double rightInset)
+    {
+        FooterContainer.Padding = new Thickness(leftInset, 0, rightInset, 2);
+    }
+
+    public bool Not(bool b, bool a)
+        => !a && !b;
+
+    private void OnShowing(IOverlayControl sender, OverlayShowingEventArgs e)
+    {
+        var inputPane = InputPane.GetForCurrentView();
+        inputPane.Showing += OnInputPaneShowing;
+        inputPane.Hiding += OnInputPaneHiding;
+
+        if (Window.Current.Content is FrameworkElement element)
         {
-            get => (ComposeViewModel)GetValue(ViewModelProperty);
-            set => SetValue(ViewModelProperty, value);
+            element.AllowDrop = true;
+            element.DragEnter += HandleDrag;
+            element.DragOver += HandleDrag;
+            element.DragLeave += HandleDrag;
+            element.Drop += HandleDrop;
         }
 
-        public static readonly DependencyProperty ViewModelProperty =
-            DependencyProperty.Register("ViewModel", typeof(ComposeViewModel), typeof(ComposeSheet), new PropertyMetadata(null));
-
-        public ComposeSheet()
-             : base()
+        if (e.Parameter is PostViewModel replyTo)
         {
-            this.InitializeComponent();
-            this.Showing += OnShowing;
-            this.Shown += OnShown;
-            this.Hiding += OnHiding;
-            this.Hidden += OnHidden;
-            this.strings = ResourceLoader.GetForCurrentView();
+            this.ViewModel = ActivatorUtilities.CreateInstance<ComposeViewModel>(ServiceContainer.Scoped, replyTo, Controller);
         }
-
-        protected override void OnBottomInsetsChanged(double leftInset, double rightInset)
+        else
         {
-            FooterContainer.Padding = new Thickness(leftInset, 0, rightInset, 2);
+            this.ViewModel = ActivatorUtilities.CreateInstance<ComposeViewModel>(ServiceContainer.Scoped, Controller);
         }
+    }
 
-        public bool Not(bool b, bool a)
-            => !a && !b;
+    private void OnHidden(IOverlayControl sender, RoutedEventArgs args)
+    {
+        var inputPane = InputPane.GetForCurrentView();
+        inputPane.Showing -= OnInputPaneShowing;
+        inputPane.Hiding -= OnInputPaneHiding;
 
-        private void OnShowing(IOverlayControl sender, OverlayShowingEventArgs e)
+        if (Window.Current.Content is FrameworkElement element)
         {
-            var inputPane = InputPane.GetForCurrentView();
-            inputPane.Showing += OnInputPaneShowing;
-            inputPane.Hiding += OnInputPaneHiding;
+            element.AllowDrop = false;
+            element.DragEnter -= HandleDrag;
+            element.DragOver -= HandleDrag;
+            element.DragLeave -= HandleDrag;
+            element.Drop -= HandleDrop;
+        }
+    }
 
-            if (Window.Current.Content is FrameworkElement element)
+    private void OnShown(IOverlayControl sender, RoutedEventArgs args)
+    {
+        PrimaryTextBox.Focus(FocusState.Programmatic);
+    }
+
+    private async void OnHiding(IOverlayControl sender, OverlayHidingEventArgs e)
+    {
+        var deferral = e.GetDeferral();
+        try
+        {
+            if (ViewModel.IsDirty)
             {
-                element.AllowDrop = true;
-                element.DragEnter += HandleDrag;
-                element.DragOver += HandleDrag;
-                element.DragLeave += HandleDrag;
-                element.Drop += HandleDrop;
-            }
+                var discardDraftDialog = new ComposeDiscardDraftDialog();
+                if (Controller != null && ApiInformation.IsApiContractPresent(typeof(UniversalApiContract).FullName, 8))
+                    discardDraftDialog.XamlRoot = Controller.Root.XamlRoot;
 
-            if (e.Parameter is PostViewModel replyTo)
-            {
-                this.ViewModel = ActivatorUtilities.CreateInstance<ComposeViewModel>(ServiceContainer.Scoped, replyTo, Controller);
-            }
-            else
-            {
-                this.ViewModel = ActivatorUtilities.CreateInstance<ComposeViewModel>(ServiceContainer.Scoped, Controller);
-            }
-        }
-
-        private void OnHidden(IOverlayControl sender, RoutedEventArgs args)
-        {
-            var inputPane = InputPane.GetForCurrentView();
-            inputPane.Showing -= OnInputPaneShowing;
-            inputPane.Hiding -= OnInputPaneHiding;
-
-            if (Window.Current.Content is FrameworkElement element)
-            {
-                element.AllowDrop = false;
-                element.DragEnter -= HandleDrag;
-                element.DragOver -= HandleDrag;
-                element.DragLeave -= HandleDrag;
-                element.Drop -= HandleDrop;
-            }
-        }
-
-        private void OnShown(IOverlayControl sender, RoutedEventArgs args)
-        {
-            PrimaryTextBox.Focus(FocusState.Programmatic);
-        }
-
-        private async void OnHiding(IOverlayControl sender, OverlayHidingEventArgs e)
-        {
-            var deferral = e.GetDeferral();
-            try
-            {
-                if (ViewModel.IsDirty)
+                if (await discardDraftDialog.ShowAsync() != ContentDialogResult.Primary)
                 {
-                    var discardDraftDialog = new ComposeDiscardDraftDialog();
-                    if (Controller != null && ApiInformation.IsApiContractPresent(typeof(UniversalApiContract).FullName, 8))
-                        discardDraftDialog.XamlRoot = Controller.Root.XamlRoot;
-
-                    if (await discardDraftDialog.ShowAsync() != ContentDialogResult.Primary)
-                    {
-                        e.Cancel = true;
-                        return;
-                    }
+                    e.Cancel = true;
+                    return;
                 }
             }
-            finally
-            {
-                deferral.Complete();
-            }
         }
-
-        private void OnInputPaneShowing(InputPane sender, InputPaneVisibilityEventArgs args)
+        finally
         {
-            if (ActualWidth > 620) return;
-
-            ContentGrid.Padding = new Thickness(0, 0, 0, args.OccludedRect.Height);
-            args.EnsuredFocusedElementInView = true;
+            deferral.Complete();
         }
+    }
 
-        private void OnInputPaneHiding(InputPane sender, InputPaneVisibilityEventArgs args)
+    private void OnInputPaneShowing(InputPane sender, InputPaneVisibilityEventArgs args)
+    {
+        if (ActualWidth > 620) return;
+
+        ContentGrid.Padding = new Thickness(0, 0, 0, args.OccludedRect.Height);
+        args.EnsuredFocusedElementInView = true;
+    }
+
+    private void OnInputPaneHiding(InputPane sender, InputPaneVisibilityEventArgs args)
+    {
+        if (ActualWidth > 620) return;
+
+        ContentGrid.Padding = new Thickness(0, 0, 0, args.OccludedRect.Height);
+        args.EnsuredFocusedElementInView = true;
+    }
+
+    private void HandleDrag(object sender, DragEventArgs e)
+    {
+        if (e.DataView.Contains(StandardDataFormats.Bitmap) ||
+            e.DataView.Contains(StandardDataFormats.StorageItems))
         {
-            if (ActualWidth > 620) return;
-
-            ContentGrid.Padding = new Thickness(0, 0, 0, args.OccludedRect.Height);
-            args.EnsuredFocusedElementInView = true;
+            e.AcceptedOperation = DataPackageOperation.Copy;
+            e.DragUIOverride.Caption = strings.GetString("UploadToBluesky");
+            e.DragUIOverride.IsCaptionVisible = true;
         }
-
-        private void HandleDrag(object sender, DragEventArgs e)
+        else if (e.DataView.Contains(StandardDataFormats.Text) ||
+                 e.DataView.Contains(StandardDataFormats.WebLink))
         {
-            if (e.DataView.Contains(StandardDataFormats.Bitmap) ||
-                e.DataView.Contains(StandardDataFormats.StorageItems))
-            {
-                e.AcceptedOperation = DataPackageOperation.Copy;
-                e.DragUIOverride.Caption = strings.GetString("UploadToBluesky");
-                e.DragUIOverride.IsCaptionVisible = true;
-            }
-            else if (e.DataView.Contains(StandardDataFormats.Text) ||
-                     e.DataView.Contains(StandardDataFormats.WebLink))
-            {
-                e.AcceptedOperation = DataPackageOperation.Link;
-            }
+            e.AcceptedOperation = DataPackageOperation.Link;
         }
+    }
 
-        private void HandleDrop(object sender, DragEventArgs e)
-        {
-            e.Handled = ViewModel.HandleDrop(e.DataView);
-        }
+    private void HandleDrop(object sender, DragEventArgs e)
+    {
+        e.Handled = ViewModel.HandleDrop(e.DataView);
+    }
 
-        private void PrimaryTextBox_Paste(object sender, TextControlPasteEventArgs e)
-        {
-            e.Handled = ViewModel.HandlePaste();
-        }
+    private void PrimaryTextBox_Paste(object sender, TextControlPasteEventArgs e)
+    {
+        e.Handled = ViewModel.HandlePaste();
     }
 }

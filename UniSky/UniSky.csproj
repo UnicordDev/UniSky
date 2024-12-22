@@ -154,6 +154,7 @@
     <Compile Include="Controls\Compose\ComposeDiscardDraftDialog.xaml.cs">
       <DependentUpon>ComposeDiscardDraftDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Compose\ComposeInputHelper.cs" />
     <Compile Include="Controls\Compose\ComposeSheet.xaml.cs">
       <DependentUpon>ComposeSheet.xaml</DependentUpon>
     </Compile>
