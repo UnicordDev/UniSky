@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using FishyFlip.Lexicon.App.Bsky.Embed;
 using FishyFlip.Lexicon.App.Bsky.Feed;
 using FishyFlip.Lexicon.App.Bsky.Notification;
 using FishyFlip.Models;
 using Humanizer;
+using Microsoft.Extensions.DependencyInjection;
+using UniSky.Pages;
+using UniSky.Services;
 using UniSky.ViewModels.Posts;
 using UniSky.ViewModels.Profile;
 using Windows.ApplicationModel.Resources;
@@ -57,7 +61,7 @@ public partial class NotificationViewModel : ViewModelBase, IComparable, ICompar
     public string Reason { get; }
 
     public bool ShowAvatar
-        => Reason is (NotificationReason.Follow or NotificationReason.Reply or NotificationReason.Quote);
+        => Reason is (NotificationReason.Follow or NotificationReason.Reply or NotificationReason.Quote or NotificationReason.Mention);
     public bool IsRetweet
         => Reason == NotificationReason.Repost;
     public bool IsLike
@@ -65,6 +69,7 @@ public partial class NotificationViewModel : ViewModelBase, IComparable, ICompar
 
     public string Key =>
         string.Join('-', Reason, Subject);
+
     public int Count =>
         Notifications.Count;
 
@@ -150,6 +155,17 @@ public partial class NotificationViewModel : ViewModelBase, IComparable, ICompar
         if (subjectPost is { Embed: EmbedImages and { } images })
         {
             NotificationEmbed = new PostEmbedImagesViewModel(subjectPostAuthor, images);
+        }
+    }
+
+    [RelayCommand]
+    private void GoToSubject()
+    {
+        if (subjectPost != null)
+        {
+            var navigationService = ServiceContainer.Scoped.GetRequiredService<INavigationServiceLocator>()
+                .GetNavigationService("Home");
+            navigationService.Navigate<ThreadPage>(MostRecent.ReasonSubject ?? MostRecent.Uri);
         }
     }
 

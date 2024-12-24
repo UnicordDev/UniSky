@@ -71,6 +71,7 @@ sealed partial class App : Application
         collection.AddSingleton<IThemeService, ThemeService>();
         collection.AddSingleton<INavigationServiceLocator, NavigationServiceLocator>();
         collection.AddSingleton<INotificationsService, BackgroundNotificationsService>();
+        collection.AddSingleton<IModerationService, ModerationService>();
 
         collection.AddScoped<ISafeAreaService, ApplicationViewSafeAreaService>();
         collection.AddScoped<ISheetService, SheetService>();
@@ -81,7 +82,7 @@ sealed partial class App : Application
         collection.AddTransient<IBadgeService, BadgeService>();
 
         ServiceContainer.Default.ConfigureServices(collection.BuildServiceProvider());
-        
+
         Configurator.Formatters.Register("en", (locale) => new ShortTimespanFormatter("en"));
         Configurator.Formatters.Register("en-GB", (locale) => new ShortTimespanFormatter("en"));
         Configurator.Formatters.Register("en-US", (locale) => new ShortTimespanFormatter("en"));

@@ -11,7 +11,7 @@
                     xmlns:extensions="using:UniSky.Extensions"
                     xmlns:feeds="using:UniSky.ViewModels.Feeds" 
                     xmlns:posts="using:UniSky.ViewModels.Posts" 
-                    xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
+                    xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls" xmlns:labels="using:UniSky.Controls.Labels"
                     x:DefaultBindMode="OneWay">
 
     <!-- TODO: un-steal these colours -->
@@ -59,6 +59,30 @@
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
     </Style>
+
+    <DataTemplate x:Key="PostContentWarningTemplate"
+                  x:DataType="posts:ContentWarningViewModel">
+        <Grid Padding="12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Viewbox Width="16"
+                     Height="16"
+                     Margin="0,2,0,0"
+                     VerticalAlignment="Top">
+                <TextBlock FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE7BA;</TextBlock>
+            </Viewbox>
+
+            <TextBlock Text="{Binding Warning}"
+                       TextWrapping="Wrap"
+                       Margin="8,0"
+                       Grid.Column="1"
+                       MaxLines="2"/>
+        </Grid>
+    </DataTemplate>
 
     <DataTemplate x:Key="RecordWithMediaEmbedContentTemplate" 
                x:DataType="posts:PostEmbedRecordWithMediaViewModel">
@@ -202,6 +226,11 @@
                     </Grid>
                 </Button>
 
+                <labels:LabelsControl x:Name="LabelViewer"
+                                      Visibility="{Binding Author.Labels, Converter={StaticResource VisibilityConverter}}"
+                                      Labels="{Binding Author.Labels}"
+                                      Margin="0,4,0,0"/>
+                
                 <controls:RichTextBlock x:Name="MainContent"
                                         Visibility="{Binding Text, Converter={StaticResource VisibilityConverter}}"
                                         Inlines="{Binding RichText.Facets}"
@@ -209,15 +238,18 @@
                                         Margin="0,2,0,0"
                                         VerticalAlignment="Top"/>
 
-                <Grid x:Name="EmbedContentContainer"
-                      Visibility="{Binding Embed, Converter={StaticResource VisibilityConverter}}">
+                <controls:SpoilerControl x:Name="EmbedContentContainer"
+                                         Margin="0,4,0,0"
+                                         Warning="{Binding Warning}"
+                                         WarningTemplate="{StaticResource PostContentWarningTemplate}"
+                                         IsHidden="{Binding Warning.IsHidden, Mode=TwoWay}"
+                                         Visibility="{Binding Embed, Converter={StaticResource VisibilityConverter}}">
                     <ContentControl x:Name="EmbedContent"
-                                    Margin="0,4,0,0"
-                                    HorizontalAlignment="Stretch"
-                                    HorizontalContentAlignment="Stretch"
-                                    ContentTemplateSelector="{StaticResource PostEmbedTemplateSelector}"
-                                    Content="{Binding Embed}"/>
-                </Grid>
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Stretch"
+                                            ContentTemplateSelector="{StaticResource PostEmbedTemplateSelector}"
+                                            Content="{Binding Embed}"/>
+                </controls:SpoilerControl>
             </StackPanel>
         </Button>
     </DataTemplate>
@@ -520,6 +552,11 @@
                             </Grid>
                         </Button>
 
+                        <labels:LabelsControl x:Name="LabelViewer"
+                                              x:Load="{x:Bind converters:Static.Any(Author.Labels)}"
+                                              Labels="{x:Bind Author.Labels}"
+                                              Margin="0,4,0,2"/>
+
                         <controls:RichTextBlock x:Name="MainContent"
                                                 x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Text)}"
                                                 Inlines="{x:Bind RichText.Facets}"
@@ -527,16 +564,19 @@
                                                 Margin="0,0,0,4"
                                                 VerticalAlignment="Top"/>
 
-                        <Grid x:Name="EmbedContentContainer"
-                              x:Load="{x:Bind converters:Static.NotNull(Embed)}"
-                              x:Phase="2">
+                        <controls:SpoilerControl x:Name="EmbedContentContainer"
+                                                 x:Load="{x:Bind converters:Static.NotNull(Embed)}"
+                                                 x:Phase="2"
+                                                 Warning="{x:Bind Warning}"
+                                                 WarningTemplate="{StaticResource PostContentWarningTemplate}"
+                                                 IsHidden="{x:Bind Warning.IsHidden, Mode=TwoWay}"
+                                                 Margin="0,4,0,0">
                             <ContentControl x:Name="EmbedContent"
-                                            Margin="0,4,0,4"
                                             HorizontalAlignment="Stretch"
                                             HorizontalContentAlignment="Stretch"
                                             ContentTemplateSelector="{StaticResource PostEmbedTemplateSelector}"
                                             Content="{x:Bind Embed}"/>
-                        </Grid>
+                        </controls:SpoilerControl>
 
                         <Grid x:Name="Interactions">
                             <Grid.ColumnDefinitions>

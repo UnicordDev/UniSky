@@ -11,7 +11,7 @@
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:mux="using:Microsoft.UI.Xaml.Controls"
     xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
-    xmlns:aurora="using:System.Windows.Shell.Aurora"
+    xmlns:aurora="using:System.Windows.Shell.Aurora" xmlns:labels="using:UniSky.Controls.Labels"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     Loaded="Page_Loaded"
@@ -98,6 +98,7 @@
                              Grid.RowSpan="2"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Bottom"
+                             IsHitTestVisible="False"
                              ContinuumNavigationTransitionInfo.IsEntranceElement="True">
                         <Ellipse.Fill>
                             <ImageBrush ImageSource="{Binding AvatarUrl}"/>
@@ -107,7 +108,8 @@
                     <Border Background="Transparent"
                             Tapped="ProfileContainer_Tapped"
                             Grid.ColumnSpan="2"
-                            Grid.RowSpan="3"/>
+                            Grid.RowSpan="3"
+                            Canvas.ZIndex="-2"/>
 
                     <Grid x:Name="TextContainer"
                             Padding="4,8,8,8"
@@ -115,6 +117,7 @@
                             Grid.Row="1"
                             Canvas.ZIndex="2">
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
@@ -127,29 +130,26 @@
                                    Grid.Row="0"
                                    Style="{ThemeResource SubtitleTextBlockStyle}" 
                                    Text="{Binding Name}"
-                                   TextWrapping="NoWrap"/>
+                                   TextWrapping="NoWrap"
+                                   IsHitTestVisible="False"/>
                         <TextBlock x:Name="HandleBlock" 
                                    Grid.Row="1"
                                    Style="{ThemeResource BaseTextBlockStyle}" 
                                    Text="{Binding Handle}"
-                                   TextWrapping="NoWrap"/>
+                                   TextWrapping="NoWrap"
+                                   IsHitTestVisible="False"/>
                         <TextBlock x:Name="InfoBlock" 
                                    Grid.Row="2"
                                    Grid.ColumnSpan="2"
                                    Style="{ThemeResource CaptionTextBlockStyle}"
                                    Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
                                    Typography.NumeralAlignment="Tabular"
-                                   Margin="0,4,0,0">
+                                   Margin="0,4,0,0"
+                                   IsHitTestVisible="False">
                             <Run Foreground="{ThemeResource ApplicationForegroundThemeBrush}" Text="{Binding Followers, Mode=OneWay, FallbackValue=0}"/> <Run x:Uid="FollowersRun" Text="Followers" /> •
                             <Run Foreground="{ThemeResource ApplicationForegroundThemeBrush}" Text="{Binding Following, Mode=OneWay, FallbackValue=0}"/> <Run x:Uid="FollowingRun" Text="Following"/> •
                             <Run Foreground="{ThemeResource ApplicationForegroundThemeBrush}" Text="{Binding Posts, Mode=OneWay, FallbackValue=0}"/> <Run x:Uid="PostsRun" Text="Tweets"/>
                         </TextBlock>
-
-                        <Border Background="Transparent"
-                                Margin="-4,-8,-8,-8"
-                                Tapped="ProfileContainer_Tapped"
-                                Grid.ColumnSpan="2"
-                                Grid.RowSpan="3"/>
 
                         <Button x:Name="FollowButton"
                                 x:Load="{x:Bind converters:Static.Not(ViewModel.IsMe), Mode=OneWay}"
@@ -171,7 +171,11 @@
                                    Style="{ThemeResource BodyTextBlockStyle}"
                                    Margin="12,0,12,8"
                                    TextWrapping="Wrap"
-                                   IsTextSelectionEnabled="True"/>
+                                   IsTextSelectionEnabled="True"
+                                   IsHitTestVisible="False"/>
+
+                        <labels:LabelsControl Labels="{x:Bind ViewModel.Labels, Mode=OneWay}"
+                                              Margin="12,0,12,8"/>
                     </StackPanel>
 
                     <Grid x:Name="StickyFooter"

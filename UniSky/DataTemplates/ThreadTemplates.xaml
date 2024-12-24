@@ -4,13 +4,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UniSky.DataTemplates"
     xmlns:controls="using:UniSky.Controls"
+    xmlns:labels="using:UniSky.Controls.Labels"    
     xmlns:converters="using:UniSky.Converters"
     xmlns:extensions="using:UniSky.Extensions"
     xmlns:thread="using:UniSky.ViewModels.Thread"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     mc:Ignorable="d">
 
     <ResourceDictionary.MergedDictionaries>
@@ -111,6 +112,11 @@
                     </Grid>
                 </Button>
 
+                <labels:LabelsControl x:Name="LabelViewer"
+                                      x:Load="{x:Bind converters:Static.Any(Author.Labels)}"
+                                      Labels="{x:Bind Author.Labels}"
+                                      Margin="0,6,0,0"/>
+
                 <controls:RichTextBlock x:Name="MainContent"
                                         x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Text)}"
                                         Inlines="{x:Bind RichText.Facets}"
@@ -120,17 +126,19 @@
                                         Margin="0,4,0,4"
                                         VerticalAlignment="Top"/>
 
-                <Grid x:Name="EmbedContentContainer"
-                        x:Load="{x:Bind converters:Static.NotNull(Embed)}"
-                        x:Phase="2">
+                <controls:SpoilerControl x:Name="EmbedContentContainer"
+                                         x:Load="{x:Bind converters:Static.NotNull(Embed)}"
+                                         x:Phase="2"
+                                         Warning="{x:Bind Warning}"
+                                         WarningTemplate="{StaticResource PostContentWarningTemplate}"
+                                         IsHidden="{x:Bind Warning.IsHidden, Mode=TwoWay}"
+                                         Margin="0,4,0,0">
                     <ContentControl x:Name="EmbedContent"
-                                    Margin="0,4,0,4"
                                     HorizontalAlignment="Stretch"
                                     HorizontalContentAlignment="Stretch"
                                     ContentTemplateSelector="{StaticResource PostEmbedTemplateSelector}"
                                     Content="{x:Bind Embed}"/>
-                </Grid>
-
+                </controls:SpoilerControl>
 
 
                 <TextBlock x:Name="DateBlock"
@@ -342,6 +350,12 @@
                             </Grid>
                         </Button>
 
+
+                        <labels:LabelsControl x:Name="LabelViewer"
+                                      x:Load="{x:Bind converters:Static.Any(Author.Labels)}"
+                                      Labels="{x:Bind Author.Labels}"
+                                      Margin="0,2,0,2"/>
+                        
                         <controls:RichTextBlock x:Name="MainContent"
                                                 x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Text)}"
                                                 Inlines="{x:Bind RichText.Facets}"

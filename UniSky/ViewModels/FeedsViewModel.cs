@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using UniSky.Controls.Compose;
 using UniSky.Extensions;
+using UniSky.Moderation;
 using UniSky.Services;
 using UniSky.ViewModels.Feeds;
 

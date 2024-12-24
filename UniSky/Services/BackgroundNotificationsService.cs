@@ -24,8 +24,10 @@ internal class BackgroundNotificationsService(ILogger<BackgroundNotificationsSer
                 return true;
 
             var status = await BackgroundExecutionManager.RequestAccessAsync();
+#pragma warning disable CS0618 // Type or member is obsolete (why is this disabled)
             if (status is BackgroundAccessStatus.Denied or BackgroundAccessStatus.DeniedBySystemPolicy or BackgroundAccessStatus.DeniedByUser)
                 return false;
+#pragma warning restore CS0618 // Type or member is obsolete
 
             var builder = new BackgroundTaskBuilder()
             {

@@ -10,6 +10,7 @@ using FishyFlip.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using UniSky.Models;
+using UniSky.Moderation;
 
 namespace UniSky.Services;
 
@@ -61,6 +62,12 @@ public class ProtocolService(ILogger<ProtocolService> logger) : IProtocolService
                     new Session(refreshSession.Did, refreshSession.DidDoc, refreshSession.Handle, null, refreshSession.AccessJwt, refreshSession.RefreshJwt));
             var session2 = await protocol.AuthenticateWithPasswordSessionAsync(authSession2)
                 .ConfigureAwait(false);
+
+            var moderationService = ServiceContainer.Default.GetService<IModerationService>();
+            if (moderationService != null)
+            {
+                await protocol.ConfigureLabelersAsync(moderationService.ModerationOptions?.Prefs?.Labelers ?? []);
+            }
 
             if (session2 == null)
                 throw new InvalidOperationException("Authentication failed!");

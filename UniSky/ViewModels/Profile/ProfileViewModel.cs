@@ -13,6 +13,10 @@ using System.Globalization;
 using System.Threading.Tasks;
 using FishyFlip.Lexicon.App.Bsky.Graph;
 using System;
+using UniSky.Moderation;
+using System.Collections.ObjectModel;
+using UniSky.ViewModels.Moderation;
+using System.Diagnostics;
 
 namespace UniSky.ViewModels.Profile;
 
@@ -46,6 +50,9 @@ public partial class ProfileViewModel : ViewModelBase
     [ObservableProperty]
     private bool isMe;
 
+    public ObservableCollection<LabelViewModel> Labels { get; }
+    public ModerationDecision Moderation { get; private set; }
+
     public bool IsMutual
         => IsFollowing && FollowsYou;
     public string FollowButtonText
@@ -57,17 +64,23 @@ public partial class ProfileViewModel : ViewModelBase
         this.AvatarUrl = "ms-appx:///Assets/Default/Avatar.png";
         this.Name = "Example User";
         this.Handle = "@example.com";
+        this.Labels = [];
     }
 
     public ProfileViewModel(ATObject obj)
     {
         this.source = obj;
+        this.Labels = [];
 
         Populate(obj);
     }
 
     protected virtual void Populate(ATObject obj)
     {
+        Labels.Clear();
+
+        var moderator = new Moderator(ServiceContainer.Default.GetRequiredService<IModerationService>().ModerationOptions);
+
         switch (obj)
         {
             case ProfileView view:
@@ -77,6 +90,7 @@ public partial class ProfileViewModel : ViewModelBase
                         view.Avatar,
                         view.Description,
                         view.Viewer);
+                Moderation = moderator.ModerateProfile(view);
                 break;
             case ProfileViewBasic profile:
                 SetData(profile.Did,
@@ -84,6 +98,7 @@ public partial class ProfileViewModel : ViewModelBase
                         profile.DisplayName,
                         profile.Avatar,
                         viewerState: profile.Viewer);
+                Moderation = moderator.ModerateProfile(profile);
                 break;
             case ProfileViewDetailed detailed:
                 SetData(detailed.Did,
@@ -93,7 +108,18 @@ public partial class ProfileViewModel : ViewModelBase
                         detailed.Description,
                         detailed.Viewer,
                         detailed.Banner);
+                Moderation = moderator.ModerateProfile(detailed);
                 break;
+        }
+
+        if (Moderation != null)
+        {
+            var ui = Moderation.GetUI(ModerationContext.ContentList);
+            foreach (var cause in ui.Informs)
+            {
+                if (cause is LabelModerationCause label)
+                    Labels.Add(new LabelViewModel(label));
+            }
         }
     }
 

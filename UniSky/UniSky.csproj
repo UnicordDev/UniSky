@@ -163,6 +163,7 @@
     <Compile Include="Controls\Gallery\GalleryControl.xaml.cs">
       <DependentUpon>GalleryControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Labels\LabelsControl.cs" />
     <Compile Include="Controls\Overlay\StandardOverlayControl.cs" />
     <Compile Include="Controls\PreviewPaneAuroraControl.xaml.cs">
       <DependentUpon>PreviewPaneAuroraControl.xaml</DependentUpon>
@@ -180,6 +181,15 @@
     <Compile Include="Controls\Sheet\SheetRootControl.xaml.cs">
       <DependentUpon>SheetRootControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Spoiler\SpoilerControl.cs" />
+    <Compile Include="Controls\WrapLayout\UvBounds.cs" />
+    <Compile Include="Controls\WrapLayout\UvMeasure.cs" />
+    <Compile Include="Controls\WrapLayout\WrapItem.cs" />
+    <Compile Include="Controls\WrapLayout\WrapLayout.cs" />
+    <Compile Include="Controls\WrapLayout\WrapLayoutState.cs" />
+    <Compile Include="Controls\WrapPanel\StretchChild.cs" />
+    <Compile Include="Controls\WrapPanel\WrapPanel.cs" />
+    <Compile Include="Controls\WrapPanel\WrapPanel.Data.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Converters\Static.cs" />
     <Compile Include="DataTemplates\FeedItemTemplateSelector.cs" />
@@ -248,6 +258,7 @@
     <Compile Include="Pages\ThreadPage.xaml.cs">
       <DependentUpon>ThreadPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Polyfill\IsExternalInit.cs" />
     <Compile Include="Services\BackgroundNotificationsService.cs" />
     <Compile Include="Services\NavigationServiceLocator.cs" />
     <Compile Include="DataTemplates\FeedTemplates.xaml.cs">
@@ -267,6 +278,7 @@
     <Compile Include="ViewModels\Compose\ComposeViewModel.cs" />
     <Compile Include="ViewModels\Error\ExceptionViewModel.cs" />
     <Compile Include="ViewModels\Gallery\GalleryViewModel.cs" />
+    <Compile Include="ViewModels\Moderation\LabelViewModel.cs" />
     <Compile Include="ViewModels\Notifications\NotificationsCollection.cs" />
     <Compile Include="ViewModels\Notifications\NotificationsPageViewModel.cs" />
     <Compile Include="ViewModels\Notifications\NotificationViewModel.cs" />
@@ -449,6 +461,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\Labels\LabelsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Overlay\StandardOverlayControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -553,6 +569,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Controls\Spoiler\SpoilerControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Performance.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -563,7 +587,7 @@
       <Version>8.4.0</Version>
     </PackageReference>
     <PackageReference Include="FishyFlip">
-      <Version>3.1.0-alpha.23</Version>
+      <Version>3.1.0-alpha.27</Version>
     </PackageReference>
     <PackageReference Include="Humanizer.Core">
       <Version>2.14.1</Version>
@@ -625,6 +649,10 @@
     <ProjectReference Include="..\UniSky.Models\UniSky.Models.csproj">
       <Project>{7491ea1a-e1b7-469c-a3c2-5202aa14ce26}</Project>
       <Name>UniSky.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UniSky.Moderation\UniSky.Moderation.csproj">
+      <Project>{ebad0b40-6694-488f-9dca-da1bf453645a}</Project>
+      <Name>UniSky.Moderation</Name>
     </ProjectReference>
     <ProjectReference Include="..\UniSky.Services\UniSky.Services.csproj">
       <Project>{18b2b20a-5ba7-428c-a2cc-d9ea99a943cd}</Project>

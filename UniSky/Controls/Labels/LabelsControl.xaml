@@ -1,0 +1,73 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UniSky.Controls.Labels" 
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:moderation="using:UniSky.ViewModels.Moderation"
+    xmlns:w1903="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 8)" >
+
+    <Flyout x:Key="LabelButtonFlyout"
+            Placement="Bottom"
+            w1903:ShouldConstrainToRootBounds="False"
+            ScrollViewer.HorizontalScrollMode="Disabled">
+        <Grid MaxWidth="400">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Viewbox Width="16"
+                     Height="16"
+                     Margin="0,4,8,0"
+                     VerticalAlignment="Top">
+                <TextBlock FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE783;</TextBlock>
+            </Viewbox>
+            <StackPanel Grid.Column="1" VerticalAlignment="Top">
+                <TextBlock Style="{ThemeResource BaseTextBlockStyle}"
+                           Text="{Binding Name}"/>
+                <TextBlock Style="{ThemeResource CaptionTextBlockStyle}"
+                           Text="{Binding Description}" 
+                           TextWrapping="Wrap"/>
+
+                <TextBlock Style="{ThemeResource CaptionTextBlockStyle}"
+                           Opacity="0.66"
+                           TextWrapping="Wrap"
+                           Margin="0,4,0,0">
+                    <Run Text="Applied by" /> <Hyperlink><Run Text="{Binding AppliedBy}"/></Hyperlink><Run Text="."/>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+    </Flyout>
+
+    <Style TargetType="local:LabelsControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:LabelsControl">
+                    <ItemsControl ItemsSource="{TemplateBinding Labels}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <controls:WrapPanel Orientation="Horizontal" 
+                                                    VerticalSpacing="4"
+                                                    HorizontalSpacing="4"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Padding="4,2"
+                                        BorderThickness="0"
+                                        Flyout="{StaticResource LabelButtonFlyout}">
+                                    <Button.Background>
+                                        <SolidColorBrush Color="{StaticResource SystemBaseHighColor}" Opacity="0.15"/>
+                                    </Button.Background>
+                                    <TextBlock Text="{Binding Name}"
+                                               Foreground="{ThemeResource SystemBaseMediumHighColor}"
+                                               FontSize="12"/>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

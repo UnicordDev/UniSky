@@ -11,13 +11,135 @@
     xmlns:extensions="using:UniSky.Extensions"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" 
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls" 
-    xmlns:compose="using:UniSky.ViewModels.Compose"
+    xmlns:compose="using:UniSky.ViewModels.Compose" 
+    xmlns:templates="using:UniSky.Templates" 
+    xmlns:labels="using:UniSky.Controls.Labels" 
+    xmlns:localControls="using:UniSky.Controls"
+    xmlns:posts="using:UniSky.ViewModels.Posts"
     mc:Ignorable="d" d:DesignHeight="350" d:DesignWidth="480"
-    Style="{StaticResource DefaultSheetControlStyle}"
     DataContext="{x:Bind ViewModel, Mode=OneWay}"
     PrimaryButtonCommand="{x:Bind ViewModel.PostCommand}"
     IsPrimaryButtonEnabled="{x:Bind ViewModel.CanPost, Mode=OneWay}"
     SecondaryButtonCommand="{x:Bind ViewModel.HideCommand}">
+    <sheet:SheetControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <templates:FeedTemplates/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate x:Key="ReplyingToPostContentTemplate"
+                          x:DataType="posts:PostViewModel">
+                <StackPanel HorizontalAlignment="Stretch">
+                    <Grid x:Name="RetweetContainer"
+                          x:Load="{x:Bind converters:Static.NotNull(RetweetedBy)}"
+                          x:Phase="1"
+                          Margin="34,0,0,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Viewbox Height="12">
+                            <TextBlock Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                                       FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE8EB;</TextBlock>
+                        </Viewbox>
+
+                        <TextBlock Grid.Column="1" 
+                               Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                               FontSize="12"
+                               Margin="8,0">
+                            <Run x:Uid="RetweetedByRun" Text="Reposted by"/> <Run Text="{x:Bind RetweetedBy.Name, Mode=OneWay}" FontWeight="Bold"/>
+                        </TextBlock>
+                    </Grid>
+
+                    <Grid x:Name="ReplyContainer"
+                          x:Load="{x:Bind ShowReplyContainer}"
+                          x:Phase="1"
+                          Margin="34,0,0,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Viewbox Height="12">
+                            <TextBlock Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                                    FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE97A;</TextBlock>
+                        </Viewbox>
+
+                        <TextBlock Grid.Column="1" 
+                                   Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                                   FontSize="12"
+                                   Margin="8,0">
+                            <Run x:Uid="ReplyingToRun" Text="Replying to"/> <Run Text="{x:Bind ReplyTo.Name, Mode=OneWay}" FontWeight="Bold"/>
+                        </TextBlock>
+                    </Grid>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Margin="0,0,12,0"
+                              Grid.RowSpan="4">
+                            <Ellipse x:Name="ProfileEllipse"
+                                         Width="42" 
+                                         Height="42"
+                                         VerticalAlignment="Top">
+                                <Ellipse.Fill>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="{Binding Author.AvatarUrl}"
+                                                         DecodePixelWidth="42"
+                                                         DecodePixelHeight="42"
+                                                         DecodePixelType="Logical"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                        </Grid>
+
+                        <StackPanel Grid.Column="1">
+                            <Grid HorizontalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Foreground="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"                  
+                                           VerticalAlignment="Top"
+                                           TextTrimming="CharacterEllipsis">                
+                                    <Run Text="{x:Bind Author.Name, Mode=OneWay}"           
+                                         FontWeight="Bold"                        
+                                         Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>                    
+                                    <Run Text="{x:Bind Author.Handle, Mode=OneWay}"/>
+                                </TextBlock>
+
+                                <TextBlock x:Name="DateBlock"
+                                           x:Phase="4"
+                                           Grid.Column="1"
+                                           Margin="4,0,0,0"
+                                           Foreground="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                                           Typography.NumeralAlignment="Tabular"
+                                           Text="{x:Bind Date}"/>
+                            </Grid>
+
+                            <labels:LabelsControl x:Name="LabelViewer"
+                                              x:Load="{x:Bind converters:Static.Any(Author.Labels)}"
+                                              Labels="{x:Bind Author.Labels}"
+                                              Margin="0,4,0,2"/>
+
+                            <localControls:RichTextBlock x:Name="MainContent"
+                                                         x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Text)}"
+                                                         Inlines="{x:Bind RichText.Facets}"
+                                                         TextWrapping="Wrap"
+                                                         Margin="0,0,0,4"
+                                                         VerticalAlignment="Top"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </DataTemplate>
+        </ResourceDictionary>
+    </sheet:SheetControl.Resources>
     <sheet:SheetControl.PrimaryButtonContent>
         <TextBlock x:Uid="ComposeSheetPrimaryText" Text="Post" Margin="8,0"/>
     </sheet:SheetControl.PrimaryButtonContent>
@@ -82,38 +204,18 @@
                 </Grid.RowDefinitions>
                 <Grid x:Name="ReplyContainer"
                       x:Load="{x:Bind ViewModel.HasReply}"
-                      Margin="0,0,0,8"
+                      Margin="0,0,0,12"
                       MinHeight="64"
+                      MaxHeight="128"
                       BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
                       extensions:Hairline.BorderThickness="0,0,0,1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <muxc:PersonPicture Width="48" 
-                                        Height="48"
-                                        Margin="0,0,8,0"
-                                        VerticalAlignment="Top"
-                                        ProfilePicture="{Binding ReplyTo.Author.AvatarUrl, Mode=OneWay}"/>
-                    <StackPanel Grid.Column="1"
-                                Margin="0,0,0,8">
-                        <TextBlock Foreground="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"                  
-                                       VerticalAlignment="Top">                
-                                 <Run Text="{x:Bind ViewModel.ReplyTo.Author.Name, Mode=OneWay}"           
-                                      FontWeight="Bold"                        
-                                      Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>                    
-                                 <Run Text="{x:Bind ViewModel.ReplyTo.Author.Handle, Mode=OneWay}"/>
-                        </TextBlock>
-
-                        <TextBlock x:Name="MainContent"
-                                       x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(ViewModel.ReplyTo.Text)}"
-                                       Text="{x:Bind ViewModel.ReplyTo.Text}"
-                                       TextWrapping="Wrap"
-                                       TextTrimming="CharacterEllipsis"
-                                       MaxLines="4"
-                                       Margin="0,0,0,4"
-                                       VerticalAlignment="Top"/>
-                    </StackPanel>
+                    <ContentControl x:Name="ReplyContent"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch"
+                                    Margin="0,0,0,8"
+                                    Content="{x:Bind ViewModel.ReplyTo}"
+                                    ContentTemplate="{StaticResource ReplyingToPostContentTemplate}">
+                    </ContentControl>
                 </Grid>
                 
                 <Grid Grid.Row="1" MinHeight="100">
@@ -121,9 +223,9 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <muxc:PersonPicture Width="48" 
-                                        Height="48"
-                                        Margin="0,0,8,0"
+                    <muxc:PersonPicture Width="42" 
+                                        Height="42"
+                                        Margin="0,0,4,0"
                                         VerticalAlignment="Top"
                                         ProfilePicture="{Binding AvatarUrl, Mode=OneWay}"/>
                     

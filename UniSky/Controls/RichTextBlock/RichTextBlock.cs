@@ -77,7 +77,7 @@ namespace UniSky.Controls
             text.Inlines.Clear();
 
             // TODO: this could be cleaner
-            foreach (var inline in Inlines)
+            foreach (var inline in Inlines ?? [])
             {
                 var mention = inline.Properties.OfType<MentionProperty>()
                                                .FirstOrDefault();

@@ -13,7 +13,6 @@
     d:DesignHeight="300"
     d:DesignWidth="400"
     d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel}"
-    Style="{ThemeResource DefaultSheetControlStyle}"
     PrimaryButtonVisibility="Collapsed"
     SecondaryButtonContent="Close"
     TitleContent="SETTINGS">

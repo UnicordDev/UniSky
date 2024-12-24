@@ -43,7 +43,7 @@ public partial class FeedViewModel : ViewModelBase
         this.generator = record;
 
         this.Name = record?.DisplayName ?? ResourceLoader.GetForCurrentView().GetString("Feed_Following");
-        this.Items = new FeedItemCollection(this, type, id, protocolService);
+        this.Items = new FeedItemCollection(this, type, id);
     }
 
     public async Task RefreshAsync(Deferral? deferral = null)

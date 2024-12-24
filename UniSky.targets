@@ -15,5 +15,19 @@
     <RepositoryUrl>https://github.com/unicordDev/Unisky</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
   </PropertyGroup>
-  
+
+  <Target Name="SetSourceRevisionId" BeforeTargets="InitializeSourceControlInformation">
+    <Exec Condition="'$(SourceRevisionCommit)' == ''" Command="git describe --long --always --dirty --exclude=* --abbrev=7" ConsoleToMSBuild="True" IgnoreExitCode="False">
+      <Output PropertyName="SourceRevisionCommit" TaskParameter="ConsoleOutput" />
+    </Exec>
+    <Exec Condition="'$(SourceRevisionBranch)' == ''" Command="git branch --show-current" ConsoleToMSBuild="True" IgnoreExitCode="True">
+      <Output PropertyName="SourceRevisionBranch" TaskParameter="ConsoleOutput" />
+    </Exec>
+
+    <PropertyGroup>
+      <SourceRevisionId Condition="'$(SourceRevisionBranch)' == 'master' Or '$(SourceRevisionBranch)' == 'main' Or '$(SourceRevisionBranch)' == ''">$(SourceRevisionCommit)</SourceRevisionId>
+      <SourceRevisionId Condition="'$(SourceRevisionBranch)' != 'master' And '$(SourceRevisionBranch)' != 'main' And '$(SourceRevisionBranch)' != ''">$(SourceRevisionCommit) ($(SourceRevisionBranch))</SourceRevisionId>
+    </PropertyGroup>
+  </Target>
+
 </Project>

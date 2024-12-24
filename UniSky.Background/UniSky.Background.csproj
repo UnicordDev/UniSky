@@ -126,6 +126,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="FishyFlip">
+      <Version>3.1.0-alpha.27</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging">
       <Version>9.0.0</Version>
     </PackageReference>
