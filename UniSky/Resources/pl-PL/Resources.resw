@@ -419,4 +419,73 @@
     <value>@{0} na Bluesky</value>
     <comment>{0} = nazwa użytkownika</comment>
   </data>
+<data name="ThreadPageTitleBlock.Text" xml:space="preserve">
+    <value>POST</value>
+  </data>
+  <data name="GlobalLabel_GRAPHIC_MEDIA_Description" xml:space="preserve">
+    <value>Wyraźne lub potencjalnie niepokojące media.</value>
+  </data>
+  <data name="GlobalLabel_GRAPHIC_MEDIA_Name" xml:space="preserve">
+    <value>Graficzne Media</value>
+  </data>
+  <data name="GlobalLabel_HIDE_Description" xml:space="preserve">
+    <value>Ta treść została ukryta przez Moderacje Bluesky.</value>
+  </data>
+  <data name="GlobalLabel_HIDE_Name" xml:space="preserve">
+    <value>Treść Zablokowana</value>
+  </data>
+  <data name="GlobalLabel_NO_UNAUTHENTICATED_Description" xml:space="preserve">
+    <value>Ten użytkownik zażądał, aby jego treść była widoczna tylko dla zalogowanych użytkowników. Należy pamiętać, że ten mechanizm jest zasadniczo niezabespieczony.</value>
+  </data>
+  <data name="GlobalLabel_NO_UNAUTHENTICATED_Name" xml:space="preserve">
+    <value>Wymagane zalogowanie</value>
+  </data>
+  <data name="GlobalLabel_NUDITY_Description" xml:space="preserve">
+    <value>Artystyczna nagość, itp.</value>
+  </data>
+  <data name="GlobalLabel_NUDITY_Name" xml:space="preserve">
+    <value>Nie-seksualna Nagość</value>
+  </data>
+  <data name="GlobalLabel_PORN_Description" xml:space="preserve">
+    <value>Wyraźne obrazy o charakterze seksualnym.</value>
+  </data>
+  <data name="GlobalLabel_PORN_Name" xml:space="preserve">
+    <value>Treści tylko dla dorosłych</value>
+  </data>
+  <data name="GlobalLabel_SEXUAL_Description" xml:space="preserve">
+    <value>Nie-wyraźne seksualne obrazy.</value>
+  </data>
+  <data name="GlobalLabel_SEXUAL_Name" xml:space="preserve">
+    <value>Sugestywne seksualnie</value>
+  </data>
+  <data name="GlobalLabel_WARN_Description" xml:space="preserve">
+    <value>Ta treść otrzymała ogólne ostrzeżenie od moderacji Bluesky.</value>
+  </data>
+  <data name="GlobalLabel_WARN_Name" xml:space="preserve">
+    <value>Ostrzeżenie o treści</value>
+  </data>
+  <data name="HomePage_Chat" xml:space="preserve">
+    <value>Czat</value>
+  </data>
+  <data name="HomePage_Feeds" xml:space="preserve">
+    <value>Feedy</value>
+  </data>
+  <data name="HomePage_Home" xml:space="preserve">
+    <value>Główna</value>
+  </data>
+  <data name="HomePage_Lists" xml:space="preserve">
+    <value>Listy</value>
+  </data>
+  <data name="HomePage_Notifications" xml:space="preserve">
+    <value>Powiadomienia</value>
+  </data>
+  <data name="HomePage_Profile" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="HomePage_Search" xml:space="preserve">
+    <value>Szukaj</value>
+  </data>
+  <data name="HomePage_Settings" xml:space="preserve">
+    <value>Ustawienia</value>
+  </data>
 </root>
