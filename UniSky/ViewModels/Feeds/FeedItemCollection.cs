@@ -7,6 +7,9 @@ using System.Web;
 using FishyFlip.Lexicon.App.Bsky.Feed;
 using FishyFlip.Models;
 using FishyFlip.Tools;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using UniSky.Moderation;
 using UniSky.Services;
 using UniSky.ViewModels.Posts;
 using UniSky.ViewModels.Profile;
@@ -26,26 +29,27 @@ public class FeedItemCollection : ObservableCollection<PostViewModel>, ISupportI
     private readonly ATUri uri;
     private readonly ATDid did;
     private readonly string filterType;
-    private readonly IProtocolService protocolService;
     private readonly HashSet<string> ids = [];
+
+    private readonly IProtocolService protocolService = ServiceContainer.Scoped.GetRequiredService<IProtocolService>();
+    private readonly IModerationService moderationService = ServiceContainer.Scoped.GetRequiredService<IModerationService>();
+    private readonly ILogger<FeedItemCollection> logger = ServiceContainer.Scoped.GetRequiredService<ILogger<FeedItemCollection>>();
 
     private string cursor;
 
-    public FeedItemCollection(FeedViewModel parent, FeedType type, ATUri uri, IProtocolService protocolService)
+    public FeedItemCollection(FeedViewModel parent, FeedType type, ATUri uri)
     {
         this.parent = parent;
         this.type = type;
         this.uri = uri;
-        this.protocolService = protocolService;
     }
 
-    public FeedItemCollection(ProfileFeedViewModel parent, FeedType type, ATDid did, string filterType, IProtocolService protocolService)
+    public FeedItemCollection(ProfileFeedViewModel parent, FeedType type, ATDid did, string filterType)
     {
         this.parent = parent;
         this.type = type;
         this.did = did;
         this.filterType = filterType;
-        this.protocolService = protocolService;
     }
 
     public bool HasMoreItems { get; private set; } = true;
@@ -136,28 +140,52 @@ public class FeedItemCollection : ObservableCollection<PostViewModel>, ISupportI
                     throw new InvalidOperationException();
             }
 
+
             await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 foreach (var item in posts)
                 {
+                    var vm = new PostViewModel(item);
+                    var ui = vm.Moderation.GetUI(ModerationContext.ContentList);
+                    if (ui.Filter)
+                    {
+                        logger.LogDebug("Filtering post {Cid} with cause {Cause}", item.Post.Cid, ui.Filters[0]);
+                        continue;
+                    }
+
                     if (item.Reply is { Parent: PostView } && item.Reason is not ReasonRepost)
                     {
                         var reply = item.Reply;
-                        //var root = (PostView)reply.Root;
-                        var parent = (PostView)reply.Parent;
 
-                        if (!ids.Contains(parent.Cid))
+                        var moderation = new Moderator(moderationService.ModerationOptions);
+                        if (reply.Root is PostView root)
                         {
-                            Add(new PostViewModel(parent, true));
-                            Add(new PostViewModel(item, true));
+                            var rootMod = moderation.ModeratePost(root);
+                            if (rootMod.GetUI(ModerationContext.ContentList).Filter)
+                                continue;
+                        }
 
-                            ids.Add(parent.Cid);
+                        if (reply.Parent is PostView parent)
+                        {
+                            var parentMod = moderation.ModeratePost(parent);
+                            if (parentMod.GetUI(ModerationContext.ContentList).Filter)
+                                continue;
+
+                            if (!ids.Contains(parent.Cid))
+                            {
+                                Add(new PostViewModel(parent, true));
+
+                                vm.HasParent = true;
+                                Add(vm);
+
+                                ids.Add(parent.Cid);
+                            }
                         }
                     }
                     else
                     {
                         if (!ids.Contains(item.Post.Cid))
-                            Add(new PostViewModel(item));
+                            Add(vm);
                     }
                 }
             });

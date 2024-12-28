@@ -9,15 +9,214 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:converters="using:UniSky.Converters"
     xmlns:extensions="using:UniSky.Extensions"
-    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" 
+    xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls" 
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls" 
-    xmlns:compose="using:UniSky.ViewModels.Compose"
+    xmlns:compose="using:UniSky.ViewModels.Compose" 
+    xmlns:templates="using:UniSky.Templates" 
+    xmlns:labels="using:UniSky.Controls.Labels" 
+    xmlns:localControls="using:UniSky.Controls"
+    xmlns:posts="using:UniSky.ViewModels.Posts"
     mc:Ignorable="d" d:DesignHeight="350" d:DesignWidth="480"
-    Style="{StaticResource DefaultSheetControlStyle}"
     DataContext="{x:Bind ViewModel, Mode=OneWay}"
     PrimaryButtonCommand="{x:Bind ViewModel.PostCommand}"
     IsPrimaryButtonEnabled="{x:Bind ViewModel.CanPost, Mode=OneWay}"
     SecondaryButtonCommand="{x:Bind ViewModel.HideCommand}">
+    <sheet:SheetControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <templates:FeedTemplates/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate x:Key="ComposeEmbedContentTemplate" 
+                          x:DataType="compose:ComposeViewLinkCardViewModel">
+                <Grid BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
+                      extensions:Hairline.BorderThickness="1"
+                      MaxWidth="500">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid x:Name="ThumbnailBox"
+                            Visibility="{Binding Thumbnail, Converter={StaticResource VisibilityConverter}}"
+                            BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
+                            extensions:Hairline.BorderThickness="0,0,0,1">
+                        <toolkit:ConstrainedBox AspectRatio="2:1">
+                            <Image Source="{Binding Thumbnail}"
+                                   VerticalAlignment="Center"
+                                   Stretch="UniformToFill"/>
+                        </toolkit:ConstrainedBox>
+                    </Grid>
+
+                    <StackPanel Grid.Row="1"
+                            Padding="8,8,8,4">
+                        <TextBlock x:Name="TitleBlock"
+                                   Visibility="{Binding Title, Converter={StaticResource VisibilityConverter}}"
+                                   Grid.Row="0"
+                                   Grid.Column="1"
+                                   Style="{ThemeResource BaseTextBlockStyle}" 
+                                   Text="{Binding Title}"
+                                   VerticalAlignment="Bottom"
+                                   TextWrapping="NoWrap"/>
+
+                        <TextBlock x:Name="SubtitleBlock"
+                                   Visibility="{Binding Description, Converter={StaticResource VisibilityConverter}}"
+                                   Grid.Row="1"
+                                   Grid.Column="1"
+                                   Margin="0,2,0,0"
+                                   Style="{ThemeResource CaptionTextBlockStyle}" 
+                                   Text="{Binding Description}"
+                                   VerticalAlignment="Top"
+                                   MaxLines="2"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Row="2" 
+                               Text="{Binding Source}"
+                               Style="{ThemeResource CaptionTextBlockStyle}" 
+                               Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                               TextWrapping="NoWrap"
+                               Margin="8,0,8,8"/>
+
+                    <ProgressBar Visibility="{Binding IsLoading, Converter={StaticResource VisibilityConverter}}"
+                                 Grid.RowSpan="3"
+                                 HorizontalAlignment="Stretch"
+                                 Margin="16,0"
+                                 Background="Transparent"
+                                 IsIndeterminate="{Binding IsLoading}"/>
+                    
+                    <Button Style="{ThemeResource CleanButtonStyle}"
+                            Command="{x:Bind RemoveCommand}"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Right"
+                            Margin="0,-16,-16,0">
+                        <Grid>
+                            <Ellipse Width="32"
+                                     Height="32"
+                                     Fill="{ThemeResource SystemColorControlAccentBrush}"/>
+                            <Viewbox Width="16"
+                                     Height="16">
+                                <TextBlock FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE711;</TextBlock>
+                            </Viewbox>
+                        </Grid>
+                    </Button>
+                </Grid>
+            </DataTemplate>
+            
+            <DataTemplate x:Key="ReplyingToPostContentTemplate"
+                          x:DataType="posts:PostViewModel">
+                <StackPanel HorizontalAlignment="Stretch">
+                    <Grid x:Name="RetweetContainer"
+                          x:Load="{x:Bind converters:Static.NotNull(RetweetedBy)}"
+                          x:Phase="1"
+                          Margin="34,0,0,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Viewbox Height="12">
+                            <TextBlock Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                                       FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE8EB;</TextBlock>
+                        </Viewbox>
+
+                        <TextBlock Grid.Column="1" 
+                               Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                               FontSize="12"
+                               Margin="8,0">
+                            <Run x:Uid="RetweetedByRun" Text="Reposted by"/> <Run Text="{x:Bind RetweetedBy.Name, Mode=OneWay}" FontWeight="Bold"/>
+                        </TextBlock>
+                    </Grid>
+
+                    <Grid x:Name="ReplyContainer"
+                          x:Load="{x:Bind ShowReplyContainer}"
+                          x:Phase="1"
+                          Margin="34,0,0,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Viewbox Height="12">
+                            <TextBlock Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                                    FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE97A;</TextBlock>
+                        </Viewbox>
+
+                        <TextBlock Grid.Column="1" 
+                                   Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                                   FontSize="12"
+                                   Margin="8,0">
+                            <Run x:Uid="ReplyingToRun" Text="Replying to"/> <Run Text="{x:Bind ReplyTo.Name, Mode=OneWay}" FontWeight="Bold"/>
+                        </TextBlock>
+                    </Grid>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Margin="0,0,12,0"
+                              Grid.RowSpan="4">
+                            <Ellipse x:Name="ProfileEllipse"
+                                         Width="42" 
+                                         Height="42"
+                                         VerticalAlignment="Top">
+                                <Ellipse.Fill>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="{Binding Author.AvatarUrl}"
+                                                         DecodePixelWidth="42"
+                                                         DecodePixelHeight="42"
+                                                         DecodePixelType="Logical"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                        </Grid>
+
+                        <StackPanel Grid.Column="1">
+                            <Grid HorizontalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Foreground="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"                  
+                                           VerticalAlignment="Top"
+                                           TextTrimming="CharacterEllipsis">                
+                                    <Run Text="{x:Bind Author.Name, Mode=OneWay}"           
+                                         FontWeight="Bold"                        
+                                         Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>                    
+                                    <Run Text="{x:Bind Author.Handle, Mode=OneWay}"/>
+                                </TextBlock>
+
+                                <TextBlock x:Name="DateBlock"
+                                           x:Phase="4"
+                                           Grid.Column="1"
+                                           Margin="4,0,0,0"
+                                           Foreground="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                                           Typography.NumeralAlignment="Tabular"
+                                           Text="{x:Bind Date}"/>
+                            </Grid>
+
+                            <labels:LabelsControl x:Name="LabelViewer"
+                                                  x:Load="{x:Bind converters:Static.Any(Author.Labels)}"
+                                                  x:Phase="3"
+                                                  Labels="{x:Bind Author.Labels}"
+                                                  Margin="0,4,0,2"/>
+
+                            <localControls:FacetTextBlock x:Name="MainContent"
+                                                         x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Text)}"
+                                                         Inlines="{x:Bind RichText.Facets}"
+                                                         TextWrapping="Wrap"
+                                                         Margin="0,0,0,4"
+                                                         VerticalAlignment="Top"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </DataTemplate>
+        </ResourceDictionary>
+    </sheet:SheetControl.Resources>
     <sheet:SheetControl.PrimaryButtonContent>
         <TextBlock x:Uid="ComposeSheetPrimaryText" Text="Post" Margin="8,0"/>
     </sheet:SheetControl.PrimaryButtonContent>
@@ -79,41 +278,22 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid x:Name="ReplyContainer"
                       x:Load="{x:Bind ViewModel.HasReply}"
-                      Margin="0,0,0,8"
+                      Margin="0,0,0,12"
                       MinHeight="64"
+                      MaxHeight="128"
                       BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
                       extensions:Hairline.BorderThickness="0,0,0,1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <muxc:PersonPicture Width="48" 
-                                        Height="48"
-                                        Margin="0,0,8,0"
-                                        VerticalAlignment="Top"
-                                        ProfilePicture="{Binding ReplyTo.Author.AvatarUrl, Mode=OneWay}"/>
-                    <StackPanel Grid.Column="1"
-                                Margin="0,0,0,8">
-                        <TextBlock Foreground="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"                  
-                                       VerticalAlignment="Top">                
-                                 <Run Text="{x:Bind ViewModel.ReplyTo.Author.Name, Mode=OneWay}"           
-                                      FontWeight="Bold"                        
-                                      Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>                    
-                                 <Run Text="{x:Bind ViewModel.ReplyTo.Author.Handle, Mode=OneWay}"/>
-                        </TextBlock>
-
-                        <TextBlock x:Name="MainContent"
-                                       x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(ViewModel.ReplyTo.Text)}"
-                                       Text="{x:Bind ViewModel.ReplyTo.Text}"
-                                       TextWrapping="Wrap"
-                                       TextTrimming="CharacterEllipsis"
-                                       MaxLines="4"
-                                       Margin="0,0,0,4"
-                                       VerticalAlignment="Top"/>
-                    </StackPanel>
+                    <ContentControl x:Name="ReplyContent"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch"
+                                    Margin="0,0,0,8"
+                                    Content="{x:Bind ViewModel.ReplyTo}"
+                                    ContentTemplate="{StaticResource ReplyingToPostContentTemplate}">
+                    </ContentControl>
                 </Grid>
                 
                 <Grid Grid.Row="1" MinHeight="100">
@@ -121,9 +301,9 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <muxc:PersonPicture Width="48" 
-                                        Height="48"
-                                        Margin="0,0,8,0"
+                    <muxc:PersonPicture Width="42" 
+                                        Height="42"
+                                        Margin="0,0,4,0"
                                         VerticalAlignment="Top"
                                         ProfilePicture="{Binding AvatarUrl, Mode=OneWay}"/>
                     
@@ -141,7 +321,17 @@
                              Paste="PrimaryTextBox_Paste"/>
                 </Grid>
 
-                <Grid Grid.Row="2">
+                <Grid Grid.Row="2"
+                      Margin="4">
+                    <ContentControl x:Name="ComposeEmbed"
+                                    x:Load="{x:Bind converters:Static.NotNull(ViewModel.AttachedUri), Mode=OneWay}"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch"
+                                    Content="{x:Bind ViewModel.AttachedUri, Mode=OneWay}"
+                                    ContentTemplate="{StaticResource ComposeEmbedContentTemplate}"/>
+                </Grid>
+                
+                <Grid Grid.Row="3">
                     <ListView x:Name="UploadsList"
                               x:Load="{x:Bind ViewModel.HasAttachments, Mode=OneWay}"
                               Margin="-12"
@@ -172,7 +362,7 @@
                             <DataTemplate x:DataType="compose:ComposeViewAttachmentViewModel">
                                 <Button Style="{ThemeResource CleanButtonStyle}"
                                         Command="{x:Bind AddAltTextCommand}"
-                                        Padding="0">
+                                        Padding="0,4,0,0">
                                     <Grid Width="175" VerticalAlignment="Stretch">
                                         <Image VerticalAlignment="Center"
                                                HorizontalAlignment="Center" 
@@ -246,13 +436,13 @@
                         Margin="0,0,2,0"/>
             </StackPanel>
 
-            <controls:RadialProgressBar Grid.Column="1"
-                                        Margin="8,6"
-                                        Minimum="0" 
-                                        Maximum="{x:Bind ViewModel.MaxCharacters, FallbackValue=300}" 
-                                        Value="{x:Bind ViewModel.Characters, Mode=OneWay}"
-                                        Width="32"
-                                        Height="32"/>
+            <toolkit:RadialProgressBar Grid.Column="1"
+                                       Margin="8,6"
+                                       Minimum="0" 
+                                       Maximum="{x:Bind ViewModel.MaxCharacters, FallbackValue=300}" 
+                                       Value="{x:Bind ViewModel.Characters, Mode=OneWay}"
+                                       Width="32"
+                                       Height="32"/>
         </Grid>
     </Grid>
 </sheet:SheetControl>

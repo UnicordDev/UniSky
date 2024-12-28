@@ -39,16 +39,13 @@ public sealed partial class HomePage : Page
         Window.Current.SetTitleBar(TitleBarDrag);
 
         var safeAreaService = ServiceContainer.Scoped.GetRequiredService<ISafeAreaService>();
+        safeAreaService.SetTitlebarTheme(ElementTheme.Default);
         safeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
 
-        var serviceLocator = ServiceContainer.Scoped.GetRequiredService<INavigationServiceLocator>();
-        var service = serviceLocator.GetNavigationService("Home");
-        service.Frame = NavigationFrame;
+        if (e.Parameter is not HomeViewModel)
+            return;
 
-        if (e.Parameter is string session || e.Parameter is ATDid did && (session = did.Handler) != null)
-        {
-            ViewModel = ActivatorUtilities.CreateInstance<HomeViewModel>(ServiceContainer.Scoped, session);
-        }
+        DataContext = ViewModel = (HomeViewModel)e.Parameter;
     }
 
     private void OnSafeAreaUpdated(object sender, SafeAreaUpdatedEventArgs e)
@@ -76,31 +73,6 @@ public sealed partial class HomePage : Page
 
         AppTitleBarContainer.RequestedTheme = e.SafeArea.Theme;
         Margin = new Thickness(e.SafeArea.Bounds.Left, 0, e.SafeArea.Bounds.Right, e.SafeArea.Bounds.Bottom);
-    }
-
-    private async void NavigationView_ItemInvoked(MUXC.NavigationView sender, MUXC.NavigationViewItemInvokedEventArgs args)
-    {
-        if (args.InvokedItemContainer?.Tag is HomePages page)
-            ViewModel.Page = page;
-
-        if (args.IsSettingsInvoked)
-        {
-            ViewModel.Page = ViewModel.Page;
-            await ViewModel.OpenSettingsCommand.ExecuteAsync(null);
-        }
-    }
-
-    private void FooterToggleButton_Checked(object sender, RoutedEventArgs e)
-    {
-        var button = (ToggleButton)sender;
-        var page = (HomePages)button.Tag;
-
-        ViewModel.Page = page;
-    }
-
-    private void FooterToggleButton_Unchecked(object sender, RoutedEventArgs e)
-    {
-        ViewModel.UpdateChecked();
     }
 
     private void NavView_PaneOpening(MUXC.NavigationView sender, object args)

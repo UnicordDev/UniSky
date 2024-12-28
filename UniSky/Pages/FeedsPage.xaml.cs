@@ -10,14 +10,9 @@ using Windows.UI.Xaml.Navigation;
 
 using MUXC = Microsoft.UI.Xaml.Controls;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
-
 namespace UniSky.Pages;
 
-/// <summary>
-/// An empty page that can be used on its own or navigated to within a Frame.
-/// </summary>
-public sealed partial class FeedsPage : Page
+public sealed partial class FeedsPage : Page, IScrollToTop
 {
     public FeedsViewModel ViewModel
     {
@@ -58,6 +53,19 @@ public sealed partial class FeedsPage : Page
 
     private void PivotHeaderText_Tapped(object sender, TappedRoutedEventArgs e)
     {
+        ScrollToTop();
+    }
+
+    private async void RefreshAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+    {
+        if (FeedsPivot.SelectedItem is not FeedViewModel feedVm)
+            return;
+
+        await feedVm.RefreshAsync();
+    }
+
+    public void ScrollToTop()
+    {
         var feedsList = FeedsPivot.ContainerFromItem(FeedsPivot.SelectedItem)
             .FindDescendantByName("PART_FeedList");
 
@@ -69,13 +77,5 @@ public sealed partial class FeedsPage : Page
             return;
 
         scrollView.ChangeView(0, 0, null);
-    }
-
-    private async void RefreshAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
-    {
-        if (FeedsPivot.SelectedItem is not FeedViewModel feedVm)
-            return;
-
-        await feedVm.RefreshAsync();
     }
 }

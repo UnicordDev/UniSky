@@ -30,27 +30,10 @@ jobs:
       with:
         fetch-depth: 0
 
-    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-    - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v2
-
-    # Restore the application to populate the obj folder with RuntimeIdentifiers
-    - name: Restore NuGet Packages
-      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration /p:Platform=x64
-      env:
-        Configuration: ${{ matrix.configuration }}
-
-    # Decode the base 64 encoded pfx and save the Signing_Certificate
-    - name: Load Certificate
-      run: |
-        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
-        $certificatePath = "GitHubActionsWorkflow.pfx"
-        [IO.File]::WriteAllBytes("$env:Project_Name/$certificatePath", $pfx_cert_byte)
-
     - name: Adjust Package Version
       run: |
-        $epoch = (Get-Date) - ([System.DateTime]::new(2024, 11, 01))
-        $file = (Resolve-Path "UniSky/Package.appxmanifest")
+        $epoch = (Get-Date) - (Get-Date -Day 1)
+        $file = (Resolve-Path "$env:Project_Name/Package.appxmanifest")
         $xml = [System.Xml.XmlDocument]::new()
         $xml.Load($file)
 
@@ -60,6 +43,23 @@ jobs:
         $node.SetAttribute("Version", $version.ToString())
 
         $xml.Save($file)
+
+    # Decode the base 64 encoded pfx and save the Signing_Certificate
+    - name: Load Certificate
+      run: |
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
+        $certificatePath = "GitHubActionsWorkflow.pfx"
+        [IO.File]::WriteAllBytes("$env:Project_Name/$certificatePath", $pfx_cert_byte)
+
+    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v2
+
+    # Restore the application to populate the obj folder with RuntimeIdentifiers
+    - name: Restore NuGet Packages
+      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration /p:Platform=x64
+      env:
+        Configuration: ${{ matrix.configuration }}
 
     # Create the app package by building and packaging the project
     - name: Build App Packages

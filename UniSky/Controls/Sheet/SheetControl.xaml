@@ -130,4 +130,6 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
+    <Style TargetType="sheets:SheetControl" BasedOn="{StaticResource DefaultSheetControlStyle}"/>
 </ResourceDictionary>

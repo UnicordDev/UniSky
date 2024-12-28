@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -7,10 +6,9 @@ using FishyFlip.Tools;
 using Microsoft.Extensions.Logging;
 using UniSky.Controls.Compose;
 using UniSky.Extensions;
-using UniSky.Helpers;
+using UniSky.Services;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
-using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
 using Windows.UI.Xaml.Controls;
@@ -27,6 +25,7 @@ public partial class ComposeViewAttachmentViewModel : ViewModelBase
 {
     private readonly ComposeViewModel parent;
     private readonly ILogger<ComposeViewAttachmentViewModel> logger;
+    private readonly IImageCompressionService imageCompressionService;
 
     [ObservableProperty]
     private BitmapImage thumbnail;
@@ -45,10 +44,12 @@ public partial class ComposeViewAttachmentViewModel : ViewModelBase
                                           IStorageFile storageFile,
                                           ComposeViewAttachmentType type,
                                           bool isTemporary,
+                                          IImageCompressionService imageCompressionService,
                                           ILogger<ComposeViewAttachmentViewModel> logger)
     {
         this.parent = parent;
         this.logger = logger;
+        this.imageCompressionService = imageCompressionService;
 
         this.IsTemporary = isTemporary;
         this.StorageFile = storageFile;
@@ -59,11 +60,6 @@ public partial class ComposeViewAttachmentViewModel : ViewModelBase
         Task.Run(LoadAsync);
     }
 
-    public void SetErrored(Exception ex)
-    {
-        base.SetErrored(ex);
-    }
-
     private async Task LoadAsync()
     {
         using var loading = this.GetLoadingContext();
@@ -72,7 +68,18 @@ public partial class ComposeViewAttachmentViewModel : ViewModelBase
         {
             if (this.AttachmentType == ComposeViewAttachmentType.Image)
             {
-                await CompressImageAsync(StorageFile, CheckHeifSupport());
+                var oldFile = this.StorageFile;
+                var compressedImage = await imageCompressionService.CompressStorageFileAsync(oldFile);
+
+                if (IsTemporary)
+                {
+                    await TryDeleteTemporaryFile(oldFile);
+                }
+
+                Width = compressedImage.Width;
+                Height = compressedImage.Height;
+                ContentType = compressedImage.ContentType;
+                StorageFile = compressedImage.StorageFile;
             }
 
             if (this.StorageFile is not IStorageItemProperties properties)
@@ -121,7 +128,7 @@ public partial class ComposeViewAttachmentViewModel : ViewModelBase
     {
         base.OnLoadingChanged(value);
 
-        syncContext.Post(() => parent.UpdateLoading(this, value));
+        syncContext.Post(() => parent.UpdateLoading(value));
     }
 
     private async Task TryDeleteTemporaryFile(IStorageFile storageFile)
@@ -136,79 +143,8 @@ public partial class ComposeViewAttachmentViewModel : ViewModelBase
         }
     }
 
-    private async Task CompressImageAsync(IStorageFile input, bool useHeif, int size = 4096)
+    public void SetErrored(Exception ex)
     {
-        var extension = useHeif ? "heic" : "jpeg";
-        var contentType = useHeif ? "image/heic" : "image/jpeg";
-        var codec = useHeif ? BitmapEncoder.HeifEncoderId : BitmapEncoder.JpegEncoderId;
-
-        var output = await ApplicationData.Current.TemporaryFolder.CreateFileAsync($"{Guid.NewGuid()}.{extension}");
-
-        try
-        {
-            double width, height;
-            using (var inputStream = await input.OpenAsync(FileAccessMode.Read))
-            using (var outputStream = await output.OpenAsync(FileAccessMode.ReadWrite))
-            {
-                var decoder = await BitmapDecoder.CreateAsync(inputStream);
-                var softwareBitmap = await decoder.GetSoftwareBitmapAsync();
-                width = (int)decoder.OrientedPixelWidth;
-                height = (int)decoder.OrientedPixelHeight;
-
-                do
-                {
-                    outputStream.Size = 0;
-
-                    SizeHelpers.Scale(ref width, ref height, size, size);
-
-                    var encoder = await BitmapEncoder.CreateAsync(codec, outputStream);
-                    encoder.SetSoftwareBitmap(softwareBitmap);
-                    encoder.BitmapTransform.ScaledWidth = (uint)Math.Ceiling(width);
-                    encoder.BitmapTransform.ScaledHeight = (uint)Math.Ceiling(height);
-                    encoder.BitmapTransform.InterpolationMode = BitmapInterpolationMode.Fant;
-
-                    await encoder.FlushAsync();
-
-                    contentType = encoder.EncoderInformation.MimeTypes.FirstOrDefault() ?? contentType;
-                    size = (int)Math.Floor(size * 0.75);
-                }
-                while (outputStream.Size > 1_000_000);
-            }
-
-            if (IsTemporary)
-            {
-                await TryDeleteTemporaryFile(input);
-            }
-
-            Width = (int)Math.Ceiling(width);
-            Height = (int)Math.Ceiling(height);
-            ContentType = contentType;
-            IsTemporary = true;
-            StorageFile = output;
-        }
-        catch (Exception ex) when ((uint)ex.HResult == 0xc00d5212) // missing heif codec
-        {
-            await output.DeleteAsync(StorageDeleteOption.PermanentDelete);
-            await CompressImageAsync(input, false, size);
-        }
-        catch (Exception ex)
-        {
-            SetErrored(ex);
-        }
-    }
-
-
-    private static bool CheckHeifSupport()
-    {
-        if (!ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7, 0))
-            return false;
-
-        foreach (var item in BitmapEncoder.GetEncoderInformationEnumerator())
-        {
-            if (item.CodecId == BitmapEncoder.HeifEncoderId)
-                return true;
-        }
-
-        return false;
+        base.SetErrored(ex);
     }
 }

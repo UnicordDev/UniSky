@@ -177,4 +177,7 @@
   <data name="Notification_Quote" xml:space="preserve">
     <value>{0} quoted your tweet</value>
   </data>
+  <data name="ThreadPageTitleBlock.Text" xml:space="preserve">
+    <value>TWEET</value>
+  </data>
 </root>

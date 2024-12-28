@@ -5,6 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using FishyFlip.Lexicon.App.Bsky.Feed;
 using FishyFlip.Tools;
+using Microsoft.Extensions.DependencyInjection;
+using UniSky.Moderation;
 using UniSky.Services;
 using UniSky.ViewModels.Posts;
 using Windows.Foundation;
@@ -18,19 +20,22 @@ public class SearchPostsCollection : ObservableCollection<PostViewModel>, ISuppo
 {
     private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
     private readonly CoreDispatcher dispatcher = Window.Current.Dispatcher;
-    private readonly IProtocolService protocolService;
     private readonly HashSet<string> ids = [];
     private readonly SearchFeedViewModel parent;
+
+    private readonly IProtocolService protocolService
+        = ServiceContainer.Scoped.GetRequiredService<IProtocolService>();
+    private readonly IModerationService moderationService
+        = ServiceContainer.Scoped.GetRequiredService<IModerationService>();
 
     private readonly string query;
     private readonly string searchType;
 
     private string cursor;
 
-    public SearchPostsCollection(string query, string searchType, SearchFeedViewModel parent, IProtocolService protocolService)
+    public SearchPostsCollection(SearchFeedViewModel parent, string query, string searchType)
     {
         this.parent = parent;
-        this.protocolService = protocolService;
         this.query = query;
         this.searchType = searchType;
     }
@@ -73,8 +78,14 @@ public class SearchPostsCollection : ObservableCollection<PostViewModel>, ISuppo
 
             await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
+                var moderator = new Moderator(moderationService.ModerationOptions);
                 foreach (var item in results.Posts)
                 {
+                    if (moderator.ModeratePost(item)
+                                 .GetUI(ModerationContext.ContentList)
+                                 .Filter)
+                        continue;
+
                     if (!ids.Contains(item.Cid))
                         Add(new PostViewModel(item));
                 }

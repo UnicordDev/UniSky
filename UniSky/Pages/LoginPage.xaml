@@ -66,7 +66,8 @@
             <StackPanel>
                 <Viewbox x:Name="BSkyLogo"
                          MaxWidth="125" 
-                         Margin="0,0,0,16">
+                         Margin="0,0,0,16"
+                         CacheMode="BitmapCache">
                     <Path Data="{StaticResource BlueSkyLogoPath}"
                           Fill="{ThemeResource ApplicationForegroundThemeBrush}"/>
                 </Viewbox>
@@ -155,7 +156,55 @@
 
         </Grid>
         
-        <!--<Image Source="/Assets/SplashScreen.png" MaxWidth="620" Stretch="Uniform" Grid.RowSpan="5" Grid.ColumnSpan="3"/>-->
+        <Grid x:Name="AppTitleBar"
+              Background="Transparent"
+              Grid.RowSpan="5"
+              Grid.ColumnSpan="3"
+              VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="LeftPaddingColumn" Width="0"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Border x:Name="TitleBarDrag"
+                  Background="Transparent"
+                  Grid.Column="1"
+                  Grid.ColumnSpan="2"/>
+
+            <Grid Grid.Column="1" 
+                  HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="32"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RenderTransform>
+                    <TranslateTransform x:Name="TitleHeaderTransform"/>
+                </Grid.RenderTransform>
+
+                <Viewbox VerticalAlignment="Center"
+                         HorizontalAlignment="Center"
+                         Margin="8,2,0,0"
+                         Width="16"
+                         Height="16"
+                         Grid.Column="1"
+                         IsHitTestVisible="False"
+                         CacheMode="BitmapCache">
+                    <Path x:Name="AppIconPath"
+                          Data="{StaticResource BlueSkyLogoPath}"
+                          Fill="{ThemeResource ApplicationForegroundThemeBrush}"/>
+                </Viewbox>
+
+                <TextBlock x:Name="AppTitleTextBlock"
+                           x:Uid="AppTitle"
+                           Style="{StaticResource CaptionTextBlockStyle}" 
+                           Text="Unisky"
+                           VerticalAlignment="Center" 
+                           Grid.Column="2"
+                           Margin="8,0"
+                           IsHitTestVisible="False"/>
+            </Grid>
+        </Grid>
 
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="AdaptiveStates">
@@ -177,7 +226,7 @@
                         <Setter Target="SeparatorBorder.BorderBrush" Value="{ThemeResource SeparatorBrush}"/>
                         <Setter Target="RightGrid.VerticalAlignment" Value="Center"/>
                         <Setter Target="RightGrid.HorizontalAlignment" Value="Left"/>
-                        <Setter Target="RightGrid.MinWidth" Value="300"/>
+                        <Setter Target="RightGrid.Width" Value="300"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Mobile">

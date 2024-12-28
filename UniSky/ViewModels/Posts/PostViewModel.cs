@@ -15,9 +15,10 @@ using FishyFlip.Models;
 using FishyFlip.Tools;
 using Humanizer;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Toolkit.Extensions;
 using UniSky.Controls.Compose;
 using UniSky.Helpers;
+using UniSky.Moderation;
+using UniSky.Pages;
 using UniSky.Services;
 using UniSky.ViewModels.Profile;
 using UniSky.ViewModels.Text;
@@ -29,11 +30,11 @@ namespace UniSky.ViewModels.Posts;
 
 public partial class PostViewModel : ViewModelBase
 {
-    private readonly PostView view;
-    private readonly Post post;
-
     private ATUri like;
     private ATUri repost;
+
+    private readonly IModerationService moderationService
+        = ServiceContainer.Default.GetRequiredService<IModerationService>();
 
     [ObservableProperty]
     private ProfileViewModel author;
@@ -68,6 +69,7 @@ public partial class PostViewModel : ViewModelBase
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShowReplyContainer))]
+    [NotifyPropertyChangedFor(nameof(Borders))]
     private bool hasParent;
 
     [ObservableProperty]
@@ -78,8 +80,14 @@ public partial class PostViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(Text))]
     private RichTextViewModel richText;
 
-    public Post Post => post;
-    public PostView View => view;
+    [ObservableProperty]
+    private ContentWarningViewModel warning;
+
+    public ATUri Uri { get; }
+
+    public Post Post { get; }
+    public PostView View { get; }
+    public ModerationDecision Moderation { get; }
 
     public string Text
         => string.Concat(RichText.Facets.Select(s => s.Text));
@@ -122,19 +130,30 @@ public partial class PostViewModel : ViewModelBase
         if (view.Record is not Post post)
             throw new InvalidOperationException();
 
-        this.view = view;
-        this.post = post;
+        this.View = view;
+        this.Post = post;
+        this.Uri = view.Uri;
+
+        var moderator = new Moderator(moderationService.ModerationOptions);
+        Moderation = moderator.ModeratePost(view);
 
         HasChild = hasChild;
 
         RichText = new RichTextViewModel(post.Text, post.Facets ?? []);
         Author = new ProfileViewModel(view.Author);
+
+        var media = Moderation.GetUI(ModerationContext.ContentMedia);
+        if (media.Blur)
+        {
+            Warning = new ContentWarningViewModel(media);
+        }
+
         Embed = CreateEmbedViewModel(view.Embed, false);
 
         var timeSinceIndex = DateTime.Now - (view.IndexedAt.Value.ToLocalTime());
         var date = timeSinceIndex.Humanize(1, minUnit: Humanizer.Localisation.TimeUnit.Second);
         Date = date;
-        
+
         LikeCount = (int)(view.LikeCount ?? 0);
         RetweetCount = (int)(view.RepostCount ?? 0);
         ReplyCount = (int)(view.ReplyCount ?? 0);
@@ -178,7 +197,7 @@ public partial class PostViewModel : ViewModelBase
             IsLiked = true;
             LikeCount++;
 
-            this.like = (await protocol.CreateLikeAsync(new StrongRef(view.Uri, view.Cid)).ConfigureAwait(false))
+            this.like = (await protocol.CreateLikeAsync(new StrongRef(View.Uri, View.Cid)).ConfigureAwait(false))
                 .HandleResult()?.Uri;
         }
     }
@@ -193,7 +212,7 @@ public partial class PostViewModel : ViewModelBase
     [RelayCommand]
     private void CopyLink()
     {
-        var url = UrlHelpers.GetPostURL(this.view);
+        var url = UrlHelpers.GetPostURL(this.View);
         var uri = new Uri(url);
 
         var attribute = HttpUtility.HtmlAttributeEncode(url);
@@ -211,7 +230,7 @@ public partial class PostViewModel : ViewModelBase
     private void CopyText()
     {
         var package = new DataPackage();
-        package.SetText(this.post.Text);
+        package.SetText(this.Post.Text);
 
         // TODO: parse facets to HTML
         // package.SetHtmlFormat(this.post.Text); 
@@ -229,7 +248,7 @@ public partial class PostViewModel : ViewModelBase
         {
             var resources = ResourceLoader.GetForViewIndependentUse();
 
-            var url = UrlHelpers.GetPostURL(this.view);
+            var url = UrlHelpers.GetPostURL(this.View);
             var uri = new Uri(url);
 
             var attribute = HttpUtility.HtmlAttributeEncode(url);
@@ -238,7 +257,7 @@ public partial class PostViewModel : ViewModelBase
             var request = args.Request;
             request.Data.Properties.Title = string.Format(resources.GetString("Share_Username"), Author.Handle);
 
-            request.Data.SetText(post.Text);
+            request.Data.SetText(Post.Text);
             request.Data.SetWebLink(uri);
             request.Data.SetHtmlFormat($"<a href=\"{attribute}\">{escaped}</a>");
         }
@@ -247,6 +266,14 @@ public partial class PostViewModel : ViewModelBase
         manager.DataRequested += OnDataRequested;
 
         DataTransferManager.ShowShareUI();
+    }
+
+    [RelayCommand]
+    private void OpenThread()
+    {
+        var navigationService = ServiceContainer.Scoped.GetRequiredService<INavigationServiceLocator>()
+            .GetNavigationService("Home");
+        navigationService.Navigate<ThreadPage>(this.Uri);
     }
 
     private string ToNumberString(int n)
@@ -269,7 +296,7 @@ public partial class PostViewModel : ViewModelBase
             ViewImages images => new PostEmbedImagesViewModel(images),
             ViewVideo video => new PostEmbedVideoViewModel(video),
             ViewExternal external => new PostEmbedExternalViewModel(external),
-            ViewRecordWithMedia recordWithMedia => isNested ? 
+            ViewRecordWithMedia recordWithMedia => isNested ?
                 CreateEmbedViewModel(recordWithMedia.Media, isNested) :
                 new PostEmbedRecordWithMediaViewModel(recordWithMedia, isNested),
             ViewRecordDef and { Record: ViewRecord viewRecord } when !isNested => viewRecord.Value switch

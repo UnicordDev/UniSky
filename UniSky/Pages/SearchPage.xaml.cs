@@ -11,7 +11,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UniSky.Pages;
 
-public sealed partial class SearchPage : Page
+public sealed partial class SearchPage : Page, IScrollToTop
 {
     public SearchPageViewModel ViewModel
     {
@@ -25,6 +25,12 @@ public sealed partial class SearchPage : Page
     public SearchPage()
     {
         this.InitializeComponent();
+        this.Loaded += OnLoaded;
+    }
+
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        this.SearchBox.Focus(FocusState.Keyboard);
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -32,11 +38,11 @@ public sealed partial class SearchPage : Page
         base.OnNavigatedTo(e);
 
         var safeAreaService = ServiceContainer.Scoped.GetRequiredService<ISafeAreaService>();
+        safeAreaService.SetTitlebarTheme(ElementTheme.Default);
         safeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
 
         if (this.ViewModel == null)
             this.DataContext = this.ViewModel = ActivatorUtilities.CreateInstance<SearchPageViewModel>(ServiceContainer.Scoped);
-        this.SearchBox.Focus(FocusState.Programmatic);
     }
 
     protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -92,5 +98,14 @@ public sealed partial class SearchPage : Page
             var scrollViewer = RootList.FindDescendant<ScrollViewer>();
             scrollViewer.CanContentRenderOutsideBounds = true;
         }
+    }
+
+    public void ScrollToTop()
+    {
+        var scrollViewer = RootList.FindDescendant<ScrollViewer>();
+        if (scrollViewer == null)
+            return;
+
+        scrollViewer.ChangeView(0, 0, 1);
     }
 }

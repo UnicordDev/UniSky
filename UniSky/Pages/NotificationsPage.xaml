@@ -11,88 +11,97 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
-        <DataTemplate x:Key="NotificationContentTemplate"
-                      x:DataType="notifications:NotificationViewModel">
-            <Grid Margin="12,8"
-                  HorizontalAlignment="Left">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <FeedTemplates xmlns="using:UniSky.Templates"/>
+            </ResourceDictionary.MergedDictionaries>
 
-                <Grid x:Name="Icons" 
-                      Grid.RowSpan="3"
-                      VerticalAlignment="Top"
-                      Margin="0,0,12,0">
-                    <Viewbox x:Name="RetweetIcon"
-                         x:Load="{x:Bind IsRetweet, Mode=OneWay}"
-                         Width="24"
-                         Height="24">
-                        <TextBlock Foreground="{ThemeResource RetweetBrush}"
-                               FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE8EB;</TextBlock>
-                    </Viewbox>
+            <DataTemplate x:Key="NotificationContentTemplate"
+                          x:DataType="notifications:NotificationViewModel">
+                <Button Style="{StaticResource CleanButtonStyle}"
+                        Command="{Binding GoToSubjectCommand}">
+                    <Grid Margin="12,8"
+                          HorizontalAlignment="Left">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                    <Viewbox x:Name="LikeIcon"
-                         x:Load="{x:Bind IsLike, Mode=OneWay}"
-                         Width="24"
-                         Height="24">
-                        <TextBlock Foreground="{ThemeResource LikeBrush}"
-                               FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xEB52;</TextBlock>
-                    </Viewbox>
+                        <Grid x:Name="Icons" 
+                              Grid.RowSpan="3"
+                              VerticalAlignment="Top"
+                              Margin="0,0,12,0">
+                            <Viewbox x:Name="RetweetIcon"
+                                 x:Load="{x:Bind IsRetweet, Mode=OneWay}"
+                                 Width="24"
+                                 Height="24">
+                                <TextBlock Foreground="{ThemeResource RetweetBrush}"
+                                       FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE8EB;</TextBlock>
+                            </Viewbox>
+
+                            <Viewbox x:Name="LikeIcon"
+                                 x:Load="{x:Bind IsLike, Mode=OneWay}"
+                                 Width="24"
+                                 Height="24">
+                                <TextBlock Foreground="{ThemeResource LikeBrush}"
+                                       FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xEB52;</TextBlock>
+                            </Viewbox>
 
 
-                    <Ellipse x:Name="ProfileImage"
-                             x:Load="{x:Bind ShowAvatar, Mode=OneWay}"
-                             Width="24" 
-                             Height="24">
-                        <Ellipse.Fill>
-                            <ImageBrush>
-                                <ImageBrush.ImageSource>
-                                    <BitmapImage UriSource="{Binding AvatarUrl}"
-                                             DecodePixelWidth="24"
-                                             DecodePixelHeight="24"
-                                             DecodePixelType="Logical"/>
-                                </ImageBrush.ImageSource>
-                            </ImageBrush>
-                        </Ellipse.Fill>
-                    </Ellipse>
+                            <Ellipse x:Name="ProfileImage"
+                                     x:Load="{x:Bind ShowAvatar, Mode=OneWay}"
+                                     Width="24" 
+                                     Height="24">
+                                <Ellipse.Fill>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="{Binding AvatarUrl}"
+                                                     DecodePixelWidth="24"
+                                                     DecodePixelHeight="24"
+                                                     DecodePixelType="Logical"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Ellipse.Fill>
+                            </Ellipse>
 
-                </Grid>
+                        </Grid>
 
-                <TextBlock x:Name="TitleTextBlock"
-                           Grid.Row="0"
-                           Grid.Column="1"
-                           Style="{ThemeResource BaseTextBlockStyle}" 
-                           Text="{x:Bind NotificationTitle, Mode=OneWay}"
-                           TextWrapping="Wrap"/>
+                        <TextBlock x:Name="TitleTextBlock"
+                                   Grid.Row="0"
+                                   Grid.Column="1"
+                                   Style="{ThemeResource BaseTextBlockStyle}" 
+                                   Text="{x:Bind NotificationTitle, Mode=OneWay}"
+                                   TextWrapping="Wrap"/>
 
-                <TextBlock x:Name="CaptionTextBlock"
-                           x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(NotificationSubtitle), Mode=OneWay}"
-                           Grid.Row="1"
-                           Grid.Column="1"
-                           Style="{ThemeResource CaptionTextBlockStyle}" 
-                           Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
-                           Text="{x:Bind NotificationSubtitle, Mode=OneWay}"
-                           MaxLines="3"/>
+                        <TextBlock x:Name="CaptionTextBlock"
+                                   x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(NotificationSubtitle), Mode=OneWay}"
+                                   Grid.Row="1"
+                                   Grid.Column="1"
+                                   Style="{ThemeResource CaptionTextBlockStyle}" 
+                                   Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                                   Text="{x:Bind NotificationSubtitle, Mode=OneWay}"
+                                   MaxLines="3"/>
 
-                <controls:ConstrainedBox x:Name="NotificationEmbedContainer"
-                                         x:Load="{x:Bind converters:Static.NotNull(NotificationEmbed), Mode=OneWay}"
-                                         AspectRatio="3:1"
-                                         Margin="0,4"
-                                         Grid.Row="2" 
-                                         Grid.Column="2">
-                    <ContentControl x:Name="EmbedContent"
-                                    ContentTemplateSelector="{StaticResource PostEmbedTemplateSelector}"
-                                    Content="{x:Bind NotificationEmbed}"/>
-                </controls:ConstrainedBox>
+                        <controls:ConstrainedBox x:Name="NotificationEmbedContainer"
+                                                 x:Load="{x:Bind converters:Static.NotNull(NotificationEmbed), Mode=OneWay}"
+                                                 AspectRatio="3:1"
+                                                 Margin="0,4"
+                                                 Grid.Row="2" 
+                                                 Grid.Column="2">
+                            <ContentControl x:Name="EmbedContent"
+                                            ContentTemplateSelector="{StaticResource PostEmbedTemplateSelector}"
+                                            Content="{x:Bind NotificationEmbed}"/>
+                        </controls:ConstrainedBox>
 
-            </Grid>
-        </DataTemplate>
+                    </Grid>
+                </Button>
+            </DataTemplate>
+        </ResourceDictionary>
     </Page.Resources>
 
     <Grid>
@@ -120,12 +129,10 @@
                   ItemsSource="{x:Bind ViewModel.Notifications, Mode=OneWay}" 
                   ItemTemplate="{StaticResource NotificationContentTemplate}"
                   SelectionMode="None"
-                  IsItemClickEnabled="True"
                   HorizontalAlignment="Stretch"
                   HorizontalContentAlignment="Stretch"
                   ScrollViewer.IsVerticalScrollChainingEnabled="True"
-                  Loaded="RootList_Loaded"
-                  ItemClick="RootList_ItemClick">
+                  Loaded="RootList_Loaded">
             <ListView.Resources>
                 <SolidColorBrush Color="Transparent" x:Key="ListViewItemRevealBackground"/>
                 <SolidColorBrush Color="Transparent" x:Key="ListViewItemBackgroundPointerOver"/>

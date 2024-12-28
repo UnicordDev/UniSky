@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using UniSky.Services;
 using Windows.Foundation;
 using Windows.UI.Xaml;
@@ -12,7 +8,7 @@ using Windows.UI.Xaml.Markup;
 namespace UniSky.Controls.Overlay;
 
 [ContentProperty(Name = nameof(OverlayContent))]
-public abstract class OverlayControl : Control
+public abstract class OverlayControl : Control, IOverlayControl
 {
     public static readonly DependencyProperty OverlayContentProperty =
         DependencyProperty.Register("OverlayContent", typeof(object), typeof(OverlayControl), new PropertyMetadata(null));
@@ -61,22 +57,22 @@ public abstract class OverlayControl : Control
         set => SetValue(PreferredWindowSizeProperty, value);
     }
 
-    public event TypedEventHandler<OverlayControl, RoutedEventArgs> Hidden;
-    public event TypedEventHandler<OverlayControl, OverlayHidingEventArgs> Hiding;
-    public event TypedEventHandler<OverlayControl, OverlayShowingEventArgs> Showing;
-    public event TypedEventHandler<OverlayControl, RoutedEventArgs> Shown;
+    public event TypedEventHandler<IOverlayControl, RoutedEventArgs> Hidden;
+    public event TypedEventHandler<IOverlayControl, OverlayHidingEventArgs> Hiding;
+    public event TypedEventHandler<IOverlayControl, OverlayShowingEventArgs> Showing;
+    public event TypedEventHandler<IOverlayControl, RoutedEventArgs> Shown;
 
-    internal void SetOverlayController(IOverlayController controller)
+    void IOverlayControl.SetOverlayController(IOverlayController controller)
     {
         Controller = controller;
     }
 
-    internal void InvokeHidden()
+    void IOverlayControl.InvokeHidden()
     {
         OnHidden(new RoutedEventArgs());
     }
 
-    internal async Task<bool> InvokeHidingAsync()
+    async Task<bool> IOverlayControl.InvokeHidingAsync()
     {
         var ev = new OverlayHidingEventArgs();
         OnHiding(ev);
@@ -86,12 +82,12 @@ public abstract class OverlayControl : Control
         return !ev.Cancel;
     }
 
-    internal void InvokeShowing(object parameter)
+    void IOverlayControl.InvokeShowing(object parameter)
     {
         OnShowing(new OverlayShowingEventArgs(parameter));
     }
 
-    internal void InvokeShown()
+    void IOverlayControl.InvokeShown()
     {
         OnShown(new RoutedEventArgs());
     }

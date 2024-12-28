@@ -58,11 +58,11 @@ public partial class ProfilePageViewModel : ProfileViewModel
 
     public ObservableCollection<ProfileFeedViewModel> Feeds { get; }
 
-    public ProfilePageViewModel() : base() { }
+    public ProfilePageViewModel() : this((ATDid)null) { }
 
     public ProfilePageViewModel(ATDid did)
     {
-        this.id = did;
+        this.id = did ?? ServiceContainer.Scoped.GetRequiredService<IProtocolService>().Protocol.Session?.Did;
 
         Feeds = [];
         SelectedFeed = null;

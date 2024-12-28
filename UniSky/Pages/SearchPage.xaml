@@ -14,65 +14,71 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     NavigationCacheMode="Required">
     <Page.Resources>
-        <DataTemplate x:Key="FeedProfileContentTemplate"
-                      x:DataType="profiles:ProfileViewModel">
-            <Grid Margin="12,8">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <FeedTemplates xmlns="using:UniSky.Templates"/>
+            </ResourceDictionary.MergedDictionaries>
+            
+            <DataTemplate x:Key="FeedProfileContentTemplate"
+                          x:DataType="profiles:ProfileViewModel">
+                <Grid Margin="12,8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-                <Ellipse x:Name="ProfileImage"
-                         Width="42" 
-                         Height="42"
-                         Margin="0,0,12,0"
-                         Grid.RowSpan="2">
-                    <Ellipse.Fill>
-                        <ImageBrush>
-                            <ImageBrush.ImageSource>
-                                <BitmapImage UriSource="{Binding AvatarUrl}"
-                                             DecodePixelWidth="48"
-                                             DecodePixelHeight="48"
-                                             DecodePixelType="Logical"/>
-                            </ImageBrush.ImageSource>
-                        </ImageBrush>
-                    </Ellipse.Fill>
-                </Ellipse>
+                    <Ellipse x:Name="ProfileImage"
+                             Width="42" 
+                             Height="42"
+                             Margin="0,0,12,0"
+                             Grid.RowSpan="2">
+                        <Ellipse.Fill>
+                            <ImageBrush>
+                                <ImageBrush.ImageSource>
+                                    <BitmapImage UriSource="{Binding AvatarUrl}"
+                                                 DecodePixelWidth="48"
+                                                 DecodePixelHeight="48"
+                                                 DecodePixelType="Logical"/>
+                                </ImageBrush.ImageSource>
+                            </ImageBrush>
+                        </Ellipse.Fill>
+                    </Ellipse>
                 
-                <TextBlock Grid.Row="0"
-                           Grid.Column="1"
-                           Style="{ThemeResource BaseTextBlockStyle}" 
-                           Text="{Binding Name}"
-                           VerticalAlignment="Bottom"
-                           TextWrapping="NoWrap"/>
+                    <TextBlock Grid.Row="0"
+                               Grid.Column="1"
+                               Style="{ThemeResource BaseTextBlockStyle}" 
+                               Text="{Binding Name}"
+                               VerticalAlignment="Bottom"
+                               TextWrapping="NoWrap"/>
                 
-                <TextBlock Grid.Row="1"
-                           Grid.Column="1"
-                           Style="{ThemeResource CaptionTextBlockStyle}" 
-                           Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
-                           Text="{Binding Handle}"
-                           VerticalAlignment="Top"
-                           TextWrapping="NoWrap"/>
+                    <TextBlock Grid.Row="1"
+                               Grid.Column="1"
+                               Style="{ThemeResource CaptionTextBlockStyle}" 
+                               Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                               Text="{Binding Handle}"
+                               VerticalAlignment="Top"
+                               TextWrapping="NoWrap"/>
 
-                <Button Style="{ThemeResource ButtonRevealStyle}"
-                        Margin="4,0,0,0"
-                        Grid.Column="2"
-                        Grid.RowSpan="2"
-                        VerticalAlignment="Center">
-                    <TextBlock Text="{Binding FollowButtonText}" Margin="8,0"/>
-                </Button>
-            </Grid>
-        </DataTemplate>
+                    <Button Style="{ThemeResource ButtonRevealStyle}"
+                            Margin="4,0,0,0"
+                            Grid.Column="2"
+                            Grid.RowSpan="2"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="{Binding FollowButtonText}" Margin="8,0"/>
+                    </Button>
+                </Grid>
+            </DataTemplate>
         
-        <datatemplates:FeedItemTemplateSelector x:Key="FeedItemTemplateSelector"
-                                                FeedPostTemplate="{StaticResource FeedItemContentTemplate}"
-                                                FeedProfileTemplate="{StaticResource FeedProfileContentTemplate}"/>
+            <datatemplates:FeedItemTemplateSelector x:Key="FeedItemTemplateSelector"
+                                                    FeedPostTemplate="{StaticResource FeedItemContentTemplate}"
+                                                    FeedProfileTemplate="{StaticResource FeedProfileContentTemplate}"/>
+        </ResourceDictionary>
     </Page.Resources>
 
     <Grid>

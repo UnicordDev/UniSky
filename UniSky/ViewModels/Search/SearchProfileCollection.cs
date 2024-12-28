@@ -5,6 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using FishyFlip.Lexicon.App.Bsky.Actor;
 using FishyFlip.Tools;
+using Microsoft.Extensions.DependencyInjection;
+using UniSky.Moderation;
 using UniSky.Services;
 using UniSky.ViewModels.Profile;
 using Windows.Foundation;
@@ -18,17 +20,20 @@ public class SearchProfileCollection : ObservableCollection<ProfileViewModel>, I
 {
     private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
     private readonly CoreDispatcher dispatcher = Window.Current.Dispatcher;
-    private readonly IProtocolService protocolService;
     private readonly HashSet<string> ids = [];
     private readonly SearchFeedViewModel parent;
+
+    private readonly IProtocolService protocolService
+        = ServiceContainer.Scoped.GetRequiredService<IProtocolService>();
+    private readonly IModerationService moderationService
+        = ServiceContainer.Scoped.GetRequiredService<IModerationService>();
 
     private readonly string query;
     private string cursor;
 
-    public SearchProfileCollection(string query, SearchFeedViewModel parent, IProtocolService protocolService)
+    public SearchProfileCollection(SearchFeedViewModel parent, string query)
     {
         this.parent = parent;
-        this.protocolService = protocolService;
         this.query = query;
     }
 
@@ -69,8 +74,14 @@ public class SearchProfileCollection : ObservableCollection<ProfileViewModel>, I
 
             await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
+                var moderator = new Moderator(moderationService.ModerationOptions);
                 foreach (var item in results.Actors)
                 {
+                    if (moderator.ModerateProfile(item)
+                                 .GetUI(ModerationContext.ProfileList)
+                                 .Filter)
+                        continue;
+
                     if (!ids.Contains(item.Did.ToString()))
                         Add(new ProfileViewModel(item));
                 }

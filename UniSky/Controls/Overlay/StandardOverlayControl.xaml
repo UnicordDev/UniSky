@@ -66,4 +66,6 @@
         </Setter>
     </Style>
 
+    <Style TargetType="local:StandardOverlayControl" BasedOn="{StaticResource DefaultGenericOverlayStyle}"/>
+
 </ResourceDictionary>

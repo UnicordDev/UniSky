@@ -349,7 +349,8 @@
                                         <local:NavigationViewItem
                                             x:Name="SettingsTopNavPaneItem"
                                             Style="{ThemeResource MUX_NavigationViewSettingsItemStyleWhenOnTopPane}"
-                                            Icon="Setting"/>
+                                            Icon="Setting"
+                                            SelectsOnInvoked="False"/>
 
                                     </Grid>
 

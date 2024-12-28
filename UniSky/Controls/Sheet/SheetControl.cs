@@ -1,18 +1,15 @@
-﻿using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Toolkit.Uwp.UI.Extensions;
 using UniSky.Controls.Overlay;
 using UniSky.Services;
-using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
 
 namespace UniSky.Controls.Sheet;
 
-public class SheetControl : OverlayControl
+public class SheetControl : OverlayControl, ISheetControl
 {
     public object PrimaryButtonContent
     {

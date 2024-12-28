@@ -20,7 +20,7 @@ using EF = Microsoft.Toolkit.Uwp.UI.Animations.Expressions.ExpressionFunctions;
 
 namespace UniSky.Pages;
 
-public sealed partial class ProfilePage : Page
+public sealed partial class ProfilePage : Page, IScrollToTop
 {
     private const string PROGRESS_NODE = "progress";
     private const string PIXELS_TO_MOVE_NODE = "pixelsToMove";
@@ -62,15 +62,15 @@ public sealed partial class ProfilePage : Page
         base.OnNavigatedTo(e);
 
         var safeAreaService = ServiceContainer.Scoped.GetRequiredService<ISafeAreaService>();
+        safeAreaService.SetTitlebarTheme(ElementTheme.Default);
         safeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
-
-        if (e.Parameter is not (ProfileView or ProfileViewBasic or ProfileViewDetailed or Uri))
-            return;
 
         if (e.Parameter is Uri { Scheme: "unisky" } uri)
             HandleUniskyProtocol(uri);
         else if (e.Parameter is ATObject basic)
             this.DataContext = ViewModel = ActivatorUtilities.CreateInstance<ProfilePageViewModel>(ServiceContainer.Default, basic);
+        else
+            this.DataContext = ViewModel = ActivatorUtilities.CreateInstance<ProfilePageViewModel>(ServiceContainer.Default);
     }
 
     protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -264,6 +264,11 @@ public sealed partial class ProfilePage : Page
     {
         if (e.Handled) return;
 
+        ScrollToTop();
+    }
+
+    public void ScrollToTop()
+    {
         var scrollView = RootList.FindDescendant<ScrollViewer>();
         if (scrollView is null)
             return;

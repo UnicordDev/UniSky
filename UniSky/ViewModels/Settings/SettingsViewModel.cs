@@ -1,14 +1,14 @@
 ﻿using Microsoft.Toolkit.Uwp.Helpers;
 using UniSky.Services;
+using Windows.ApplicationModel.Resources.Core;
 using Windows.UI.Xaml;
-
-using static UniSky.Constants.Settings;
 
 namespace UniSky.ViewModels.Settings;
 
 public class SettingsViewModel(ITypedSettings settingsService, IThemeService themeService) : ViewModelBase
 {
     private readonly int _initialColour = (int)settingsService.RequestedColourScheme;
+    private readonly bool _initialTwitterLocale = settingsService.UseTwitterLocale;
     private readonly int _initialTheme = (int)themeService.GetThemeForDisplay();
 
     public bool SunValleyThemeSupported
@@ -48,6 +48,22 @@ public class SettingsViewModel(ITypedSettings settingsService, IThemeService the
         set => settingsService.AutoRefreshFeeds = value;
     }
 
+    public bool UseTwitterLocale
+    {
+        get => settingsService.UseTwitterLocale;
+        set
+        {
+            settingsService.UseTwitterLocale = value;
+            ResourceContext.SetGlobalQualifierValue("Custom", value ? "Twitter" : "", ResourceQualifierPersistence.LocalMachine);
+        }
+    }
+
+    public bool VideosInFeeds
+    {
+        get => settingsService.VideosInFeeds;
+        set => settingsService.VideosInFeeds = value;
+    }
+
     public bool IsDirty
-        => ApplicationTheme != _initialTheme || ColourScheme != _initialColour;
+        => ApplicationTheme != _initialTheme || ColourScheme != _initialColour || _initialTwitterLocale != UseTwitterLocale;
 }

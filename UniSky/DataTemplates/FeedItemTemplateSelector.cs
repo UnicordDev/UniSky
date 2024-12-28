@@ -5,7 +5,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace UniSky.DataTemplates;
 
-internal class FeedItemTemplateSelector : DataTemplateSelector
+public class FeedItemTemplateSelector : DataTemplateSelector
 {
     public DataTemplate FeedPostTemplate { get; set; }
     public DataTemplate FeedProfileTemplate { get; set; }

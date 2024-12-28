@@ -49,7 +49,7 @@ namespace UniSky.Controls.Compose
         public bool Not(bool b, bool a)
             => !a && !b;
 
-        private void OnShowing(OverlayControl sender, OverlayShowingEventArgs e)
+        private void OnShowing(IOverlayControl sender, OverlayShowingEventArgs e)
         {
             var inputPane = InputPane.GetForCurrentView();
             inputPane.Showing += OnInputPaneShowing;
@@ -74,7 +74,7 @@ namespace UniSky.Controls.Compose
             }
         }
 
-        private void OnHidden(OverlayControl sender, RoutedEventArgs args)
+        private void OnHidden(IOverlayControl sender, RoutedEventArgs args)
         {
             var inputPane = InputPane.GetForCurrentView();
             inputPane.Showing -= OnInputPaneShowing;
@@ -90,12 +90,12 @@ namespace UniSky.Controls.Compose
             }
         }
 
-        private void OnShown(OverlayControl sender, RoutedEventArgs args)
+        private void OnShown(IOverlayControl sender, RoutedEventArgs args)
         {
             PrimaryTextBox.Focus(FocusState.Programmatic);
         }
 
-        private async void OnHiding(OverlayControl sender, OverlayHidingEventArgs e)
+        private async void OnHiding(IOverlayControl sender, OverlayHidingEventArgs e)
         {
             var deferral = e.GetDeferral();
             try

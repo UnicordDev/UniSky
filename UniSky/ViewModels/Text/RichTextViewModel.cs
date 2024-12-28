@@ -105,7 +105,7 @@ public class RichTextViewModel
 
     private unsafe string GetString(Span<byte> utf8Text, long start, long end)
     {
-        var span = utf8Text.Slice((int)start, (int)(end - start + 1));
+        var span = utf8Text.Slice((int)start, (int)Math.Min((end - start + 1), utf8Text.Length - start));
         fixed (byte* ptr = span)
         {
             return UTF8NoBom.GetString(ptr, span.Length);

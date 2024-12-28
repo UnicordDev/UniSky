@@ -20,7 +20,7 @@ namespace UniSky.Extensions
         }
 
         public static readonly DependencyProperty BorderThicknessProperty =
-            DependencyProperty.RegisterAttached("BorderThickness", typeof(Thickness), typeof(Hairline), new PropertyMetadata(DependencyProperty.UnsetValue, OnThicknessPropertyChanged));
+            DependencyProperty.RegisterAttached("BorderThickness", typeof(Thickness), typeof(Hairline), new PropertyMetadata(new Thickness(-1), OnThicknessPropertyChanged));
 
         public static Thickness GetMargin(DependencyObject obj)
         {
@@ -33,7 +33,7 @@ namespace UniSky.Extensions
         }
 
         public static readonly DependencyProperty MarginProperty =
-            DependencyProperty.RegisterAttached("Margin", typeof(Thickness), typeof(Hairline), new PropertyMetadata(DependencyProperty.UnsetValue, OnMarginPropertyChanged));
+            DependencyProperty.RegisterAttached("Margin", typeof(Thickness), typeof(Hairline), new PropertyMetadata(new Thickness(-1), OnMarginPropertyChanged));
 
         private static ThreadLocal<List<WeakReference<DependencyObject>>> Elements { get; }
             = new ThreadLocal<List<WeakReference<DependencyObject>>>(() => new List<WeakReference<DependencyObject>>(), true);
@@ -80,7 +80,8 @@ namespace UniSky.Extensions
 
         private static void ApplyBorderThickness(DependencyObject d, Thickness newValue, DisplayInformation info)
         {
-            if (newValue == default) return;
+            if (newValue.Left < 0 || newValue.Top < 0 || newValue.Right < 0 || newValue.Bottom < 0)
+                return;
 
             var hairlineThickness = (1.0 / (info.LogicalDpi / 96.0));
             var thickness = new Thickness(
@@ -108,7 +109,8 @@ namespace UniSky.Extensions
 
         private static void ApplyMargin(DependencyObject d, Thickness newValue, DisplayInformation info)
         {
-            if (newValue == default) return;
+            if (newValue.Left < 0 || newValue.Top < 0 || newValue.Right < 0 || newValue.Bottom < 0)
+                return;
 
             var hairlineThickness = (1.0 / (info.LogicalDpi / 96.0));
             var thickness = new Thickness(

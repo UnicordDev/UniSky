@@ -13,6 +13,9 @@ using System.Globalization;
 using System.Threading.Tasks;
 using FishyFlip.Lexicon.App.Bsky.Graph;
 using System;
+using UniSky.Moderation;
+using System.Collections.ObjectModel;
+using UniSky.ViewModels.Moderation;
 
 namespace UniSky.ViewModels.Profile;
 
@@ -20,6 +23,9 @@ public partial class ProfileViewModel : ViewModelBase
 {
     private static readonly IdnMapping mapper = new IdnMapping();
     private static readonly ResourceLoader strings = ResourceLoader.GetForViewIndependentUse();
+
+    private readonly IModerationService moderationService
+        = ServiceContainer.Default.GetRequiredService<IModerationService>();
 
     protected ATIdentifier id;
     protected ATObject source;
@@ -46,6 +52,9 @@ public partial class ProfileViewModel : ViewModelBase
     [ObservableProperty]
     private bool isMe;
 
+    public ObservableCollection<LabelViewModel> Labels { get; }
+    public ModerationDecision Moderation { get; private set; }
+
     public bool IsMutual
         => IsFollowing && FollowsYou;
     public string FollowButtonText
@@ -57,17 +66,22 @@ public partial class ProfileViewModel : ViewModelBase
         this.AvatarUrl = "ms-appx:///Assets/Default/Avatar.png";
         this.Name = "Example User";
         this.Handle = "@example.com";
+        this.Labels = [];
     }
 
     public ProfileViewModel(ATObject obj)
     {
         this.source = obj;
+        this.Labels = [];
 
         Populate(obj);
     }
 
     protected virtual void Populate(ATObject obj)
     {
+        Labels.Clear();
+
+        var moderator = new Moderator(moderationService.ModerationOptions);
         switch (obj)
         {
             case ProfileView view:
@@ -77,6 +91,7 @@ public partial class ProfileViewModel : ViewModelBase
                         view.Avatar,
                         view.Description,
                         view.Viewer);
+                Moderation = moderator.ModerateProfile(view);
                 break;
             case ProfileViewBasic profile:
                 SetData(profile.Did,
@@ -84,6 +99,7 @@ public partial class ProfileViewModel : ViewModelBase
                         profile.DisplayName,
                         profile.Avatar,
                         viewerState: profile.Viewer);
+                Moderation = moderator.ModerateProfile(profile);
                 break;
             case ProfileViewDetailed detailed:
                 SetData(detailed.Did,
@@ -93,7 +109,53 @@ public partial class ProfileViewModel : ViewModelBase
                         detailed.Description,
                         detailed.Viewer,
                         detailed.Banner);
+                Moderation = moderator.ModerateProfile(detailed);
                 break;
+        }
+
+        if (Moderation != null)
+        {
+            DoModeration();
+        }
+    }
+
+    private void DoModeration()
+    {
+        var ui = Moderation.GetUI(ModerationContext.ProfileList);
+        foreach (var cause in ui.Informs)
+        {
+            if (cause is LabelModerationCause label)
+                Labels.Add(new LabelViewModel(label));
+        }
+
+        var avatar = Moderation.GetUI(ModerationContext.Avatar);
+        if (avatar.Blur || avatar.Alert)
+            AvatarUrl = null;
+
+        var banner = Moderation.GetUI(ModerationContext.Banner);
+        if (banner.Blur)
+            BannerUrl = null;
+
+        var displayName = Moderation.GetUI(ModerationContext.DisplayName);
+        if (displayName.Blur)
+            this.Name = this.Handle;
+
+        var blockCause = Moderation.BlockCause;
+        if (blockCause != null)
+        {
+            if (blockCause.Type is (ModerationCauseType.Blocking or ModerationCauseType.BlockOther))
+            {
+                this.Name = strings.GetString("Profile_Blocked");
+                this.Bio = strings.GetString("Profile_BlockedUser");
+                return;
+            }
+
+            if (blockCause.Type is (ModerationCauseType.BlockedBy))
+            {
+                this.Name = strings.GetString("Profile_Blocked");
+                this.Bio = strings.GetString("Profile_BlockedByUser");
+                return;
+            }
         }
     }
 
@@ -141,22 +203,6 @@ public partial class ProfileViewModel : ViewModelBase
 
         if (viewerState is ViewerState viewer)
         {
-            if (viewer.Blocking != null)
-            {
-                this.AvatarUrl = null;
-                this.Name = strings.GetString("Profile_Blocked");
-                this.Bio = strings.GetString("Profile_BlockedUser");
-                return;
-            }
-
-            if (viewer.BlockedBy == true)
-            {
-                this.AvatarUrl = null;
-                this.Name = strings.GetString("Profile_Blocked");
-                this.Bio = strings.GetString("Profile_BlockedByUser");
-                return;
-            }
-
             this.IsFollowing = viewer.Following != null;
             this.FollowsYou = viewer.FollowedBy != null;
         }

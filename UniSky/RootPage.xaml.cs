@@ -1,49 +1,59 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using UniSky.Helpers.Composition;
-using UniSky.Pages;
 using UniSky.Services;
-using Windows.Storage;
+using UniSky.ViewModels;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
+using Windows.UI.Core;
 
 namespace UniSky;
 
-/// <summary>
-/// An empty page that can be used on its own or navigated to within a Frame.
-/// </summary>
 public sealed partial class RootPage : Page
 {
+    private bool dismissed;
+
+    public RootViewModel ViewModel
+    {
+        get => (RootViewModel)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty =
+        DependencyProperty.Register("ViewModel", typeof(RootViewModel), typeof(RootPage), new PropertyMetadata(null));
+
     public RootPage()
     {
         this.InitializeComponent();
-        Loaded += RootPage_Loaded;
+        this.DataContext = this.ViewModel = ActivatorUtilities.CreateInstance<RootViewModel>(ServiceContainer.Scoped);
+    }
+
+    private void RootFrame_Navigated(object sender, NavigationEventArgs e)
+    {
+        Dismiss();
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
 
+        ServiceContainer.Scoped.GetRequiredService<ISafeAreaService>();
+
         var serviceLocator = ServiceContainer.Scoped.GetRequiredService<INavigationServiceLocator>();
         var service = serviceLocator.GetNavigationService("Root");
         service.Frame = RootFrame;
-
-        var sessionService = ServiceContainer.Scoped.GetRequiredService<SessionService>();
-        if (ApplicationData.Current.LocalSettings.Values.TryGetValue("LastUsedUser", out var userObj) &&
-            userObj is string user)
-        {
-            service.Navigate<HomePage>(user);
-        }
-        else
-        {
-            service.Navigate<LoginPage>();
-        }
     }
 
-    private void RootPage_Loaded(object sender, RoutedEventArgs e)
+    void Dismiss()
     {
-        BirdAnimation.RunBirdAnimation(SheetRoot);
+        _ = Dispatcher.RunIdleAsync((a) =>
+        {
+            if (dismissed)
+                return;
+
+            dismissed = true;
+            ExtendedProgressRing.IsActive = false;
+            BirdAnimation.RunBirdAnimation(ExtendedSplash, SheetRoot);
+        });
     }
 }

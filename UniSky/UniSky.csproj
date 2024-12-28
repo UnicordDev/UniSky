@@ -18,7 +18,7 @@
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
-    <LangVersion>12</LangVersion>
+    <LangVersion>11</LangVersion>
     <!-- While we technically target 1709, I want to manually target 1703 for Windows Phone support -->
     <AppxOSMinVersionReplaceManifestVersion>false</AppxOSMinVersionReplaceManifestVersion>
     <AppxOSMaxVersionTestedReplaceManifestVersion>false</AppxOSMaxVersionTestedReplaceManifestVersion>
@@ -32,9 +32,9 @@
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
-    <GenerateTestArtifacts>True</GenerateTestArtifacts>
+    <GenerateTestArtifacts>False</GenerateTestArtifacts>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>arm</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x86|x64|arm|arm64</AppxBundlePlatforms>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
   </PropertyGroup>
@@ -148,7 +148,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Constants.cs" />
     <Compile Include="Controls\Compose\ComposeAddAltTextDialog.xaml.cs">
       <DependentUpon>ComposeAddAltTextDialog.xaml</DependentUpon>
     </Compile>
@@ -158,38 +157,63 @@
     <Compile Include="Controls\Compose\ComposeSheet.xaml.cs">
       <DependentUpon>ComposeSheet.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Compose\Renderer\ComposeImageRenderer.xaml.cs">
+      <DependentUpon>ComposeImageRenderer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ConstrainedBox\AspectRatioConstraint.cs" />
     <Compile Include="Controls\ConstrainedBox\ConstrainedBox.cs" />
     <Compile Include="Controls\ConstrainedBox\ConstrainedBox.Properties.cs" />
     <Compile Include="Controls\Gallery\GalleryControl.xaml.cs">
       <DependentUpon>GalleryControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Labels\LabelsControl.cs" />
     <Compile Include="Controls\Overlay\StandardOverlayControl.cs" />
     <Compile Include="Controls\PreviewPaneAuroraControl.xaml.cs">
       <DependentUpon>PreviewPaneAuroraControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\RadialProgressBar\RadialProgressBar.cs" />
-    <Compile Include="Controls\RichTextBlock\RichTextBlock.cs" />
+    <Compile Include="Controls\RichTextBlock\FacetTextBlock.cs" />
     <Compile Include="Controls\Settings\SettingsNeedsRelaunchDialog.xaml.cs">
       <DependentUpon>SettingsNeedsRelaunchDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Settings\SettingsSheet.xaml.cs">
       <DependentUpon>SettingsSheet.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Overlay\OverlayHidingEventArgs.cs" />
-    <Compile Include="Controls\Overlay\OverlayShowingEventArgs.cs" />
     <Compile Include="Controls\Overlay\OverlayControl.cs" />
     <Compile Include="Controls\Sheet\SheetControl.cs" />
     <Compile Include="Controls\Sheet\SheetRootControl.xaml.cs">
       <DependentUpon>SheetRootControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Spoiler\SpoilerControl.cs" />
+    <Compile Include="Controls\UniformGrid\TakenSpotsReferenceHolder.cs" />
+    <Compile Include="Controls\UniformGrid\UniformGrid.cs" />
+    <Compile Include="Controls\UniformGrid\UniformGrid.Helpers.cs" />
+    <Compile Include="Controls\UniformGrid\UniformGrid.Properties.cs" />
+    <Compile Include="Controls\VideoPlayer\VideoPlayerOverlay.xaml.cs">
+      <DependentUpon>VideoPlayerOverlay.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\WrapLayout\UvBounds.cs" />
+    <Compile Include="Controls\WrapLayout\UvMeasure.cs" />
+    <Compile Include="Controls\WrapLayout\WrapItem.cs" />
+    <Compile Include="Controls\WrapLayout\WrapLayout.cs" />
+    <Compile Include="Controls\WrapLayout\WrapLayoutState.cs" />
+    <Compile Include="Controls\WrapPanel\StretchChild.cs" />
+    <Compile Include="Controls\WrapPanel\WrapPanel.cs" />
+    <Compile Include="Controls\WrapPanel\WrapPanel.Data.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Converters\Static.cs" />
     <Compile Include="DataTemplates\FeedItemTemplateSelector.cs" />
     <Compile Include="DataTemplates\PostEmbedTemplateSelector.cs" />
+    <Compile Include="DataTemplates\ThreadItemTemplateSelector.cs" />
+    <Compile Include="DataTemplates\ThreadTemplates.xaml.cs">
+      <DependentUpon>ThreadTemplates.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Extensions\Hairline.cs" />
+    <Compile Include="Extensions\ScrollToSelectedBehaviour.cs" />
     <Compile Include="Extensions\SynchronizationContextExtensions.cs" />
+    <Compile Include="Helpers\AngleSharp\CustomHttpClientRequester.cs" />
     <Compile Include="Helpers\Composition\BirdAnimation.cs" />
+    <Compile Include="Helpers\FacetHelpers.cs" />
     <Compile Include="Helpers\Geometry\CanvasPathBuilderExtensions.cs" />
     <Compile Include="Helpers\Geometry\CanvasPathGeometry.cs" />
     <Compile Include="Helpers\Geometry\CanvasStroke.cs" />
@@ -243,13 +267,14 @@
     <Compile Include="Pages\SearchPage.xaml.cs">
       <DependentUpon>SearchPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Services\INavigationService.cs" />
-    <Compile Include="Services\INavigationServiceLocator.cs" />
-    <Compile Include="Services\IProtocolService.cs" />
-    <Compile Include="Services\ISettingsService.cs" />
-    <Compile Include="Services\ISheetService.cs" />
-    <Compile Include="Services\IThemeService.cs" />
-    <Compile Include="Services\ITypedSettings.cs" />
+    <Compile Include="Pages\ThreadPage.xaml.cs">
+      <DependentUpon>ThreadPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Polyfill\IsExternalInit.cs" />
+    <Compile Include="Services\BackgroundNotificationsService.cs" />
+    <Compile Include="Services\ImageCompressionService.cs" />
+    <Compile Include="Services\IScrollToTop.cs" />
+    <Compile Include="Services\XamlEmbedThumbnailGenerator.cs" />
     <Compile Include="Services\NavigationServiceLocator.cs" />
     <Compile Include="DataTemplates\FeedTemplates.xaml.cs">
       <DependentUpon>FeedTemplates.xaml</DependentUpon>
@@ -258,29 +283,31 @@
     <Compile Include="Services\Overlay\OverlayService.cs" />
     <Compile Include="Services\SafeArea\AppWindowSafeAreaService.cs" />
     <Compile Include="Services\SafeArea\ApplicationViewSafeAreaService.cs" />
-    <Compile Include="Services\SafeArea\ISafeAreaService.cs" />
-    <Compile Include="Services\SafeArea\SafeAreaInfo.cs" />
-    <Compile Include="Services\SafeArea\SafeAreaUpdatedEventArgs.cs" />
-    <Compile Include="Services\ServiceContainer.cs" />
-    <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\Overlay\ApplicationViewOverlayController.cs" />
     <Compile Include="Services\Overlay\AppWindowOverlayController.cs" />
-    <Compile Include="Services\Overlay\IOverlayController.cs" />
     <Compile Include="Services\Sheet\SheetRootController.cs" />
     <Compile Include="Services\Sheet\SheetService.cs" />
     <Compile Include="Services\ThemeService.cs" />
+    <Compile Include="Services\AngleSharpEmbedExtractor.cs" />
+    <Compile Include="Services\XamlElementCaptureService.cs" />
     <Compile Include="Themes\ThemeResources.cs" />
     <Compile Include="ViewModels\Compose\ComposeViewAttachmentViewModel.cs" />
+    <Compile Include="ViewModels\Compose\ComposeViewLinkCardViewModel.cs" />
     <Compile Include="ViewModels\Compose\ComposeViewModel.cs" />
     <Compile Include="ViewModels\Error\ExceptionViewModel.cs" />
     <Compile Include="ViewModels\Gallery\GalleryViewModel.cs" />
+    <Compile Include="ViewModels\MenuItems\MenuItemViewModel.cs" />
+    <Compile Include="ViewModels\Moderation\LabelViewModel.cs" />
+    <Compile Include="ViewModels\MenuItems\NotificationsMenuItemViewModel.cs" />
     <Compile Include="ViewModels\Notifications\NotificationsCollection.cs" />
     <Compile Include="ViewModels\Notifications\NotificationsPageViewModel.cs" />
     <Compile Include="ViewModels\Notifications\NotificationViewModel.cs" />
+    <Compile Include="ViewModels\Posts\ContentWarningViewModel.cs" />
     <Compile Include="ViewModels\Posts\PostEmbedExternalViewModel.cs" />
     <Compile Include="ViewModels\Posts\PostEmbedPostViewModel.cs" />
     <Compile Include="ViewModels\Posts\PostEmbedRecordWithMediaViewModel.cs" />
     <Compile Include="ViewModels\Posts\PostEmbedVideoViewModel.cs" />
+    <Compile Include="ViewModels\MenuItems\ProfileMenuItemViewModel.cs" />
     <Compile Include="ViewModels\Profile\ProfileFeedViewModel.cs" />
     <Compile Include="ViewModels\Profile\ProfilePageViewModel.cs" />
     <Compile Include="ViewModels\Profile\ProfileViewModel.cs" />
@@ -294,6 +321,9 @@
     <Compile Include="ViewModels\Search\SearchProfileCollection.cs" />
     <Compile Include="ViewModels\Settings\SettingsViewModel.cs" />
     <Compile Include="ViewModels\Text\RichTextViewModel.cs" />
+    <Compile Include="ViewModels\Thread\ThreadPostViewModel.cs" />
+    <Compile Include="ViewModels\Thread\ThreadViewModel.cs" />
+    <Compile Include="ViewModels\VideoPlayer\VideoPlayerViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Pages\FeedsPage.xaml.cs">
       <DependentUpon>FeedsPage.xaml</DependentUpon>
@@ -308,10 +338,7 @@
       <DependentUpon>RootPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\LoginService.cs" />
     <Compile Include="Services\NavigationService.cs" />
-    <Compile Include="Services\ProtocolService.cs" />
-    <Compile Include="Services\SessionService.cs" />
     <Compile Include="ViewModels\Error\ATErrorViewModel.cs" />
     <Compile Include="ViewModels\Error\ErrorViewModel.cs" />
     <Compile Include="ViewModels\Feeds\FeedItemCollection.cs" />
@@ -327,6 +354,11 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\BadgeLogo.scale-100.png" />
+    <Content Include="Assets\BadgeLogo.scale-125.png" />
+    <Content Include="Assets\BadgeLogo.scale-150.png" />
+    <Content Include="Assets\BadgeLogo.scale-200.png" />
+    <Content Include="Assets\BadgeLogo.scale-400.png" />
     <Content Include="Assets\custom-twitter\LargeTile.scale-100.png" />
     <Content Include="Assets\custom-twitter\LargeTile.scale-125.png" />
     <Content Include="Assets\custom-twitter\LargeTile.scale-150.png" />
@@ -418,6 +450,7 @@
     <Content Include="Assets\StoreLogo.scale-150.png" />
     <Content Include="Assets\StoreLogo.scale-200.png" />
     <Content Include="Assets\StoreLogo.scale-400.png" />
+    <Content Include="Assets\WatermarkLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-100.png" />
     <Content Include="Assets\Wide310x150Logo.scale-125.png" />
     <Content Include="Assets\Wide310x150Logo.scale-150.png" />
@@ -448,7 +481,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\Compose\Renderer\ComposeImageRenderer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Gallery\GalleryControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Labels\LabelsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -476,6 +517,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\VideoPlayer\VideoPlayerOverlay.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataTemplates\ThreadTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\FeedsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -499,6 +548,10 @@
     <Page Include="Pages\SearchPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\ThreadPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="RootPage.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -548,19 +601,36 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Controls\Spoiler\SpoilerControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Performance.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AngleSharp">
+      <Version>1.2.0-beta.439</Version>
+    </PackageReference>
+    <PackageReference Include="AngleSharp.Io">
+      <Version>1.0.0</Version>
+    </PackageReference>
     <PackageReference Include="CommunityToolkit.Mvvm">
-      <Version>8.3.2</Version>
+      <Version>8.4.0</Version>
     </PackageReference>
     <PackageReference Include="FishyFlip">
-      <Version>3.1.0-alpha.9</Version>
+      <Version>3.1.0-alpha.28</Version>
     </PackageReference>
     <PackageReference Include="Humanizer.Core">
+      <Version>2.14.1</Version>
+    </PackageReference>
+    <PackageReference Include="Humanizer.Core.pl">
       <Version>2.14.1</Version>
     </PackageReference>
     <PackageReference Include="ksemenenko.ColorThief">
@@ -590,10 +660,18 @@
     <PackageReference Include="Microsoft.Xaml.Behaviors.Uwp.Managed">
       <Version>2.0.1</Version>
     </PackageReference>
+    <PackageReference Include="OwlCore">
+      <Version>0.6.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Json">
+      <Version>9.0.0</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <PRIResource Include="Resources\en-GB\custom-twitter\Resources.resw" />
     <PRIResource Include="Resources\en-GB\Resources.resw" />
+    <PRIResource Include="Resources\pl-PL\Resources.resw" />
+    <PRIResource Include="Resources\pl-PL\custom-twitter\Resources.resw" />
     <None Include="UniSky_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -613,6 +691,17 @@
       <Project>{7491ea1a-e1b7-469c-a3c2-5202aa14ce26}</Project>
       <Name>UniSky.Models</Name>
     </ProjectReference>
+    <ProjectReference Include="..\UniSky.Moderation\UniSky.Moderation.csproj">
+      <Project>{ebad0b40-6694-488f-9dca-da1bf453645a}</Project>
+      <Name>UniSky.Moderation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UniSky.Services\UniSky.Services.csproj">
+      <Project>{18b2b20a-5ba7-428c-a2cc-d9ea99a943cd}</Project>
+      <Name>UniSky.Services</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
@@ -670,4 +759,5 @@
       <TargetPlatformMinVersion>$(OriginalTargetPlatformMinVersion)</TargetPlatformMinVersion>
     </PropertyGroup>
   </Target>
+  <Import Project="../UniSky.targets" />
 </Project>

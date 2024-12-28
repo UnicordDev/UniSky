@@ -13,7 +13,6 @@
     d:DesignHeight="300"
     d:DesignWidth="400"
     d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel}"
-    Style="{ThemeResource DefaultSheetControlStyle}"
     PrimaryButtonVisibility="Collapsed"
     SecondaryButtonContent="Close"
     TitleContent="SETTINGS">
@@ -56,11 +55,26 @@
                           Margin="0,0,0,4" 
                           IsOn="{Binding AutoRefreshFeeds, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
+            <ToggleSwitch x:Uid="UseTwitterLocaleSwitch"
+                          Header="Use Twitter locale (experimental)" 
+                          HorizontalAlignment="Stretch" 
+                          Margin="0,0,0,4" 
+                          IsOn="{Binding UseTwitterLocale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            
+            <ToggleSwitch x:Uid="VideosInFeeds"
+                          Header="Show videos inline in feeds" 
+                          HorizontalAlignment="Stretch" 
+                          Margin="0,0,0,4" 
+                          IsOn="{Binding VideosInFeeds, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
             <TextBlock x:Uid="SettingsAboutHeaderBlock"
                        Style="{ThemeResource SubtitleTextBlockStyle}" Text="About"/>
             <TextBlock TextWrapping="Wrap">
                 <Run x:Uid="SettingsAboutVersionRun" Text="Version"/>
                 <Run Text="{x:Bind root:Constants.Version, FallbackValue='1.0.0.0-abcdefg'}"/>
+            </TextBlock>
+            <TextBlock TextWrapping="Wrap">
+                Icon by <Hyperlink NavigateUri="https://bsky.app/profile/xubiod.net">@xubiod.net</Hyperlink> &lt;3
             </TextBlock>
         </StackPanel>        
     </ScrollViewer>

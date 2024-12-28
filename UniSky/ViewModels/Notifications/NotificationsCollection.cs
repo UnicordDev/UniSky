@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using FishyFlip.Lexicon.App.Bsky.Feed;
 using FishyFlip.Lexicon.App.Bsky.Notification;
 using FishyFlip.Tools;
+using Microsoft.Extensions.DependencyInjection;
+using UniSky.Moderation;
 using UniSky.Services;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -21,15 +23,18 @@ public class NotificationsCollection : ObservableCollection<NotificationViewMode
     private readonly CoreDispatcher dispatcher = Window.Current.Dispatcher;
 
     private readonly NotificationsPageViewModel parent;
-    private readonly IProtocolService protocolService;
+    private readonly IProtocolService protocolService
+            = ServiceContainer.Scoped.GetRequiredService<IProtocolService>();
+    private readonly IModerationService moderationService
+        = ServiceContainer.Scoped.GetRequiredService<IModerationService>();
 
     private string cursor;
 
-    public NotificationsCollection(NotificationsPageViewModel parent, IProtocolService protocolService)
+    public NotificationsCollection(NotificationsPageViewModel parent)
     {
         this.parent = parent;
-        this.protocolService = protocolService;
     }
+
     public bool HasMoreItems { get; private set; } = true;
 
 
@@ -61,13 +66,20 @@ public class NotificationsCollection : ObservableCollection<NotificationViewMode
 
         try
         {
-            var notifications = (await service.ListNotificationsAsync(count, cursor: cursor)
+            var moderator = new Moderator(moderationService.ModerationOptions);
+            var notificationsResponse = (await service.ListNotificationsAsync(limit: count, cursor: cursor)
                 .ConfigureAwait(false))
                 .HandleResult();
 
-            this.cursor = notifications.Cursor;
+            this.cursor = notificationsResponse.Cursor;
 
-            var hydratePostIds = notifications.Notifications.Where(n =>
+            var notifications = notificationsResponse.Notifications
+                .Where(s => !moderator.ModerateNotification(s)
+                                      .GetUI(ModerationContext.ContentList)
+                                      .Filter)
+                .ToList();
+
+            var hydratePostIds = notifications.Where(n =>
                 n.Reason is (NotificationReason.Like or NotificationReason.Repost) &&
                 n.ReasonSubject is not null)
                 .Select(s => s.ReasonSubject)
@@ -83,7 +95,7 @@ public class NotificationsCollection : ObservableCollection<NotificationViewMode
 
             await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                var groups = notifications.Notifications
+                var groups = notifications
                     .GroupBy(g => (g.Reason is (NotificationReason.Like or NotificationReason.Repost)) ? string.Join('-', g.Reason, g.ReasonSubject) : null);
 
                 foreach (var group in groups)
@@ -123,7 +135,7 @@ public class NotificationsCollection : ObservableCollection<NotificationViewMode
                 ArrayList.Adapter(this).Sort(); // ?????
             });
 
-            if (notifications.Notifications.Count == 0 || string.IsNullOrWhiteSpace(this.cursor))
+            if (notifications.Count == 0 || string.IsNullOrWhiteSpace(this.cursor))
                 HasMoreItems = false;
 
             return new LoadMoreItemsResult() { Count = (uint)(Count - initialCount) };

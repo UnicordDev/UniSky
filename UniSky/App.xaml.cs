@@ -8,6 +8,8 @@ using UniSky.Services;
 using UniSky.Services.Overlay;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Core;
+using Windows.ApplicationModel.Resources.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -20,7 +22,8 @@ namespace UniSky;
 /// </summary>
 sealed partial class App : Application
 {
-    private ILogger<App> _logger;
+    private readonly ILogger<App> _logger;
+    private readonly ITypedSettings _settings;
 
     /// <summary>
     /// Initializes the singleton application object.  This is the first line of authored code
@@ -36,8 +39,24 @@ sealed partial class App : Application
 
         _logger = ServiceContainer.Default.GetRequiredService<ILoggerFactory>()
             .CreateLogger<App>();
+        _settings = ServiceContainer.Default.GetRequiredService<ITypedSettings>();
 
-        // ResourceContext.SetGlobalQualifierValue("Custom", "Twitter", ResourceQualifierPersistence.LocalMachine);
+        if (_settings.RequestedColourScheme != ElementTheme.Default)
+        {
+            if (_settings.RequestedColourScheme == ElementTheme.Light)
+                RequestedTheme = ApplicationTheme.Light;
+            else
+                RequestedTheme = ApplicationTheme.Dark;
+        }
+
+        if (_settings.UseTwitterLocale)
+        {
+            ResourceContext.SetGlobalQualifierValue("Custom", "Twitter", ResourceQualifierPersistence.LocalMachine);
+        }
+        else
+        {
+            ResourceContext.SetGlobalQualifierValue("Custom", "", ResourceQualifierPersistence.LocalMachine);
+        }
     }
 
     private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -56,18 +75,26 @@ sealed partial class App : Application
 
         collection.AddSingleton<IProtocolService, ProtocolService>();
         collection.AddSingleton<ISettingsService, SettingsService>();
-        collection.AddSingleton<ITypedSettings, SettingsService>();
+        collection.AddSingleton<ITypedSettings, TypedSettingsService>();
         collection.AddSingleton<IThemeService, ThemeService>();
         collection.AddSingleton<INavigationServiceLocator, NavigationServiceLocator>();
+        collection.AddSingleton<INotificationsService, BackgroundNotificationsService>();
+        collection.AddSingleton<IModerationService, ModerationService>();
+        collection.AddSingleton<IEmbedExtractor, AngleSharpEmbedExtractor>();
+        collection.AddSingleton<IImageCompressionService, ImageCompressionService>();
+
         collection.AddScoped<ISafeAreaService, ApplicationViewSafeAreaService>();
         collection.AddScoped<ISheetService, SheetService>();
         collection.AddScoped<IStandardOverlayService, StandardOverlayService>();
+        collection.AddScoped<IElementCaptureService, XamlElementCaptureService>();
+        collection.AddScoped<IEmbedThumbnailGenerator, XamlEmbedThumbnailGenerator>();
 
-        collection.AddTransient<LoginService>();
-        collection.AddTransient<SessionService>();
+        collection.AddTransient<ILoginService, LoginService>();
+        collection.AddTransient<ISessionService, SessionService>();
+        collection.AddTransient<IBadgeService, BadgeService>();
 
         ServiceContainer.Default.ConfigureServices(collection.BuildServiceProvider());
-        
+
         Configurator.Formatters.Register("en", (locale) => new ShortTimespanFormatter("en"));
         Configurator.Formatters.Register("en-GB", (locale) => new ShortTimespanFormatter("en"));
         Configurator.Formatters.Register("en-US", (locale) => new ShortTimespanFormatter("en"));
@@ -110,12 +137,14 @@ sealed partial class App : Application
 
         if (e.PrelaunchActivated == false)
         {
+            CoreApplication.EnablePrelaunch(true);
+
             if (rootFrame.Content == null)
             {
                 // When the navigation stack isn't restored navigate to the first page,
                 // configuring the new page by passing required information as a navigation
                 // parameter
-                rootFrame.Navigate(typeof(RootPage), e.Arguments);
+                rootFrame.Navigate(typeof(RootPage), e.SplashScreen);
             }
 
             // Ensure the current window is active
@@ -126,11 +155,12 @@ sealed partial class App : Application
     private void OnProtocolActivated(ProtocolActivatedEventArgs e)
     {
         Hairline.Initialize();
+
         if (Window.Current.Content is not Frame rootFrame)
         {
             rootFrame = new Frame();
             rootFrame.NavigationFailed += OnNavigationFailed;
-            rootFrame.Navigate(typeof(RootPage));
+            rootFrame.Navigate(typeof(RootPage), e.SplashScreen);
             Window.Current.Content = rootFrame;
         }
 

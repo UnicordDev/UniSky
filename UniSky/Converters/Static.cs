@@ -1,4 +1,8 @@
-﻿namespace UniSky.Converters;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
+using UniSky.ViewModels.Moderation;
+
+namespace UniSky.Converters;
 
 public class Static
 {
@@ -14,4 +18,6 @@ public class Static
         => string.IsNullOrWhiteSpace(s);
     public static bool NotNullOrWhiteSpace(string s)
         => !string.IsNullOrWhiteSpace(s);
+    public static bool Any(ObservableCollection<LabelViewModel> objects)
+        => objects.Any();
 }

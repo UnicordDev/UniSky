@@ -2,27 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>10</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FishyFlip" Version="3.1.0-alpha.7" />
+    <PackageReference Include="FishyFlip" Version="3.1.0-alpha.28" />
     <PackageReference Include="System.Text.Json" Version="9.0.0" />
   </ItemGroup>
-
-  <Target Name="SetSourceRevisionId" BeforeTargets="InitializeSourceControlInformation">
-    <Exec Condition="'$(SourceRevisionCommit)' == ''" Command="git describe --long --always --dirty --exclude=* --abbrev=7" ConsoleToMSBuild="True" IgnoreExitCode="False">
-      <Output PropertyName="SourceRevisionCommit" TaskParameter="ConsoleOutput"/>
-    </Exec>
-    <Exec Condition="'$(SourceRevisionBranch)' == ''" Command="git branch --show-current" ConsoleToMSBuild="True" IgnoreExitCode="True">
-      <Output PropertyName="SourceRevisionBranch" TaskParameter="ConsoleOutput"/>
-    </Exec>
-
-    <PropertyGroup>
-      <SourceRevisionId Condition="'$(SourceRevisionBranch)' == 'master' Or '$(SourceRevisionBranch)' == 'main' Or '$(SourceRevisionBranch)' == ''">$(SourceRevisionCommit)</SourceRevisionId>
-      <SourceRevisionId Condition="'$(SourceRevisionBranch)' != 'master' And '$(SourceRevisionBranch)' != 'main' And '$(SourceRevisionBranch)' != ''">$(SourceRevisionCommit) ($(SourceRevisionBranch))</SourceRevisionId>
-    </PropertyGroup>
-  </Target>
+  
+  <Import Project="../UniSky.targets" />
 
 </Project>

@@ -21,12 +21,36 @@ public sealed partial class LoginPage : Page
     public LoginPage()
     {
         this.InitializeComponent();
-        this.ViewModel = ActivatorUtilities.CreateInstance<LoginViewModel>(ServiceContainer.Scoped);
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         this.Frame.BackStack.Clear();
+
+        var safeAreaService = ServiceContainer.Scoped.GetRequiredService<ISafeAreaService>();
+        safeAreaService.SetTitleBar(TitleBarDrag);
+        safeAreaService.SetTitlebarTheme(ElementTheme.Default);
+        safeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
+
+        if (e.Parameter is not LoginViewModel vm)
+            return;
+
+        DataContext = ViewModel = vm;
+    }
+
+    private void OnSafeAreaUpdated(object sender, SafeAreaUpdatedEventArgs e)
+    {
+        if (e.SafeArea.HasTitleBar)
+        {
+            AppTitleBar.Visibility = Visibility.Visible;
+            AppTitleBar.Height = e.SafeArea.Bounds.Top;
+        }
+        else
+        {
+            AppTitleBar.Visibility = Visibility.Collapsed;
+        }
+
+        Margin = new Thickness(e.SafeArea.Bounds.Left, 0, e.SafeArea.Bounds.Right, e.SafeArea.Bounds.Bottom);
     }
 
     public bool IsNotNull(object o) 

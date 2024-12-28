@@ -1,8 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using FishyFlip.Lexicon.App.Bsky.Embed;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Uwp.UI.Controls;
+using UniSky.Controls.VideoPlayer;
+using UniSky.Services;
+using UniSky.Services.Overlay;
+using UniSky.ViewModels.VideoPlayer;
 using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.Media.Streaming.Adaptive;
@@ -37,6 +43,13 @@ public partial class PostEmbedVideoViewModel : PostEmbedViewModel
     {
         var create = await AdaptiveMediaSource.CreateFromUriAsync(new Uri(video.Playlist));
         if (create.Status == AdaptiveMediaSourceCreationStatus.Success)
-            Source = MediaSource.CreateFromAdaptiveMediaSource(create.MediaSource); 
+            Source = MediaSource.CreateFromAdaptiveMediaSource(create.MediaSource);
+    }
+
+    [RelayCommand]
+    private async Task ShowVideoPlayerAsync(object parameter)
+    {
+        var genericOverlay = ServiceContainer.Scoped.GetRequiredService<IStandardOverlayService>();
+        await genericOverlay.ShowAsync<VideoPlayerOverlay>(new ShowVideoPlayerArgs(video));
     }
 }

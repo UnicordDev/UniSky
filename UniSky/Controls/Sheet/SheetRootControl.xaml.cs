@@ -61,9 +61,9 @@ namespace UniSky.Controls.Sheet
             return base.ArrangeOverride(finalSize);
         }
 
-        internal void ShowSheet(SheetControl control, object parameter)
+        internal void ShowSheet(ISheetControl control, object parameter)
         {
-            SheetRoot.Child = control;
+            SheetRoot.Child = (FrameworkElement)control;
             control.InvokeShowing(parameter);
 
             VisualStateManager.GoToState(this, "Open", true);
@@ -88,7 +88,7 @@ namespace UniSky.Controls.Sheet
 
             try
             {
-                if (SheetRoot.Child is SheetControl control)
+                if (SheetRoot.Child is ISheetControl control)
                 {
                     if (!await control.InvokeHidingAsync())
                         return false;
@@ -135,7 +135,7 @@ namespace UniSky.Controls.Sheet
 
         private void ShowSheetStoryboard_Completed(object sender, object e)
         {
-            if (SheetRoot.Child is SheetControl control)
+            if (SheetRoot.Child is ISheetControl control)
             {
                 control.InvokeShown();
             }
@@ -146,7 +146,7 @@ namespace UniSky.Controls.Sheet
 
         private void HideSheetStoryboard_Completed(object sender, object e)
         {
-            if (SheetRoot.Child is SheetControl control)
+            if (SheetRoot.Child is ISheetControl control)
             {
                 control.InvokeHidden();
                 SheetRoot.Child = null;

@@ -422,4 +422,73 @@
   <data name="GalleryControl.TitleContent" xml:space="preserve">
     <value>GALLERY</value>
   </data>
+  <data name="ThreadPageTitleBlock.Text" xml:space="preserve">
+    <value>POST</value>
+  </data>
+  <data name="GlobalLabel_GRAPHIC_MEDIA_Description" xml:space="preserve">
+    <value>Explicit or potentially disturbing media.</value>
+  </data>
+  <data name="GlobalLabel_GRAPHIC_MEDIA_Name" xml:space="preserve">
+    <value>Graphic Media</value>
+  </data>
+  <data name="GlobalLabel_HIDE_Description" xml:space="preserve">
+    <value>This content has been hidden by the Bluesky Moderation Team.</value>
+  </data>
+  <data name="GlobalLabel_HIDE_Name" xml:space="preserve">
+    <value>Content Blocked</value>
+  </data>
+  <data name="GlobalLabel_NO_UNAUTHENTICATED_Description" xml:space="preserve">
+    <value>This user has requested that their content is only visible to signed-in users. Please note that this mechanism is fundamentally insecure.</value>
+  </data>
+  <data name="GlobalLabel_NO_UNAUTHENTICATED_Name" xml:space="preserve">
+    <value>Sign-in Required</value>
+  </data>
+  <data name="GlobalLabel_NUDITY_Description" xml:space="preserve">
+    <value>Artistic nudity, etc.</value>
+  </data>
+  <data name="GlobalLabel_NUDITY_Name" xml:space="preserve">
+    <value>Non-sexual Nudity</value>
+  </data>
+  <data name="GlobalLabel_PORN_Description" xml:space="preserve">
+    <value>Explicit sexual imagery.</value>
+  </data>
+  <data name="GlobalLabel_PORN_Name" xml:space="preserve">
+    <value>Adult Content</value>
+  </data>
+  <data name="GlobalLabel_SEXUAL_Description" xml:space="preserve">
+    <value>Non-explicit sexual imagery.</value>
+  </data>
+  <data name="GlobalLabel_SEXUAL_Name" xml:space="preserve">
+    <value>Sexually Suggestive</value>
+  </data>
+  <data name="GlobalLabel_WARN_Description" xml:space="preserve">
+    <value>This content has recieved a general warning from the Bluesky Moderation Team.</value>
+  </data>
+  <data name="GlobalLabel_WARN_Name" xml:space="preserve">
+    <value>Content Warning</value>
+  </data>
+  <data name="HomePage_Chat" xml:space="preserve">
+    <value>Chat</value>
+  </data>
+  <data name="HomePage_Feeds" xml:space="preserve">
+    <value>Feeds</value>
+  </data>
+  <data name="HomePage_Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="HomePage_Lists" xml:space="preserve">
+    <value>Lists</value>
+  </data>
+  <data name="HomePage_Notifications" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="HomePage_Profile" xml:space="preserve">
+    <value>Profile</value>
+  </data>
+  <data name="HomePage_Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="HomePage_Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
 </root>

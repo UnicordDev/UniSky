@@ -39,7 +39,7 @@ public partial class ProfileFeedViewModel : FeedViewModel
             ProfileView view => view.Did,
             _ => throw new InvalidCastException()
         };
-        this.Items = new FeedItemCollection(this, FeedType.Author, did, filterType, protocolService);
+        this.Items = new FeedItemCollection(this, FeedType.Author, did, filterType);
     }
 
     private void OnParentPropertyChanged(object sender, PropertyChangedEventArgs e)

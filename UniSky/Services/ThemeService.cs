@@ -2,14 +2,6 @@
 
 namespace UniSky.Services;
 
-public enum AppTheme
-{
-    Performance,
-    Fluent,
-    SunValley,
-    OLED
-}
-
 internal class ThemeService(ISettingsService settings) : IThemeService
 {
     private const string Themes_AppTheme = "AppTheme";

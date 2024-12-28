@@ -14,22 +14,13 @@
                 <ResourceDictionary>
                     <ResourceDictionary.MergedDictionaries>
                         <ThemeResources xmlns="using:UniSky.Themes"/>
-
-                        <!-- Styles -->
+                        
                         <ResourceDictionary Source="/Templates/Icons.xaml"/>
                         <ResourceDictionary Source="/Templates/NavigationViewStyles.xaml"/>
                         <ResourceDictionary Source="/Templates/ButtonStyles.xaml"/>
                         <ResourceDictionary Source="/Templates/TextBoxStyles.xaml"/>
                         <ResourceDictionary Source="/Templates/RichTextBlockStyles.xaml"/>
                         <ResourceDictionary Source="/Templates/MediaTransportControlsStyles.xaml"/>
-
-                        <!-- Templates -->
-                        <FeedTemplates xmlns="using:UniSky.Templates"/>
-
-                        <!-- Controls -->
-                        <ResourceDictionary Source="/Controls/Overlay/StandardOverlayControl.xaml"/>
-                        <ResourceDictionary Source="/Controls/Sheet/SheetControl.xaml"/>
-                        <ResourceDictionary Source="/Controls/RadialProgressBar/RadialProgressBar.xaml"/>
                     </ResourceDictionary.MergedDictionaries>
                     
                     <x:Double x:Key="ControlContentThemeFontSize">14</x:Double>
@@ -39,8 +30,6 @@
                                      Color="{ThemeResource SystemListExtraLowColor}"/>
 
                     <SolidColorBrush x:Key="SystemControlSeparatorBrush" Color="{ThemeResource SystemControlSeparatorColor}"/>
-
-                    <Style TargetType="sheets:SheetControl" BasedOn="{StaticResource DefaultSheetControlStyle}"/>
                 </ResourceDictionary>
             </controls:XamlControlsResources.MergedDictionaries>
         </controls:XamlControlsResources>

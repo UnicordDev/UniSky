@@ -55,11 +55,11 @@ public partial class SearchFeedViewModel : ViewModelBase
     {
         if (type == "people")
         {
-            Items = new SearchProfileCollection(queryText, this, this.protocolService);
+            Items = new SearchProfileCollection(this, queryText);
         }
         else
         {
-            Items = new SearchPostsCollection(queryText, this.type, this, this.protocolService);
+            Items = new SearchPostsCollection(this, queryText, this.type);
         }
     }
 }

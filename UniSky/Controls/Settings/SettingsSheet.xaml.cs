@@ -20,12 +20,12 @@ public sealed partial class SettingsSheet : SheetControl
         this.Hiding += OnHiding;
     }
 
-    private void OnShowing(OverlayControl sender, OverlayShowingEventArgs args)
+    private void OnShowing(IOverlayControl sender, OverlayShowingEventArgs args)
     {
         this.DataContext = ActivatorUtilities.CreateInstance<SettingsViewModel>(ServiceContainer.Scoped);
     }
 
-    private async void OnHiding(OverlayControl sender, OverlayHidingEventArgs args)
+    private async void OnHiding(IOverlayControl sender, OverlayHidingEventArgs args)
     {
         if (!ApiInformation.IsMethodPresent("Windows.ApplicationModel.Core.CoreApplication", "RequestRestartAsync"))
             return;

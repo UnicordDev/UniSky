@@ -3,10 +3,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UniSky.Controls">
 
-    <Style TargetType="local:RichTextBlock">
+    <Style TargetType="local:FacetTextBlock">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="local:RichTextBlock">
+                <ControlTemplate TargetType="local:FacetTextBlock">
                     <TextBlock x:Name="PART_TextBlock"
                                Foreground="{TemplateBinding Foreground}"
                                TextWrapping="{TemplateBinding TextWrapping}"
