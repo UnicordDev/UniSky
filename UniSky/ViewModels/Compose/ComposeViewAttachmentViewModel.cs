@@ -81,7 +81,15 @@ public partial class ComposeViewAttachmentViewModel : ViewModelBase
                 ContentType = compressedImage.ContentType;
                 StorageFile = compressedImage.StorageFile;
             }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to compress image!");
+            syncContext.Post(() => this.Remove());
+        }
 
+        try
+        {
             if (this.StorageFile is not IStorageItemProperties properties)
                 return;
 

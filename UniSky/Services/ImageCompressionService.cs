@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using UniSky.Helpers;
 using UniSky.Models;
+using Windows.ApplicationModel;
+using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Imaging;
 using Windows.Storage;
@@ -12,6 +14,8 @@ namespace UniSky.Services;
 
 public class ImageCompressionService : IImageCompressionService
 {
+    private static bool isHeifEncoderMissing = false;
+
     public async Task<CompressedImageFile> CompressStorageFileAsync(IStorageFile input, int size = 4096)
     {
         return await CompressImageAsync(input, CheckHeifSupport(), size);
@@ -48,7 +52,8 @@ public class ImageCompressionService : IImageCompressionService
             (int)decoder.OrientedPixelHeight);
 
         // dodgy logic but sure it'll probably work
-        if (compressedStream.ContentType.Contains("jpeg") || compressedStream.ContentType.Contains("jpg"))
+        if (compressedStream.ContentType.Contains("jpeg") ||
+            compressedStream.ContentType.Contains("jpg"))
         {
             await output.RenameAsync($"{Guid.NewGuid()}.jpeg");
         }
@@ -84,7 +89,12 @@ public class ImageCompressionService : IImageCompressionService
                     outputStream.Size = 0;
                     SizeHelpers.Scale(ref width, ref height, size, size);
 
-                    var encoder = await BitmapEncoder.CreateAsync(codec, outputStream);
+                    var propertySet = new BitmapPropertySet()
+                    {
+                        ["ImageQuality"] = new BitmapTypedValue(0.9, PropertyType.Single),
+                    };
+
+                    var encoder = await BitmapEncoder.CreateAsync(codec, outputStream, propertySet);
                     encoder.SetSoftwareBitmap(softwareBitmap);
                     encoder.BitmapTransform.ScaledWidth = (uint)Math.Ceiling(width);
                     encoder.BitmapTransform.ScaledHeight = (uint)Math.Ceiling(height);
@@ -102,6 +112,7 @@ public class ImageCompressionService : IImageCompressionService
             }
             catch (Exception ex) when ((uint)ex.HResult == 0xc00d5212) // missing heif codec
             {
+                isHeifEncoderMissing = true;
                 return await CompressSoftwareBitmapAsync(softwareBitmap, outputStream, false, size, rawWidth, rawHeight);
             }
         });
@@ -110,6 +121,9 @@ public class ImageCompressionService : IImageCompressionService
     private static bool CheckHeifSupport()
     {
         if (!ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7, 0))
+            return false;
+
+        if (isHeifEncoderMissing)
             return false;
 
         foreach (var item in BitmapEncoder.GetEncoderInformationEnumerator())
