@@ -491,4 +491,19 @@
   <data name="HomePage_Settings" xml:space="preserve">
     <value>Settings</value>
   </data>
+  <data name="FeedContextLabel_AppliedBy" xml:space="preserve">
+    <value>Current Feed (this is not a label)</value>
+  </data>
+  <data name="FeedContextLabel_Description" xml:space="preserve">
+    <value>Context added by the current feed to indicate why a post was included.</value>
+  </data>
+  <data name="SettingsShowFeedContextSwitch.Header" xml:space="preserve">
+    <value>Show feed context labels (experimental)</value>
+  </data>
+  <data name="SettingsUseTwitterLocaleSwitch.Header" xml:space="preserve">
+    <value>Use Twitter locale (experimental)</value>
+  </data>
+  <data name="SettingsVideosInFeedsSwitch.Header" xml:space="preserve">
+    <value>Show videos inline in feeds</value>
+  </data>
 </root>

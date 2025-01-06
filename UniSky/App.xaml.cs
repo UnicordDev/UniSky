@@ -75,7 +75,6 @@ sealed partial class App : Application
 
         collection.AddSingleton<IProtocolService, ProtocolService>();
         collection.AddSingleton<ISettingsService, SettingsService>();
-        collection.AddSingleton<ITypedSettings, TypedSettingsService>();
         collection.AddSingleton<IThemeService, ThemeService>();
         collection.AddSingleton<INavigationServiceLocator, NavigationServiceLocator>();
         collection.AddSingleton<INotificationsService, BackgroundNotificationsService>();
@@ -92,6 +91,7 @@ sealed partial class App : Application
         collection.AddTransient<ILoginService, LoginService>();
         collection.AddTransient<ISessionService, SessionService>();
         collection.AddTransient<IBadgeService, BadgeService>();
+        collection.AddTransient<ITypedSettings, TypedSettingsService>();
 
         ServiceContainer.Default.ConfigureServices(collection.BuildServiceProvider());
 
@@ -116,6 +116,11 @@ sealed partial class App : Application
     protected override void OnLaunched(LaunchActivatedEventArgs e)
     {
         Hairline.Initialize();
+
+        //DebugSettings.EnableFrameRateCounter = true;
+        //DebugSettings.EnableRedrawRegions = true;
+        //DebugSettings.IsTextPerformanceVisualizationEnabled = true;
+        //DebugSettings.IsOverdrawHeatMapEnabled = true;
 
         // Do not repeat app initialization when the Window already has content,
         // just ensure that the window is active

@@ -9,4 +9,5 @@ public interface ITypedSettings
     bool AutoRefreshFeeds { get; set; }
     bool UseTwitterLocale { get; set; }
     bool VideosInFeeds { get; set; }
+    bool ShowFeedContext { get; set; }
 }

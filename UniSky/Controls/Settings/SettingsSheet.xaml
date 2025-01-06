@@ -55,17 +55,23 @@
                           Margin="0,0,0,4" 
                           IsOn="{Binding AutoRefreshFeeds, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <ToggleSwitch x:Uid="UseTwitterLocaleSwitch"
+            <ToggleSwitch x:Uid="SettingsUseTwitterLocaleSwitch"
                           Header="Use Twitter locale (experimental)" 
                           HorizontalAlignment="Stretch" 
                           Margin="0,0,0,4" 
                           IsOn="{Binding UseTwitterLocale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             
-            <ToggleSwitch x:Uid="VideosInFeeds"
+            <ToggleSwitch x:Uid="SettingsVideosInFeedsSwitch"
                           Header="Show videos inline in feeds" 
                           HorizontalAlignment="Stretch" 
                           Margin="0,0,0,4" 
                           IsOn="{Binding VideosInFeeds, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            
+            <ToggleSwitch x:Uid="SettingsShowFeedContextSwitch"
+                          Header="Show feed context labels (experimental)" 
+                          HorizontalAlignment="Stretch" 
+                          Margin="0,0,0,4" 
+                          IsOn="{Binding ShowFeedContext, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
             <TextBlock x:Uid="SettingsAboutHeaderBlock"
                        Style="{ThemeResource SubtitleTextBlockStyle}" Text="About"/>

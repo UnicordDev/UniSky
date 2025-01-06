@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -20,6 +21,7 @@ using UniSky.Helpers;
 using UniSky.Moderation;
 using UniSky.Pages;
 using UniSky.Services;
+using UniSky.ViewModels.Moderation;
 using UniSky.ViewModels.Profile;
 using UniSky.ViewModels.Text;
 using Windows.ApplicationModel.DataTransfer;
@@ -35,6 +37,9 @@ public partial class PostViewModel : ViewModelBase
 
     private readonly IModerationService moderationService
         = ServiceContainer.Default.GetRequiredService<IModerationService>();
+
+    private readonly ITypedSettings settingsService
+        = ServiceContainer.Default.GetRequiredService<ITypedSettings>();
 
     [ObservableProperty]
     private ProfileViewModel author;
@@ -66,6 +71,9 @@ public partial class PostViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasEmbed))]
     private PostEmbedViewModel embed;
+
+    [ObservableProperty]
+    private bool canReply;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShowReplyContainer))]
@@ -101,13 +109,14 @@ public partial class PostViewModel : ViewModelBase
 
     public bool HasEmbed
         => Embed != null;
-
     public bool ShowReplyContainer
         => ReplyTo != null && !HasParent;
     public bool ShowReplyLine
         => HasChild;
     public Thickness Borders
         => HasChild ? new Thickness() : new Thickness(0, 0, 0, 1);
+
+    public ObservableCollection<LabelViewModel> Labels { get; } = [];
 
     public PostViewModel(FeedViewPost feedPost, bool hasParent = false)
         : this(feedPost.Post)
@@ -122,6 +131,17 @@ public partial class PostViewModel : ViewModelBase
         if (feedPost.Reply is ReplyRef { Parent: PostView { Author: ProfileViewBasic { } author } })
         {
             ReplyTo = new ProfileViewModel(author);
+        }
+
+        if (feedPost.FeedContext != null && settingsService.ShowFeedContext)
+        {
+            var strings = ResourceLoader.GetForCurrentView();
+            Labels.Insert(0, new LabelViewModel()
+            {
+                Name = feedPost.FeedContext,
+                Description = strings.GetString("FeedContextLabel_Description"),
+                AppliedBy = strings.GetString("FeedContextLabel_AppliedBy")
+            });
         }
     }
 
@@ -171,7 +191,12 @@ public partial class PostViewModel : ViewModelBase
                 this.repost = repost;
                 IsRetweeted = true;
             }
+
+            CanReply = view.Viewer.ReplyDisabled != true;
         }
+
+        foreach (var label in Author.Labels)
+            Labels.Add(label);
     }
 
     [RelayCommand]
@@ -202,7 +227,7 @@ public partial class PostViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanReply))]
     private async Task ReplyAsync()
     {
         var service = ServiceContainer.Scoped.GetRequiredService<ISheetService>();

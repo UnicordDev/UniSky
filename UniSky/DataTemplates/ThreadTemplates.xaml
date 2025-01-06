@@ -114,8 +114,8 @@
 
                 <labels:LabelsControl x:Name="LabelViewer"
                                       x:Phase="3"
-                                      x:Load="{x:Bind converters:Static.Any(Author.Labels)}"
-                                      Labels="{x:Bind Author.Labels}"
+                                      x:Load="{x:Bind converters:Static.Any(Labels)}"
+                                      Labels="{x:Bind Labels}"
                                       Margin="0,6,0,0"/>
 
                 <controls:FacetTextBlock x:Name="MainContent"
@@ -354,8 +354,8 @@
 
 
                         <labels:LabelsControl x:Name="LabelViewer"
-                                      x:Load="{x:Bind converters:Static.Any(Author.Labels)}"
-                                      Labels="{x:Bind Author.Labels}"
+                                      x:Load="{x:Bind converters:Static.Any(Labels)}"
+                                      Labels="{x:Bind Labels}"
                                       Margin="0,2,0,2"/>
                         
                         <controls:FacetTextBlock x:Name="MainContent"

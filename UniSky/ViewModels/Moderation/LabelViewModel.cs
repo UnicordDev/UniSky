@@ -14,6 +14,7 @@ public partial class LabelViewModel : ViewModelBase
     [ObservableProperty]
     private string appliedBy;
 
+    public LabelViewModel() { }
     public LabelViewModel(LabelModerationCause label)
     {
         var moderationService = ServiceContainer.Scoped.GetRequiredService<IModerationService>();

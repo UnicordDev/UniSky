@@ -228,8 +228,8 @@
                 </Button>
 
                 <labels:LabelsControl x:Name="LabelViewer"
-                                      Visibility="{Binding Author.Labels, Converter={StaticResource VisibilityConverter}}"
-                                      Labels="{Binding Author.Labels}"
+                                      Visibility="{Binding Labels, Converter={StaticResource VisibilityConverter}}"
+                                      Labels="{Binding Labels}"
                                       Margin="0,4,0,0"/>
                 
                 <controls:FacetTextBlock x:Name="MainContent"
@@ -585,9 +585,9 @@
                         </Button>
 
                         <labels:LabelsControl x:Name="LabelViewer"
-                                              x:Load="{x:Bind converters:Static.Any(Author.Labels)}"
+                                              x:Load="{x:Bind converters:Static.Any(Labels)}"
                                               x:Phase="3"
-                                              Labels="{x:Bind Author.Labels}"
+                                              Labels="{x:Bind Labels}"
                                               Margin="0,4,0,2"/>
 
                         <controls:FacetTextBlock x:Name="MainContent"

@@ -5,7 +5,7 @@ using Windows.UI.Xaml;
 
 namespace UniSky.ViewModels.Settings;
 
-public class SettingsViewModel(ITypedSettings settingsService, IThemeService themeService) : ViewModelBase
+public class SettingsViewModel(ITypedSettings settingsService, IThemeService themeService) : ViewModelBase, ITypedSettings
 {
     private readonly int _initialColour = (int)settingsService.RequestedColourScheme;
     private readonly bool _initialTwitterLocale = settingsService.UseTwitterLocale;
@@ -14,12 +14,18 @@ public class SettingsViewModel(ITypedSettings settingsService, IThemeService the
     public bool SunValleyThemeSupported
         => SystemInformation.OperatingSystemVersion.Build >= 17763;
 
+    public ElementTheme RequestedColourScheme
+    {
+        get => settingsService.RequestedColourScheme;
+        set => settingsService.RequestedColourScheme = value;
+    }
+
     public int ColourScheme
     {
-        get => (int)settingsService.RequestedColourScheme;
+        get => (int)RequestedColourScheme;
         set
         {
-            settingsService.RequestedColourScheme = (ElementTheme)value;
+            RequestedColourScheme = (ElementTheme)value;
             OnPropertyChanged(nameof(ColourScheme));
             OnPropertyChanged(nameof(IsDirty));
         }
@@ -62,6 +68,12 @@ public class SettingsViewModel(ITypedSettings settingsService, IThemeService the
     {
         get => settingsService.VideosInFeeds;
         set => settingsService.VideosInFeeds = value;
+    }
+
+    public bool ShowFeedContext
+    {
+        get => settingsService.ShowFeedContext;
+        set => settingsService.ShowFeedContext = value;
     }
 
     public bool IsDirty

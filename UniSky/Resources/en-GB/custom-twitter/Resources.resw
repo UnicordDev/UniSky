@@ -180,4 +180,7 @@
   <data name="ThreadPageTitleBlock.Text" xml:space="preserve">
     <value>TWEET</value>
   </data>
+  <data name="FeedContextLabel_Description" xml:space="preserve">
+    <value>Context added by the current feed to indicate why a tweet was included.</value>
+  </data>
 </root>

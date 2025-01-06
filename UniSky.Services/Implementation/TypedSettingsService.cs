@@ -37,4 +37,9 @@ public class TypedSettingsService(ISettingsService settings) : ITypedSettings
         get => settings.Read(VIDEOS_IN_FEEDS, VIDEOS_IN_FEEDS_DEFAULT);
         set => settings.Save(VIDEOS_IN_FEEDS, value);
     }
+    public bool ShowFeedContext
+    {
+        get => settings.Read(SHOW_FEED_CONTEXT, SHOW_FEED_CONTEXT_DEFAULT);
+        set => settings.Save(SHOW_FEED_CONTEXT, value);
+    }
 }

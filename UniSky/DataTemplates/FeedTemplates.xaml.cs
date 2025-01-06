@@ -1,12 +1,11 @@
 ﻿using Windows.UI.Xaml;
 
-namespace UniSky.Templates
+namespace UniSky.Templates;
+
+public partial class FeedTemplates : ResourceDictionary
 {
-    public partial class FeedTemplates : ResourceDictionary
+    public FeedTemplates()
     {
-        public FeedTemplates()
-        {
-            this.InitializeComponent();
-        }
+        this.InitializeComponent();
     }
 }

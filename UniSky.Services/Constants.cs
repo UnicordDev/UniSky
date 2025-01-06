@@ -48,5 +48,8 @@ public static class Constants
 
         public const string VIDEOS_IN_FEEDS = "VideosInFeeds_v1";
         public const bool VIDEOS_IN_FEEDS_DEFAULT = true;
+
+        public const string SHOW_FEED_CONTEXT = "ShowFeedContext_v1";
+        public const bool SHOW_FEED_CONTEXT_DEFAULT = false;
     }
 }
