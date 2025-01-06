@@ -1,8 +1,10 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Toolkit.Uwp.UI.Extensions;
 using UniSky.Controls.Overlay;
 using UniSky.Services;
+using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -131,16 +133,16 @@ public class SheetControl : OverlayControl, ISheetControl
             Controller.SafeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
             Controller.SafeAreaService.SetTitleBar(titleBarDragArea);
 
-            var inputPane = InputPane.GetForCurrentView();
-            inputPane.Showing += OnInputPaneShowing;
-            inputPane.Hiding += OnInputPaneHiding;
-
             this.SizeChanged += OnSizeChanged;
         }
         else
         {
             VisualStateManager.GoToState(this, "Standard", false);
         }
+
+        var inputPane = InputPane.GetForCurrentView();
+        inputPane.Showing += OnInputPaneShowing;
+        inputPane.Hiding += OnInputPaneHiding;
     }
 
     private void OnSizeChanged(object sender, SizeChangedEventArgs e)
@@ -151,15 +153,21 @@ public class SheetControl : OverlayControl, ISheetControl
 
     private void OnInputPaneShowing(InputPane sender, InputPaneVisibilityEventArgs args)
     {
-        var ButtonsGrid = (Grid)this.FindDescendantByName("ButtonsGrid");
-        ButtonsGrid.Margin = new Thickness(0, 0, 0, args.OccludedRect.Height);
+        var transform2 = this.TransformToVisual(Window.Current.Content);
+        var transformed2 = transform2.TransformBounds(new Rect(new Point(0, 0), this.RenderSize));
+        if (args.OccludedRect.Height == 0)
+            return;
+
+        var height = Math.Max(0, transformed2.Bottom - args.OccludedRect.Top);
+        this.Margin = new Thickness(0, 0, 0, height);
+
         args.EnsuredFocusedElementInView = true;
     }
 
     private void OnInputPaneHiding(InputPane sender, InputPaneVisibilityEventArgs args)
     {
-        var ButtonsGrid = (Grid)this.FindDescendantByName("ButtonsGrid");
-        ButtonsGrid.Margin = new Thickness(0, 0, 0, args.OccludedRect.Height);
+        this.Margin = new Thickness(0, 0, 0, 0);
+
         args.EnsuredFocusedElementInView = true;
     }
 

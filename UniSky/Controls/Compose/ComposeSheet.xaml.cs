@@ -51,10 +51,6 @@ namespace UniSky.Controls.Compose
 
         private void OnShowing(IOverlayControl sender, OverlayShowingEventArgs e)
         {
-            var inputPane = InputPane.GetForCurrentView();
-            inputPane.Showing += OnInputPaneShowing;
-            inputPane.Hiding += OnInputPaneHiding;
-
             if (Window.Current.Content is FrameworkElement element)
             {
                 element.AllowDrop = true;
@@ -76,10 +72,6 @@ namespace UniSky.Controls.Compose
 
         private void OnHidden(IOverlayControl sender, RoutedEventArgs args)
         {
-            var inputPane = InputPane.GetForCurrentView();
-            inputPane.Showing -= OnInputPaneShowing;
-            inputPane.Hiding -= OnInputPaneHiding;
-
             if (Window.Current.Content is FrameworkElement element)
             {
                 element.AllowDrop = false;
@@ -117,22 +109,6 @@ namespace UniSky.Controls.Compose
             {
                 deferral.Complete();
             }
-        }
-
-        private void OnInputPaneShowing(InputPane sender, InputPaneVisibilityEventArgs args)
-        {
-            if (ActualWidth > 620) return;
-
-            ContentGrid.Padding = new Thickness(0, 0, 0, args.OccludedRect.Height);
-            args.EnsuredFocusedElementInView = true;
-        }
-
-        private void OnInputPaneHiding(InputPane sender, InputPaneVisibilityEventArgs args)
-        {
-            if (ActualWidth > 620) return;
-
-            ContentGrid.Padding = new Thickness(0, 0, 0, args.OccludedRect.Height);
-            args.EnsuredFocusedElementInView = true;
         }
 
         private void HandleDrag(object sender, DragEventArgs e)
