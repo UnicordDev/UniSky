@@ -2,9 +2,9 @@
 
 public class ModerationCause
 {
-    public ModerationCauseType Type { get; internal set; }
-    public ModerationCauseSource Source { get; internal set; }
-    public byte Priority { get; internal set; }
+    public required ModerationCauseType Type { get; set; }
+    public required ModerationCauseSource Source { get; set; }
+    public required byte Priority { get; set; }
     public bool Downgraded { get; internal set; }
 
     public override string ToString()

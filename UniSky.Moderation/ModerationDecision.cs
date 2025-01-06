@@ -356,6 +356,7 @@ public class ModerationDecision(ATDid did, bool isMe, IEnumerable<ModerationCaus
 
         this.causes.Add(new LabelModerationCause()
         {
+            Type = ModerationCauseType.Label,
             Source = isSelf || labeler == null
                 ? new ModerationCauseSource() { Type = ModerationCauseSourceType.User }
                 : new ModerationCauseSource() { Type = ModerationCauseSourceType.Labeler, Labeler = labeler.Did },

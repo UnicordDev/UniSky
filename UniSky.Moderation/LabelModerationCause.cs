@@ -9,12 +9,12 @@ public class LabelModerationCause : ModerationCause
         Type = ModerationCauseType.Label;
     }
 
-    public Label Label { get; internal set; }
-    public InterpretedLabelValueDefinition LabelDef { get; internal set; }
-    public LabelTarget Target { get; internal set; }
-    public LabelPreference Setting { get; internal set; }
-    public ModerationBehavior Behavior { get; internal set; }
-    public bool NoOverride { get; internal set; }
+    public required Label Label { get; set; }
+    public required InterpretedLabelValueDefinition LabelDef { get; set; }
+    public required LabelTarget Target { get; set; }
+    public required LabelPreference Setting { get; set; }
+    public required ModerationBehavior Behavior { get; set; }
+    public required bool NoOverride { get; set; }
 
     public override string ToString()
     {

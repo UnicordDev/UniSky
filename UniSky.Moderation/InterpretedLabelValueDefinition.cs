@@ -106,7 +106,7 @@ public class InterpretedLabelValueDefinition
         Locales = def.Locales != null ? [.. def.Locales] : [];
     }
 
-    public LabelerViewDetailed Detailed { get; }
+    public LabelerViewDetailed? Detailed { get; }
 
     public string Identifier { get; init; }
     public LabelSeverity Severity { get; init; }
