@@ -1,70 +1,59 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Numerics;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Xml;
-using CommunityToolkit.Mvvm.DependencyInjection;
-using Microsoft.Graphics.Canvas;
-using Microsoft.Graphics.Canvas.Geometry;
+﻿using Microsoft.Extensions.DependencyInjection;
 using UniSky.Helpers.Composition;
-using UniSky.Pages;
 using UniSky.Services;
-using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Graphics;
-using Windows.Graphics.Display;
-using Windows.Storage;
-using Windows.UI;
-using Windows.UI.Composition;
-using Windows.UI.Core;
-using Windows.UI.Notifications;
-using Windows.UI.Popups;
+using UniSky.ViewModels;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Hosting;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
+using Windows.UI.Core;
 
 namespace UniSky;
 
-/// <summary>
-/// An empty page that can be used on its own or navigated to within a Frame.
-/// </summary>
 public sealed partial class RootPage : Page
 {
+    private bool dismissed;
+
+    public RootViewModel ViewModel
+    {
+        get => (RootViewModel)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty =
+        DependencyProperty.Register("ViewModel", typeof(RootViewModel), typeof(RootPage), new PropertyMetadata(null));
+
     public RootPage()
     {
         this.InitializeComponent();
-        Loaded += RootPage_Loaded;
+        this.DataContext = this.ViewModel = ActivatorUtilities.CreateInstance<RootViewModel>(ServiceContainer.Scoped);
     }
 
-    private void RootPage_Loaded(object sender, RoutedEventArgs e)
+    private void RootFrame_Navigated(object sender, NavigationEventArgs e)
     {
-        var serviceLocator = Ioc.Default.GetRequiredService<INavigationServiceLocator>();
+        Dismiss();
+    }
+
+    protected override void OnNavigatedTo(NavigationEventArgs e)
+    {
+        base.OnNavigatedTo(e);
+
+        ServiceContainer.Scoped.GetRequiredService<ISafeAreaService>();
+
+        var serviceLocator = ServiceContainer.Scoped.GetRequiredService<INavigationServiceLocator>();
         var service = serviceLocator.GetNavigationService("Root");
         service.Frame = RootFrame;
+    }
 
-        var sessionService = Ioc.Default.GetRequiredService<SessionService>();
-        if (ApplicationData.Current.LocalSettings.Values.TryGetValue("LastUsedUser", out var userObj) &&
-            userObj is string user &&
-            sessionService.TryFindSession(user, out var session))
+    void Dismiss()
+    {
+        _ = Dispatcher.RunIdleAsync((a) =>
         {
-            service.Navigate<HomePage>(user);
-        }
-        else
-        {
-            service.Navigate<LoginPage>();
-        }
+            if (dismissed)
+                return;
 
-        BirdAnimation.RunBirdAnimation(RootFrame);
+            dismissed = true;
+            ExtendedProgressRing.IsActive = false;
+            BirdAnimation.RunBirdAnimation(ExtendedSplash, SheetRoot);
+        });
     }
 }

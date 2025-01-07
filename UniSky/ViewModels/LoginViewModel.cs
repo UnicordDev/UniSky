@@ -1,13 +1,13 @@
 ﻿using System;
-using System.ServiceModel;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FishyFlip;
+using FishyFlip.Lexicon.Com.Atproto.Server;
 using FishyFlip.Models;
+using FishyFlip.Tools;
 using UniSky.Extensions;
-using UniSky.Helpers;
 using UniSky.Models;
 using UniSky.Pages;
 using UniSky.Services;
@@ -17,9 +17,9 @@ namespace UniSky.ViewModels;
 
 public partial class LoginViewModel : ViewModelBase
 {
-    private readonly LoginService loginService;
-    private readonly SessionService sessionService;
-    private readonly INavigationService navigationService;
+    private readonly ILoginService loginService;
+    private readonly ISessionService sessionService;
+    private readonly IRootNavigator rootNavigator;
 
     [ObservableProperty]
     private bool _advanced;
@@ -30,11 +30,13 @@ public partial class LoginViewModel : ViewModelBase
     [ObservableProperty]
     private string _host;
 
-    public LoginViewModel(LoginService loginService, SessionService sessionService, INavigationServiceLocator navigationServiceLocator)
+    public LoginViewModel(ILoginService loginService,
+                          ISessionService sessionService,
+                          IRootNavigator rootNavigator)
     {
         this.loginService = loginService;
         this.sessionService = sessionService;
-        this.navigationService = navigationServiceLocator.GetNavigationService("Root");
+        this.rootNavigator = rootNavigator;
 
         Advanced = false;
         Username = "";
@@ -55,22 +57,27 @@ public partial class LoginViewModel : ViewModelBase
 
             var builder = new ATProtocolBuilder()
                 .EnableAutoRenewSession(true)
+                .WithUserAgent(Constants.UserAgent)
                 .WithInstanceUrl(new Uri(Host));
 
             using var protocol = builder.Build();
-            var session = await protocol.AuthenticateWithPasswordAsync(Username, Password, CancellationToken.None)
-                .ConfigureAwait(false);
 
+            var createSession = (await protocol.CreateSessionAsync(Username, Password, cancellationToken: CancellationToken.None)
+                .ConfigureAwait(false))
+                .HandleResult();
+
+            var session = new Session(createSession.Did, createSession.DidDoc, createSession.Handle, createSession.Email, createSession.AccessJwt, createSession.RefreshJwt);
             var loginModel = this.loginService.SaveLogin(normalisedHost, Username, Password);
             var sessionModel = new SessionModel(true, normalisedHost, session);
 
             sessionService.SaveSession(sessionModel);
-            syncContext.Post(() =>
-                navigationService.Navigate<HomePage>(session.Did));
+
+            await rootNavigator.GoToHomeAsync(sessionModel.DID);
         }
         catch (Exception ex)
         {
-            Error = new ExceptionViewModel(ex);
+            syncContext.Post(() =>
+                 Error = new ExceptionViewModel(ex));
         }
     }
 

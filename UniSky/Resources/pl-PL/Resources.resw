@@ -1,0 +1,491 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="PostsRun.Text" xml:space="preserve">
+    <value>Posty</value>
+  </data>
+  <data name="FollowersRun.Text" xml:space="preserve">
+    <value>Obserwujących</value>
+    <comment>n ludzi obserwujących osobę, not doing plural because it will almost always be &gt; 10</comment>
+  </data>
+  <data name="FollowingRun.Text" xml:space="preserve">
+    <value>Following</value>
+    <comment>n ludzi obserwujących przez osobę, nie robie mnogie ponieważ prawie zawszę będzie &gt; 10</comment>
+  </data>
+  <data name="Feed_Posts" xml:space="preserve">
+    <value>Posty</value>
+  </data>
+  <data name="Feed_Replies" xml:space="preserve">
+    <value>Posty &amp; Odpowiedzi</value>
+  </data>
+  <data name="Feed_Media" xml:space="preserve">
+    <value>Media</value>
+  </data>
+  <data name="RetweetedByRun.Text" xml:space="preserve">
+    <value>Przesłane dalej przez by</value>
+  </data>
+  <data name="PostReplyButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Odpowiedzi</value>
+  </data>
+  <data name="PostRetweetButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Prześlij dalej</value>
+  </data>
+  <data name="PostLikeButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Polub</value>
+  </data>
+  <data name="ReplyingToRun.Text" xml:space="preserve">
+    <value>Odpowiadanie do</value>
+  </data>
+  <data name="AppName" xml:space="preserve">
+    <value>Unisky</value>
+  </data>
+  <data name="AppTitle.Text" xml:space="preserve">
+    <value>Unisky</value>
+  </data>
+  <data name="TimeUnit_Day" xml:space="preserve">
+    <value>d</value>
+  </data>
+  <data name="TimeUnit_Hour" xml:space="preserve">
+    <value>g</value>
+  </data>
+  <data name="TimeUnit_Millisecond" xml:space="preserve">
+    <value>ms</value>
+  </data>
+  <data name="TimeUnit_Minute" xml:space="preserve">
+    <value>min</value>
+  </data>
+  <data name="TimeUnit_Month" xml:space="preserve">
+    <value>mies</value>
+  </data>
+  <data name="TimeUnit_Second" xml:space="preserve">
+    <value>s</value>
+  </data>
+  <data name="TimeUnit_Week" xml:space="preserve">
+    <value>tyg</value>
+  </data>
+  <data name="TimeUnit_Year" xml:space="preserve">
+    <value>r</value>
+  </data>
+  <data name="E_NonImageOrVideo" xml:space="preserve">
+    <value>Tylko formaty obrazków i filmików są obsługiwane.</value>
+  </data>
+  <data name="E_ReplyToNonPost" xml:space="preserve">
+    <value>Próbowanie odpowiedzieć do czegoś co nie jest postem?</value>
+  </data>
+  <data name="E_TooManyPhotos" xml:space="preserve">
+    <value>Posty mogą zawierać maks. cztery obrazki.</value>
+  </data>
+  <data name="E_TooManyVideos" xml:space="preserve">
+    <value>Posty mogą zawierać maks. jeden filmik.</value>
+  </data>
+  <data name="E_UnableToAddImageToVideoPost" xml:space="preserve">
+    <value>Nie można dodać obrazku gdy ten post zawiera filmik.</value>
+  </data>
+  <data name="E_UnableToAddVideoToImagePost" xml:space="preserve">
+    <value>Nie można dodać filmiku gdy ten post zawiera obraz.</value>
+  </data>
+  <data name="ComposePrimaryTextBox.PlaceholderText" xml:space="preserve">
+    <value>Co się dzieje?</value>
+  </data>
+  <data name="ComposeSheetPrimaryText.Text" xml:space="preserve">
+    <value>Post</value>
+  </data>
+  <data name="ComposeSheetSecondaryText.Text" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+  <data name="ComposeSheetTitle.Text" xml:space="preserve">
+    <value>NOWY POST</value>
+  </data>
+  <data name="E_FileUnavailable" xml:space="preserve">
+    <value>Przepraszamy, ten plik jest niedostępny.</value>
+  </data>
+  <data name="E_VideosUnsupported" xml:space="preserve">
+    <value>Przepraszamy, filmiki są narazie nie-obsługiwane.</value>
+  </data>
+  <data name="UploadToBluesky" xml:space="preserve">
+    <value>Dodaj do postu</value>
+  </data>
+  <data name="Search_New" xml:space="preserve">
+    <value>Najnowsze</value>
+  </data>
+  <data name="Search_Hot" xml:space="preserve">
+    <value>Gorące</value>
+  </data>
+  <data name="Search_People" xml:space="preserve">
+    <value>Ludzie</value>
+  </data>
+  <data name="Profile_Follow" xml:space="preserve">
+    <value>Obserwuj</value>
+    <comment>Kliknij żeby obserwować użytkownika</comment>
+  </data>
+  <data name="Profile_Following" xml:space="preserve">
+    <value>Obserwując</value>
+    <comment>Narazie obserwując użytkownika</comment>
+  </data>
+  <data name="Notification_LikedTweetSingle" xml:space="preserve">
+    <value>{0} polubił twój post</value>
+    <comment>{0} = nazwa wyświetlająca użytkownika</comment>
+  </data>
+  <data name="Notification_LikedTweetMultiple" xml:space="preserve">
+    <value>{0} and {1} polubili twój post</value>
+    <comment>{0},{1} = nazwa wyświetlająca użytkownika</comment>
+  </data>
+  <data name="Notification_Follow" xml:space="preserve">
+    <value>{0} obserwuje cię</value>
+    <comment>{0} = nazwa wyświetlająca użytkownika</comment>
+  </data>
+  <data name="Notification_Mention" xml:space="preserve">
+    <value>{0} wspominął cie</value>
+    <comment>{0} = nazwa wyświetlająca użytkownika</comment>
+  </data>
+  <data name="Notification_Other" xml:space="preserve">
+    <value>inny</value>
+  </data>
+  <data name="Notification_Quote" xml:space="preserve">
+    <value>{0} zacytował twój post</value>
+    <comment>{0} = nazwa wyświetlająca użytkownika</comment>
+  </data>
+  <data name="Notification_Reply" xml:space="preserve">
+    <value>{0} odpowiedział do ciebie</value>
+    <comment>{0} = nazwa wyświetlająca użytkownika</comment>
+  </data>
+  <data name="Notification_RetweetMultiple" xml:space="preserve">
+    <value>{0} and {1} podali dalej</value>
+    <comment>{0},{1} = nazwa wyświetlająca użytkownika</comment>
+  </data>
+  <data name="Notification_RetweetSingle" xml:space="preserve">
+    <value>{0} podał dalej</value>
+    <comment>{0} = nazwa wyświetlająca użytkownika</comment>
+  </data>
+  <data name="Profile_Blocked" xml:space="preserve">
+    <value>Zablokowany</value>
+  </data>
+  <data name="Profile_InvalidHandle" xml:space="preserve">
+    <value>Nieznany uchwyt</value>
+  </data>
+  <data name="Profile_BlockedUser" xml:space="preserve">
+    <value>Narazie blokujesz tą osobę</value>
+  </data>
+  <data name="Profile_BlockedByUser" xml:space="preserve">
+    <value>Jesteś zablokowany przez tą osobę</value>
+  </data>
+  <data name="ComposeAddAltTextDialog.PrimaryButtonText" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="ComposeAddAltTextDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+  <data name="ComposeAddAltTextDialog.Title" xml:space="preserve">
+    <value>DODAJ ALTERNATYWNY TEXT</value>
+  </data>
+  <data name="ComposeAddAltTextTextBox.PlaceholderText" xml:space="preserve">
+    <value>Opisz ten obraz! Bądź jak szczegółowy jak chcesz.</value>
+  </data>
+  <data name="ComposeDiscardDraftDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Odrzuć</value>
+  </data>
+  <data name="ComposeDiscardDraftDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+  <data name="ComposeDiscardDraftDialog.Title" xml:space="preserve">
+    <value>Odrzuć próbę?</value>
+  </data>
+  <data name="ComposeDiscardDraftInfoBlock.Text" xml:space="preserve">
+    <value>Czy na serio chcesz odrzucisz tą próbę? Ta akcja jest nie-odwócalna!</value>
+  </data>
+  <data name="FeedMoreCopyLinkItem.Text" xml:space="preserve">
+    <value>Skopiuj link</value>
+  </data>
+  <data name="FeedMoreCopyTextItem.Text" xml:space="preserve">
+    <value>Skopiuj tekst</value>
+  </data>
+  <data name="FeedMoreHidePostItem.Text" xml:space="preserve">
+    <value>Ukryj post</value>
+  </data>
+  <data name="FeedMoreMuteItem.Text" xml:space="preserve">
+    <value>Wycisz wątek</value>
+  </data>
+  <data name="FeedMoreReportPostItem.Text" xml:space="preserve">
+    <value>Reportuj Post</value>
+  </data>
+  <data name="FeedMoreShareItem.Text" xml:space="preserve">
+    <value>Udostępnij</value>
+  </data>
+  <data name="Feed_Following" xml:space="preserve">
+    <value>Following</value>
+  </data>
+  <data name="LoginAdvancedButton.Content" xml:space="preserve">
+    <value>Zaawansowane</value>
+    <comment>Pokazuje pole tekstowe nazwy serwera</comment>
+  </data>
+  <data name="LoginButton.Content" xml:space="preserve">
+    <value>Zaloguj się</value>
+  </data>
+  <data name="LoginHostBox.Header" xml:space="preserve">
+    <value>Serwer</value>
+  </data>
+  <data name="LoginPageHeader.Text" xml:space="preserve">
+    <value>Żeby zacząć, podaj swoją nazwę użytkownika i hasło</value>
+    <comment>Wzięte z ekranu powitalnego Windows'a XP, spróbuj zachować te odniesienie jak możliwe :)</comment>
+  </data>
+  <data name="LoginPasswordBox.Header" xml:space="preserve">
+    <value>Hasło</value>
+  </data>
+  <data name="LoginUsernameBox.Header" xml:space="preserve">
+    <value>Nazwa Użytkownika lub Adres Email</value>
+  </data>
+  <data name="NotificationsPageTitleBlock.Text" xml:space="preserve">
+    <value>POWIADOMIENIA</value>
+  </data>
+  <data name="SearchPageSearchBox.PlaceholderText" xml:space="preserve">
+    <value>Znajdź coś fajnego...</value>
+    <comment>Może to być wszystko</comment>
+  </data>
+  <data name="SearchPageTitleBlock.Text" xml:space="preserve">
+    <value>WYSZUKAJ</value>
+  </data>
+  <data name="SettingsAboutHeaderBlock.Text" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="SettingsAboutVersionRun.Text" xml:space="preserve">
+    <value>Version</value>
+    <comment>Version 1.0.0.0-abcdefg (branch)</comment>
+  </data>
+  <data name="SettingsAppThemeItem_Fluent.Content" xml:space="preserve">
+    <value>Fluent</value>
+  </data>
+  <data name="SettingsAppThemeItem_OLED.Content" xml:space="preserve">
+    <value>OLED</value>
+  </data>
+  <data name="SettingsAppThemeItem_Performance.Content" xml:space="preserve">
+    <value>Wydajność</value>
+  </data>
+  <data name="SettingsAppThemeItem_SunValley.Content" xml:space="preserve">
+    <value>Sun Valley</value>
+  </data>
+  <data name="SettingsAutoRefreshFeedsSwitch.Header" xml:space="preserve">
+    <value>Automatycznie odświeża posty (eksperymentalne)</value>
+  </data>
+  <data name="SettingsColorSchemeBox.Header" xml:space="preserve">
+    <value>Schemat Kolorów</value>
+  </data>
+  <data name="SettingsColourSchemeItem_Dark.Content" xml:space="preserve">
+    <value>Ciemny</value>
+  </data>
+  <data name="SettingsColourSchemeItem_Default.Content" xml:space="preserve">
+    <value>Domyślny</value>
+  </data>
+  <data name="SettingsColourSchemeItem_Light.Content" xml:space="preserve">
+    <value>Jasny</value>
+  </data>
+  <data name="SettingsNeedsRelaunchDialog.Title" xml:space="preserve">
+    <value>URUCHOMNIENIE PONOWNE POTRZEBNE</value>
+  </data>
+  <data name="SettingsNeedsRelaunchInfoBlock.Text" xml:space="preserve">
+    <value>Unisky musi być uruchomione ponownie żeby niektóre zmiany miały efekt. Czy chcesz uruchomić ponownie teraz?</value>
+  </data>
+  <data name="SettingsOptionsHeaderBlock.Text" xml:space="preserve">
+    <value>Opcje</value>
+  </data>
+  <data name="SettingsSheet.SecondaryButtonContent" xml:space="preserve">
+    <value>Zamknij</value>
+  </data>
+  <data name="SettingsSheet.TitleContent" xml:space="preserve">
+    <value>USTAWIENIA</value>
+  </data>
+  <data name="SettingsThemeBox.Header" xml:space="preserve">
+    <value>Motyw</value>
+  </data>
+  <data name="SettingsUseMultipleWindowsSwitch.Header" xml:space="preserve">
+    <value>Używaj oddzielnych okien dla wyskakujących okien</value>
+  </data>
+  <data name="Share_Username" xml:space="preserve">
+    <value>@{0} na Bluesky</value>
+    <comment>{0} = nazwa użytkownika</comment>
+  </data>
+<data name="ThreadPageTitleBlock.Text" xml:space="preserve">
+    <value>POST</value>
+  </data>
+  <data name="GlobalLabel_GRAPHIC_MEDIA_Description" xml:space="preserve">
+    <value>Wyraźne lub potencjalnie niepokojące media.</value>
+  </data>
+  <data name="GlobalLabel_GRAPHIC_MEDIA_Name" xml:space="preserve">
+    <value>Graficzne Media</value>
+  </data>
+  <data name="GlobalLabel_HIDE_Description" xml:space="preserve">
+    <value>Ta treść została ukryta przez Moderacje Bluesky.</value>
+  </data>
+  <data name="GlobalLabel_HIDE_Name" xml:space="preserve">
+    <value>Treść Zablokowana</value>
+  </data>
+  <data name="GlobalLabel_NO_UNAUTHENTICATED_Description" xml:space="preserve">
+    <value>Ten użytkownik zażądał, aby jego treść była widoczna tylko dla zalogowanych użytkowników. Należy pamiętać, że ten mechanizm jest zasadniczo niezabespieczony.</value>
+  </data>
+  <data name="GlobalLabel_NO_UNAUTHENTICATED_Name" xml:space="preserve">
+    <value>Wymagane zalogowanie</value>
+  </data>
+  <data name="GlobalLabel_NUDITY_Description" xml:space="preserve">
+    <value>Artystyczna nagość, itp.</value>
+  </data>
+  <data name="GlobalLabel_NUDITY_Name" xml:space="preserve">
+    <value>Nie-seksualna Nagość</value>
+  </data>
+  <data name="GlobalLabel_PORN_Description" xml:space="preserve">
+    <value>Wyraźne obrazy o charakterze seksualnym.</value>
+  </data>
+  <data name="GlobalLabel_PORN_Name" xml:space="preserve">
+    <value>Treści tylko dla dorosłych</value>
+  </data>
+  <data name="GlobalLabel_SEXUAL_Description" xml:space="preserve">
+    <value>Nie-wyraźne seksualne obrazy.</value>
+  </data>
+  <data name="GlobalLabel_SEXUAL_Name" xml:space="preserve">
+    <value>Sugestywne seksualnie</value>
+  </data>
+  <data name="GlobalLabel_WARN_Description" xml:space="preserve">
+    <value>Ta treść otrzymała ogólne ostrzeżenie od moderacji Bluesky.</value>
+  </data>
+  <data name="GlobalLabel_WARN_Name" xml:space="preserve">
+    <value>Ostrzeżenie o treści</value>
+  </data>
+  <data name="HomePage_Chat" xml:space="preserve">
+    <value>Czat</value>
+  </data>
+  <data name="HomePage_Feeds" xml:space="preserve">
+    <value>Feedy</value>
+  </data>
+  <data name="HomePage_Home" xml:space="preserve">
+    <value>Główna</value>
+  </data>
+  <data name="HomePage_Lists" xml:space="preserve">
+    <value>Listy</value>
+  </data>
+  <data name="HomePage_Notifications" xml:space="preserve">
+    <value>Powiadomienia</value>
+  </data>
+  <data name="HomePage_Profile" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="HomePage_Search" xml:space="preserve">
+    <value>Szukaj</value>
+  </data>
+  <data name="HomePage_Settings" xml:space="preserve">
+    <value>Ustawienia</value>
+  </data>
+</root>

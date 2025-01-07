@@ -1,0 +1,87 @@
+﻿<sheets:SheetControl
+    x:Class="UniSky.Controls.Settings.SettingsSheet"
+    x:Uid="SettingsSheet"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:root="using:UniSky"
+    xmlns:local="using:UniSky.Controls.Settings"
+    xmlns:sheets="using:UniSky.Controls.Sheet"
+    xmlns:settings="using:UniSky.ViewModels.Settings"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel}"
+    PrimaryButtonVisibility="Collapsed"
+    SecondaryButtonContent="Close"
+    TitleContent="SETTINGS">
+    <ScrollViewer HorizontalScrollMode="Disabled"
+                  VerticalScrollMode="Auto"
+                  IsVerticalScrollChainingEnabled="True"
+                  IsVerticalRailEnabled="True"
+                  IsDeferredScrollingEnabled="False">
+        <StackPanel Margin="12">
+            <TextBlock x:Uid="SettingsOptionsHeaderBlock" Style="{ThemeResource SubtitleTextBlockStyle}" Text="Options"/>
+            <ComboBox x:Uid="SettingsColorSchemeBox"
+                      Header="Colour Scheme" 
+                      HorizontalAlignment="Stretch" 
+                      Margin="0,0,0,4" 
+                      SelectedIndex="{Binding ColourScheme, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}">
+                <ComboBoxItem x:Uid="SettingsColourSchemeItem_Default" Content="Default" />
+                <ComboBoxItem x:Uid="SettingsColourSchemeItem_Light" Content="Light" />
+                <ComboBoxItem x:Uid="SettingsColourSchemeItem_Dark" Content="Dark" />
+            </ComboBox>
+            <ComboBox x:Uid="SettingsThemeBox"
+                      Header="Theme" 
+                      HorizontalAlignment="Stretch"
+                      Margin="0,0,0,4" 
+                      SelectedIndex="{Binding ApplicationTheme, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}">
+                <ComboBoxItem x:Uid="SettingsAppThemeItem_Performance" Content="Performance" />
+                <ComboBoxItem x:Uid="SettingsAppThemeItem_Fluent" Content="Fluent" />
+                <ComboBoxItem x:Uid="SettingsAppThemeItem_SunValley" Content="Sun Valley" IsEnabled="False" />
+                <ComboBoxItem x:Uid="SettingsAppThemeItem_OLED" Content="OLED" IsEnabled="False" />
+            </ComboBox>
+            
+            <ToggleSwitch x:Uid="SettingsUseMultipleWindowsSwitch"
+                          Header="Use multiple windows when showing sheets" 
+                          HorizontalAlignment="Stretch" 
+                          Margin="0,0,0,4" 
+                          IsOn="{Binding UseMultipleWindows, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            
+            <ToggleSwitch x:Uid="SettingsAutoRefreshFeedsSwitch"
+                          Header="Enable automatic refresh of feeds (experimental)" 
+                          HorizontalAlignment="Stretch" 
+                          Margin="0,0,0,4" 
+                          IsOn="{Binding AutoRefreshFeeds, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <ToggleSwitch x:Uid="SettingsUseTwitterLocaleSwitch"
+                          Header="Use Twitter locale (experimental)" 
+                          HorizontalAlignment="Stretch" 
+                          Margin="0,0,0,4" 
+                          IsOn="{Binding UseTwitterLocale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            
+            <ToggleSwitch x:Uid="SettingsVideosInFeedsSwitch"
+                          Header="Show videos inline in feeds" 
+                          HorizontalAlignment="Stretch" 
+                          Margin="0,0,0,4" 
+                          IsOn="{Binding VideosInFeeds, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            
+            <ToggleSwitch x:Uid="SettingsShowFeedContextSwitch"
+                          Header="Show feed context labels (experimental)" 
+                          HorizontalAlignment="Stretch" 
+                          Margin="0,0,0,4" 
+                          IsOn="{Binding ShowFeedContext, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <TextBlock x:Uid="SettingsAboutHeaderBlock"
+                       Style="{ThemeResource SubtitleTextBlockStyle}" Text="About"/>
+            <TextBlock TextWrapping="Wrap">
+                <Run x:Uid="SettingsAboutVersionRun" Text="Version"/>
+                <Run Text="{x:Bind root:Constants.Version, FallbackValue='1.0.0.0-abcdefg'}"/>
+            </TextBlock>
+            <TextBlock TextWrapping="Wrap">
+                Icon by <Hyperlink NavigateUri="https://bsky.app/profile/xubiod.net">@xubiod.net</Hyperlink> &lt;3
+            </TextBlock>
+        </StackPanel>        
+    </ScrollViewer>
+</sheets:SheetControl>

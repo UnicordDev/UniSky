@@ -1,13 +1,34 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using FishyFlip.Lexicon;
 using FishyFlip.Lexicon.App.Bsky.Actor;
 using FishyFlip.Models;
+using UniSky.Pages;
+using UniSky.Services;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml;
+using Microsoft.Extensions.DependencyInjection;
+using Windows.ApplicationModel.Resources;
+using System.Globalization;
+using System.Threading.Tasks;
+using FishyFlip.Lexicon.App.Bsky.Graph;
+using System;
+using UniSky.Moderation;
+using System.Collections.ObjectModel;
+using UniSky.ViewModels.Moderation;
 
-namespace UniSky.ViewModels.Profiles;
+namespace UniSky.ViewModels.Profile;
 
 public partial class ProfileViewModel : ViewModelBase
 {
+    private static readonly IdnMapping mapper = new IdnMapping();
+    private static readonly ResourceLoader strings = ResourceLoader.GetForViewIndependentUse();
+
+    private readonly IModerationService moderationService
+        = ServiceContainer.Default.GetRequiredService<IModerationService>();
+
     protected ATIdentifier id;
+    protected ATObject source;
 
     [ObservableProperty]
     private string name;
@@ -15,6 +36,29 @@ public partial class ProfileViewModel : ViewModelBase
     private string handle;
     [ObservableProperty]
     private string avatarUrl;
+    [ObservableProperty]
+    private string bannerUrl;
+    [ObservableProperty]
+    private string bio;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsMutual))]
+    [NotifyPropertyChangedFor(nameof(FollowButtonText))]
+    private bool isFollowing;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsMutual))]
+    private bool followsYou;
+
+    [ObservableProperty]
+    private bool isMe;
+
+    public ObservableCollection<LabelViewModel> Labels { get; }
+    public ModerationDecision Moderation { get; private set; }
+
+    public bool IsMutual
+        => IsFollowing && FollowsYou;
+    public string FollowButtonText
+        => strings.GetString(IsFollowing ? "Profile_Following" : "Profile_Follow");
 
     public ProfileViewModel()
     {
@@ -22,24 +66,170 @@ public partial class ProfileViewModel : ViewModelBase
         this.AvatarUrl = "ms-appx:///Assets/Default/Avatar.png";
         this.Name = "Example User";
         this.Handle = "@example.com";
+        this.Labels = [];
     }
 
     public ProfileViewModel(ATObject obj)
     {
-        if (obj is ProfileViewBasic profile)
+        this.source = obj;
+        this.Labels = [];
+
+        Populate(obj);
+    }
+
+    protected virtual void Populate(ATObject obj)
+    {
+        Labels.Clear();
+
+        var moderator = new Moderator(moderationService.ModerationOptions);
+        switch (obj)
         {
-            this.id = profile.Did;
-            this.AvatarUrl = profile.Avatar;
-            this.Name = profile.DisplayName;
-            this.Handle = $"@{profile.Handle}";
+            case ProfileView view:
+                SetData(view.Did,
+                        view.Handle,
+                        view.DisplayName,
+                        view.Avatar,
+                        view.Description,
+                        view.Viewer);
+                Moderation = moderator.ModerateProfile(view);
+                break;
+            case ProfileViewBasic profile:
+                SetData(profile.Did,
+                        profile.Handle,
+                        profile.DisplayName,
+                        profile.Avatar,
+                        viewerState: profile.Viewer);
+                Moderation = moderator.ModerateProfile(profile);
+                break;
+            case ProfileViewDetailed detailed:
+                SetData(detailed.Did,
+                        detailed.Handle,
+                        detailed.DisplayName,
+                        detailed.Avatar,
+                        detailed.Description,
+                        detailed.Viewer,
+                        detailed.Banner);
+                Moderation = moderator.ModerateProfile(detailed);
+                break;
         }
 
-        if (obj is ProfileViewDetailed profileDetailed)
+        if (Moderation != null)
         {
-            this.id = profileDetailed.Did;
-            this.AvatarUrl = profileDetailed.Avatar;
-            this.Name = profileDetailed.DisplayName;
-            this.Handle = $"@{profileDetailed.Handle}";
+            DoModeration();
+        }
+    }
+
+    private void DoModeration()
+    {
+        var ui = Moderation.GetUI(ModerationContext.ProfileList);
+        foreach (var cause in ui.Informs)
+        {
+            if (cause is LabelModerationCause label)
+                Labels.Add(new LabelViewModel(label));
+        }
+
+        var avatar = Moderation.GetUI(ModerationContext.Avatar);
+        if (avatar.Blur || avatar.Alert)
+            AvatarUrl = null;
+
+        var banner = Moderation.GetUI(ModerationContext.Banner);
+        if (banner.Blur)
+            BannerUrl = null;
+
+        var displayName = Moderation.GetUI(ModerationContext.DisplayName);
+        if (displayName.Blur)
+            this.Name = this.Handle;
+
+        var blockCause = Moderation.BlockCause;
+        if (blockCause != null)
+        {
+            if (blockCause.Type is (ModerationCauseType.Blocking or ModerationCauseType.BlockOther))
+            {
+                this.Name = strings.GetString("Profile_Blocked");
+                this.Bio = strings.GetString("Profile_BlockedUser");
+                return;
+            }
+
+            if (blockCause.Type is (ModerationCauseType.BlockedBy))
+            {
+                this.Name = strings.GetString("Profile_Blocked");
+                this.Bio = strings.GetString("Profile_BlockedByUser");
+                return;
+            }
+        }
+    }
+
+    [RelayCommand]
+    private void OpenProfile(UIElement element)
+    {
+        var service = ServiceContainer.Scoped.GetRequiredService<INavigationServiceLocator>()
+            .GetNavigationService("Home");
+
+        service.Navigate<ProfilePage>(this.source, new ContinuumNavigationTransitionInfo() { ExitElement = element });
+    }
+
+    [RelayCommand]
+    private async Task FollowAsync()
+    {
+        if (IsFollowing || this.id is not ATDid did)
+            return;
+
+        var protocol = ServiceContainer.Default.GetRequiredService<IProtocolService>()
+            .Protocol;
+
+        var follow = await protocol.CreateFollowAsync(new Follow(did, DateTime.UtcNow))
+            .ConfigureAwait(false);
+
+        follow.Switch(
+            output => IsFollowing = true,
+            SetErrored);
+    }
+
+    public virtual void SetData(ATDid id,
+                                ATHandle handle,
+                                string displayName,
+                                string avatar,
+                                string bio = "",
+                                ViewerState viewerState = null,
+                                string banner = "")
+    {
+        var protocol = ServiceContainer.Default.GetRequiredService<IProtocolService>()
+            .Protocol;
+
+        this.id = id;
+
+        this.IsMe = protocol.Session.Did.ToString() == id.ToString();
+        this.Handle = ConvertHandle(handle);
+
+        if (viewerState is ViewerState viewer)
+        {
+            this.IsFollowing = viewer.Following != null;
+            this.FollowsYou = viewer.FollowedBy != null;
+        }
+
+        this.AvatarUrl = avatar;
+        this.Name = string.IsNullOrWhiteSpace(displayName) ? ConvertHandle(handle, true) : displayName;
+        this.Bio = bio?.Trim() ?? "";
+        this.BannerUrl = banner;
+    }
+
+    private static string ConvertHandle(ATHandle handle, bool forDisplayName = false)
+    {
+        if (string.IsNullOrWhiteSpace(handle.Handle) || handle.Handle == "handle.invalid")
+            return strings.GetString("Profile_InvalidHandle");
+
+        return forDisplayName ? ConvertHandleString(handle) : $"@{ConvertHandleString(handle)}";
+    }
+
+    private static string ConvertHandleString(ATHandle handle)
+    {
+        try
+        {
+            return mapper.GetUnicode(handle.Handle);
+        }
+        catch
+        {
+            return handle.Handle;
         }
     }
 }

@@ -1,0 +1,9 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <x:String x:Key="BlueSkyLogoPath">M32 24.0025l-7.9975-15.995-23.9925-7.9975 0 31.99 15.995 7.9975-15.995 7.9975 15.995 15.995 15.995-15.995 15.995 15.995 15.995-15.995-15.995-7.9975 15.995-7.9975 0-31.99-23.9925 7.9975-7.9975 15.995Z</x:String>
+    <x:Int32 x:Key="BlueSkyLogoWidth">64</x:Int32>
+    <x:Int32 x:Key="BlueSkyLogoHeight">64</x:Int32>
+
+</ResourceDictionary>

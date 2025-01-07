@@ -23,7 +23,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
     /// </remarks>
     public partial class ConstrainedBox : ContentPresenter // TODO: Should be FrameworkElement directly, see https://github.com/microsoft/microsoft-ui-xaml/issues/5530
     {
-        //// Value used to determine when we re-calculate in the arrange step or re-use a previous calculation. Within roughly a pixel seems like a good value?
+        // Value used to determine when we re-calculate in the arrange step or re-use a previous calculation.
+        // Within roughly a pixel seems like a good value?
         private const double CalculationTolerance = 1.5;
 
         private Size _originalSize;

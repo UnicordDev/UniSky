@@ -4,7 +4,6 @@
 
 using System;
 using System.Numerics;
-using System.Runtime.InteropServices;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;

@@ -66,11 +66,13 @@
             <StackPanel>
                 <Viewbox x:Name="BSkyLogo"
                          MaxWidth="125" 
-                         Margin="0,0,0,16">
+                         Margin="0,0,0,16"
+                         CacheMode="BitmapCache">
                     <Path Data="{StaticResource BlueSkyLogoPath}"
                           Fill="{ThemeResource ApplicationForegroundThemeBrush}"/>
                 </Viewbox>
-                <TextBlock x:Name="LoginText" 
+                <TextBlock x:Name="LoginText"
+                           x:Uid="LoginPageHeader"
                            Text="To begin, enter your username and password." 
                            TextWrapping="Wrap"/>
             </StackPanel>
@@ -94,6 +96,7 @@
                     </TransitionCollection>
                 </StackPanel.ChildrenTransitions>
                 <TextBox x:Name="HostBox"
+                         x:Uid="LoginHostBox"
                          x:Load="{x:Bind Is(ViewModel.Advanced)}"
                          Header="Host"
                          InputScope="Url"
@@ -102,32 +105,35 @@
                          Text="{x:Bind ViewModel.Host, Mode=TwoWay}">
                 </TextBox>
 
-                <TextBox Header="Username" 
+                <TextBox x:Uid="LoginUsernameBox" 
+                         Header="Username" 
                          InputScope="EmailNameOrAddress" 
                          TabIndex="0"
                          Margin="0,0,0,16"
                          Text="{x:Bind ViewModel.Username, Mode=TwoWay}">
                 </TextBox>
 
-                <PasswordBox Header="Password" 
+                <PasswordBox x:Uid="LoginPasswordBox" 
+                             Header="Password" 
                              InputScope="Password" 
                              TabIndex="1"
-                         Margin="0,0,0,16"
+                             Margin="0,0,0,16"
                              Password="{x:Bind ViewModel.Password, Mode=TwoWay}">
                 </PasswordBox>
 
                 <TextBlock x:Name="ErrorText"
-                        x:Load="{x:Bind IsNotNull(ViewModel.Error), Mode=OneWay}" 
-                        Text="{x:Bind ViewModel.Error.Message}"
-                        Margin="0,0,0,16"
-                        Foreground="{ThemeResource SystemErrorTextColor}"/>
+                           x:Load="{x:Bind IsNotNull(ViewModel.Error), Mode=OneWay}" 
+                           Text="{x:Bind ViewModel.Error.Message}"
+                           Margin="0,0,0,16"
+                           Foreground="{ThemeResource SystemErrorTextColor}"/>
 
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Button Content="Advanced"
+                    <Button x:Uid="LoginAdvancedButton"
+                            Content="Advanced"
                             Style="{ThemeResource TextBlockButtonStyle}"
                             Grid.Column="0"
                             TabIndex="3"
@@ -136,11 +142,11 @@
                     <ProgressRing Grid.Column="2" 
                                   IsActive="{x:Bind ViewModel.IsLoading}"
                                   Margin="0,0,8,0"></ProgressRing>
-                    
-                    <Button Content="Login"
+
+                    <Button x:Uid="LoginButton" 
+                            Content="Login"
                             TabIndex="2"
-                            Style="{ThemeResource AccentButtonStyle}" 
-                            Padding="{ThemeResource ButtonPadding}"
+                            Style="{ThemeResource AccentButtonStyle}"
                             Grid.Column="2"
                             HorizontalAlignment="Right"
                             MinWidth="100"
@@ -150,7 +156,55 @@
 
         </Grid>
         
-        <!--<Image Source="/Assets/SplashScreen.png" MaxWidth="620" Stretch="Uniform" Grid.RowSpan="5" Grid.ColumnSpan="3"/>-->
+        <Grid x:Name="AppTitleBar"
+              Background="Transparent"
+              Grid.RowSpan="5"
+              Grid.ColumnSpan="3"
+              VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="LeftPaddingColumn" Width="0"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Border x:Name="TitleBarDrag"
+                  Background="Transparent"
+                  Grid.Column="1"
+                  Grid.ColumnSpan="2"/>
+
+            <Grid Grid.Column="1" 
+                  HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="32"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RenderTransform>
+                    <TranslateTransform x:Name="TitleHeaderTransform"/>
+                </Grid.RenderTransform>
+
+                <Viewbox VerticalAlignment="Center"
+                         HorizontalAlignment="Center"
+                         Margin="8,2,0,0"
+                         Width="16"
+                         Height="16"
+                         Grid.Column="1"
+                         IsHitTestVisible="False"
+                         CacheMode="BitmapCache">
+                    <Path x:Name="AppIconPath"
+                          Data="{StaticResource BlueSkyLogoPath}"
+                          Fill="{ThemeResource ApplicationForegroundThemeBrush}"/>
+                </Viewbox>
+
+                <TextBlock x:Name="AppTitleTextBlock"
+                           x:Uid="AppTitle"
+                           Style="{StaticResource CaptionTextBlockStyle}" 
+                           Text="Unisky"
+                           VerticalAlignment="Center" 
+                           Grid.Column="2"
+                           Margin="8,0"
+                           IsHitTestVisible="False"/>
+            </Grid>
+        </Grid>
 
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="AdaptiveStates">
@@ -172,7 +226,7 @@
                         <Setter Target="SeparatorBorder.BorderBrush" Value="{ThemeResource SeparatorBrush}"/>
                         <Setter Target="RightGrid.VerticalAlignment" Value="Center"/>
                         <Setter Target="RightGrid.HorizontalAlignment" Value="Left"/>
-                        <Setter Target="RightGrid.MinWidth" Value="300"/>
+                        <Setter Target="RightGrid.Width" Value="300"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Mobile">

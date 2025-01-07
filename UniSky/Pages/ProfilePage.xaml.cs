@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Numerics;
-using CommunityToolkit.Mvvm.DependencyInjection;
 using FishyFlip.Lexicon;
 using FishyFlip.Lexicon.App.Bsky.Actor;
 using FishyFlip.Models;
@@ -9,12 +8,10 @@ using Microsoft.Graphics.Canvas.Effects;
 using Microsoft.Toolkit.Uwp.UI.Animations.Expressions;
 using Microsoft.Toolkit.Uwp.UI.Extensions;
 using UniSky.Services;
-using UniSky.ViewModels;
 using UniSky.ViewModels.Profile;
 using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
@@ -23,7 +20,7 @@ using EF = Microsoft.Toolkit.Uwp.UI.Animations.Expressions.ExpressionFunctions;
 
 namespace UniSky.Pages;
 
-public sealed partial class ProfilePage : Page
+public sealed partial class ProfilePage : Page, IScrollToTop
 {
     private const string PROGRESS_NODE = "progress";
     private const string PIXELS_TO_MOVE_NODE = "pixelsToMove";
@@ -46,6 +43,15 @@ public sealed partial class ProfilePage : Page
     private Visual _scrolledDisplayNameContainer;
     private SpriteVisual _blurredBackgroundImageVisual;
 
+    public ProfilePageViewModel ViewModel
+    {
+        get => (ProfilePageViewModel)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+    public static readonly DependencyProperty ViewModelProperty =
+        DependencyProperty.Register("ViewModel", typeof(ProfilePageViewModel), typeof(ProfilePage), new PropertyMetadata(null));
+
     public ProfilePage()
     {
         this.InitializeComponent();
@@ -55,20 +61,35 @@ public sealed partial class ProfilePage : Page
     {
         base.OnNavigatedTo(e);
 
-        if (e.Parameter is not (ProfileViewBasic or ProfileViewDetailed))
-            return;
-
-        if (e.Parameter is ATObject basic)
-            this.DataContext = ActivatorUtilities.CreateInstance<ProfilePageViewModel>(Ioc.Default, basic);
-
-        var safeAreaService = Ioc.Default.GetRequiredService<ISafeAreaService>();
+        var safeAreaService = ServiceContainer.Scoped.GetRequiredService<ISafeAreaService>();
+        safeAreaService.SetTitlebarTheme(ElementTheme.Default);
         safeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
+
+        if (e.Parameter is Uri { Scheme: "unisky" } uri)
+            HandleUniskyProtocol(uri);
+        else if (e.Parameter is ATObject basic)
+            this.DataContext = ViewModel = ActivatorUtilities.CreateInstance<ProfilePageViewModel>(ServiceContainer.Default, basic);
+        else
+            this.DataContext = ViewModel = ActivatorUtilities.CreateInstance<ProfilePageViewModel>(ServiceContainer.Default);
     }
 
     protected override void OnNavigatedFrom(NavigationEventArgs e)
     {
-        var safeAreaService = Ioc.Default.GetRequiredService<ISafeAreaService>();
+        var safeAreaService = ServiceContainer.Scoped.GetRequiredService<ISafeAreaService>();
         safeAreaService.SafeAreaUpdated -= OnSafeAreaUpdated;
+        safeAreaService.SetTitlebarTheme(ElementTheme.Default);
+    }
+
+    private void HandleUniskyProtocol(Uri uri)
+    {
+        var path = uri.PathAndQuery.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        if (path.Length < 2 || !string.Equals(path[0], "profile", StringComparison.InvariantCultureIgnoreCase))
+        {
+            this.Frame.Navigate(typeof(FeedsPage));
+        }
+
+        if (ATDid.TryCreate(path[1], out var did))
+            this.DataContext = ViewModel = ActivatorUtilities.CreateInstance<ProfilePageViewModel>(ServiceContainer.Default, did);
     }
 
     private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -131,10 +152,20 @@ public sealed partial class ProfilePage : Page
             Source = new CompositionEffectSourceParameter("source")
         };
 
+        var effect = new ExposureEffect()
+        {
+            Name = "tint",
+            Source = new CompositionEffectSourceParameter("source"),
+        };
+
         var blurBrush = _compositor.CreateEffectFactory(blurEffect, ["blur.BlurAmount"])
             .CreateBrush();
 
+        //var tintBrush = _compositor.CreateEffectFactory(effect, ["tint.Exposure"])
+        //    .CreateBrush();
+
         blurBrush.SetSourceParameter("source", _compositor.CreateBackdropBrush());
+        //tintBrush.SetSourceParameter("source", blurBrush);
 
         _blurredBackgroundImageVisual.Brush = blurBrush;
         ElementCompositionPreview.SetElementChildVisual(ProfileBanner, _blurredBackgroundImageVisual);
@@ -145,7 +176,10 @@ public sealed partial class ProfilePage : Page
 
         // animate the blurriness with respect to progress
         var blurAnimation = EF.Lerp(0, 20, progressNode);
-        _blurredBackgroundImageVisual.Brush.Properties.StartAnimation("blur.BlurAmount", blurAnimation);
+        blurBrush.Properties.StartAnimation("blur.BlurAmount", blurAnimation);
+
+        //var tintAnimation = EF.Lerp(0, -0.25f, progressNode);
+        //tintBrush.Properties.StartAnimation("tint.Exposure", tintAnimation);
 
         // move everything with the scroll viewer, make it sticky
         var headerTranslationAnimation = EF.Conditional(progressNode < 1, 0, -scrollingProperties.Translation.Y - pixelsToMoveNode);
@@ -196,9 +230,9 @@ public sealed partial class ProfilePage : Page
         if (ProfileContainer.ActualHeight == 0)
             return;
 
-        var safeAreaService = Ioc.Default.GetRequiredService<ISafeAreaService>();
+        var safeAreaService = ServiceContainer.Scoped.GetRequiredService<ISafeAreaService>();
 
-        var titleBarHeight = (float)safeAreaService.State.Bounds.Top;
+        var titleBarHeight = (float)safeAreaService.State.Bounds.Top + 4;
         var stickyHeight = (float)StickyFooter.ActualHeight;
         var totalSize = (float)ProfileContainer.ActualHeight;
         var clampHeight = (float)(52 + titleBarHeight) + stickyHeight;
@@ -230,6 +264,11 @@ public sealed partial class ProfilePage : Page
     {
         if (e.Handled) return;
 
+        ScrollToTop();
+    }
+
+    public void ScrollToTop()
+    {
         var scrollView = RootList.FindDescendant<ScrollViewer>();
         if (scrollView is null)
             return;

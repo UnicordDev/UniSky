@@ -1,0 +1,39 @@
+﻿<ContentDialog
+    x:Class="UniSky.Controls.Compose.ComposeAddAltTextDialog"
+    x:Uid="ComposeAddAltTextDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UniSky.Controls.Compose"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:compose="using:UniSky.ViewModels.Compose"
+    mc:Ignorable="d"
+    Title="ADD ALT TEXT"
+    PrimaryButtonText="OK"
+    SecondaryButtonText="Cancel"
+    PrimaryButtonStyle="{ThemeResource AccentButtonStyle}">
+    <d:ContentDialog.DataContext>
+        <d:DesignInstance Type="compose:ComposeViewAttachmentViewModel"/>
+    </d:ContentDialog.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Image Source="{Binding Thumbnail}" MaxHeight="350" />
+
+        <TextBox x:Uid="ComposeAddAltTextTextBox"
+                 Grid.Row="1"
+                 Margin="0,16,0,0"
+                 PlaceholderText="Describe this image! Be as detailed as you like."
+                 TextWrapping="Wrap"
+                 AcceptsReturn="True"
+                 MaxLength="2000"
+                 MaxHeight="200"
+                 Text="{Binding AltText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            
+        </TextBox>
+    </Grid>
+</ContentDialog>

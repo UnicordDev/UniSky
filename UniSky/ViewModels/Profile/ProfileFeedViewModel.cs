@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FishyFlip.Lexicon;
 using FishyFlip.Lexicon.App.Bsky.Actor;
-using FishyFlip.Models;
 using UniSky.Services;
 using UniSky.ViewModels.Feeds;
-using UniSky.ViewModels.Profiles;
 using Windows.ApplicationModel.Resources;
 
 namespace UniSky.ViewModels.Profile;
@@ -22,21 +16,18 @@ public partial class ProfileFeedViewModel : FeedViewModel
     [ObservableProperty]
     private bool selected;
 
-    private string filterType;
-
     public ProfileFeedViewModel(ProfilePageViewModel parent, string filterType, ATObject profile, IProtocolService protocolService)
         : base(FeedType.Author, protocolService)
     {
         this.parent = parent;
         this.parent.PropertyChanged += OnParentPropertyChanged;
-        this.filterType = filterType;
 
         var resources = ResourceLoader.GetForCurrentView();
         this.Name = filterType switch
         {
-            "posts_no_replies" => resources.GetString("FeedPosts"),
-            "posts_with_replies" => resources.GetString("FeedReplies"),
-            "posts_with_media" => resources.GetString("FeedMedia"),
+            "posts_no_replies" => resources.GetString("Feed_Posts"),
+            "posts_with_replies" => resources.GetString("Feed_Replies"),
+            "posts_with_media" => resources.GetString("Feed_Media"),
             "posts_and_author_threads" => throw new NotImplementedException(),
             _ => throw new NotImplementedException(),
         };
@@ -48,7 +39,7 @@ public partial class ProfileFeedViewModel : FeedViewModel
             ProfileView view => view.Did,
             _ => throw new InvalidCastException()
         };
-        this.Items = new FeedItemCollection(this, FeedType.Author, did, filterType, protocolService);
+        this.Items = new FeedItemCollection(this, FeedType.Author, did, filterType);
     }
 
     private void OnParentPropertyChanged(object sender, PropertyChangedEventArgs e)

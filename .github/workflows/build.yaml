@@ -30,6 +30,27 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Adjust Package Version
+      run: |
+        $epoch = (Get-Date) - (Get-Date -Day 1)
+        $file = (Resolve-Path "$env:Project_Name/Package.appxmanifest")
+        $xml = [System.Xml.XmlDocument]::new()
+        $xml.Load($file)
+
+        $node = $xml.GetElementsByTagName("Identity", "http://schemas.microsoft.com/appx/manifest/foundation/windows10")[0]
+        $version = [System.Version]::Parse($node.GetAttribute("Version"))
+        $version = [System.Version]::new($version.Major, $version.Minor, $version.Build, $epoch.TotalMinutes);
+        $node.SetAttribute("Version", $version.ToString())
+
+        $xml.Save($file)
+
+    # Decode the base 64 encoded pfx and save the Signing_Certificate
+    - name: Load Certificate
+      run: |
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
+        $certificatePath = "GitHubActionsWorkflow.pfx"
+        [IO.File]::WriteAllBytes("$env:Project_Name/$certificatePath", $pfx_cert_byte)
+
     # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v2
@@ -40,21 +61,16 @@ jobs:
       env:
         Configuration: ${{ matrix.configuration }}
 
-    # Decode the base 64 encoded pfx and save the Signing_Certificate
-    - name: Load Certificate
-      run: |
-        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
-        $certificatePath = "GitHubActionsWorkflow.pfx"
-        [IO.File]::WriteAllBytes("$env:Project_Name/$certificatePath", $pfx_cert_byte)
-
     # Create the app package by building and packaging the project
     - name: Build App Packages
-      run: msbuild $env:ProjectFile_Name /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxBundlePlatforms="x86|x64|ARM|ARM64" /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true
+      run: msbuild $env:ProjectFile_Name /p:Configuration=$env:Configuration /p:SourceRevisionBranch="$env:Head_Ref" /p:SourceRevisionCommit="$($env:Sha.Substring(0, 7))" /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxBundlePlatforms="x86|x64|ARM|ARM64" /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true
       env:
         Appx_Bundle: Always
         Appx_Package_Build_Mode: SideloadOnly
         Appx_Package_Dir: Packages\
         Configuration: ${{ matrix.configuration }}
+        Head_Ref: ${{ github.head_ref }}
+        Sha: ${{ github.sha }}
 
     # Remove the pfx
     - name: Cleanup
@@ -67,7 +83,3 @@ jobs:
         name: AppxPackage-${{ matrix.configuration }}
         path: |
           ${{ env.Project_Name }}\\Packages
-          ${{ env.Project_Name }}\\bin\\x86\\${{ matrix.configuration }}\\ilc\\${{ env.Project_Name }}.pdb 
-          ${{ env.Project_Name }}\\bin\\x64\\${{ matrix.configuration }}\\ilc\\${{ env.Project_Name }}.pdb 
-          ${{ env.Project_Name }}\\bin\\ARM\\${{ matrix.configuration }}\\ilc\\${{ env.Project_Name }}.pdb 
-          ${{ env.Project_Name }}\\bin\\ARM64\\${{ matrix.configuration }}\\ilc\\${{ env.Project_Name }}.pdb 

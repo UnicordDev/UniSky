@@ -7,13 +7,51 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:viewmodels="using:UniSky.ViewModels"
     xmlns:pages="using:UniSky.Pages"
-    mc:Ignorable="d">
-    <Page.DataContext>
-        <viewmodels:RootViewModel/>
-    </Page.DataContext>
+    xmlns:sheet="using:UniSky.Controls.Sheet"
+    mc:Ignorable="d"
+    NavigationCacheMode="Required">
 
     <Grid>
+        <Canvas x:Name="RenderTargetRoot"/>
+        
         <Border Background="#FF0085ff"/>
-        <Frame x:Name="RootFrame" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"/>
+        
+        <sheet:SheetRootControl x:Name="SheetRoot"
+                                Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <Frame x:Name="RootFrame"
+                   Navigated="RootFrame_Navigated"/>
+        </sheet:SheetRootControl>
+
+        <Grid x:Name="ExtendedSplash" 
+                IsHitTestVisible="False"
+                Background="#FF0085ff">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Viewbox x:Name="ExtendedSplashContainer"
+                     Grid.RowSpan="2"
+                     StretchDirection="DownOnly">
+                <Grid x:Name="ExtendedSplashImage" 
+                      Width="620"
+                      Height="300">
+                    <Viewbox Width="100"
+                             Height="100"
+                             VerticalAlignment="Center"
+                             HorizontalAlignment="Center"
+                             CacheMode="BitmapCache">
+                        <Path Data="{StaticResource BlueSkyLogoPath}"
+                              Fill="White"/>
+                    </Viewbox>
+                </Grid>
+            </Viewbox>
+            <ProgressRing x:Name="ExtendedProgressRing"
+                          Grid.Row="1"
+                          VerticalAlignment="Top"
+                          Foreground="White" 
+                          IsActive="True"
+                          Width="24"
+                          Height="24"/>
+        </Grid>
     </Grid>
 </Page>

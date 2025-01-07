@@ -1,0 +1,237 @@
+﻿<UserControl
+    x:Name="Root"
+    x:Class="UniSky.Controls.Sheet.SheetRootControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UniSky.Controls.Sheet"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:media="using:Microsoft.Toolkit.Uwp.UI.Media" 
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:extensions="using:UniSky.Extensions" 
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:ui="using:Microsoft.Toolkit.Uwp.UI"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+    <UserControl.Resources>
+        <ExponentialEase x:Key="ExponentialEaseEnter"
+                         EasingMode="EaseOut"
+                         Exponent="7"/>
+        <ExponentialEase x:Key="ExponentialEaseExit"
+                         EasingMode="EaseIn"
+                         Exponent="5"/>
+
+        <ui:AttachedDropShadow x:Key="CommonShadow"
+                               x:Name="CommonShadow"
+                               BlurRadius="16"
+                               Color="#80000000"
+                               CastTo="{Binding ElementName=CompositionBackdropContainer}"/>
+    </UserControl.Resources>
+
+    <Grid Background="{x:Bind Background}">
+        <Border x:Name="ContentRoot"
+                Child="{x:Bind ContentElement}"
+                IsHitTestVisible="True"
+                AllowFocusOnInteraction="True"
+                RenderTransformOrigin="0.5,0.5">
+            <Border.RenderTransform>
+                <ScaleTransform x:Name="ContentScale" ScaleX="1" ScaleY="1"/>
+            </Border.RenderTransform>
+        </Border>
+
+        <Border x:Name="CompositionBackdropContainer"
+                IsHitTestVisible="False"
+                Visibility="Collapsed"
+                Background="#80000000">
+        </Border>
+
+
+        <muxc:RefreshContainer x:Name="RefreshContainer"
+                                RefreshRequested="RefreshContainer_RefreshRequested">
+            <muxc:RefreshContainer.Visualizer>
+                <muxc:RefreshVisualizer Opacity="0"/>
+            </muxc:RefreshContainer.Visualizer>
+                <ScrollViewer HorizontalScrollMode="Disabled"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              VerticalContentAlignment="Stretch"
+                              HorizontalContentAlignment="Stretch"
+                              VerticalScrollMode="Enabled"
+                              VerticalScrollBarVisibility="Hidden"
+                              IsVerticalScrollChainingEnabled="True"
+                              IsVerticalRailEnabled="True"
+                              IsDeferredScrollingEnabled="False">
+                <Grid>
+                    <Border x:Name="HostControl">
+                        <Border.RenderTransform>
+                            <TranslateTransform x:Name="SheetTransform" Y="0"/>
+                        </Border.RenderTransform>
+                        <Border x:Name="SheetBorder"
+                                BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
+                                ui:Effects.Shadow="{StaticResource CommonShadow}">
+                            <Border x:Name="SheetRoot"/>
+                        </Border>
+                    </Border>
+                </Grid>
+            </ScrollViewer>
+         </muxc:RefreshContainer>
+
+        <Border x:Name="TitleBar"
+                Visibility="Collapsed"
+                VerticalAlignment="Top"/>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="AdaptiveStates">
+                <VisualState x:Name="Small">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="HostControl.HorizontalAlignment" Value="Stretch"/>
+                        <Setter Target="HostControl.MaxWidth" Value="Infinity"/>
+                        <Setter Target="HostControl.MaxHeight" Value="Infinity"/>
+                        <Setter Target="HostControl.Padding" Value="0,0,0,0"/>
+                        <Setter Target="SheetBorder.(extensions:Hairline.BorderThickness)" Value="0"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Medium">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="621" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="HostControl.HorizontalAlignment" Value="Stretch"/>
+                        <Setter Target="HostControl.VerticalAlignment" Value="Top"/>
+                        <Setter Target="HostControl.MaxWidth" Value="600"/>
+                        <Setter Target="HostControl.MaxHeight" Value="400"/>
+                        <Setter Target="HostControl.Padding" Value="40,0,0,0"/>
+                        <Setter Target="SheetBorder.(extensions:Hairline.BorderThickness)" Value="1"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="SheetStates">
+                <VisualState x:Name="Open">
+                    <VisualState.Storyboard>
+                        <Storyboard x:Name="ShowSheetStoryboard"
+                                    Completed="ShowSheetStoryboard_Completed">
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RefreshContainer"
+                                                           Storyboard.TargetProperty="Visibility">
+                                <DiscreteObjectKeyFrame KeyTime="00:00:00.0" Value="Visible"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CompositionBackdropContainer"
+                                                           Storyboard.TargetProperty="Visibility">
+                                <DiscreteObjectKeyFrame KeyTime="00:00:00.0" Value="Visible"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TitleBar"
+                                                           Storyboard.TargetProperty="Visibility">
+                                <DiscreteObjectKeyFrame KeyTime="00:00:00.0" Value="Visible"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentRoot"
+                                                           Storyboard.TargetProperty="AllowFocusOnInteraction">
+                                <DiscreteObjectKeyFrame KeyTime="00:00:00.0" Value="False"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentRoot"
+                                                           Storyboard.TargetProperty="IsHitTestVisible">
+                                <DiscreteObjectKeyFrame KeyTime="00:00:00.0" Value="False"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <DoubleAnimation x:Name="ShowDoubleAnimation"
+                                             To="0"
+                                             From="{Binding TotalHeight, ElementName=Root}"
+                                             Storyboard.TargetName="SheetTransform"
+                                             Storyboard.TargetProperty="Y"
+                                             Duration="00:00:00.5"
+                                             EasingFunction="{StaticResource ExponentialEaseEnter}"/>
+                            <!--<DoubleAnimation From="1"
+                                             To="0.95"
+                                             Storyboard.TargetName="ContentScale"
+                                             Storyboard.TargetProperty="ScaleX"
+                                             Duration="00:00:00.5"
+                                             EasingFunction="{StaticResource ExponentialEaseEnter}"/>
+                            <DoubleAnimation From="1"
+                                             To="0.95"
+                                             Storyboard.TargetName="ContentScale"
+                                             Storyboard.TargetProperty="ScaleY"
+                                             Duration="00:00:00.5"
+                                             EasingFunction="{StaticResource ExponentialEaseEnter}"/>-->
+                            <DoubleAnimation From="0"
+                                             To="1"
+                                             Storyboard.TargetName="CompositionBackdropContainer"
+                                             Storyboard.TargetProperty="Opacity"
+                                             Duration="00:00:00.3"
+                                             EasingFunction="{StaticResource ExponentialEaseEnter}"
+                                             EnableDependentAnimation="True"/>
+                            <DoubleAnimation From="0"
+                                             To="1"
+                                             Storyboard.TargetName="SheetBorder"
+                                             Storyboard.TargetProperty="Opacity"
+                                             Duration="00:00:00.3"
+                                             EasingFunction="{StaticResource ExponentialEaseEnter}"
+                                             EnableDependentAnimation="True"/>
+                        </Storyboard>
+                    </VisualState.Storyboard>
+                </VisualState>
+                <VisualState x:Name="Closed">
+                    <VisualState.Storyboard>
+                        <Storyboard x:Name="HideSheetStoryboard"
+                                    Completed="HideSheetStoryboard_Completed">
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RefreshContainer"
+                                                           Storyboard.TargetProperty="Visibility">
+                                <DiscreteObjectKeyFrame KeyTime="00:00:00.5" Value="Collapsed"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CompositionBackdropContainer"
+                                                           Storyboard.TargetProperty="Visibility">
+                                <DiscreteObjectKeyFrame KeyTime="00:00:00.5" Value="Collapsed"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TitleBar"
+                                                           Storyboard.TargetProperty="Visibility">
+                                <DiscreteObjectKeyFrame KeyTime="00:00:00.0" Value="Collapsed"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentRoot"
+                                                           Storyboard.TargetProperty="AllowFocusOnInteraction">
+                                <DiscreteObjectKeyFrame KeyTime="00:00:00.0" Value="True"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentRoot"
+                                                           Storyboard.TargetProperty="IsHitTestVisible">
+                                <DiscreteObjectKeyFrame KeyTime="00:00:00.0" Value="True"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <DoubleAnimation x:Name="HideDoubleAnimation"
+                                             To="{Binding TotalHeight, ElementName=Root}"
+                                             Storyboard.TargetName="SheetTransform"
+                                             Storyboard.TargetProperty="Y"
+                                             Duration="00:00:00.5"
+                                             EasingFunction="{StaticResource ExponentialEaseEnter}"/>
+                            <!--<DoubleAnimation From="0.95"
+                                             To="1"
+                                             Storyboard.TargetName="ContentScale"
+                                             Storyboard.TargetProperty="ScaleX"
+                                             Duration="00:00:00.5"
+                                             EasingFunction="{StaticResource ExponentialEaseEnter}"/>
+                            <DoubleAnimation From="0.95"
+                                             To="1"
+                                             Storyboard.TargetName="ContentScale"
+                                             Storyboard.TargetProperty="ScaleY"
+                                             Duration="00:00:00.5"
+                                             EasingFunction="{StaticResource ExponentialEaseEnter}"/>-->
+                            <DoubleAnimation From="1"
+                                             To="0"
+                                             Storyboard.TargetName="CompositionBackdropContainer"
+                                             Storyboard.TargetProperty="Opacity"
+                                             Duration="00:00:00.3"
+                                             EasingFunction="{StaticResource ExponentialEaseEnter}"
+                                             EnableDependentAnimation="True"/>
+                            <DoubleAnimation From="1"
+                                             To="0"
+                                             Storyboard.TargetName="SheetBorder"
+                                             Storyboard.TargetProperty="Opacity"
+                                             Duration="00:00:00.3"
+                                             EasingFunction="{StaticResource ExponentialEaseEnter}"
+                                             EnableDependentAnimation="True"/>
+                        </Storyboard>
+                    </VisualState.Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
+</UserControl>

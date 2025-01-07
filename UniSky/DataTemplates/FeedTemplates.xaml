@@ -5,24 +5,256 @@
                     xmlns:not1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract, 7)"
                     xmlns:i="using:Microsoft.Xaml.Interactivity" 
                     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+                    xmlns:controls="using:UniSky.Controls"
                     xmlns:datatemplates="using:UniSky.DataTemplates"
                     xmlns:converters="using:UniSky.Converters"
                     xmlns:extensions="using:UniSky.Extensions"
                     xmlns:feeds="using:UniSky.ViewModels.Feeds" 
-                    xmlns:posts="using:UniSky.ViewModels.Posts" xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+                    xmlns:posts="using:UniSky.ViewModels.Posts" 
+                    xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls" xmlns:labels="using:UniSky.Controls.Labels" xmlns:ui="using:Microsoft.Toolkit.Uwp.UI"
                     x:DefaultBindMode="OneWay">
 
     <!-- TODO: un-steal these colours -->
-    <SolidColorBrush x:Key="LikeBrush">#ea4298</SolidColorBrush>
-    <SolidColorBrush x:Key="RetweetBrush">#5cefaa</SolidColorBrush>
+    <SolidColorBrush x:Key="LikeBrush">#ff405d</SolidColorBrush>
+    <SolidColorBrush x:Key="RetweetBrush">#15bc3c</SolidColorBrush>
+
+    <datatemplates:PostEmbedTemplateSelector x:Key="PostEmbedTemplateSelector"
+                                             ImagesEmbedTemplate="{StaticResource ImagesEmbedContentTemplate}"
+                                             VideoEmbedTemplate="{StaticResource VideoEmbedContentTemplate}"
+                                             InlineVideoEmbedTemplate="{StaticResource InlineVideoEmbedContentTemplate}"
+                                             PostEmbedTemplate="{StaticResource PostEmbedContentTemplate}"
+                                             ExternalEmbedTemplate="{StaticResource ExternalEmbedContentTemplate}"
+                                             RecordWithMediaEmbedTemplate="{StaticResource RecordWithMediaEmbedContentTemplate}"/>
+    
+    <datatemplates:PostEmbedTemplateSelector x:Key="PostEmbedChildTemplateSelector"
+                                             ImagesEmbedTemplate="{StaticResource ImagesEmbedContentTemplate}"
+                                             VideoEmbedTemplate="{StaticResource VideoEmbedContentTemplate}"
+                                             PostEmbedTemplate="{StaticResource PostEmbedContentTemplate}"
+                                             ExternalEmbedTemplate="{StaticResource ExternalEmbedContentTemplate}"/>
+    
+    <converters:VisibilityConverter x:Key="VisibilityConverter"/>
+
+    <MenuFlyout x:Key="FeedItemMoreButtonFlyout"
+                w1809:Placement="BottomEdgeAlignedRight"
+                not1809:Placement="Bottom">
+        <MenuFlyoutItem x:Uid="FeedMoreShareItem" Text="Share" Command="{Binding ShareCommand}">
+            <MenuFlyoutItem.Icon>
+                <FontIcon Glyph="&#xE72D;" FontFamily="{ThemeResource SymbolThemeFontFamily}"/>
+            </MenuFlyoutItem.Icon>
+        </MenuFlyoutItem>
+        <MenuFlyoutItem x:Uid="FeedMoreCopyTextItem" Text="Copy Text" Icon="Copy" Command="{Binding CopyTextCommand}"/>
+        <MenuFlyoutItem x:Uid="FeedMoreCopyLinkItem" Text="Copy Link" Icon="Link" Command="{Binding CopyLinkCommand}"/>
+        <MenuFlyoutSeparator/>
+        <MenuFlyoutItem x:Uid="FeedMoreMuteItem" Text="Mute Thread" Icon="Mute"/>
+        <MenuFlyoutItem x:Uid="FeedMoreHidePostItem" Text="Hide Post" Icon="Clear"/>
+        <MenuFlyoutSeparator/>
+        <MenuFlyoutItem x:Uid="FeedMoreReportPostItem" Foreground="{ThemeResource SystemControlErrorTextForegroundBrush}" 
+                        Text="Report Post"
+                        Icon="ReportHacked"/>
+    </MenuFlyout>
 
     <Style x:Key="FeedItemActionButtonStyle" TargetType="Button">
         <Setter Property="Padding" Value="8"/>
         <Setter Property="Margin" Value="0,0,8,0"/>
-        <Setter Property="FontFamily" Value="{StaticResource SymbolThemeFontFamily}"/>
+        <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
     </Style>
+
+    <DataTemplate x:Key="PostContentWarningTemplate"
+                  x:DataType="posts:ContentWarningViewModel">
+        <Grid Padding="12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Viewbox Width="16"
+                     Height="16"
+                     Margin="0,2,0,0"
+                     VerticalAlignment="Top">
+                <TextBlock FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE7BA;</TextBlock>
+            </Viewbox>
+
+            <TextBlock Text="{Binding Warning}"
+                       TextWrapping="Wrap"
+                       Margin="8,0"
+                       Grid.Column="1"
+                       MaxLines="2"/>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="RecordWithMediaEmbedContentTemplate" 
+               x:DataType="posts:PostEmbedRecordWithMediaViewModel">
+        <StackPanel>
+            <Grid x:Name="MediaContentContainer"
+                  Visibility="{Binding Media,Converter={StaticResource VisibilityConverter}}">
+                <ContentControl x:Name="MediaContent"
+                                Margin="0,4,0,0"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch"
+                                ContentTemplateSelector="{StaticResource PostEmbedChildTemplateSelector}"
+                                Content="{Binding Media}"/>
+            </Grid>
+            <Grid x:Name="RecordContentContainer"
+                  Visibility="{Binding Record, Converter={StaticResource VisibilityConverter}}">
+                <ContentControl x:Name="RecordContent"
+                                Margin="0,4,0,0"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch"
+                                ContentTemplateSelector="{StaticResource PostEmbedChildTemplateSelector}"
+                                Content="{Binding Record}"/>
+            </Grid>
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ExternalEmbedContentTemplate" 
+                  x:DataType="posts:PostEmbedExternalViewModel">
+        <Button Style="{ThemeResource CleanButtonStyle}"
+                Command="{Binding OpenLinkCommand}"
+                BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
+                Padding="0"
+                extensions:Hairline.BorderThickness="1"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Stretch">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Border x:Name="ThumbnailBox"
+                        Visibility="{Binding ThumbnailUrl, Converter={StaticResource VisibilityConverter}}"
+                        BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
+                        extensions:Hairline.BorderThickness="0,0,0,1">
+                    <toolkit:ConstrainedBox AspectRatio="2:1">
+                        <Image Source="{Binding ThumbnailUrl}"
+                           VerticalAlignment="Center"
+                           Stretch="UniformToFill"/>
+                    </toolkit:ConstrainedBox>
+                </Border>
+
+                <StackPanel Grid.Row="1"
+                            Padding="8,8,8,4">
+                    <TextBlock x:Name="TitleBlock"
+                               Visibility="{Binding Title, Converter={StaticResource VisibilityConverter}}"
+                               Grid.Row="0"
+                               Grid.Column="1"
+                               Style="{ThemeResource BaseTextBlockStyle}" 
+                               Text="{Binding Title}"
+                               VerticalAlignment="Bottom"
+                               TextWrapping="NoWrap"/>
+
+                    <TextBlock x:Name="SubtitleBlock"
+                               Visibility="{Binding Description, Converter={StaticResource VisibilityConverter}}"
+                               Grid.Row="1"
+                               Grid.Column="1"
+                               Margin="0,2,0,0"
+                               Style="{ThemeResource CaptionTextBlockStyle}" 
+                               Text="{Binding Description}"
+                               VerticalAlignment="Top"
+                               MaxLines="2"/>
+                </StackPanel>
+
+                <TextBlock Grid.Row="2" 
+                           Text="{Binding Source}"
+                           Style="{ThemeResource CaptionTextBlockStyle}" 
+                           Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                           TextWrapping="NoWrap"
+                           Margin="8,0,8,8"/>
+            </Grid>
+        </Button>
+    </DataTemplate>
+
+    <DataTemplate x:Key="PostEmbedContentTemplate" 
+                  x:DataType="posts:PostEmbedPostViewModel">
+        <Button Style="{ThemeResource CleanButtonStyle}"
+                Command="{Binding OpenThreadCommand}"
+                BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
+                extensions:Hairline.BorderThickness="1"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Stretch"
+                Padding="8">
+            <StackPanel>
+                <Button Command="{Binding Author.OpenProfileCommand}"
+                        CommandParameter="{Binding ElementName=SmallProfileEllipse}"
+                        Style="{ThemeResource CleanButtonStyle}"
+                        Padding="0"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Ellipse x:Name="SmallProfileEllipse" 
+                                 Width="20" 
+                                 Height="20"
+                                 Margin="0,0,8,0">
+                            <Ellipse.Fill>
+                                <ImageBrush>
+                                    <ImageBrush.ImageSource>
+                                        <BitmapImage UriSource="{Binding Author.AvatarUrl}"
+                                                     DecodePixelWidth="16"
+                                                     DecodePixelHeight="16"
+                                                     DecodePixelType="Logical"/>
+                                    </ImageBrush.ImageSource>
+                                </ImageBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
+
+                        <TextBlock Grid.Column="1"
+                                   Foreground="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"                  
+                                   VerticalAlignment="Top"
+                                   TextTrimming="CharacterEllipsis">                
+                            <Run Text="{Binding Author.Name, Mode=OneWay}"           
+                                 FontWeight="Bold"                        
+                                 Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>                    
+                            <Run Text="{Binding Author.Handle, Mode=OneWay}"/>
+                        </TextBlock>
+
+                        <TextBlock x:Name="DateBlock"
+                                   Grid.Column="2"
+                                   Margin="2,0"
+                                   Foreground="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                                   Typography.NumeralAlignment="Tabular"
+                                   Text="{Binding Date}"/>
+                    </Grid>
+                </Button>
+
+                <labels:LabelsControl x:Name="LabelViewer"
+                                      Visibility="{Binding Labels, Converter={StaticResource VisibilityConverter}}"
+                                      Labels="{Binding Labels}"
+                                      Margin="0,4,0,0"/>
+                
+                <controls:FacetTextBlock x:Name="MainContent"
+                                        Visibility="{Binding Text, Converter={StaticResource VisibilityConverter}}"
+                                        Inlines="{Binding RichText.Facets}"
+                                        TextWrapping="Wrap"
+                                        Margin="0,2,0,0"
+                                        VerticalAlignment="Top"/>
+
+                <controls:SpoilerControl x:Name="EmbedContentContainer"
+                                         Margin="0,4,0,0"
+                                         Warning="{Binding Warning}"
+                                         WarningTemplate="{StaticResource PostContentWarningTemplate}"
+                                         IsHidden="{Binding Warning.IsHidden, Mode=TwoWay}"
+                                         CanOverride="{Binding Warning.CanOverride, Mode=OneWay, FallbackValue=True}"
+                                         Visibility="{Binding Embed, Converter={StaticResource VisibilityConverter}}">
+                    <ContentControl x:Name="EmbedContent"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch"
+                                    ContentTemplateSelector="{StaticResource PostEmbedTemplateSelector}"
+                                    Content="{Binding Embed}"/>
+                </controls:SpoilerControl>
+            </StackPanel>
+        </Button>
+    </DataTemplate>
 
     <DataTemplate x:Key="ImagesEmbedContentTemplate" 
                   x:DataType="posts:PostEmbedImagesViewModel">
@@ -114,7 +346,7 @@
                     </VisualStateGroup>
                 </VisualStateManager.VisualStateGroups>
 
-                <controls:ConstrainedBox AspectRatio="{Binding AspectRatio}">
+                <toolkit:ConstrainedBox AspectRatio="{Binding AspectRatio}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -129,7 +361,9 @@
                                 Grid.Column="0"
                                 Margin="2"
                                 Padding="0"
-                                Style="{ThemeResource CleanButtonStyle}">
+                                Style="{ThemeResource CleanButtonStyle}"
+                                Command="{Binding ShowImageGalleryCommand}"
+                                CommandParameter="{Binding Image1}">
                             <Image x:Name="PART_Image1A" Stretch="Uniform"
                                    Source="{Binding Image1.ThumbnailUrl}"
                                    VerticalAlignment="Center"
@@ -140,7 +374,9 @@
                                 Grid.Column="1"
                                 Margin="2"
                                 Padding="0"
-                                Style="{ThemeResource CleanButtonStyle}">
+                                Style="{ThemeResource CleanButtonStyle}"
+                                Command="{Binding ShowImageGalleryCommand}"
+                                CommandParameter="{Binding Image2}">
                             <Image Stretch="UniformToFill"
                                    Source="{Binding Image2.ThumbnailUrl}"
                                    VerticalAlignment="Center"
@@ -151,7 +387,9 @@
                                 Grid.Column="0"
                                 Margin="2"
                                 Padding="0"
-                                Style="{ThemeResource CleanButtonStyle}">
+                                Style="{ThemeResource CleanButtonStyle}"
+                                Command="{Binding ShowImageGalleryCommand}"
+                                CommandParameter="{Binding Image3}">
                             <Image Stretch="UniformToFill"
                                    Source="{Binding Image3.ThumbnailUrl}"
                                    VerticalAlignment="Center"
@@ -162,272 +400,337 @@
                                 Grid.Column="1"
                                 Margin="2"
                                 Padding="0"
-                                Style="{ThemeResource CleanButtonStyle}">
+                                Style="{ThemeResource CleanButtonStyle}"
+                                Command="{Binding ShowImageGalleryCommand}"
+                                CommandParameter="{Binding Image4}">
                             <Image Stretch="UniformToFill"
                                    Source="{Binding Image4.ThumbnailUrl}"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"/>
                         </Button>
                     </Grid>
-                </controls:ConstrainedBox>
+                </toolkit:ConstrainedBox>
             </Grid>
         </UserControl>
     </DataTemplate>
 
-    <DataTemplate x:Key="VideoEmbedContentTemplate" x:DataType="posts:PostEmbedVideoViewModel">
-        <controls:ConstrainedBox AspectRatio="{Binding Ratio}">
+    <DataTemplate x:Key="InlineVideoEmbedContentTemplate" x:DataType="posts:PostEmbedVideoViewModel">
+        <toolkit:ConstrainedBox AspectRatio="{Binding Ratio}">
             <MediaPlayerElement PosterSource="{Binding ThumbnailUrl}"
                                 Source="{Binding Source}"
                                 AreTransportControlsEnabled="True"
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Left"
-                                Stretch="Uniform" >
+                                Stretch="Uniform">
                 <MediaPlayerElement.TransportControls>
                     <MediaTransportControls Style="{StaticResource MediaTransportControlsStyle}"/>
                 </MediaPlayerElement.TransportControls>
             </MediaPlayerElement>
-        </controls:ConstrainedBox>
+        </toolkit:ConstrainedBox>
     </DataTemplate>
 
-    <datatemplates:PostEmbedTemplateSelector x:Key="PostEmbedTemplateSelector"
-                                             ImagesEmbedTemplate="{StaticResource ImagesEmbedContentTemplate}"
-                                             VideoEmbedTemplate="{StaticResource VideoEmbedContentTemplate}"/>
+
+    <DataTemplate x:Key="VideoEmbedContentTemplate" x:DataType="posts:PostEmbedVideoViewModel">
+        <toolkit:ConstrainedBox AspectRatio="{Binding Ratio}">
+            <Grid>
+                <Grid.Resources>
+                    <ui:AttachedDropShadow x:Key="PlayButtonShadow" CastTo="{Binding ElementName=ImageElement}" BlurRadius="8" Opacity="1" Color="Black"/>
+                </Grid.Resources>
+                <Button x:Name="PlayButton"
+                        Padding="0"
+                        Style="{ThemeResource CleanButtonStyle}"
+                        Command="{Binding ShowVideoPlayerCommand}">
+                    <Grid>
+                        <Image x:Name="ImageElement"
+                               Stretch="UniformToFill"
+                               Source="{Binding ThumbnailUrl}"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"/>
+
+                        <TextBlock ui:Effects.Shadow="{StaticResource PlayButtonShadow}" 
+                                   FontFamily="{StaticResource SymbolThemeFontFamily}" 
+                                   Foreground="White" 
+                                   FontSize="32"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center">&#xE768;</TextBlock>
+                    </Grid>
+                </Button>
+            </Grid>
+        </toolkit:ConstrainedBox>
+    </DataTemplate>
 
     <DataTemplate x:Key="FeedItemContentTemplate"
                   x:DataType="posts:PostViewModel">
-        <StackPanel BorderBrush="{StaticResource SystemControlSeparatorBrush}"
-                    extensions:HairlineBorder.Thickness="0,0,0,1"
-                    HorizontalAlignment="Stretch"
-                    Padding="12,8,12,4">
+        <Button Style="{ThemeResource CleanButtonStyle}"
+                Command="{x:Bind OpenThreadCommand}" 
+                BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
+                extensions:Hairline.BorderThickness="{Binding Borders, Mode=OneWay}">
+            <StackPanel HorizontalAlignment="Stretch"
+                        Padding="12,8,12,4">
 
-            <Grid x:Name="RetweetContainer"
-                  x:Load="{x:Bind converters:Static.NotNull(RetweetedBy)}"
-                  Margin="34,0,0,4">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+                <Grid x:Name="RetweetContainer"
+                      x:Load="{x:Bind converters:Static.NotNull(RetweetedBy)}"
+                      x:Phase="1"
+                      Margin="34,0,0,4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                <Viewbox Height="12">
-                    <TextBlock Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
-                               FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE8EB;</TextBlock>
-                </Viewbox>
+                    <Viewbox Height="12">
+                        <TextBlock Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                                   FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE8EB;</TextBlock>
+                    </Viewbox>
 
-                <TextBlock Grid.Column="1" 
-                           Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
-                           FontSize="12"
-                           Margin="8,0">
-                    <Run x:Uid="RetweetedByRun" Text="Reposted by"/> <Run Text="{x:Bind RetweetedBy.Name, Mode=OneWay}" FontWeight="Bold"/>
-                </TextBlock>
-            </Grid>
-
-            <Grid x:Name="ReplyContainer"
-                  x:Load="{x:Bind converters:Static.NotNull(ReplyTo)}"
-                  Margin="34,0,0,4">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-                <Viewbox Height="12">
-                    <TextBlock Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
-                               FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE97A;</TextBlock>
-                </Viewbox>
-
-                <TextBlock Grid.Column="1" 
-                           Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
-                           FontSize="12"
-                           Margin="8,0">
-                    <Run x:Uid="ReplyingToRun" Text="Replying to"/> <Run Text="{x:Bind ReplyTo.Name, Mode=OneWay}" FontWeight="Bold"/>
-                </TextBlock>
-            </Grid>
-
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-                <Button Command="{x:Bind OpenProfileCommand}"
-                        CommandParameter="{Binding ElementName=ProfileEllipse}"
-                        Style="{ThemeResource CleanButtonStyle}"
-                        Padding="0"
-                        Margin="0,0,12,0"
-                        Grid.RowSpan="4"
-                        VerticalAlignment="Top">
-                    <Ellipse x:Name="ProfileEllipse"
-                             Width="42" 
-                             Height="42">
-                        <Ellipse.Fill>
-                            <ImageBrush>
-                                <ImageBrush.ImageSource>
-                                    <BitmapImage UriSource="{Binding Author.AvatarUrl}"
-                                                 DecodePixelWidth="42"
-                                                 DecodePixelHeight="42"
-                                                 DecodePixelType="Logical"/>
-                                </ImageBrush.ImageSource>
-                            </ImageBrush>
-                        </Ellipse.Fill>
-                    </Ellipse>
-                </Button>
-
-                <StackPanel Grid.Column="1">
-                    <TextBlock Foreground="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"                  
-                               VerticalAlignment="Top">                
-                         <Run Text="{x:Bind Author.Name, Mode=OneWay}"           
-                              FontWeight="Bold"                        
-                              Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>                    
-                         <Run Text="{x:Bind Author.Handle, Mode=OneWay}"/>
+                    <TextBlock Grid.Column="1" 
+                               Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                               FontSize="12"
+                               Margin="8,0">
+                        <Run x:Uid="RetweetedByRun" Text="Reposted by"/> <Run Text="{x:Bind RetweetedBy.Name, Mode=OneWay}" FontWeight="Bold"/>
                     </TextBlock>
+                </Grid>
 
-                    <TextBlock x:Name="MainContent"
-                               x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Text)}"
-                               Text="{x:Bind Text}"
-                               TextWrapping="Wrap"
-                               Margin="0,0,0,4"
-                               IsTextSelectionEnabled="True"
-                               VerticalAlignment="Top"/>
+                <Grid x:Name="ReplyContainer"
+                      x:Load="{x:Bind ShowReplyContainer}"
+                      x:Phase="1"
+                      Margin="34,0,0,4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                    <Grid x:Name="EmbedContentContainer"
-                          x:Load="{x:Bind converters:Static.NotNull(Embed)}">
-                        <ContentControl x:Name="EmbedContent"
-                                            Margin="0,4,0,4"
+                    <Viewbox Height="12">
+                        <TextBlock Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                                   FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE97A;</TextBlock>
+                    </Viewbox>
+
+                    <TextBlock Grid.Column="1" 
+                               Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                               FontSize="12"
+                               Margin="8,0">
+                        <Run x:Uid="ReplyingToRun" Text="Replying to"/> <Run Text="{x:Bind ReplyTo.Name, Mode=OneWay}" FontWeight="Bold"/>
+                    </TextBlock>
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Margin="0,0,12,0"
+                          Grid.RowSpan="4">
+                        <Button Command="{x:Bind Author.OpenProfileCommand}"
+                                CommandParameter="{Binding ElementName=ProfileEllipse}"
+                                Style="{ThemeResource CleanButtonStyle}"
+                                Padding="0"
+                                Margin="-1,0,0,0"
+                                VerticalAlignment="Top">
+                            <Ellipse x:Name="ProfileEllipse"
+                                     Width="42" 
+                                     Height="42">
+                                <Ellipse.Fill>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="{Binding Author.AvatarUrl}"
+                                                         DecodePixelWidth="42"
+                                                         DecodePixelHeight="42"
+                                                         DecodePixelType="Logical"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                        </Button>
+
+                        <Border x:Name="ReplyLine"
+                                x:Load="{x:Bind ShowReplyLine}"
+                                x:Phase="1"
+                                BorderThickness="2,0,0,0"
+                                BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
+                                Grid.RowSpan="4"
+                                Margin="0,48,0,-8"
+                                HorizontalAlignment="Center"/>
+                    </Grid>
+
+                    <StackPanel Grid.Column="1">
+                        <Button Command="{x:Bind Author.OpenProfileCommand}"
+                                CommandParameter="{Binding ElementName=ProfileEllipse}"
+                                Style="{ThemeResource CleanButtonStyle}"
+                                Padding="0"
+                                VerticalAlignment="Top"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Foreground="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"                  
+                                       VerticalAlignment="Top"
+                                       TextTrimming="CharacterEllipsis">                
+                                 <Run Text="{x:Bind Author.Name, Mode=OneWay}"           
+                                      FontWeight="Bold"                        
+                                      Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>                    
+                                 <Run Text="{x:Bind Author.Handle, Mode=OneWay}"/>
+                                </TextBlock>
+
+                                <TextBlock x:Name="DateBlock"
+                                       x:Phase="4"
+                                       Grid.Column="1"
+                                       Margin="4,0,0,0"
+                                       Foreground="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                                       Typography.NumeralAlignment="Tabular"
+                                       Text="{x:Bind Date}"/>
+                            </Grid>
+                        </Button>
+
+                        <labels:LabelsControl x:Name="LabelViewer"
+                                              x:Load="{x:Bind converters:Static.Any(Labels)}"
+                                              x:Phase="3"
+                                              Labels="{x:Bind Labels}"
+                                              Margin="0,4,0,2"/>
+
+                        <controls:FacetTextBlock x:Name="MainContent"
+                                                x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Text)}"
+                                                Inlines="{x:Bind RichText.Facets}"
+                                                TextWrapping="Wrap"
+                                                Margin="0,0,0,4"
+                                                VerticalAlignment="Top"/>
+
+                        <controls:SpoilerControl x:Name="EmbedContentContainer"
+                                                 x:Load="{x:Bind converters:Static.NotNull(Embed)}"
+                                                 x:Phase="2"
+                                                 Warning="{x:Bind Warning, Mode=OneWay}"
+                                                 WarningTemplate="{StaticResource PostContentWarningTemplate}"
+                                                 IsHidden="{x:Bind Warning.IsHidden, Mode=TwoWay}"
+                                                 CanOverride="{x:Bind Warning.CanOverride, Mode=OneWay}"
+                                                 Margin="0,4,0,0">
+                            <ContentControl x:Name="EmbedContent"
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Stretch"
                                             ContentTemplateSelector="{StaticResource PostEmbedTemplateSelector}"
                                             Content="{x:Bind Embed}"/>
-                    </Grid>
+                        </controls:SpoilerControl>
 
-                    <Grid x:Name="Interactions">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+                        <Grid x:Name="Interactions">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                        <Button x:Name="RepliesButton"
-                                x:Uid="PostReplyButton"
-                                Grid.Column="0"
-                                Style="{StaticResource FeedItemActionButtonStyle}">
-                            <StackPanel Orientation="Horizontal">
+                            <Button x:Name="RepliesButton"
+                                    x:Uid="PostReplyButton"
+                                    Grid.Column="0"
+                                    Style="{StaticResource FeedItemActionButtonStyle}"
+                                    Command="{x:Bind ReplyCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Viewbox Height="14">
+                                        <TextBlock>&#xE97A;</TextBlock>
+                                    </Viewbox>
+                                    <TextBlock x:Name="RepliesText"
+                                               x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Replies), Mode=OneWay}"
+                                               x:Phase="3"
+                                               Text="{x:Bind Replies, Mode=OneWay}"
+                                               Margin="8,-1,0,0"
+                                               FontSize="12"
+                                               FontFamily="{ThemeResource ContentControlThemeFontFamily}"
+                                               Typography.NumeralAlignment="Tabular"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="RetweetButton"
+                                    x:Uid="PostRetweetButton"
+                                    Grid.Column="1"
+                                    Style="{StaticResource FeedItemActionButtonStyle}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Viewbox Height="14">
+                                        <TextBlock>&#xE8EB;</TextBlock>
+                                    </Viewbox>
+                                    <TextBlock x:Name="RetweetsText"
+                                               x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Retweets), Mode=OneWay}"
+                                               x:Phase="3"
+                                               Text="{x:Bind Retweets, Mode=OneWay}"
+                                               Margin="8,-1,0,0"
+                                               FontSize="12"
+                                               FontFamily="{ThemeResource ContentControlThemeFontFamily}"
+                                               Typography.NumeralAlignment="Tabular"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button x:Name="LikeButton"
+                                    x:Uid="PostLikeButton"
+                                    Grid.Column="2"
+                                    Style="{StaticResource FeedItemActionButtonStyle}"
+                                    Command="{x:Bind LikeCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Viewbox Height="14">
+                                        <TextBlock x:Name="LikeTextBlock">&#xEB51;</TextBlock>
+                                    </Viewbox>
+                                    <TextBlock x:Name="LikesText"
+                                               x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Likes), Mode=OneWay}"
+                                               x:Phase="3"
+                                               Text="{x:Bind Likes, Mode=OneWay}"
+                                               Margin="8,-1,0,0"
+                                               FontSize="12"
+                                               FontFamily="{ThemeResource ContentControlThemeFontFamily}"
+                                               Typography.NumeralAlignment="Tabular"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button x:Name="MoreButton"
+                                    x:Uid="PostMoreButton"
+                                    Style="{StaticResource FeedItemActionButtonStyle}"
+                                    HorizontalAlignment="Right"
+                                    Grid.Column="3"
+                                    Margin="8,0,0,0"
+                                    Flyout="{StaticResource FeedItemMoreButtonFlyout}">
+
                                 <Viewbox Height="14">
-                                    <TextBlock>&#xE97A;</TextBlock>
+                                    <TextBlock>&#xE712;</TextBlock>
                                 </Viewbox>
-                                <TextBlock x:Name="RepliesText"
-                                           x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Replies), Mode=OneWay}"
-                                           Text="{x:Bind Replies, Mode=OneWay}"
-                                           Margin="8,-1,0,0"
-                                           FontSize="12"
-                                           FontFamily="{StaticResource ContentControlThemeFontFamily}"
-                                           Typography.NumeralAlignment="Tabular"/>
-                            </StackPanel>
-                        </Button>
-                        <Button x:Name="RetweetButton"
-                                x:Uid="PostRetweetButton"
-                                Grid.Column="1"
-                                Style="{StaticResource FeedItemActionButtonStyle}">
-                            <StackPanel Orientation="Horizontal">
-                                <Viewbox Height="14">
-                                    <TextBlock>&#xE8EB;</TextBlock>
-                                </Viewbox>
-                                <TextBlock x:Name="RetweetsText"
-                                           x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Retweets), Mode=OneWay}"
-                                           Text="{x:Bind Retweets, Mode=OneWay}"
-                                           Margin="8,-1,0,0"
-                                           FontSize="12"
-                                           FontFamily="{StaticResource ContentControlThemeFontFamily}"
-                                           Typography.NumeralAlignment="Tabular"/>
-                            </StackPanel>
-                        </Button>
+                            </Button>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
 
-                        <Button x:Name="LikeButton"
-                                x:Uid="PostLikeButton"
-                                Grid.Column="2"
-                                Style="{StaticResource FeedItemActionButtonStyle}"
-                                Command="{x:Bind LikeCommand}">
-                            <StackPanel Orientation="Horizontal">
-                                <Viewbox Height="14">
-                                    <TextBlock x:Name="LikeTextBlock">&#xEB51;</TextBlock>
-                                </Viewbox>
-                                <TextBlock x:Name="LikesText"
-                                           x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Likes), Mode=OneWay}"
-                                           Text="{x:Bind Likes, Mode=OneWay}"
-                                           Margin="8,-1,0,0"
-                                           FontSize="12"
-                                           FontFamily="{StaticResource ContentControlThemeFontFamily}"
-                                           Typography.NumeralAlignment="Tabular"/>
-                            </StackPanel>
-                        </Button>
-
-                        <Button x:Name="MoreButton"
-                                x:Uid="PostMoreButton"
-                                Style="{StaticResource FeedItemActionButtonStyle}"
-                                HorizontalAlignment="Right"
-                                Grid.Column="3"
-                                Margin="8,0,0,0">
-                            <Button.Flyout>
-                                <MenuFlyout w1809:Placement="BottomEdgeAlignedRight"
-                                            not1809:Placement="Bottom">
-                                    <MenuFlyoutItem Text="Share" Command="{Binding ShareCommand}">
-                                        <MenuFlyoutItem.Icon>
-                                            <FontIcon Glyph="&#xE72D;" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
-                                        </MenuFlyoutItem.Icon>
-                                    </MenuFlyoutItem>
-                                    <MenuFlyoutItem Text="Copy Text" Icon="Copy" Command="{Binding CopyTextCommand}"/>
-                                    <MenuFlyoutItem Text="Copy Link" Icon="Link" Command="{Binding CopyLinkCommand}"/>
-                                    <MenuFlyoutSeparator/>
-                                    <MenuFlyoutItem Text="Mute Thread" Icon="Mute"/>
-                                    <MenuFlyoutItem Text="Hide Post" Icon="Clear"/>
-                                    <MenuFlyoutSeparator/>
-                                    <MenuFlyoutItem Foreground="{StaticResource SystemControlErrorTextForegroundBrush}" 
-                                                     Text="Report Post"
-                                                     Icon="ReportHacked"/>
-                                </MenuFlyout>
-                            </Button.Flyout>
-
-                            <Viewbox Height="14">
-                                <TextBlock>&#xE712;</TextBlock>
-                            </Viewbox>
-                        </Button>
-                    </Grid>
-                </StackPanel>
-            </Grid>
-
-            <i:Interaction.Behaviors>
-                <core:DataTriggerBehavior Binding="{x:Bind IsLiked}"
-                                          ComparisonCondition="Equal"
-                                          Value="True">
-                    <core:ChangePropertyAction TargetObject="{Binding ElementName=LikeButton}" 
-                                               PropertyName="Foreground"
-                                               Value="{StaticResource LikeBrush}"/>
-                    <core:ChangePropertyAction TargetObject="{Binding ElementName=LikeTextBlock}" 
-                                               PropertyName="Text"
-                                               Value="&#xEB52;"/>
-                </core:DataTriggerBehavior>
-                <core:DataTriggerBehavior Binding="{x:Bind IsLiked}"
-                                          ComparisonCondition="Equal"
-                                          Value="False">
-                    <core:ChangePropertyAction TargetObject="{Binding ElementName=LikeButton}" 
-                                               PropertyName="Foreground"
-                                               Value="{StaticResource ApplicationSecondaryForegroundThemeBrush}"/>
-                    <core:ChangePropertyAction TargetObject="{Binding ElementName=LikeTextBlock}" 
-                                               PropertyName="Text"
-                                               Value="&#xEB51;"/>
-                </core:DataTriggerBehavior>
-                <core:DataTriggerBehavior Binding="{x:Bind IsRetweeted}"
-                                          ComparisonCondition="Equal"
-                                          Value="True">
-                    <core:ChangePropertyAction TargetObject="{Binding ElementName=RetweetButton}" 
-                                               PropertyName="Foreground"
-                                               Value="{StaticResource RetweetBrush}"/>
-                </core:DataTriggerBehavior>
-                <core:DataTriggerBehavior Binding="{x:Bind IsRetweeted}"
-                                          ComparisonCondition="Equal"
-                                          Value="False">
-                    <core:ChangePropertyAction TargetObject="{Binding ElementName=RetweetButton}" 
-                                               PropertyName="Foreground"
-                                               Value="{StaticResource ApplicationSecondaryForegroundThemeBrush}"/>
-                </core:DataTriggerBehavior>
-            </i:Interaction.Behaviors>
-        </StackPanel>
+                <i:Interaction.Behaviors>
+                    <core:DataTriggerBehavior Binding="{x:Bind IsLiked}"
+                                              ComparisonCondition="Equal"
+                                              Value="True">
+                        <core:ChangePropertyAction TargetObject="{Binding ElementName=LikeButton}" 
+                                                   PropertyName="Foreground"
+                                                   Value="{StaticResource LikeBrush}"/>
+                        <core:ChangePropertyAction TargetObject="{Binding ElementName=LikeTextBlock}" 
+                                                   PropertyName="Text"
+                                                   Value="&#xEB52;"/>
+                    </core:DataTriggerBehavior>
+                    <core:DataTriggerBehavior Binding="{x:Bind IsLiked}"
+                                              ComparisonCondition="Equal"
+                                              Value="False">
+                        <core:ChangePropertyAction TargetObject="{Binding ElementName=LikeButton}" 
+                                                   PropertyName="Foreground"
+                                                   Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                        <core:ChangePropertyAction TargetObject="{Binding ElementName=LikeTextBlock}" 
+                                                   PropertyName="Text"
+                                                   Value="&#xEB51;"/>
+                    </core:DataTriggerBehavior>
+                    <core:DataTriggerBehavior Binding="{x:Bind IsRetweeted}"
+                                              ComparisonCondition="Equal"
+                                              Value="True">
+                        <core:ChangePropertyAction TargetObject="{Binding ElementName=RetweetButton}" 
+                                                   PropertyName="Foreground"
+                                                   Value="{StaticResource RetweetBrush}"/>
+                    </core:DataTriggerBehavior>
+                    <core:DataTriggerBehavior Binding="{x:Bind IsRetweeted}"
+                                              ComparisonCondition="Equal"
+                                              Value="False">
+                        <core:ChangePropertyAction TargetObject="{Binding ElementName=RetweetButton}" 
+                                                   PropertyName="Foreground"
+                                                   Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                    </core:DataTriggerBehavior>
+                </i:Interaction.Behaviors>
+            </StackPanel>
+        </Button>
     </DataTemplate>
 </ResourceDictionary>

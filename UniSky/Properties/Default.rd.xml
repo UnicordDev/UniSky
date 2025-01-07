@@ -17,14 +17,13 @@
 
 <Directives xmlns="http://schemas.microsoft.com/netfx/2013/01/metadata">
   <Application>
-    <!--<Assembly Name="*Application*" Dynamic="Required All" />-->
+    <Namespace Name="UniSky.ViewModels" Activate="Required Public" />
+    <Namespace Name="UniSky.Services" Activate="Required Public" />
+    
     <Namespace Name="Microsoft.Extensions.Options" Activate="Required Public" />
     <Namespace Name="Microsoft.Extensions.Logging" Activate="Required Public" />
-
-    <Namespace Name="UniSky.ViewModels" Activate="Required Public" />
     
     <Namespace Name="Microsoft.Toolkit.Uwp.UI.Animations.Expressions" Dynamic="Required PublicAndInternal" />
-  
-    <!--<Assembly Name="Microsoft.Toolkit.Uwp.Notifications" Dynamic="Required All" />-->
+    <Namespace Name="Microsoft.Toolkit.Uwp.Notifications" Dynamic="Required All" />
   </Application>
 </Directives>

@@ -1,0 +1,135 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UniSky"
+    xmlns:sheets="using:UniSky.Controls.Sheet"
+    xmlns:extensions="using:UniSky.Extensions" 
+    xmlns:w1709="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)">
+
+    <Style x:Key="DefaultSheetControlStyle" TargetType="sheets:SheetControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="sheets:SheetControl">
+                    <Grid>                        
+                        <Grid x:Name="RootGrid"
+                              Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid x:Name="TitleBarGrid"
+                                  Height="48"
+                                  Background="{ThemeResource SystemControlBackgroundListLowBrush}"
+                                  BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
+                                  extensions:Hairline.BorderThickness="0,0,0,1">
+                                
+                                <ContentPresenter x:Name="SheetTitlePresenter"
+                                                  Grid.ColumnSpan="3"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center"
+                                                  Content="{TemplateBinding TitleContent}"
+                                                  ContentTemplate="{TemplateBinding TitleContentTemplate}"
+                                                  Margin="16,0"/>
+
+                                <Border x:Name="TitleBarDragArea"
+                                        Grid.ColumnSpan="3"
+                                        Background="Transparent"/>
+                            </Grid>
+
+                            <Border x:Name="Handle"
+                                    BorderThickness="0,2,0,0"
+                                    BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
+                                    Margin="0,4,0,0"
+                                    Width="48"/>
+
+                            <ContentPresenter x:Name="SheetContentPresenter"
+                                              Grid.Row="1"
+                                              HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Stretch"
+                                              HorizontalContentAlignment="Stretch"
+                                              VerticalContentAlignment="Stretch"
+                                              Content="{TemplateBinding OverlayContent}"
+                                              ContentTemplate="{TemplateBinding OverlayContentTemplate}"/>
+
+                            <Grid x:Name="ButtonsGrid"
+                                  VerticalAlignment="Top"
+                                  HorizontalAlignment="Stretch"
+                                  Grid.RowSpan="3"
+                                  Height="48">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition x:Name="ButtonGridColumn1" Width="Auto"/>
+                                    <ColumnDefinition x:Name="ButtonGridColumn2" Width="*"/>
+                                    <ColumnDefinition x:Name="ButtonGridColumn3" Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Button x:Name="PrimaryTitleBarButton"
+                                        TabIndex="0"
+                                        Style="{ThemeResource AccentButtonStyle}"
+                                        Grid.Column="2"
+                                        Visibility="{TemplateBinding PrimaryButtonVisibility}"
+                                        Command="{TemplateBinding PrimaryButtonCommand}"
+                                        IsEnabled="{TemplateBinding IsPrimaryButtonEnabled}"
+                                        Padding="{ThemeResource ButtonPadding}"
+                                        Margin="8">
+                                    <w1709:Button.KeyboardAccelerators>
+                                        <w1709:KeyboardAccelerator Modifiers="Control" Key="Enter"/>
+                                    </w1709:Button.KeyboardAccelerators>
+                                    <ContentPresenter x:Name="SheetPrimaryButtonPresenter"
+                                                            Content="{TemplateBinding PrimaryButtonContent}"
+                                                            ContentTemplate="{TemplateBinding PrimaryButtonContentTemplate}"/>
+                                </Button>
+
+                                <Button x:Name="SecondaryTitleBarButton"
+                                        TabIndex="1"
+                                        Style="{ThemeResource TextBlockButtonStyle}"
+                                        Grid.Column="0"
+                                        Visibility="{TemplateBinding SecondaryButtonVisibility}"
+                                        Command="{TemplateBinding SecondaryButtonCommand}"
+                                        IsEnabled="{TemplateBinding IsSecondaryButtonEnabled}"
+                                        Padding="{ThemeResource ButtonPadding}"
+                                        Margin="8">
+                                    <w1709:Button.KeyboardAccelerators>
+                                        <w1709:KeyboardAccelerator Key="Escape"/>
+                                    </w1709:Button.KeyboardAccelerators>
+                                    <ContentPresenter x:Name="SheetSecondaryButtonPresenter"
+                                                        Content="{TemplateBinding SecondaryButtonContent}"
+                                                        ContentTemplate="{TemplateBinding SecondaryButtonContentTemplate}"/>
+                                </Button>
+                            </Grid>
+                        </Grid>
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="WindowStates">
+                                <VisualState x:Name="Standard">
+                                    <VisualState.Setters>
+                                        <Setter Target="Handle.Visibility" Value="Visible"/>
+                                        <Setter Target="ButtonsGrid.VerticalAlignment" Value="Top"/>
+                                        <Setter Target="ButtonsGrid.HorizontalAlignment" Value="Stretch"/>
+                                        <Setter Target="SheetTitlePresenter.HorizontalAlignment" Value="Center"/>
+                                        <Setter Target="SheetTitlePresenter.FontSize" Value="{ThemeResource ControlContentThemeFontSize}"/>
+                                        <Setter Target="ButtonGridColumn2.Width" Value="*"/>
+                                        <Setter Target="SecondaryTitleBarButton.Visibility" Value="Visible"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="FullWindow">
+                                    <VisualState.Setters>
+                                        <Setter Target="Handle.Visibility" Value="Collapsed"/>
+                                        <Setter Target="ButtonsGrid.VerticalAlignment" Value="Bottom"/>
+                                        <Setter Target="ButtonsGrid.HorizontalAlignment" Value="Right"/>
+                                        <Setter Target="SheetTitlePresenter.HorizontalAlignment" Value="Left"/>
+                                        <Setter Target="SheetTitlePresenter.FontSize" Value="12"/>
+                                        <Setter Target="ButtonGridColumn2.Width" Value="Auto"/>
+                                        <Setter Target="SecondaryTitleBarButton.Visibility" Value="Collapsed"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style TargetType="sheets:SheetControl" BasedOn="{StaticResource DefaultSheetControlStyle}"/>
+</ResourceDictionary>

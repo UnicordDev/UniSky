@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using FishyFlip.Lexicon.App.Bsky.Feed;
 using FishyFlip.Models;
-using UniSky.Helpers;
 using UniSky.Services;
+using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 
 namespace UniSky.ViewModels.Feeds;
@@ -43,12 +42,13 @@ public partial class FeedViewModel : ViewModelBase
         this.id = id;
         this.generator = record;
 
-        this.Name = record?.DisplayName ?? "Following";
-        this.Items = new FeedItemCollection(this, type, id, protocolService);
+        this.Name = record?.DisplayName ?? ResourceLoader.GetForCurrentView().GetString("Feed_Following");
+        this.Items = new FeedItemCollection(this, type, id);
     }
 
     public async Task RefreshAsync(Deferral? deferral = null)
     {
+        this.Error = null!;
         await this.Items.RefreshAsync();
         deferral?.Complete();
     }

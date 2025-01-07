@@ -7,6 +7,7 @@ using FishyFlip.Lexicon.App.Bsky.Actor;
 using FishyFlip.Lexicon.App.Bsky.Feed;
 using FishyFlip.Models;
 using FishyFlip.Tools;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using UniSky.Controls.Compose;
 using UniSky.Extensions;
@@ -37,8 +38,8 @@ public partial class FeedsViewModel : ViewModelBase
     [RelayCommand]
     public async Task Post()
     {
-        var dialog = new ComposeDialog();
-        await dialog.ShowAsync();
+        var sheetsService = ServiceContainer.Scoped.GetRequiredService<ISheetService>();
+        await sheetsService.ShowAsync<ComposeSheet>();
     }
 
     private async Task LoadAsync()

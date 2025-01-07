@@ -6,30 +6,37 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:profile="using:UniSky.ViewModels.Profile" 
+    xmlns:converters="using:UniSky.Converters"
     xmlns:extensions="using:UniSky.Extensions"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:mux="using:Microsoft.UI.Xaml.Controls"
+    xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
+    xmlns:aurora="using:System.Windows.Shell.Aurora" xmlns:labels="using:UniSky.Controls.Labels"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     Loaded="Page_Loaded"
+    NavigationCacheMode="Enabled"
     d:MaxWidth="600">
+    <Page.Resources>
+        <FeedTemplates xmlns="using:UniSky.Templates"/>
+    </Page.Resources>
     <d:Page.DataContext>
         <profile:ProfilePageViewModel/>
     </d:Page.DataContext>
 
     <Grid>
-
         <ListView x:Name="RootList"
-              ItemsSource="{Binding SelectedFeed.Items}" 
-              ItemTemplate="{StaticResource FeedItemContentTemplate}"
-              SelectionMode="None"
-              IsItemClickEnabled="True"
-              HorizontalAlignment="Stretch"
-              HorizontalContentAlignment="Stretch"
-              ScrollViewer.IsVerticalScrollChainingEnabled="True">
+                  ItemsSource="{Binding SelectedFeed.Items}" 
+                  ItemTemplate="{StaticResource FeedItemContentTemplate}"
+                  SelectionMode="None"
+                  HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Stretch"
+                  ScrollViewer.IsVerticalScrollChainingEnabled="True"
+                  w1809:ScrollViewer.CanContentRenderOutsideBounds="True">
             <ListView.Resources>
                 <SolidColorBrush Color="Transparent" x:Key="ListViewItemRevealBackground"/>
                 <SolidColorBrush Color="Transparent" x:Key="ListViewItemBackgroundPointerOver"/>
+                <Thickness x:Key="ListViewItemRevealBorderThemeThickness">0</Thickness>
             </ListView.Resources>
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
@@ -39,9 +46,8 @@
             </ListView.ItemContainerStyle>
             <ListView.Header>
                 <Grid x:Name="ProfileContainer"
-                      extensions:HairlineBorder.Thickness="0,0,0,1"
-                      BorderBrush="{StaticResource SystemControlSeparatorBrush}"
-                      Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                      extensions:Hairline.BorderThickness="0,0,0,1"
+                      BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
                       SizeChanged="Page_SizeChanged">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -54,14 +60,35 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
+                    <Border Canvas.ZIndex="-2"
+                            Grid.ColumnSpan="2"
+                            Grid.RowSpan="3"
+                            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"/>
+
+                    <Border Canvas.ZIndex="-2"
+                            Grid.ColumnSpan="2"
+                            Grid.Row="4"
+                            Background="{ThemeResource SystemControlChromeMediumAcrylicElementMediumBrush}"/>
+
                     <Grid x:Name="HeaderGrid"
                           Grid.ColumnSpan="2"
                           Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}">
                         <controls:ConstrainedBox x:Name="ProfileBanner" AspectRatio="3:1">
-                            <Image Source="{Binding BannerUrl}"
-                                   HorizontalAlignment="Center"
-                                   Stretch="UniformToFill"/>
+                            <Grid>
+                                <aurora:PreviewPaneAuroraControl x:Name="PreviewPaneAurora"
+                                                                 x:Load="{x:Bind converters:Static.NullOrWhiteSpace(ViewModel.BannerUrl), Mode=OneWay}"
+                                                                 Color="{ThemeResource SystemAccentColor}"/>
+                                <Image Source="{Binding BannerUrl}"
+                                       HorizontalAlignment="Center"
+                                       Stretch="UniformToFill"/>
+                            </Grid>
                         </controls:ConstrainedBox>
+
+                        <ProgressRing VerticalAlignment="Center"
+                                      HorizontalAlignment="Center"
+                                      Width="48"
+                                      Height="48"
+                                      IsActive="{Binding IsLoading}"/>
                     </Grid>
 
                     <Ellipse x:Name="ProfileImage"
@@ -71,29 +98,26 @@
                              Grid.RowSpan="2"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Bottom"
+                             IsHitTestVisible="False"
                              ContinuumNavigationTransitionInfo.IsEntranceElement="True">
                         <Ellipse.Fill>
-                            <ImageBrush>
-                                <ImageBrush.ImageSource>
-                                    <BitmapImage UriSource="{Binding AvatarUrl}"
-                                                    DecodePixelWidth="128"
-                                                    DecodePixelHeight="128"
-                                                    DecodePixelType="Logical"/>
-                                </ImageBrush.ImageSource>
-                            </ImageBrush>
+                            <ImageBrush ImageSource="{Binding AvatarUrl}"/>
                         </Ellipse.Fill>
                     </Ellipse>
-                    
+
                     <Border Background="Transparent"
                             Tapped="ProfileContainer_Tapped"
                             Grid.ColumnSpan="2"
-                            Grid.RowSpan="3"/>
+                            Grid.RowSpan="3"
+                            Canvas.ZIndex="-2"/>
 
                     <Grid x:Name="TextContainer"
                             Padding="4,8,8,8"
                             Grid.Column="1"
-                            Grid.Row="1">
+                            Grid.Row="1"
+                            Canvas.ZIndex="2">
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
@@ -106,37 +130,35 @@
                                    Grid.Row="0"
                                    Style="{ThemeResource SubtitleTextBlockStyle}" 
                                    Text="{Binding Name}"
-                                   MaxLines="1"/>
+                                   TextWrapping="NoWrap"
+                                   IsHitTestVisible="False"/>
                         <TextBlock x:Name="HandleBlock" 
                                    Grid.Row="1"
                                    Style="{ThemeResource BaseTextBlockStyle}" 
                                    Text="{Binding Handle}"
-                                   MaxLines="1"/>
+                                   TextWrapping="NoWrap"
+                                   IsHitTestVisible="False"/>
                         <TextBlock x:Name="InfoBlock" 
                                    Grid.Row="2"
                                    Grid.ColumnSpan="2"
                                    Style="{ThemeResource CaptionTextBlockStyle}"
                                    Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
                                    Typography.NumeralAlignment="Tabular"
-                                   Margin="0,4,0,0">
+                                   Margin="0,4,0,0"
+                                   IsHitTestVisible="False">
                             <Run Foreground="{ThemeResource ApplicationForegroundThemeBrush}" Text="{Binding Followers, Mode=OneWay, FallbackValue=0}"/> <Run x:Uid="FollowersRun" Text="Followers" /> •
                             <Run Foreground="{ThemeResource ApplicationForegroundThemeBrush}" Text="{Binding Following, Mode=OneWay, FallbackValue=0}"/> <Run x:Uid="FollowingRun" Text="Following"/> •
                             <Run Foreground="{ThemeResource ApplicationForegroundThemeBrush}" Text="{Binding Posts, Mode=OneWay, FallbackValue=0}"/> <Run x:Uid="PostsRun" Text="Tweets"/>
                         </TextBlock>
 
-                        <Border Background="Transparent"
-                                Margin="-4,-8,-8,-8"
-                                Tapped="ProfileContainer_Tapped"
-                                Grid.ColumnSpan="2"
-                                Grid.RowSpan="3"/>
-
                         <Button x:Name="FollowButton"
+                                x:Load="{x:Bind converters:Static.Not(ViewModel.IsMe), Mode=OneWay}"
                                 Style="{ThemeResource AccentButtonStyle}"
-                                Padding="{ThemeResource ButtonPadding}"
+                                Command="{Binding FollowCommand}"
                                 Grid.Column="1"
                                 Grid.RowSpan="2"
                                 VerticalAlignment="Center">
-                            <TextBlock Text="Follow" Margin="8,0"/>
+                            <TextBlock Text="{Binding FollowButtonText}" Margin="8,0"/>
                         </Button>
                     </Grid>
 
@@ -148,14 +170,19 @@
                         <TextBlock Text="{Binding Bio}"
                                    Style="{ThemeResource BodyTextBlockStyle}"
                                    Margin="12,0,12,8"
-                                   TextWrapping="Wrap"/>
+                                   TextWrapping="Wrap"
+                                   IsTextSelectionEnabled="True"
+                                   IsHitTestVisible="False"/>
+
+                        <labels:LabelsControl Labels="{x:Bind ViewModel.Labels, Mode=OneWay}"
+                                              Margin="12,0,12,8"/>
                     </StackPanel>
 
                     <Grid x:Name="StickyFooter"
                           Grid.Row="3"
                           Grid.ColumnSpan="3"
-                          BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
-                          extensions:HairlineBorder.Thickness="0,1,0,0">
+                          BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
+                          extensions:Hairline.BorderThickness="0,1,0,0">
                         <ItemsControl ItemsSource="{Binding Feeds}"
                                       Margin="2,0">
                             <ItemsControl.ItemsPanel>
@@ -165,25 +192,27 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate x:DataType="profile:ProfileFeedViewModel">
-                                    <RadioButton Content="{Binding Name}" 
-                                                 GroupName="ProfileFeedSelection"
-                                                 Style="{ThemeResource FooterRadioButtonRevealStyle}"
-                                                 FontSize="{ThemeResource ContentControlFontSize}"
-                                                 FontFamily="{ThemeResource ContentControlThemeFontFamily}"
-                                                 IsChecked="{Binding Selected, Mode=TwoWay}"
-                                                 Padding="10,8"
-                                                 Margin="0,0,2,0"/>
+                                    <Border Margin="0,0,6,0">
+                                        <RadioButton Content="{Binding Name}" 
+                                                     GroupName="ProfileFeedSelection"
+                                                     Style="{ThemeResource FooterRadioButtonRevealStyle}"
+                                                     FontSize="{ThemeResource ContentControlFontSize}"
+                                                     FontFamily="{ThemeResource ContentControlThemeFontFamily}"
+                                                     IsChecked="{Binding Selected, Mode=TwoWay}"
+                                                     Padding="10,8"
+                                                     extensions:Hairline.Margin="0,-1,0,-1"/>
+                                    </Border>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </Grid>
 
                     <Grid x:Name="ScrolledDisplayNameContainer"
-                            Margin="60,8,8,8"
-                            Grid.ColumnSpan="2"
-                            Grid.Row="1"
-                            VerticalAlignment="Bottom"
-                            RequestedTheme="Dark">
+                          Margin="60,8,8,8"
+                          Grid.ColumnSpan="2"
+                          Grid.Row="1"
+                          VerticalAlignment="Bottom"
+                          RequestedTheme="{Binding Theme}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
@@ -197,11 +226,11 @@
                                    Grid.Row="0"
                                    Style="{ThemeResource SubtitleTextBlockStyle}" 
                                    Text="{Binding Name}"
-                                   MaxLines="1"/>
+                                   TextWrapping="NoWrap"/>
                         <TextBlock x:Name="ScrolledHandleBlock" Style="{ThemeResource CaptionTextBlockStyle}" 
                                    Grid.Row="1"
                                    Text="{Binding Handle}"
-                                   MaxLines="1"/>
+                                   TextWrapping="NoWrap"/>
 
                         <Border Background="Transparent"
                                 Tapped="ProfileContainer_Tapped"
@@ -211,10 +240,11 @@
 
                         <Button x:Name="ScrolledFollowButton"
                                 Style="{ThemeResource ButtonRevealStyle}"
+                                Command="{Binding FollowCommand}"
                                 Grid.Column="1"
                                 Grid.RowSpan="2"
                                 VerticalAlignment="Center">
-                            <TextBlock Text="Follow" Margin="8,0"/>
+                            <TextBlock Text="{Binding FollowButtonText}" Margin="8,0"/>
                         </Button>
                     </Grid>
                 </Grid>

@@ -1,0 +1,500 @@
+﻿<ResourceDictionary
+    x:Class="UniSky.DataTemplates.ThreadTemplates"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UniSky.DataTemplates"
+    xmlns:controls="using:UniSky.Controls"
+    xmlns:labels="using:UniSky.Controls.Labels"    
+    xmlns:converters="using:UniSky.Converters"
+    xmlns:extensions="using:UniSky.Extensions"
+    xmlns:thread="using:UniSky.ViewModels.Thread"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    mc:Ignorable="d">
+
+    <ResourceDictionary.MergedDictionaries>
+        <FeedTemplates xmlns="using:UniSky.Templates"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <local:ThreadItemTemplateSelector x:Key="ThreadItemTemplateSelector"
+                                      ThreadPostTemplate="{StaticResource ThreadItemContentTemplate}"
+                                      ThreadHighlightedPostTemplate="{StaticResource ThreadItemHighlightedContentTemplate}"/>
+
+    <DataTemplate x:Key="ThreadItemHighlightedContentTemplate"
+                  x:DataType="thread:ThreadPostViewModel">
+        <StackPanel BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
+                    extensions:Hairline.BorderThickness="{Binding Borders, Mode=OneWay}"
+                    HorizontalAlignment="Stretch"
+                    Padding="12,8,12,4">
+
+            <Grid x:Name="RetweetContainer"
+                x:Load="{x:Bind converters:Static.NotNull(RetweetedBy)}"
+                x:Phase="1"
+                Margin="34,0,0,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Viewbox Height="12">
+                    <TextBlock Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                                FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE8EB;</TextBlock>
+                </Viewbox>
+
+                <TextBlock Grid.Column="1" 
+                            Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                            FontSize="12"
+                            Margin="8,0">
+                    <Run x:Uid="RetweetedByRun" Text="Reposted by"/> <Run Text="{x:Bind RetweetedBy.Name, Mode=OneWay}" FontWeight="Bold"/>
+                </TextBlock>
+            </Grid>
+
+            <StackPanel Grid.Column="1">
+                <Button Command="{x:Bind Author.OpenProfileCommand}"
+                        CommandParameter="{Binding ElementName=ProfileEllipse}"
+                        Style="{ThemeResource CleanButtonStyle}"
+                        Padding="0"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Button Command="{x:Bind Author.OpenProfileCommand}"
+                                CommandParameter="{Binding ElementName=ProfileEllipse}"
+                                Style="{ThemeResource CleanButtonStyle}"
+                                Padding="0"
+                                Grid.Column="0"
+                                Grid.RowSpan="2"
+                                VerticalAlignment="Top">
+                            <Ellipse x:Name="ProfileEllipse"
+                                Width="42" 
+                                Height="42">
+                                <Ellipse.Fill>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="{Binding Author.AvatarUrl}"
+                                                    DecodePixelWidth="42"
+                                                    DecodePixelHeight="42"
+                                                    DecodePixelType="Logical"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                        </Button>
+
+
+                        <StackPanel Grid.Column="1"
+                                    Grid.RowSpan="2"
+                                    VerticalAlignment="Center"
+                                    Margin="8,0,0,0">
+                            <TextBlock FontWeight="Bold"                        
+                                        Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"                 
+                                        VerticalAlignment="Bottom"
+                                        TextTrimming="CharacterEllipsis"
+                                        Text="{x:Bind Author.Name, Mode=OneWay}"/>
+
+                            <TextBlock Foreground="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"                 
+                                        Style="{ThemeResource CaptionTextBlockStyle}"
+                                        VerticalAlignment="Top"
+                                        TextTrimming="CharacterEllipsis"
+                                        Text="{x:Bind Author.Handle, Mode=OneWay}"/>
+                        </StackPanel>
+                    </Grid>
+                </Button>
+
+                <labels:LabelsControl x:Name="LabelViewer"
+                                      x:Phase="3"
+                                      x:Load="{x:Bind converters:Static.Any(Labels)}"
+                                      Labels="{x:Bind Labels}"
+                                      Margin="0,6,0,0"/>
+
+                <controls:FacetTextBlock x:Name="MainContent"
+                                        x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Text)}"
+                                        Inlines="{x:Bind RichText.Facets}"
+                                        FontSize="16"
+                                        TextWrapping="Wrap"
+                                        IsTextSelectionEnabled="True"
+                                        Margin="0,4,0,4"
+                                        VerticalAlignment="Top"/>
+
+                <controls:SpoilerControl x:Name="EmbedContentContainer"
+                                         x:Load="{x:Bind converters:Static.NotNull(Embed)}"
+                                         x:Phase="2"
+                                         Warning="{x:Bind Warning, Mode=OneWay}"
+                                         WarningTemplate="{StaticResource PostContentWarningTemplate}"
+                                         CanOverride="{x:Bind Warning.CanOverride, Mode=OneWay}"
+                                         IsHidden="{x:Bind Warning.IsHidden, Mode=TwoWay}"
+                                         Margin="0,4,0,0">
+                    <ContentControl x:Name="EmbedContent"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch"
+                                    ContentTemplateSelector="{StaticResource PostEmbedTemplateSelector}"
+                                    Content="{x:Bind Embed}"/>
+                </controls:SpoilerControl>
+
+
+                <TextBlock x:Name="DateBlock"
+                            x:Phase="4"
+                            Grid.Column="2"
+                            Margin="0,2"
+                            Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                            Style="{ThemeResource CaptionTextBlockStyle}"
+                            Typography.NumeralAlignment="Tabular"
+                            Text="{x:Bind LongDate}"/>
+
+                <Grid x:Name="Interactions">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button x:Name="RepliesButton"
+                            x:Uid="PostReplyButton"
+                            Grid.Column="0"
+                            Style="{StaticResource FeedItemActionButtonStyle}"
+                            Command="{x:Bind ReplyCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox Height="14">
+                                <TextBlock>&#xE97A;</TextBlock>
+                            </Viewbox>
+                            <TextBlock x:Name="RepliesText"
+                                        x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Replies), Mode=OneWay}"
+                                        x:Phase="3"
+                                        Text="{x:Bind Replies, Mode=OneWay}"
+                                        Margin="8,-1,0,0"
+                                        FontSize="12"
+                                        FontFamily="{ThemeResource ContentControlThemeFontFamily}"
+                                        Typography.NumeralAlignment="Tabular"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="RetweetButton"
+                            x:Uid="PostRetweetButton"
+                            Grid.Column="1"
+                            Style="{StaticResource FeedItemActionButtonStyle}">
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox Height="14">
+                                <TextBlock>&#xE8EB;</TextBlock>
+                            </Viewbox>
+                            <TextBlock x:Name="RetweetsText"
+                                        x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Retweets), Mode=OneWay}"
+                                        x:Phase="3"
+                                        Text="{x:Bind Retweets, Mode=OneWay}"
+                                        Margin="8,-1,0,0"
+                                        FontSize="12"
+                                        FontFamily="{ThemeResource ContentControlThemeFontFamily}"
+                                        Typography.NumeralAlignment="Tabular"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="LikeButton"
+                            x:Uid="PostLikeButton"
+                            Grid.Column="2"
+                            Style="{StaticResource FeedItemActionButtonStyle}"
+                            Command="{x:Bind LikeCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox Height="14">
+                                <TextBlock x:Name="LikeTextBlock">&#xEB51;</TextBlock>
+                            </Viewbox>
+                            <TextBlock x:Name="LikesText"
+                                        x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Likes), Mode=OneWay}"
+                                        x:Phase="3"
+                                        Text="{x:Bind Likes, Mode=OneWay}"
+                                        Margin="8,-1,0,0"
+                                        FontSize="12"
+                                        FontFamily="{ThemeResource ContentControlThemeFontFamily}"
+                                        Typography.NumeralAlignment="Tabular"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="MoreButton"
+                            x:Uid="PostMoreButton"
+                            Style="{StaticResource FeedItemActionButtonStyle}"
+                            HorizontalAlignment="Right"
+                            Grid.Column="3"
+                            Margin="8,0,0,0"
+                            Flyout="{StaticResource FeedItemMoreButtonFlyout}">
+
+                        <Viewbox Height="14">
+                            <TextBlock>&#xE712;</TextBlock>
+                        </Viewbox>
+                    </Button>
+                </Grid>
+            </StackPanel>
+                
+                <i:Interaction.Behaviors>
+                <core:DataTriggerBehavior Binding="{x:Bind IsLiked}"
+                                        ComparisonCondition="Equal"
+                                        Value="True">
+                    <core:ChangePropertyAction TargetObject="{Binding ElementName=LikeButton}" 
+                                                PropertyName="Foreground"
+                                                Value="{StaticResource LikeBrush}"/>
+                    <core:ChangePropertyAction TargetObject="{Binding ElementName=LikeTextBlock}" 
+                                                PropertyName="Text"
+                                                Value="&#xEB52;"/>
+                </core:DataTriggerBehavior>
+                <core:DataTriggerBehavior Binding="{x:Bind IsLiked}"
+                                        ComparisonCondition="Equal"
+                                        Value="False">
+                    <core:ChangePropertyAction TargetObject="{Binding ElementName=LikeButton}" 
+                                                PropertyName="Foreground"
+                                                Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                    <core:ChangePropertyAction TargetObject="{Binding ElementName=LikeTextBlock}" 
+                                                PropertyName="Text"
+                                                Value="&#xEB51;"/>
+                </core:DataTriggerBehavior>
+                <core:DataTriggerBehavior Binding="{x:Bind IsRetweeted}"
+                                        ComparisonCondition="Equal"
+                                        Value="True">
+                    <core:ChangePropertyAction TargetObject="{Binding ElementName=RetweetButton}" 
+                                                PropertyName="Foreground"
+                                                Value="{StaticResource RetweetBrush}"/>
+                </core:DataTriggerBehavior>
+                <core:DataTriggerBehavior Binding="{x:Bind IsRetweeted}"
+                                        ComparisonCondition="Equal"
+                                        Value="False">
+                    <core:ChangePropertyAction TargetObject="{Binding ElementName=RetweetButton}" 
+                                                PropertyName="Foreground"
+                                                Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                </core:DataTriggerBehavior>
+            </i:Interaction.Behaviors>
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ThreadItemContentTemplate"
+                  x:DataType="thread:ThreadPostViewModel">
+        <Button Style="{ThemeResource CleanButtonStyle}"
+                Command="{x:Bind OpenThreadCommand}"
+                BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
+                extensions:Hairline.BorderThickness="{Binding Borders, Mode=OneWay}">
+            <StackPanel HorizontalAlignment="Stretch"
+                        Padding="12,8,12,4"> 
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Margin="0,0,12,0"
+                          Grid.RowSpan="4">
+                        <Button Command="{x:Bind Author.OpenProfileCommand}"
+                                CommandParameter="{Binding ElementName=ProfileEllipse}"
+                                Style="{ThemeResource CleanButtonStyle}"
+                                Padding="0"
+                                Margin="-1,0,0,0"
+                                VerticalAlignment="Top">
+                            <Ellipse x:Name="ProfileEllipse"
+                                     Width="42" 
+                                     Height="42">
+                                <Ellipse.Fill>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="{Binding Author.AvatarUrl}"
+                                                         DecodePixelWidth="42"
+                                                         DecodePixelHeight="42"
+                                                         DecodePixelType="Logical"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                        </Button>
+
+                        <Border x:Name="ReplyLine"
+                                x:Load="{x:Bind ShowReplyLine}"
+                                x:Phase="1"
+                                BorderThickness="2,0,0,0"
+                                BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
+                                Grid.RowSpan="4"
+                                Margin="0,48,0,-8"
+                                HorizontalAlignment="Center"/>
+                    </Grid>
+
+                    <StackPanel Grid.Column="1">
+                        <Button Command="{x:Bind Author.OpenProfileCommand}"
+                                CommandParameter="{Binding ElementName=ProfileEllipse}"
+                                Style="{ThemeResource CleanButtonStyle}"
+                                Padding="0"
+                                VerticalAlignment="Top"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Foreground="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"                  
+                                       VerticalAlignment="Top"
+                                       TextTrimming="CharacterEllipsis">                
+                                 <Run Text="{x:Bind Author.Name, Mode=OneWay}"           
+                                      FontWeight="Bold"                        
+                                      Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>                    
+                                 <Run Text="{x:Bind Author.Handle, Mode=OneWay}"/>
+                                </TextBlock>
+
+                                <TextBlock x:Name="DateBlock"
+                                       x:Phase="4"
+                                       Grid.Column="1"
+                                       Margin="4,0,0,0"
+                                       Foreground="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                                       Typography.NumeralAlignment="Tabular"
+                                       Text="{x:Bind Date}"/>
+                            </Grid>
+                        </Button>
+
+
+                        <labels:LabelsControl x:Name="LabelViewer"
+                                      x:Load="{x:Bind converters:Static.Any(Labels)}"
+                                      Labels="{x:Bind Labels}"
+                                      Margin="0,2,0,2"/>
+                        
+                        <controls:FacetTextBlock x:Name="MainContent"
+                                                x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Text)}"
+                                                Inlines="{x:Bind RichText.Facets}"
+                                                TextWrapping="Wrap"
+                                                Margin="0,0,0,4"
+                                                VerticalAlignment="Top"/>
+
+                        <Grid x:Name="EmbedContentContainer"
+                              x:Load="{x:Bind converters:Static.NotNull(Embed)}"
+                              x:Phase="2">
+                            <ContentControl x:Name="EmbedContent"
+                                            Margin="0,4,0,4"
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Stretch"
+                                            ContentTemplateSelector="{StaticResource PostEmbedTemplateSelector}"
+                                            Content="{x:Bind Embed}"/>
+                        </Grid>
+
+                        <Grid x:Name="Interactions">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button x:Name="RepliesButton"
+                                    x:Uid="PostReplyButton"
+                                    Grid.Column="0"
+                                    Style="{StaticResource FeedItemActionButtonStyle}"
+                                    Command="{x:Bind ReplyCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Viewbox Height="14">
+                                        <TextBlock>&#xE97A;</TextBlock>
+                                    </Viewbox>
+                                    <TextBlock x:Name="RepliesText"
+                                               x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Replies), Mode=OneWay}"
+                                               x:Phase="3"
+                                               Text="{x:Bind Replies, Mode=OneWay}"
+                                               Margin="8,-1,0,0"
+                                               FontSize="12"
+                                               FontFamily="{ThemeResource ContentControlThemeFontFamily}"
+                                               Typography.NumeralAlignment="Tabular"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="RetweetButton"
+                                    x:Uid="PostRetweetButton"
+                                    Grid.Column="1"
+                                    Style="{StaticResource FeedItemActionButtonStyle}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Viewbox Height="14">
+                                        <TextBlock>&#xE8EB;</TextBlock>
+                                    </Viewbox>
+                                    <TextBlock x:Name="RetweetsText"
+                                               x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Retweets), Mode=OneWay}"
+                                               x:Phase="3"
+                                               Text="{x:Bind Retweets, Mode=OneWay}"
+                                               Margin="8,-1,0,0"
+                                               FontSize="12"
+                                               FontFamily="{ThemeResource ContentControlThemeFontFamily}"
+                                               Typography.NumeralAlignment="Tabular"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button x:Name="LikeButton"
+                                    x:Uid="PostLikeButton"
+                                    Grid.Column="2"
+                                    Style="{StaticResource FeedItemActionButtonStyle}"
+                                    Command="{x:Bind LikeCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Viewbox Height="14">
+                                        <TextBlock x:Name="LikeTextBlock">&#xEB51;</TextBlock>
+                                    </Viewbox>
+                                    <TextBlock x:Name="LikesText"
+                                               x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Likes), Mode=OneWay}"
+                                               x:Phase="3"
+                                               Text="{x:Bind Likes, Mode=OneWay}"
+                                               Margin="8,-1,0,0"
+                                               FontSize="12"
+                                               FontFamily="{ThemeResource ContentControlThemeFontFamily}"
+                                               Typography.NumeralAlignment="Tabular"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button x:Name="MoreButton"
+                                    x:Uid="PostMoreButton"
+                                    Style="{StaticResource FeedItemActionButtonStyle}"
+                                    HorizontalAlignment="Right"
+                                    Grid.Column="3"
+                                    Margin="8,0,0,0"
+                                    Flyout="{StaticResource FeedItemMoreButtonFlyout}">
+
+                                <Viewbox Height="14">
+                                    <TextBlock>&#xE712;</TextBlock>
+                                </Viewbox>
+                            </Button>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+
+                <i:Interaction.Behaviors>
+                    <core:DataTriggerBehavior Binding="{x:Bind IsLiked}"
+                                              ComparisonCondition="Equal"
+                                              Value="True">
+                        <core:ChangePropertyAction TargetObject="{Binding ElementName=LikeButton}" 
+                                                   PropertyName="Foreground"
+                                                   Value="{StaticResource LikeBrush}"/>
+                        <core:ChangePropertyAction TargetObject="{Binding ElementName=LikeTextBlock}" 
+                                                   PropertyName="Text"
+                                                   Value="&#xEB52;"/>
+                    </core:DataTriggerBehavior>
+                    <core:DataTriggerBehavior Binding="{x:Bind IsLiked}"
+                                              ComparisonCondition="Equal"
+                                              Value="False">
+                        <core:ChangePropertyAction TargetObject="{Binding ElementName=LikeButton}" 
+                                                   PropertyName="Foreground"
+                                                   Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                        <core:ChangePropertyAction TargetObject="{Binding ElementName=LikeTextBlock}" 
+                                                   PropertyName="Text"
+                                                   Value="&#xEB51;"/>
+                    </core:DataTriggerBehavior>
+                    <core:DataTriggerBehavior Binding="{x:Bind IsRetweeted}"
+                                              ComparisonCondition="Equal"
+                                              Value="True">
+                        <core:ChangePropertyAction TargetObject="{Binding ElementName=RetweetButton}" 
+                                                   PropertyName="Foreground"
+                                                   Value="{StaticResource RetweetBrush}"/>
+                    </core:DataTriggerBehavior>
+                    <core:DataTriggerBehavior Binding="{x:Bind IsRetweeted}"
+                                              ComparisonCondition="Equal"
+                                              Value="False">
+                        <core:ChangePropertyAction TargetObject="{Binding ElementName=RetweetButton}" 
+                                                   PropertyName="Foreground"
+                                                   Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                    </core:DataTriggerBehavior>
+                </i:Interaction.Behaviors>
+            </StackPanel>
+        </Button>
+    </DataTemplate>
+</ResourceDictionary>

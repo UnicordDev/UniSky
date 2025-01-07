@@ -1,0 +1,66 @@
+﻿<Page
+    x:Class="UniSky.Pages.ThreadPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UniSky.Pages"
+    xmlns:extensions="using:UniSky.Extensions"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    Loaded="Page_Loaded">
+
+    <Page.Resources>
+        <ThreadTemplates xmlns="using:UniSky.DataTemplates"/>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <ListView x:Name="RootList"
+                  Grid.RowSpan="3"
+                  ItemsSource="{x:Bind ViewModel.Posts}" 
+                  ItemTemplateSelector="{StaticResource ThreadItemTemplateSelector}"
+                  SelectionMode="None"
+                  HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Stretch"
+                  ScrollViewer.IsVerticalScrollChainingEnabled="True"
+                  BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
+                  extensions:ScrollToSelectedBehavior.SelectedValue="{x:Bind ViewModel.Selected, Mode=OneWay}">
+            <ListView.Resources>
+                <SolidColorBrush Color="Transparent" x:Key="ListViewItemRevealBackground"/>
+                <SolidColorBrush Color="Transparent" x:Key="ListViewItemBackgroundPointerOver"/>
+                <Thickness x:Key="ListViewItemRevealBorderThemeThickness">0</Thickness>
+            </ListView.Resources>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="Padding" Value="0"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+        
+        <Grid x:Name="HeaderContainer"
+              Grid.Row="0">
+            <Grid x:Name="HeaderGrid"
+                  Background="{ThemeResource SystemControlChromeMediumAcrylicElementMediumBrush}"
+                  BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
+                  extensions:Hairline.BorderThickness="0,0,0,1">
+                <TextBlock x:Uid="ThreadPageTitleBlock"
+                           Grid.Row="1"
+                           Margin="12,4,12,12"
+                           Text="POST"
+                           Style="{ThemeResource BaseTextBlockStyle}"/>
+            </Grid>
+        </Grid>
+
+        <ProgressBar Grid.Row="1"
+                     VerticalAlignment="Top"
+                     IsIndeterminate="{x:Bind ViewModel.IsLoading, Mode=OneWay}"
+                     Background="Transparent"/>
+    </Grid>
+</Page>

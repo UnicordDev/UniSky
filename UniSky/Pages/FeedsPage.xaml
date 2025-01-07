@@ -5,18 +5,30 @@
     xmlns:local="using:UniSky.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:w1709="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
+    xmlns:w1803="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 6)"
     xmlns:viewmodels="using:UniSky.ViewModels" 
     xmlns:mux="using:Microsoft.UI.Xaml.Controls" 
     xmlns:feeds="using:UniSky.ViewModels.Feeds" 
-    xmlns:extensions="using:UniSky.Extensions"
+    xmlns:extensions="using:UniSky.Extensions" xmlns:templates="using:UniSky.Templates"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance Type=viewmodels:FeedsViewModel}"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    NavigationCacheMode="Enabled">
+    NavigationCacheMode="Enabled"
+    w1803:KeyboardAcceleratorPlacementMode="Hidden">
+    <Page.Resources>
+        <templates:FeedTemplates/>
+    </Page.Resources>
+    <w1709:Page.KeyboardAccelerators>
+        <w1709:KeyboardAccelerator x:Name="RefreshAccelerator"
+                                   Key="F5"
+                                   Invoked="RefreshAccelerator_Invoked"/>
+    </w1709:Page.KeyboardAccelerators>
 
     <Grid x:Name="RootGrid">
         <Pivot x:Name="FeedsPivot"
-               ItemsSource="{x:Bind ViewModel.Feeds}">
+               ItemsSource="{x:Bind ViewModel.Feeds}"
+               ScrollViewer.IsVerticalScrollChainingEnabled="True">
             <Pivot.HeaderTemplate>
                 <DataTemplate>
                     <TextBlock x:Name="PivotHeaderText"
@@ -45,20 +57,21 @@
                                       ItemsSource="{x:Bind Items}" 
                                       ItemTemplate="{StaticResource FeedItemContentTemplate}"
                                       SelectionMode="None"
-                                      IsItemClickEnabled="True"
                                       HorizontalAlignment="Stretch"
                                       HorizontalContentAlignment="Stretch"
                                       ScrollViewer.IsVerticalScrollChainingEnabled="True"
-                                      BorderBrush="{StaticResource SystemControlSeparatorBrush}"
-                                      extensions:HairlineBorder.Thickness="0,1,0,0">
+                                      BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
+                                      extensions:Hairline.BorderThickness="0,1,0,0">
                                 <ListView.Resources>
                                     <SolidColorBrush Color="Transparent" x:Key="ListViewItemRevealBackground"/>
                                     <SolidColorBrush Color="Transparent" x:Key="ListViewItemBackgroundPointerOver"/>
+                                    <Thickness x:Key="ListViewItemRevealBorderThemeThickness">0</Thickness>
                                 </ListView.Resources>
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="ListViewItem">
                                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                                         <Setter Property="Padding" Value="0"/>
+                                        <Setter Property="BorderThickness" Value="0"/>
                                     </Style>
                                 </ListView.ItemContainerStyle>
                                 <ListView.FooterTemplate>
@@ -76,11 +89,17 @@
                         </mux:RefreshContainer>
 
                         <!-- TODO: move this into a DataTemplate w/ selector of type FeedItemErrorViewModel or similar -->
-                        <StackPanel x:Name="timelineLoadFailure" 
-                                    x:Load="{x:Bind IsErrored}">
-                            <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="100" Text="&#xE783;" Margin="0,0,0,10"/>
-                            <TextBlock Text="Unable to fetch timeline!" Style="{StaticResource TitleTextBlockStyle}"/>
-                            <Button Content="Try again" Style="{ThemeResource TextBlockButtonStyle}" />
+                        <StackPanel x:Name="TimelineLoadFailure"
+                                    x:Load="{x:Bind IsErrored}"
+                                    Padding="16"
+                                    HorizontalAlignment="Center">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" 
+                                       FontSize="96" 
+                                       Text="&#xE783;" 
+                                       Margin="0,0,0,8"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Unable to fetch timeline!" TextAlignment="Center" Style="{ThemeResource TitleTextBlockStyle}"/>
+                            <Button Content="Try again" HorizontalAlignment="Center" Style="{ThemeResource TextBlockButtonStyle}" />
                         </StackPanel>
 
                     </Grid>

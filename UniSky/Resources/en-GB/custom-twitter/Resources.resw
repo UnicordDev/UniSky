@@ -120,11 +120,11 @@
   <data name="PostsRun.Text" xml:space="preserve">
     <value>Tweets</value>
   </data>
-  <data name="FeedPosts" xml:space="preserve">
+  <data name="Feed_Posts" xml:space="preserve">
     <value>Tweets</value>
   </data>
-  <data name="FeedReplies" xml:space="preserve">
-    <value>Tweets w/ Replies</value>
+  <data name="Feed_Replies" xml:space="preserve">
+    <value>Tweets &amp; Replies</value>
   </data>
   <data name="RetweetedByRun.Text" xml:space="preserve">
     <value>Retweeted by</value>
@@ -134,5 +134,53 @@
   </data>
   <data name="AppTitle.Text" xml:space="preserve">
     <value>Twitter</value>
+  </data>
+  <data name="E_ReplyToNonPost" xml:space="preserve">
+    <value>Trying to reply to something that isn't a tweet?</value>
+  </data>
+  <data name="E_TooManyPhotos" xml:space="preserve">
+    <value>Tweets can contain at most four photos.</value>
+  </data>
+  <data name="E_TooManyVideos" xml:space="preserve">
+    <value>Tweets can contain at most one video.</value>
+  </data>
+  <data name="E_UnableToAddImageToVideoPost" xml:space="preserve">
+    <value>Can't add image when this tweet contains a video.</value>
+  </data>
+  <data name="E_UnableToAddVideoToImagePost" xml:space="preserve">
+    <value>Can't add video when this tweet contains an image.</value>
+  </data>
+  <data name="UploadToBluesky" xml:space="preserve">
+    <value>Attach to tweet</value>
+  </data>
+  <data name="ComposePrimaryTextBox.PlaceholderText" xml:space="preserve">
+    <value>What's happening?</value>
+  </data>
+  <data name="ComposeSheetPrimaryText.Text" xml:space="preserve">
+    <value>Tweet</value>
+  </data>
+  <data name="ComposeSheet.TitleContent" xml:space="preserve">
+    <value>NEW TWEET</value>
+  </data>
+  <data name="Notification_LikedTweetMultiple" xml:space="preserve">
+    <value>{0} and {1} liked your tweet</value>
+  </data>
+  <data name="Notification_LikedTweetSingle" xml:space="preserve">
+    <value>{0} liked your tweet</value>
+  </data>
+  <data name="Notification_RetweetMultiple" xml:space="preserve">
+    <value>{0} and {1} retweeted</value>
+  </data>
+  <data name="Notification_RetweetSingle" xml:space="preserve">
+    <value>{0} retweeted</value>
+  </data>
+  <data name="Notification_Quote" xml:space="preserve">
+    <value>{0} quoted your tweet</value>
+  </data>
+  <data name="ThreadPageTitleBlock.Text" xml:space="preserve">
+    <value>TWEET</value>
+  </data>
+  <data name="FeedContextLabel_Description" xml:space="preserve">
+    <value>Context added by the current feed to indicate why a tweet was included.</value>
   </data>
 </root>
