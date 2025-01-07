@@ -1,4 +1,3 @@
-
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
@@ -119,42 +118,392 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PostsRun.Text" xml:space="preserve">
-    <value>Посты</value>
+    <value>Posts</value>
   </data>
   <data name="FollowersRun.Text" xml:space="preserve">
-    <value>Подписчики</value>
+    <value>Followers</value>
+    <comment>n users following person, not doing plural because it will almost always be &gt; 10</comment>
   </data>
   <data name="FollowingRun.Text" xml:space="preserve">
-    <value>Подписчик</value>
+    <value>Following</value>
+    <comment>n users followed by person, not doing plural because it will almost always be &gt; 10</comment>
   </data>
-  <data name="FeedPosts" xml:space="preserve">
-    <value>Посты</value>
+  <data name="Feed_Posts" xml:space="preserve">
+    <value>Posts</value>
   </data>
-  <data name="FeedReplies" xml:space="preserve">
-    <value>Посты и Ответы</value>
+  <data name="Feed_Replies" xml:space="preserve">
+    <value>Posts &amp; Replies</value>
   </data>
-  <data name="FeedMedia" xml:space="preserve">
-    <value>Медиа</value>
+  <data name="Feed_Media" xml:space="preserve">
+    <value>Media</value>
   </data>
   <data name="RetweetedByRun.Text" xml:space="preserve">
-    <value>Репостнуто</value>
+    <value>Reposted by</value>
   </data>
   <data name="PostReplyButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>Ответы</value>
+    <value>Replies</value>
   </data>
   <data name="PostRetweetButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>Репостнуть</value>
+    <value>Repost</value>
   </data>
   <data name="PostLikeButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>Лайк</value>
+    <value>Like</value>
   </data>
   <data name="ReplyingToRun.Text" xml:space="preserve">
-    <value>Отвечает</value>
+    <value>Replying to</value>
   </data>
   <data name="AppName" xml:space="preserve">
     <value>Unisky</value>
   </data>
   <data name="AppTitle.Text" xml:space="preserve">
     <value>Unisky</value>
+  </data>
+  <data name="TimeUnit_Day" xml:space="preserve">
+    <value>d</value>
+  </data>
+  <data name="TimeUnit_Hour" xml:space="preserve">
+    <value>h</value>
+  </data>
+  <data name="TimeUnit_Millisecond" xml:space="preserve">
+    <value>ms</value>
+  </data>
+  <data name="TimeUnit_Minute" xml:space="preserve">
+    <value>m</value>
+  </data>
+  <data name="TimeUnit_Month" xml:space="preserve">
+    <value>mo</value>
+  </data>
+  <data name="TimeUnit_Second" xml:space="preserve">
+    <value>s</value>
+  </data>
+  <data name="TimeUnit_Week" xml:space="preserve">
+    <value>w</value>
+  </data>
+  <data name="TimeUnit_Year" xml:space="preserve">
+    <value>yr</value>
+  </data>
+  <data name="E_NonImageOrVideo" xml:space="preserve">
+    <value>Only image and video types are supported.</value>
+  </data>
+  <data name="E_ReplyToNonPost" xml:space="preserve">
+    <value>Trying to reply to something that isn't a post?</value>
+  </data>
+  <data name="E_TooManyPhotos" xml:space="preserve">
+    <value>Posts can contain at most four photos.</value>
+  </data>
+  <data name="E_TooManyVideos" xml:space="preserve">
+    <value>Posts can contain at most one video.</value>
+  </data>
+  <data name="E_UnableToAddImageToVideoPost" xml:space="preserve">
+    <value>Can't add image when this post contains a video.</value>
+  </data>
+  <data name="E_UnableToAddVideoToImagePost" xml:space="preserve">
+    <value>Can't add video when this post contains an image.</value>
+  </data>
+  <data name="ComposePrimaryTextBox.PlaceholderText" xml:space="preserve">
+    <value>What's going on?</value>
+  </data>
+  <data name="ComposeSheetPrimaryText.Text" xml:space="preserve">
+    <value>Post</value>
+  </data>
+  <data name="ComposeSheetSecondaryText.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ComposeSheet.TitleContent" xml:space="preserve">
+    <value>NEW POST</value>
+  </data>
+  <data name="E_FileUnavailable" xml:space="preserve">
+    <value>Sorry, that file is unavailable.</value>
+  </data>
+  <data name="E_VideosUnsupported" xml:space="preserve">
+    <value>Sorry, videos are currently unsupported.</value>
+  </data>
+  <data name="UploadToBluesky" xml:space="preserve">
+    <value>Attach to post</value>
+  </data>
+  <data name="Search_New" xml:space="preserve">
+    <value>Latest</value>
+  </data>
+  <data name="Search_Hot" xml:space="preserve">
+    <value>Hot</value>
+  </data>
+  <data name="Search_People" xml:space="preserve">
+    <value>People</value>
+  </data>
+  <data name="Profile_Follow" xml:space="preserve">
+    <value>Follow</value>
+    <comment>Click to follow the user</comment>
+  </data>
+  <data name="Profile_Following" xml:space="preserve">
+    <value>Following</value>
+    <comment>Currently following the user</comment>
+  </data>
+  <data name="Notification_LikedTweetSingle" xml:space="preserve">
+    <value>{0} liked your post</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Notification_LikedTweetMultiple" xml:space="preserve">
+    <value>{0} and {1} liked your post</value>
+    <comment>{0},{1} = user display name</comment>
+  </data>
+  <data name="Notification_Follow" xml:space="preserve">
+    <value>{0} followed you</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Notification_Mention" xml:space="preserve">
+    <value>{0} mentioned you</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Notification_Other" xml:space="preserve">
+    <value>other</value>
+  </data>
+  <data name="Notification_Quote" xml:space="preserve">
+    <value>{0} quoted your post</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Notification_Reply" xml:space="preserve">
+    <value>{0} replied to you</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Notification_RetweetMultiple" xml:space="preserve">
+    <value>{0} and {1} reposted</value>
+    <comment>{0},{1} = user display name</comment>
+  </data>
+  <data name="Notification_RetweetSingle" xml:space="preserve">
+    <value>{0} reposted</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Profile_Blocked" xml:space="preserve">
+    <value>Blocked</value>
+  </data>
+  <data name="Profile_InvalidHandle" xml:space="preserve">
+    <value>Invalid Handle</value>
+  </data>
+  <data name="Profile_BlockedUser" xml:space="preserve">
+    <value>You are blocking this user</value>
+  </data>
+  <data name="Profile_BlockedByUser" xml:space="preserve">
+    <value>You are blocked by this user</value>
+  </data>
+  <data name="ComposeAddAltTextDialog.PrimaryButtonText" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="ComposeAddAltTextDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ComposeAddAltTextDialog.Title" xml:space="preserve">
+    <value>ADD ALT TEXT</value>
+  </data>
+  <data name="ComposeAddAltTextTextBox.PlaceholderText" xml:space="preserve">
+    <value>Describe this image! Be as detailed as you like.</value>
+  </data>
+  <data name="ComposeDiscardDraftDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Discard</value>
+  </data>
+  <data name="ComposeDiscardDraftDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ComposeDiscardDraftDialog.Title" xml:space="preserve">
+    <value>Discard draft?</value>
+  </data>
+  <data name="ComposeDiscardDraftInfoBlock.Text" xml:space="preserve">
+    <value>Are you sure you want to discard this draft? This action is irreversible!</value>
+  </data>
+  <data name="FeedMoreCopyLinkItem.Text" xml:space="preserve">
+    <value>Copy Link</value>
+  </data>
+  <data name="FeedMoreCopyTextItem.Text" xml:space="preserve">
+    <value>Copy Text</value>
+  </data>
+  <data name="FeedMoreHidePostItem.Text" xml:space="preserve">
+    <value>Hide Post</value>
+  </data>
+  <data name="FeedMoreMuteItem.Text" xml:space="preserve">
+    <value>Mute Thread</value>
+  </data>
+  <data name="FeedMoreReportPostItem.Text" xml:space="preserve">
+    <value>Report Post</value>
+  </data>
+  <data name="FeedMoreShareItem.Text" xml:space="preserve">
+    <value>Share</value>
+  </data>
+  <data name="Feed_Following" xml:space="preserve">
+    <value>Following</value>
+  </data>
+  <data name="LoginAdvancedButton.Content" xml:space="preserve">
+    <value>Advanced</value>
+    <comment>Shows the hostname/PDS server textbox</comment>
+  </data>
+  <data name="LoginButton.Content" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="LoginHostBox.Header" xml:space="preserve">
+    <value>Server</value>
+  </data>
+  <data name="LoginPageHeader.Text" xml:space="preserve">
+    <value>To begin, enter your username and password.</value>
+    <comment>Taken from Windows XP's Welcome Screen, try to keep that reference if possible :)</comment>
+  </data>
+  <data name="LoginPasswordBox.Header" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="LoginUsernameBox.Header" xml:space="preserve">
+    <value>Username or Email Address</value>
+  </data>
+  <data name="NotificationsPageTitleBlock.Text" xml:space="preserve">
+    <value>NOTIFICATIONS</value>
+  </data>
+  <data name="SearchPageSearchBox.PlaceholderText" xml:space="preserve">
+    <value>Find something cool...</value>
+    <comment>Can really be anything</comment>
+  </data>
+  <data name="SearchPageTitleBlock.Text" xml:space="preserve">
+    <value>SEARCH</value>
+  </data>
+  <data name="SettingsAboutHeaderBlock.Text" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="SettingsAboutVersionRun.Text" xml:space="preserve">
+    <value>Version</value>
+    <comment>Version 1.0.0.0-abcdefg (branch)</comment>
+  </data>
+  <data name="SettingsAppThemeItem_Fluent.Content" xml:space="preserve">
+    <value>Fluent</value>
+  </data>
+  <data name="SettingsAppThemeItem_OLED.Content" xml:space="preserve">
+    <value>OLED</value>
+  </data>
+  <data name="SettingsAppThemeItem_Performance.Content" xml:space="preserve">
+    <value>Performance</value>
+  </data>
+  <data name="SettingsAppThemeItem_SunValley.Content" xml:space="preserve">
+    <value>Sun Valley</value>
+  </data>
+  <data name="SettingsAutoRefreshFeedsSwitch.Header" xml:space="preserve">
+    <value>Automatically refresh feeds (experimental)</value>
+  </data>
+  <data name="SettingsColorSchemeBox.Header" xml:space="preserve">
+    <value>Colour Scheme</value>
+  </data>
+  <data name="SettingsColourSchemeItem_Dark.Content" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="SettingsColourSchemeItem_Default.Content" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="SettingsColourSchemeItem_Light.Content" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="SettingsNeedsRelaunchDialog.Title" xml:space="preserve">
+    <value>RESTART REQUIRED</value>
+  </data>
+  <data name="SettingsNeedsRelaunchInfoBlock.Text" xml:space="preserve">
+    <value>Unisky must be restarted for some changes to take effect. Do you want to relaunch now?</value>
+  </data>
+  <data name="SettingsOptionsHeaderBlock.Text" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="SettingsSheet.SecondaryButtonContent" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="SettingsSheet.TitleContent" xml:space="preserve">
+    <value>SETTINGS</value>
+  </data>
+  <data name="SettingsThemeBox.Header" xml:space="preserve">
+    <value>Theme</value>
+  </data>
+  <data name="SettingsUseMultipleWindowsSwitch.Header" xml:space="preserve">
+    <value>Use separate windows for popups</value>
+  </data>
+  <data name="Share_Username" xml:space="preserve">
+    <value>@{0} on Bluesky</value>
+    <comment>{0} = user handle</comment>
+  </data>
+  <data name="GalleryControl.TitleContent" xml:space="preserve">
+    <value>GALLERY</value>
+  </data>
+  <data name="ThreadPageTitleBlock.Text" xml:space="preserve">
+    <value>POST</value>
+  </data>
+  <data name="GlobalLabel_GRAPHIC_MEDIA_Description" xml:space="preserve">
+    <value>Explicit or potentially disturbing media.</value>
+  </data>
+  <data name="GlobalLabel_GRAPHIC_MEDIA_Name" xml:space="preserve">
+    <value>Graphic Media</value>
+  </data>
+  <data name="GlobalLabel_HIDE_Description" xml:space="preserve">
+    <value>This content has been hidden by the Bluesky Moderation Team.</value>
+  </data>
+  <data name="GlobalLabel_HIDE_Name" xml:space="preserve">
+    <value>Content Blocked</value>
+  </data>
+  <data name="GlobalLabel_NO_UNAUTHENTICATED_Description" xml:space="preserve">
+    <value>This user has requested that their content is only visible to signed-in users. Please note that this mechanism is fundamentally insecure.</value>
+  </data>
+  <data name="GlobalLabel_NO_UNAUTHENTICATED_Name" xml:space="preserve">
+    <value>Sign-in Required</value>
+  </data>
+  <data name="GlobalLabel_NUDITY_Description" xml:space="preserve">
+    <value>Artistic nudity, etc.</value>
+  </data>
+  <data name="GlobalLabel_NUDITY_Name" xml:space="preserve">
+    <value>Non-sexual Nudity</value>
+  </data>
+  <data name="GlobalLabel_PORN_Description" xml:space="preserve">
+    <value>Explicit sexual imagery.</value>
+  </data>
+  <data name="GlobalLabel_PORN_Name" xml:space="preserve">
+    <value>Adult Content</value>
+  </data>
+  <data name="GlobalLabel_SEXUAL_Description" xml:space="preserve">
+    <value>Non-explicit sexual imagery.</value>
+  </data>
+  <data name="GlobalLabel_SEXUAL_Name" xml:space="preserve">
+    <value>Sexually Suggestive</value>
+  </data>
+  <data name="GlobalLabel_WARN_Description" xml:space="preserve">
+    <value>This content has recieved a general warning from the Bluesky Moderation Team.</value>
+  </data>
+  <data name="GlobalLabel_WARN_Name" xml:space="preserve">
+    <value>Content Warning</value>
+  </data>
+  <data name="HomePage_Chat" xml:space="preserve">
+    <value>Chat</value>
+  </data>
+  <data name="HomePage_Feeds" xml:space="preserve">
+    <value>Feeds</value>
+  </data>
+  <data name="HomePage_Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="HomePage_Lists" xml:space="preserve">
+    <value>Lists</value>
+  </data>
+  <data name="HomePage_Notifications" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="HomePage_Profile" xml:space="preserve">
+    <value>Profile</value>
+  </data>
+  <data name="HomePage_Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="HomePage_Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="FeedContextLabel_AppliedBy" xml:space="preserve">
+    <value>Current Feed (this is not a label)</value>
+  </data>
+  <data name="FeedContextLabel_Description" xml:space="preserve">
+    <value>Context added by the current feed to indicate why a post was included.</value>
+  </data>
+  <data name="SettingsShowFeedContextSwitch.Header" xml:space="preserve">
+    <value>Show feed context labels (experimental)</value>
+  </data>
+  <data name="SettingsUseTwitterLocaleSwitch.Header" xml:space="preserve">
+    <value>Use Twitter locale (experimental)</value>
+  </data>
+  <data name="SettingsVideosInFeedsSwitch.Header" xml:space="preserve">
+    <value>Show videos inline in feeds</value>
   </data>
 </root>
