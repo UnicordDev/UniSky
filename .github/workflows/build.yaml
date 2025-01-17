@@ -177,7 +177,7 @@ jobs:
           $params.Add("UseDotNetNativeToolchain", "true")
         }
 
-        msbuild $env:ProjectFile_Name ($params.GetEnumerator() | % { "/p:$($_.Key)='$($_.Value)'" })
+        msbuild $env:ProjectFile_Name ($params.GetEnumerator() | % { "/p:$($_.Key)=""$($_.Value)""" })
       env:
         Appx_Bundle: ${{ env.Appx_Bundle }}
         Appx_Package_Dir: Packages\
