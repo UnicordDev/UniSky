@@ -245,7 +245,8 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="32"/>
-                                <ColumnDefinition/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RenderTransform>
                                 <TranslateTransform x:Name="TitleHeaderTransform"/>
@@ -278,8 +279,18 @@
                                        Text="Unisky"
                                        VerticalAlignment="Center" 
                                        Grid.Column="2"
-                                       Margin="8,0"
+                                       Margin="8,0,0,0"
                                        IsHitTestVisible="False"/>
+
+                            <TextBlock x:Name="AppTitleSuffixTextBlock"
+                                       Text="DEBUG"
+                                       Style="{StaticResource CaptionTextBlockStyle}" 
+                                       Opacity="0.5"
+                                       VerticalAlignment="Center" 
+                                       Grid.Column="3"
+                                       Margin="8,0,0,0"
+                                       IsHitTestVisible="False"
+                                       Visibility="Collapsed"/>
                         </Grid>
 
                         <VisualStateManager.VisualStateGroups>
@@ -288,12 +299,14 @@
                                     <VisualState.Setters>
                                         <Setter Target="AppIconPath.Fill" Value="{ThemeResource ApplicationForegroundThemeBrush}"/>
                                         <Setter Target="AppTitleTextBlock.Foreground" Value="{ThemeResource ApplicationForegroundThemeBrush}"/>
+                                        <Setter Target="AppTitleSuffixTextBlock.Foreground" Value="{ThemeResource ApplicationForegroundThemeBrush}"/>
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="Inactive">
                                     <VisualState.Setters>
                                         <Setter Target="AppIconPath.Fill" Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
                                         <Setter Target="AppTitleTextBlock.Foreground" Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                                        <Setter Target="AppTitleSuffixTextBlock.Foreground" Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
                                     </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>

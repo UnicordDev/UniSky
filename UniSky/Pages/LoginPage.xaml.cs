@@ -21,6 +21,9 @@ public sealed partial class LoginPage : Page
     public LoginPage()
     {
         this.InitializeComponent();
+
+        AppTitleSuffixTextBlock.Text = Constants.Version;
+        AppTitleSuffixTextBlock.Visibility = Visibility.Visible;
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)

@@ -30,6 +30,9 @@ public sealed partial class HomePage : Page
     public HomePage()
     {
         this.InitializeComponent();
+
+        AppTitleSuffixTextBlock.Text = Constants.Version;
+        AppTitleSuffixTextBlock.Visibility = Visibility.Visible;
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
