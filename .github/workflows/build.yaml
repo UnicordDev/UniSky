@@ -1,7 +1,7 @@
 # This workflow will build, sign, and package a WinUI 3 MSIX desktop application
 # built on .NET.
 
-name: Build
+name: Store
 
 on:
   push:
@@ -16,6 +16,7 @@ jobs:
     strategy:
       matrix:
         configuration: [Release]
+        version: [Sideload, Store, WoA32]
 
     runs-on: windows-latest
 
@@ -30,18 +31,66 @@ jobs:
       with:
         fetch-depth: 0
 
+    # Adjust the package version to include the current date and time, except on Store builds
     - name: Adjust Package Version
+      if: ${{ matrix.version != 'Store' }}
       run: |
+        $appx = 'http://schemas.microsoft.com/appx/manifest/foundation/windows10'
+        $rescap = 'http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities'
+        $msbuild = 'http://schemas.microsoft.com/developer/msbuild/2003'
+
         $epoch = (Get-Date) - (Get-Date -Day 1)
         $file = (Resolve-Path "$env:Project_Name/Package.appxmanifest")
         $xml = [System.Xml.XmlDocument]::new()
         $xml.Load($file)
 
-        $node = $xml.GetElementsByTagName("Identity", "http://schemas.microsoft.com/appx/manifest/foundation/windows10")[0]
+        $nsmgr = [System.Xml.XmlNamespaceManager]::new($xml.NameTable)
+        $nsmgr.AddNamespace("appx", $appx);
+        $nsmgr.AddNamespace("rescap", $rescap);
+
+        # adjust package version
+        $node = $xml.GetElementsByTagName("Identity", $appx)[0]
         $version = [System.Version]::Parse($node.GetAttribute("Version"))
         $version = [System.Version]::new($version.Major, $version.Minor, $version.Build, $epoch.TotalMinutes);
-        $node.SetAttribute("Version", $version.ToString())
+        $node.SetAttribute("Version", $version.ToString())        
 
+        $xml.Save($file)        
+
+    # Set the target version to 10.0.15035.0 and remove the confirmAppClose rescap for 
+    # Only run for the WoA32 version
+    - name: Patch Manifest and Project File
+      if: ${{ matrix.version == 'WoA32' }}
+      run: |
+        $appx = 'http://schemas.microsoft.com/appx/manifest/foundation/windows10'
+        $rescap = 'http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities'
+        $msbuild = 'http://schemas.microsoft.com/developer/msbuild/2003'
+
+        $file = (Resolve-Path "$env:Project_Name/Package.appxmanifest")
+        $xml = [System.Xml.XmlDocument]::new()
+        $xml.Load($file)
+
+        $nsmgr = [System.Xml.XmlNamespaceManager]::new($xml.NameTable)
+        $nsmgr.AddNamespace("appx", $appx);
+        $nsmgr.AddNamespace("rescap", $rescap);
+        
+        # adjust target version
+        $node = $xml.GetElementsByTagName("TargetDeviceFamily", $appx)[0]
+        $node.SetAttribute("MinVersion", "10.0.15035.0");
+
+        # remove confirmAppClose rescap
+        $node = $xml.SelectSingleNode('//rescap:Capability[@Name="confirmAppClose"]', $nsmgr)
+        $node.ParentNode.RemoveChild($node)
+        
+        $xml.Save($file)
+
+        $file = (Resolve-Path "$env:ProjectFile_Name")
+        $xml.Load($file)
+
+        $nsmgr = [System.Xml.XmlNamespaceManager]::new($xml.NameTable)
+        $nsmgr.AddNamespace("msbuild", $msbuild);
+
+        $node = $xml.SelectSingleNode('//msbuild:PackageReference[@Include="Microsoft.UI.Xaml"]/msbuild:Version', $nsmgr)
+        $node.InnerXml = "2.7.4-prerelease.221117002"
         $xml.Save($file)
 
     # Decode the base 64 encoded pfx and save the Signing_Certificate
@@ -51,7 +100,7 @@ jobs:
         $certificatePath = "GitHubActionsWorkflow.pfx"
         [IO.File]::WriteAllBytes("$env:Project_Name/$certificatePath", $pfx_cert_byte)
 
-    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+    # Add MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v2
 
@@ -61,12 +110,39 @@ jobs:
       env:
         Configuration: ${{ matrix.configuration }}
 
+    # Map the version to the appropriate environment variables, store in GITHUB_ENV
+    - name: Set Environment Variables
+      run: |
+        if ($env:Version -eq 'Store') {
+          echo "Appx_Package_Build_Mode=CI" >> $GITHUB_ENV
+        } else {
+          echo "Appx_Package_Build_Mode=SideloadOnly" >> $GITHUB_ENV
+        }
+
+        if ($env:Version -eq 'WoA32') {
+          echo "Appx_Bundle_Platforms=ARM" >> $GITHUB_ENV
+        } else {
+          echo "Appx_Bundle_Platforms=x86|x64|ARM|ARM64" >> $GITHUB_ENV
+        }        
+      env:
+        Appx_Package_Build_Mode: ''
+        Version: ${{ matrix.version }}
+
     # Create the app package by building and packaging the project
     - name: Build App Packages
-      run: msbuild $env:ProjectFile_Name /p:Configuration=$env:Configuration /p:SourceRevisionBranch="$env:Head_Ref" /p:SourceRevisionCommit="$($env:Sha.Substring(0, 7))" /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxBundlePlatforms="x86|x64|ARM|ARM64" /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true
+      run: |
+        msbuild $env:ProjectFile_Name \
+        /p:Configuration=$env:Configuration \
+        /p:SourceRevisionBranch="$env:Head_Ref" \
+        /p:SourceRevisionCommit="$($env:Sha.Substring(0, 7))" \
+        /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode \
+        /p:AppxBundle=$env:Appx_Bundle \
+        /p:AppxBundlePlatforms="$($env:Appx_Bundle_Platforms)" \
+        /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx \
+        /p:AppxPackageDir="$env:Appx_Package_Dir" \
+        /p:GenerateAppxPackageOnBuild=true \
       env:
         Appx_Bundle: Always
-        Appx_Package_Build_Mode: SideloadOnly
         Appx_Package_Dir: Packages\
         Configuration: ${{ matrix.configuration }}
         Head_Ref: ${{ github.head_ref }}
