@@ -160,18 +160,24 @@ jobs:
 
     # Create the app package by building and packaging the project
     - name: Build App Packages
-      if: ${{ matrix.version != 'WoA32' }}
       run: |
-        msbuild $env:ProjectFile_Name `
-        /p:Configuration=$env:Configuration `
-        /p:SourceRevisionBranch="$env:Head_Ref" `
-        /p:SourceRevisionCommit="$($env:Sha.Substring(0, 7))" `
-        /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode `
-        /p:AppxBundle=$env:Appx_Bundle `
-        /p:AppxBundlePlatforms="$($env:Appx_Bundle_Platforms)" `
-        /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx `
-        /p:AppxPackageDir="$env:Appx_Package_Dir" `
-        /p:GenerateAppxPackageOnBuild=true 
+        $params = @{
+          Configuration = $env:Configuration
+          SourceRevisionBranch = "$env:Head_Ref"
+          SourceRevisionCommit = "$($env:Sha.Substring(0, 7))"
+          UapAppxPackageBuildMode = $env:Appx_Package_Build_Mode
+          AppxPackageDir = $env:Appx_Package_Dir
+          AppxBundle = $env:Appx_Bundle
+          AppxBundlePlatforms = $env:Appx_Bundle_Platforms
+          PackageCertificateKeyFile = "GitHubActionsWorkflow.pfx"
+          GenerateAppxPackageOnBuild = $true
+        }
+
+        if($env:Version -eq 'WoA32') {
+          $params.Add("Platform", "ARM")
+        }
+
+        msbuild $env:ProjectFile_Name @params
       env:
         Appx_Bundle: ${{ env.Appx_Bundle }}
         Appx_Package_Dir: Packages\
@@ -179,30 +185,7 @@ jobs:
         Appx_Bundle_Platforms: ${{ env.Appx_Bundle_Platforms }}
         Build_Platform: ${{ env.Build_Platform }}
         Configuration: ${{ matrix.configuration }}
-        Head_Ref: ${{ github.head_ref }}
-        Sha: ${{ github.sha }}
-
-    # Create the app package by building and packaging the project
-    - name: Build App Packages (WoA32)
-      if: ${{ matrix.version == 'WoA32' }}
-      run: |
-        msbuild $env:ProjectFile_Name `
-        /p:Platform=ARM `
-        /p:Configuration=$env:Configuration `
-        /p:SourceRevisionBranch="$env:Head_Ref" `
-        /p:SourceRevisionCommit="$($env:Sha.Substring(0, 7))" `
-        /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode `
-        /p:AppxBundle=$env:Appx_Bundle `
-        /p:AppxBundlePlatforms="$($env:Appx_Bundle_Platforms)" `
-        /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx `
-        /p:AppxPackageDir="$env:Appx_Package_Dir" `
-        /p:GenerateAppxPackageOnBuild=true 
-      env:
-        Appx_Bundle: ${{ env.Appx_Bundle }}
-        Appx_Package_Dir: Packages\
-        Appx_Package_Build_Mode: ${{ env.Appx_Package_Build_Mode }}
-        Appx_Bundle_Platforms: ${{ env.Appx_Bundle_Platforms }}
-        Configuration: ${{ matrix.configuration }}
+        Version: ${{ matrix.version }}
         Head_Ref: ${{ github.head_ref }}
         Sha: ${{ github.sha }}
 
