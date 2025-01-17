@@ -158,7 +158,7 @@ jobs:
     - name: Build App Packages
       run: |
         $params = @{
-          "Configuration" = $env:Configuration
+          "Configuration" = $env:Matrix_Configuration
           "SourceRevisionBranch" = """$env:Head_Ref"""
           "SourceRevisionCommit" = """$($env:Sha.Substring(0, 7))"""
           "UapAppxPackageBuildMode" = $env:Appx_Package_Build_Mode
@@ -169,11 +169,11 @@ jobs:
           "GenerateAppxPackageOnBuild" = "true"
         }
 
-        if($env:Version -eq 'WoA32') {
+        if($env:Matrix_Version -eq 'WoA32') {
           $params.Add("Platform", "ARM")
         }
 
-        if($env:Configuration -eq 'Debug') {
+        if($env:Matrix_Configuration -eq 'Debug') {
           $params.Add("UseDotNetNativeToolchain", "true")
         }
 
@@ -184,8 +184,8 @@ jobs:
         Appx_Package_Build_Mode: ${{ env.Appx_Package_Build_Mode }}
         Appx_Bundle_Platforms: ${{ env.Appx_Bundle_Platforms }}
         Build_Platform: ${{ env.Build_Platform }}
-        Configuration: ${{ matrix.configuration }}
-        Version: ${{ matrix.version }}
+        Matrix_Configuration: ${{ matrix.configuration }}
+        Matrix_Version: ${{ matrix.version }}
         Head_Ref: ${{ github.head_ref }}
         Sha: ${{ github.sha }}
 
