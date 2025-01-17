@@ -158,26 +158,26 @@ jobs:
     - name: Build App Packages
       run: |
         $params = @{
-          "p:Configuration" = $env:Configuration
-          "p:SourceRevisionBranch" = "$env:Head_Ref"
-          "p:SourceRevisionCommit" = "$($env:Sha.Substring(0, 7))"
-          "p:UapAppxPackageBuildMode" = $env:Appx_Package_Build_Mode
-          "p:AppxPackageDir" = $env:Appx_Package_Dir
-          "p:AppxBundle" = $env:Appx_Bundle
-          "p:AppxBundlePlatforms" = "'$env:Appx_Bundle_Platforms'"
-          "p:PackageCertificateKeyFile" = "GitHubActionsWorkflow.pfx"
-          "p:GenerateAppxPackageOnBuild" = "true"
+          "Configuration" = $env:Configuration
+          "SourceRevisionBranch" = $env:Head_Ref
+          "SourceRevisionCommit" = $env:Sha.Substring(0, 7)
+          "UapAppxPackageBuildMode" = $env:Appx_Package_Build_Mode
+          "AppxPackageDir" = $env:Appx_Package_Dir
+          "AppxBundle" = $env:Appx_Bundle
+          "AppxBundlePlatforms" = $env:Appx_Bundle_Platforms
+          "PackageCertificateKeyFile" = "GitHubActionsWorkflow.pfx"
+          "GenerateAppxPackageOnBuild" = "true"
         }
 
         if($env:Version -eq 'WoA32') {
-          $params.Add("p:Platform", "ARM")
+          $params.Add("Platform", "ARM")
         }
 
         if($env:Configuration -eq 'Debug') {
-          $params.Add("p:UseDotNetNativeToolchain", "true")
+          $params.Add("UseDotNetNativeToolchain", "true")
         }
 
-        msbuild $env:ProjectFile_Name @params
+        msbuild $env:ProjectFile_Name ($params.GetEnumerator() | % { "/p:$($_.Key)='$($_.Value)'" })
       env:
         Appx_Bundle: ${{ env.Appx_Bundle }}
         Appx_Package_Dir: Packages\
