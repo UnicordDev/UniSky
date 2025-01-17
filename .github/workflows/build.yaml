@@ -15,8 +15,11 @@ jobs:
 
     strategy:
       matrix:
-        configuration: [Release]
+        configuration: [Debug, Release]
         version: [Sideload, Store, WoA32]
+        exclude: 
+          - configuration: Debug
+            version: Store
 
     runs-on: windows-latest
 
