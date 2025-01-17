@@ -48,8 +48,6 @@ jobs:
         $appx = 'http://schemas.microsoft.com/appx/manifest/foundation/windows10'
         $rescap = 'http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities'
         $msbuild = 'http://schemas.microsoft.com/developer/msbuild/2003'
-
-        $epoch = (Get-Date (git show -s --format=%ci)) - (Get-Date (git show -s --format=%ci) -Day 1)
         $file = (Resolve-Path "$env:Project_Name/Package.appxmanifest")
         $xml = [System.Xml.XmlDocument]::new()
         $xml.Load($file)
@@ -63,6 +61,7 @@ jobs:
         $version = [System.Version]::Parse($node.GetAttribute("Version"))
 
         if ($env:Version -ne "Store") {
+          $epoch = (Get-Date (git show -s --format=%ci)) - (Get-Date (git show -s --format=%ci) -Day 1)
           $version = [System.Version]::new($version.Major, $version.Minor, $version.Build, $epoch.TotalMinutes);
           $node.SetAttribute("Version", $version.ToString())        
         }
@@ -120,6 +119,12 @@ jobs:
           echo "Appx_Package_Build_Mode=SideloadOnly" >> $env:GITHUB_ENV
         }
 
+        if ($env:Configuration -eq "Debug" -or $env:Version -eq 'WoA32') {
+          echo "Appx_Bundle=Never" >> $env:GITHUB_ENV
+        } else {
+          echo "Appx_Bundle=Always" >> $env:GITHUB_ENV
+        }
+
         if ($env:Version -eq 'WoA32') {
           echo "Restore_Platform=ARM" >> $env:GITHUB_ENV
           echo "Appx_Bundle_Platforms=ARM" >> $env:GITHUB_ENV
@@ -130,8 +135,10 @@ jobs:
       env:
         Appx_Package_Build_Mode: ''
         Appx_Bundle_Platforms: ''
+        Appx_Bundle: ''
         Restore_Platform: ''
         Version: ${{ matrix.version }}
+        Configuration: ${{ matrix.configuration }}
 
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     - name: Load Certificate
@@ -166,7 +173,7 @@ jobs:
         /p:AppxPackageDir="$env:Appx_Package_Dir" `
         /p:GenerateAppxPackageOnBuild=true 
       env:
-        Appx_Bundle: Always
+        Appx_Bundle: ${{ env.Appx_Bundle }}
         Appx_Package_Dir: Packages\
         Appx_Package_Build_Mode: ${{ env.Appx_Package_Build_Mode }}
         Appx_Bundle_Platforms: ${{ env.Appx_Bundle_Platforms }}
@@ -191,7 +198,7 @@ jobs:
         /p:AppxPackageDir="$env:Appx_Package_Dir" `
         /p:GenerateAppxPackageOnBuild=true 
       env:
-        Appx_Bundle: Never
+        Appx_Bundle: ${{ env.Appx_Bundle }}
         Appx_Package_Dir: Packages\
         Appx_Package_Build_Mode: ${{ env.Appx_Package_Build_Mode }}
         Appx_Bundle_Platforms: ${{ env.Appx_Bundle_Platforms }}
