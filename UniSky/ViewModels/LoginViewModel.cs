@@ -66,7 +66,13 @@ public partial class LoginViewModel : ViewModelBase
                 .ConfigureAwait(false))
                 .HandleResult();
 
-            var session = new Session(createSession.Did, createSession.DidDoc, createSession.Handle, createSession.Email, createSession.AccessJwt, createSession.RefreshJwt);
+            var session = new Session(createSession.Did,
+                                      createSession.DidDoc,
+                                      createSession.Handle,
+                                      createSession.Email,
+                                      createSession.AccessJwt,
+                                      createSession.RefreshJwt,
+                                      DateTime.MaxValue);
             var loginModel = this.loginService.SaveLogin(normalisedHost, Username, Password);
             var sessionModel = new SessionModel(true, normalisedHost, session);
 

@@ -69,8 +69,8 @@ public class RichTextViewModel
         for (int i = 0; i < facets.Length; i++)
         {
             var facet = facets[i];
-            var start = facet.Index!.ByteStart.Value;
-            var end = facet.Index!.ByteEnd.Value;
+            var start = facet.Index!.ByteStart;
+            var end = facet.Index!.ByteEnd;
 
             // we have some leading text
             if (idx < start)

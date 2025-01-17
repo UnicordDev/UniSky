@@ -23,7 +23,7 @@ public record ShowGalleryArgs(ATIdentifier Identifier = null,
                     if (selected.AspectRatio == null)
                         return null;
 
-                    return new Size(selected.AspectRatio.Width.Value, selected.AspectRatio.Height.Value);
+                    return new Size(selected.AspectRatio.Width, selected.AspectRatio.Height);
                 }
 
             case { EmbedImages.Images: { } embedImages }:
@@ -32,7 +32,7 @@ public record ShowGalleryArgs(ATIdentifier Identifier = null,
                     if (selected.AspectRatio == null)
                         return null;
 
-                    return new Size(selected.AspectRatio.Width.Value, selected.AspectRatio.Height.Value);
+                    return new Size(selected.AspectRatio.Width, selected.AspectRatio.Height);
                 }
 
             default:

@@ -16,7 +16,7 @@ public record ShowVideoPlayerArgs(ViewVideo ViewVideo = null) : IOverlaySizeProv
     public Size? GetDesiredSize()
     {
         if (ViewVideo.AspectRatio != null)
-            return new Size(ViewVideo.AspectRatio.Width.Value, ViewVideo.AspectRatio.Height.Value);
+            return new Size(ViewVideo.AspectRatio.Width, ViewVideo.AspectRatio.Height);
 
         return null;
     }

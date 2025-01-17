@@ -59,16 +59,30 @@ public class ProtocolService(ILogger<ProtocolService> logger) : IProtocolService
                 .Build();
 
             var sessionRefresh = sessionModel.Session.Session;
-            var authSessionRefresh = new AuthSession(
-                new Session(sessionRefresh.Did, sessionRefresh.DidDoc, sessionRefresh.Handle, null, sessionRefresh.RefreshJwt, sessionRefresh.RefreshJwt));
+            var refreshSession = new AuthSession(
+                new Session(sessionRefresh.Did,
+                            sessionRefresh.DidDoc,
+                            sessionRefresh.Handle,
+                            null,
+                            sessionRefresh.RefreshJwt,
+                            sessionRefresh.RefreshJwt,
+                            sessionRefresh.ExpiresIn));
 
-            await temporaryProtocol.AuthenticateWithPasswordSessionAsync(authSessionRefresh);
-            var refreshSession = (await temporaryProtocol.RefreshSessionAsync()
+            await temporaryProtocol.AuthenticateWithPasswordSessionAsync(refreshSession);
+
+            var refreshedSession = (await temporaryProtocol.RefreshSessionAsync()
                 .ConfigureAwait(false))
                 .HandleResult();
 
             var authSession2 = new AuthSession(
-                    new Session(refreshSession.Did, refreshSession.DidDoc, refreshSession.Handle, null, refreshSession.AccessJwt, refreshSession.RefreshJwt));
+                    new Session(refreshedSession.Did,
+                                refreshedSession.DidDoc,
+                                refreshedSession.Handle,
+                                null,
+                                refreshedSession.AccessJwt,
+                                refreshedSession.RefreshJwt,
+                                DateTime.MaxValue));
+
             var session2 = await temporaryProtocol.AuthenticateWithPasswordSessionAsync(authSession2)
                 .ConfigureAwait(false);
             if (session2 == null)

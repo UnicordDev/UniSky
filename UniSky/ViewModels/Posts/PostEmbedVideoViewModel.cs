@@ -32,7 +32,7 @@ public partial class PostEmbedVideoViewModel : PostEmbedViewModel
         this.video = video;
         this.ThumbnailUrl = video.Thumbnail;
         this.Ratio = video.AspectRatio != null ?
-            new AspectRatioConstraint(Math.Max((double)video.AspectRatio.Width.Value / video.AspectRatio.Height.Value, 0.5)) :
+            new AspectRatioConstraint(Math.Max((double)video.AspectRatio.Width / video.AspectRatio.Height, 0.5)) :
             new AspectRatioConstraint(16, 9);
 
         // todo: lazy

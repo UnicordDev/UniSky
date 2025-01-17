@@ -131,12 +131,14 @@
                                    Style="{ThemeResource SubtitleTextBlockStyle}" 
                                    Text="{Binding Name}"
                                    TextWrapping="NoWrap"
+                                   MaxLines="1"
                                    IsHitTestVisible="False"/>
                         <TextBlock x:Name="HandleBlock" 
                                    Grid.Row="1"
                                    Style="{ThemeResource BaseTextBlockStyle}" 
                                    Text="{Binding Handle}"
                                    TextWrapping="NoWrap"
+                                   MaxLines="1"
                                    IsHitTestVisible="False"/>
                         <TextBlock x:Name="InfoBlock" 
                                    Grid.Row="2"
@@ -226,11 +228,15 @@
                                    Grid.Row="0"
                                    Style="{ThemeResource SubtitleTextBlockStyle}" 
                                    Text="{Binding Name}"
-                                   TextWrapping="NoWrap"/>
+                                   TextWrapping="NoWrap"
+                                   TextTrimming="CharacterEllipsis"
+                                   MaxLines="1"/>
                         <TextBlock x:Name="ScrolledHandleBlock" Style="{ThemeResource CaptionTextBlockStyle}" 
                                    Grid.Row="1"
                                    Text="{Binding Handle}"
-                                   TextWrapping="NoWrap"/>
+                                   TextWrapping="NoWrap"
+                                   TextTrimming="CharacterEllipsis"
+                                   MaxLines="1"/>
 
                         <Border Background="Transparent"
                                 Tapped="ProfileContainer_Tapped"

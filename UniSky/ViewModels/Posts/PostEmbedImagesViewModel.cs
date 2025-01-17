@@ -88,7 +88,7 @@ public partial class PostEmbedImagesViewModel : PostEmbedViewModel
         {
             AspectRatio = new AspectRatioConstraint(Images.Length switch
             {
-                1 => Math.Max((double)firstRatio.Width.Value / firstRatio.Height.Value, 0.75),
+                1 => Math.Max((double)firstRatio.Width / firstRatio.Height, 0.75),
                 2 => 2.0,
                 3 => 2.0,
                 4 => 3.0 / 2.0,
