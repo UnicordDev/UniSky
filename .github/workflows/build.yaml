@@ -118,6 +118,7 @@ jobs:
           echo "Restore_Platform=ARM" >> $env:GITHUB_ENV
           echo "Appx_Bundle_Platforms=ARM" >> $env:GITHUB_ENV
         } else {
+          echo "Build_Platform=x64" >> $env:GITHUB_ENV
           echo "Restore_Platform=x64" >> $env:GITHUB_ENV
           echo "Appx_Bundle_Platforms=x86|x64|ARM|ARM64" >> $env:GITHUB_ENV
         }        
