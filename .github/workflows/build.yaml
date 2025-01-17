@@ -114,6 +114,7 @@ jobs:
         }
 
         if ($env:Version -eq 'WoA32') {
+          echo "Build_Platform=ARM" >> $env:GITHUB_ENV
           echo "Restore_Platform=ARM" >> $env:GITHUB_ENV
           echo "Appx_Bundle_Platforms=ARM" >> $env:GITHUB_ENV
         } else {
@@ -148,6 +149,7 @@ jobs:
     - name: Build App Packages
       run: |
         msbuild $env:ProjectFile_Name `
+        /p:Platform=$env:Build_Platform `
         /p:Configuration=$env:Configuration `
         /p:SourceRevisionBranch="$env:Head_Ref" `
         /p:SourceRevisionCommit="$($env:Sha.Substring(0, 7))" `
@@ -162,6 +164,7 @@ jobs:
         Appx_Package_Dir: Packages\
         Appx_Package_Build_Mode: ${{ env.Appx_Package_Build_Mode }}
         Appx_Bundle_Platforms: ${{ env.Appx_Bundle_Platforms }}
+        Build_Platform: ${{ env.Build_Platform }}
         Configuration: ${{ matrix.configuration }}
         Head_Ref: ${{ github.head_ref }}
         Sha: ${{ github.sha }}
