@@ -61,7 +61,9 @@ jobs:
         $version = [System.Version]::Parse($node.GetAttribute("Version"))
 
         if ($env:Version -ne "Store") {
-          $epoch = (Get-Date (git show -s --format=%ci)) - (Get-Date (git show -s --format=%ci) -Day 1)
+          $commitDate = Get-Date (git show -s --format=%ci)
+
+          $epoch = ($commitDate - (Get-Date $commitDate.Date -Day 1))
           $version = [System.Version]::new($version.Major, $version.Minor, $version.Build, $epoch.TotalMinutes);
           $node.SetAttribute("Version", $version.ToString())        
         }
@@ -159,8 +161,8 @@ jobs:
       run: |
         $params = @{
           "Configuration" = $env:Matrix_Configuration
-          "SourceRevisionBranch" = """$env:Head_Ref"""
-          "SourceRevisionCommit" = """$($env:Sha.Substring(0, 7))"""
+          "SourceRevisionBranch" = $env:Head_Ref
+          "SourceRevisionCommit" = $($env:Sha.Substring(0, 7))
           "UapAppxPackageBuildMode" = $env:Appx_Package_Build_Mode
           "AppxPackageDir" = $env:Appx_Package_Dir
           "AppxBundle" = $env:Appx_Bundle
