@@ -50,7 +50,7 @@ jobs:
         $rescap = 'http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities'
         $msbuild = 'http://schemas.microsoft.com/developer/msbuild/2003'
 
-        $epoch = (Get-Date) - (Get-Date -Day 1)
+        $epoch = (Get-Date (git show -s --format=%ci)) - (Get-Date (git show -s --format=%ci) -Day 1)
         $file = (Resolve-Path "$env:Project_Name/Package.appxmanifest")
         $xml = [System.Xml.XmlDocument]::new()
         $xml.Load($file)
@@ -65,7 +65,9 @@ jobs:
         $version = [System.Version]::new($version.Major, $version.Minor, $version.Build, $epoch.TotalMinutes);
         $node.SetAttribute("Version", $version.ToString())        
 
-        $xml.Save($file)        
+        $xml.Save($file)
+
+        echo "Appx_Bundle_Version=$($version.ToString())" >> $env:GITHUB_ENV
 
     # Set the target version to 10.0.15035.0 and remove the confirmAppClose rescap
     # Only run for the WoA32 version
@@ -200,6 +202,6 @@ jobs:
     - name: Upload Appx Package
       uses: actions/upload-artifact@v4
       with:
-        name: AppxPackage-${{ matrix.configuration }}-${{ matrix.version }}
+        name: AppxPackage-${{ env.Appx_Bundle_Version }}-${{ matrix.configuration }}-${{ matrix.version }}
         path: |
           ${{ env.Project_Name }}\\Packages
