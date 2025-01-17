@@ -119,17 +119,13 @@ jobs:
           echo "Appx_Package_Build_Mode=SideloadOnly" >> $env:GITHUB_ENV
         }
 
-        if ($env:Configuration -eq "Debug" -or $env:Version -eq 'WoA32') {
-          echo "Appx_Bundle=Never" >> $env:GITHUB_ENV
-        } else {
-          echo "Appx_Bundle=Always" >> $env:GITHUB_ENV
-        }
-
         if ($env:Version -eq 'WoA32') {
-          echo "Restore_Platform=ARM" >> $env:GITHUB_ENV
+          echo "Appx_Bundle=Never" >> $env:GITHUB_ENV
           echo "Appx_Bundle_Platforms=ARM" >> $env:GITHUB_ENV
+          echo "Restore_Platform=ARM" >> $env:GITHUB_ENV
         } else {
           echo "Restore_Platform=x64" >> $env:GITHUB_ENV
+          echo "Appx_Bundle=Always" >> $env:GITHUB_ENV
           echo "Appx_Bundle_Platforms=x86|x64|ARM|ARM64" >> $env:GITHUB_ENV
         }        
       env:
@@ -162,19 +158,23 @@ jobs:
     - name: Build App Packages
       run: |
         $params = @{
-          Configuration = $env:Configuration
-          SourceRevisionBranch = "$env:Head_Ref"
-          SourceRevisionCommit = "$($env:Sha.Substring(0, 7))"
-          UapAppxPackageBuildMode = $env:Appx_Package_Build_Mode
-          AppxPackageDir = $env:Appx_Package_Dir
-          AppxBundle = $env:Appx_Bundle
-          AppxBundlePlatforms = $env:Appx_Bundle_Platforms
-          PackageCertificateKeyFile = "GitHubActionsWorkflow.pfx"
-          GenerateAppxPackageOnBuild = $true
+          "p:Configuration" = $env:Configuration
+          "p:SourceRevisionBranch" = "$env:Head_Ref"
+          "p:SourceRevisionCommit" = "$($env:Sha.Substring(0, 7))"
+          "p:UapAppxPackageBuildMode" = $env:Appx_Package_Build_Mode
+          "p:AppxPackageDir" = $env:Appx_Package_Dir
+          "p:AppxBundle" = $env:Appx_Bundle
+          "p:AppxBundlePlatforms" = $env:Appx_Bundle_Platforms
+          "p:PackageCertificateKeyFile" = "GitHubActionsWorkflow.pfx"
+          "p:GenerateAppxPackageOnBuild" = "true"
         }
 
         if($env:Version -eq 'WoA32') {
-          $params.Add("Platform", "ARM")
+          $params.Add("p:Platform", "ARM")
+        }
+
+        if($env:Configuration -eq 'Debug') {
+          $params.Add("p:UseDotNetNativeToolchain", "true")
         }
 
         msbuild $env:ProjectFile_Name @params
