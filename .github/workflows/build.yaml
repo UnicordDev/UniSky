@@ -164,7 +164,7 @@ jobs:
           "UapAppxPackageBuildMode" = $env:Appx_Package_Build_Mode
           "AppxPackageDir" = $env:Appx_Package_Dir
           "AppxBundle" = $env:Appx_Bundle
-          "AppxBundlePlatforms" = """$env:Appx_Bundle_Platforms"""
+          "AppxBundlePlatforms" = $env:Appx_Bundle_Platforms
           "PackageCertificateKeyFile" = "GitHubActionsWorkflow.pfx"
           "GenerateAppxPackageOnBuild" = "true"
         }
