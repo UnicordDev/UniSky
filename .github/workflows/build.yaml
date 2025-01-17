@@ -101,6 +101,28 @@ jobs:
         $node.InnerXml = "2.7.4-prerelease.221117002"
         $xml.Save($file)
 
+    # Map the version to the appropriate environment variables, store in GITHUB_ENV
+    - name: Set Environment Variables
+      run: |
+        if ($env:Version -eq 'Store') {
+          echo "Appx_Package_Build_Mode=CI" >> $env:GITHUB_ENV
+        } else {
+          echo "Appx_Package_Build_Mode=SideloadOnly" >> $env:GITHUB_ENV
+        }
+
+        if ($env:Version -eq 'WoA32') {
+          echo "Restore_Platform=ARM" >> $env:GITHUB_ENV
+          echo "Appx_Bundle_Platforms=ARM" >> $env:GITHUB_ENV
+        } else {
+          echo "Restore_Platform=x64" >> $env:GITHUB_ENV
+          echo "Appx_Bundle_Platforms=x86|x64|ARM|ARM64" >> $env:GITHUB_ENV
+        }        
+      env:
+        Appx_Package_Build_Mode: ''
+        Appx_Bundle_Platforms: ''
+        Restore_Platform: ''
+        Version: ${{ matrix.version }}
+
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     - name: Load Certificate
       run: |
@@ -114,27 +136,10 @@ jobs:
 
     # Restore the application to populate the obj folder with RuntimeIdentifiers
     - name: Restore NuGet Packages
-      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration /p:Platform=x64
+      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration /p:Platform=$env:Restore_Platform
       env:
         Configuration: ${{ matrix.configuration }}
-
-    # Map the version to the appropriate environment variables, store in GITHUB_ENV
-    - name: Set Environment Variables
-      run: |
-        if ($env:Version -eq 'Store') {
-          echo "Appx_Package_Build_Mode=CI" >> $GITHUB_ENV
-        } else {
-          echo "Appx_Package_Build_Mode=SideloadOnly" >> $GITHUB_ENV
-        }
-
-        if ($env:Version -eq 'WoA32') {
-          echo "Appx_Bundle_Platforms=ARM" >> $GITHUB_ENV
-        } else {
-          echo "Appx_Bundle_Platforms=x86|x64|ARM|ARM64" >> $GITHUB_ENV
-        }        
-      env:
-        Appx_Package_Build_Mode: ''
-        Version: ${{ matrix.version }}
+        Restore_Platform: ${{ env.Restore_Platform }}
 
     # Create the app package by building and packaging the project
     - name: Build App Packages
