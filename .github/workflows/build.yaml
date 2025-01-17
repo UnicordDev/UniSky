@@ -64,7 +64,7 @@ jobs:
 
         $xml.Save($file)        
 
-    # Set the target version to 10.0.15035.0 and remove the confirmAppClose rescap for 
+    # Set the target version to 10.0.15035.0 and remove the confirmAppClose rescap
     # Only run for the WoA32 version
     - name: Patch Manifest and Project File
       if: ${{ matrix.version == 'WoA32' }}
@@ -152,6 +152,8 @@ jobs:
       env:
         Appx_Bundle: Always
         Appx_Package_Dir: Packages\
+        Appx_Package_Build_Mode: ${{ env.Appx_Package_Build_Mode }}
+        Appx_Bundle_Platforms: ${{ env.Appx_Bundle_Platforms }}
         Configuration: ${{ matrix.configuration }}
         Head_Ref: ${{ github.head_ref }}
         Sha: ${{ github.sha }}
