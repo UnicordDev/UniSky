@@ -30,20 +30,6 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Adjust Package Version
-      run: |
-        $epoch = (Get-Date) - (Get-Date -Day 1)
-        $file = (Resolve-Path "$env:Project_Name/Package.appxmanifest")
-        $xml = [System.Xml.XmlDocument]::new()
-        $xml.Load($file)
-
-        $node = $xml.GetElementsByTagName("Identity", "http://schemas.microsoft.com/appx/manifest/foundation/windows10")[0]
-        $version = [System.Version]::Parse($node.GetAttribute("Version"))
-        $version = [System.Version]::new($version.Major, $version.Minor, $version.Build, $epoch.TotalMinutes);
-        $node.SetAttribute("Version", $version.ToString())
-
-        $xml.Save($file)
-
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     - name: Load Certificate
       run: |
@@ -57,7 +43,7 @@ jobs:
 
     # Restore the application to populate the obj folder with RuntimeIdentifiers
     - name: Restore NuGet Packages
-      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration /p:Platform=x64
+      run: msbuild $env:Solution_Name /t:Build /restore /p:Configuration=$env:Configuration /p:Platform=ARM64
       env:
         Configuration: ${{ matrix.configuration }}
 
