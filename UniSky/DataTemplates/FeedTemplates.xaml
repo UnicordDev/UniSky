@@ -6,12 +6,14 @@
                     xmlns:i="using:Microsoft.Xaml.Interactivity" 
                     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
                     xmlns:controls="using:UniSky.Controls"
+                    xmlns:labels="using:UniSky.Controls.Labels" 
                     xmlns:datatemplates="using:UniSky.DataTemplates"
                     xmlns:converters="using:UniSky.Converters"
                     xmlns:extensions="using:UniSky.Extensions"
                     xmlns:feeds="using:UniSky.ViewModels.Feeds" 
                     xmlns:posts="using:UniSky.ViewModels.Posts" 
-                    xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls" xmlns:labels="using:UniSky.Controls.Labels" xmlns:ui="using:Microsoft.Toolkit.Uwp.UI"
+                    xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls" 
+                    xmlns:ui="using:Microsoft.Toolkit.Uwp.UI"
                     x:DefaultBindMode="OneWay">
 
     <!-- TODO: un-steal these colours -->
