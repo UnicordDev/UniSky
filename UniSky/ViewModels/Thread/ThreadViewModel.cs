@@ -51,7 +51,7 @@ public partial class ThreadViewModel : ViewModelBase
 
             static IEnumerable<ThreadViewPost> GetParents(ThreadViewPost post)
             {
-                if (post.Parent is not ThreadViewPost parent)
+                if (post.Parent is not ThreadViewPost { } parent)
                     yield break;
 
                 foreach (var item in GetParents(parent))
@@ -60,25 +60,42 @@ public partial class ThreadViewModel : ViewModelBase
                 yield return parent;
             }
 
+            static IEnumerable<ThreadViewPost> GetChildren(ThreadViewPost post)
+            {
+                var topReply = post.Replies?.FirstOrDefault();
+                if (topReply is not ThreadViewPost { } topReplyPost)
+                    yield break;
+
+                yield return topReplyPost;
+
+                foreach (var reply in GetChildren(topReplyPost))
+                    yield return reply;
+            }
+
             var threadView = (ThreadViewPost)thread.Thread;
-            var parents = GetParents(threadView).ToList();
             var replies = threadView.Replies
                 .OfType<ThreadViewPost>()
                 .OrderByDescending(p => p.Post?.Author?.Did.ToString() == threadView.Post.Author?.Did.ToString())
+                .Select(s => (ThreadViewPost[])[s, .. GetChildren(s)])
                 .ToList();
 
             syncContext.Post(() =>
             {
-                foreach (var item in parents)
+                foreach (var item in GetParents(threadView))
                     Posts.Add(new ThreadPostViewModel(item) { HasChild = true });
 
-                var primaryVm = new ThreadPostViewModel(threadView, true);
-                Posts.Add(primaryVm);
+                Posts.Add(Selected = new ThreadPostViewModel(threadView, true));
 
-                foreach (var item in replies)
-                    Posts.Add(new ThreadPostViewModel(item));
-
-                Selected = primaryVm;
+                foreach (var list in replies)
+                {
+                    for (int i = 0; i < list.Length; i++)
+                    {
+                        Posts.Add(new ThreadPostViewModel(list[i])
+                        {
+                            HasChild = list.Length > 1 && (i < (list.Length - 1))
+                        });
+                    }
+                }
             });
         }
         catch (Exception ex)
