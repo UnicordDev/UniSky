@@ -51,9 +51,9 @@ public sealed class BadgeBackgroundTask : IBackgroundTask
                     protocolService.SetProtocol(new ATProtocolBuilder()
                         .WithLogger(atLogger)
                         .EnableAutoRenewSession(true)
-                        .WithSessionRefreshInterval(TimeSpan.FromMinutes(30))
                         .WithUserAgent(Constants.UserAgent)
                         .Build());
+
                     await protocolService.RefreshSessionAsync(session);
                 }
                 catch (Exception ex)

@@ -7,9 +7,9 @@ using FishyFlip;
 using FishyFlip.Lexicon.Com.Atproto.Server;
 using FishyFlip.Models;
 using FishyFlip.Tools;
+using Microsoft.Extensions.Logging;
 using UniSky.Extensions;
 using UniSky.Models;
-using UniSky.Pages;
 using UniSky.Services;
 using UniSky.ViewModels.Error;
 
@@ -20,6 +20,7 @@ public partial class LoginViewModel : ViewModelBase
     private readonly ILoginService loginService;
     private readonly ISessionService sessionService;
     private readonly IRootNavigator rootNavigator;
+    private readonly ILoggerFactory loggerFactory;
 
     [ObservableProperty]
     private bool _advanced;
@@ -32,11 +33,13 @@ public partial class LoginViewModel : ViewModelBase
 
     public LoginViewModel(ILoginService loginService,
                           ISessionService sessionService,
-                          IRootNavigator rootNavigator)
+                          IRootNavigator rootNavigator,
+                          ILoggerFactory loggerFactory)
     {
         this.loginService = loginService;
         this.sessionService = sessionService;
         this.rootNavigator = rootNavigator;
+        this.loggerFactory = loggerFactory;
 
         Advanced = false;
         Username = "";
@@ -58,7 +61,8 @@ public partial class LoginViewModel : ViewModelBase
             var builder = new ATProtocolBuilder()
                 .EnableAutoRenewSession(true)
                 .WithUserAgent(Constants.UserAgent)
-                .WithInstanceUrl(new Uri(Host));
+                .WithInstanceUrl(new Uri(Host))
+                .WithLogger(loggerFactory.CreateLogger("ATProtocol_Login"));
 
             using var protocol = builder.Build();
 
@@ -66,8 +70,16 @@ public partial class LoginViewModel : ViewModelBase
                 .ConfigureAwait(false))
                 .HandleResult();
 
+            var didDoc = createSession.DidDoc;
+            if (didDoc == null)
+            {
+                didDoc = (await protocol.PlcDirectory.GetDidDocAsync(createSession.Did)
+                    .ConfigureAwait(false))
+                    .HandleResult();
+            }
+
             var session = new Session(createSession.Did,
-                                      createSession.DidDoc,
+                                      didDoc,
                                       createSession.Handle,
                                       createSession.Email,
                                       createSession.AccessJwt,

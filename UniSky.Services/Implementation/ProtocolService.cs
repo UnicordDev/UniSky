@@ -76,7 +76,7 @@ public class ProtocolService(ILogger<ProtocolService> logger) : IProtocolService
 
             var authSession2 = new AuthSession(
                     new Session(refreshedSession.Did,
-                                refreshedSession.DidDoc,
+                                refreshedSession.DidDoc ?? sessionRefresh.DidDoc,
                                 refreshedSession.Handle,
                                 null,
                                 refreshedSession.AccessJwt,

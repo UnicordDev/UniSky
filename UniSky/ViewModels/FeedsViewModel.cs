@@ -59,7 +59,6 @@ public partial class FeedsViewModel : ViewModelBase
             var generatedFeeds = feeds.Where(s => s.TypeValue == "feed")
                 .Select(s => new ATUri(s.Value))
                 .ToList();
-
             var generators = (await protocol.GetFeedGeneratorsAsync(generatedFeeds)
                 .ConfigureAwait(false))
                 .HandleResult();

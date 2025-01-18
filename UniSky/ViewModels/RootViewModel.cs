@@ -81,7 +81,6 @@ public partial class RootViewModel : ViewModelBase, IRootNavigator
             var protocol = new ATProtocolBuilder()
                 .WithLogger(logger)
                 .EnableAutoRenewSession(true)
-                .WithSessionRefreshInterval(TimeSpan.FromMinutes(30))
                 .WithUserAgent(Constants.UserAgent)
                 .Build();
 

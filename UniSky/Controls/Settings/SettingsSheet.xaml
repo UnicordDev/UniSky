@@ -15,7 +15,8 @@
     d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel}"
     PrimaryButtonVisibility="Collapsed"
     SecondaryButtonContent="Close"
-    TitleContent="SETTINGS">
+    TitleContent="SETTINGS"
+    PreferredWindowSize="640,480">
     <ScrollViewer HorizontalScrollMode="Disabled"
                   VerticalScrollMode="Auto"
                   IsVerticalScrollChainingEnabled="True"
