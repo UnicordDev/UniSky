@@ -27,7 +27,7 @@ public sealed partial class SettingsSheet : SheetControl
 
     private async void OnHiding(IOverlayControl sender, OverlayHidingEventArgs args)
     {
-        if (!ApiInformation.IsMethodPresent("Windows.ApplicationModel.Core.CoreApplication", "RequestRestartAsync"))
+        if (!ApiInformation.IsMethodPresent(typeof(CoreApplication).FullName, "RequestRestartAsync"))
             return;
 
         if (this.DataContext is not SettingsViewModel { IsDirty: true })

@@ -120,7 +120,7 @@ public class ImageCompressionService : IImageCompressionService
 
     private static bool CheckHeifSupport()
     {
-        if (!ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7, 0))
+        if (!ApiInformation.IsApiContractPresent(typeof(UniversalApiContract).FullName, 7, 0))
             return false;
 
         if (isHeifEncoderMissing)

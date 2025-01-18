@@ -45,7 +45,7 @@ internal class ApplicationViewOverlayController : IOverlayController
         var systemNavigationManager = SystemNavigationManager.GetForCurrentView();
         systemNavigationManager.BackRequested += OnBackRequested;
 
-        if (ApiInformation.IsTypePresent("Windows.UI.Core.Preview.SystemNavigationManagerPreview"))
+        if (ApiInformation.IsTypePresent(typeof(SystemNavigationManagerPreview).FullName))
         {
             var systemNavigationManagerPreview = SystemNavigationManagerPreview.GetForCurrentView();
             systemNavigationManagerPreview.CloseRequested += OnCloseRequested;

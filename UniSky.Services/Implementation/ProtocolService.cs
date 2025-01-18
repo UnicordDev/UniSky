@@ -45,6 +45,7 @@ public class ProtocolService(ILogger<ProtocolService> logger) : IProtocolService
         try
         {
             // dont refresh more than once per hour
+            // TODO: could maybe use the session expiry date passed but that seems a little bit prone to failure
             if ((DateTimeOffset.Now - _lastRefreshed) < TimeSpan.FromHours(1))
                 return;
 
@@ -63,7 +64,7 @@ public class ProtocolService(ILogger<ProtocolService> logger) : IProtocolService
                 new Session(sessionRefresh.Did,
                             sessionRefresh.DidDoc,
                             sessionRefresh.Handle,
-                            null,
+                            sessionRefresh.Email,
                             sessionRefresh.RefreshJwt,
                             sessionRefresh.RefreshJwt,
                             sessionRefresh.ExpiresIn));
@@ -78,7 +79,7 @@ public class ProtocolService(ILogger<ProtocolService> logger) : IProtocolService
                     new Session(refreshedSession.Did,
                                 refreshedSession.DidDoc ?? sessionRefresh.DidDoc,
                                 refreshedSession.Handle,
-                                null,
+                                sessionRefresh.Email,
                                 refreshedSession.AccessJwt,
                                 refreshedSession.RefreshJwt,
                                 DateTime.MaxValue));
