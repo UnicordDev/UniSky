@@ -31,6 +31,7 @@
     <datatemplates:PostEmbedTemplateSelector x:Key="PostEmbedChildTemplateSelector"
                                              ImagesEmbedTemplate="{StaticResource ImagesEmbedContentTemplate}"
                                              VideoEmbedTemplate="{StaticResource VideoEmbedContentTemplate}"
+                                             InlineVideoEmbedTemplate="{StaticResource InlineVideoEmbedContentTemplate}"
                                              PostEmbedTemplate="{StaticResource PostEmbedContentTemplate}"
                                              ExternalEmbedTemplate="{StaticResource ExternalEmbedContentTemplate}"/>
     

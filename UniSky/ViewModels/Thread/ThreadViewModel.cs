@@ -43,7 +43,8 @@ public partial class ThreadViewModel : ViewModelBase
                 .ConfigureAwait(false))
                 .HandleResult();
 
-            if (thread.Thread is BlockedPost or NotFoundPost)
+            //if (thread.Thread is BlockedPost or NotFoundPost)
+            if (thread.Thread is not ThreadViewPost tvp)
             {
                 // TODO: handle this
                 return;
@@ -72,19 +73,18 @@ public partial class ThreadViewModel : ViewModelBase
                     yield return reply;
             }
 
-            var threadView = (ThreadViewPost)thread.Thread;
-            var replies = threadView.Replies
+            var replies = tvp.Replies
                 .OfType<ThreadViewPost>()
-                .OrderByDescending(p => p.Post?.Author?.Did.ToString() == threadView.Post.Author?.Did.ToString())
+                .OrderByDescending(p => p.Post?.Author?.Did.ToString() == tvp.Post.Author?.Did.ToString())
                 .Select(s => (ThreadViewPost[])[s, .. GetChildren(s)])
                 .ToList();
 
             syncContext.Post(() =>
             {
-                foreach (var item in GetParents(threadView))
+                foreach (var item in GetParents(tvp))
                     Posts.Add(new ThreadPostViewModel(item) { HasChild = true });
 
-                Posts.Add(Selected = new ThreadPostViewModel(threadView, true));
+                Posts.Add(Selected = new ThreadPostViewModel(tvp, true));
 
                 foreach (var list in replies)
                 {
