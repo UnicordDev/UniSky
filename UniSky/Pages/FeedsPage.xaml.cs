@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using AngleSharp.Text;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Uwp.UI.Extensions;
 using UniSky.Services;
 using UniSky.ViewModels;
@@ -77,5 +79,30 @@ public sealed partial class FeedsPage : Page, IScrollToTop
             return;
 
         scrollView.ChangeView(0, 0, null);
+    }
+
+    private async void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+    {
+        if (!e.IsIntermediate)
+        {
+            var scroller = (ScrollViewer)sender;
+            var dataContext = (FeedViewModel)scroller.DataContext;
+            var distanceToEnd = scroller.ExtentHeight - (scroller.VerticalOffset + scroller.ViewportHeight);
+
+            // trigger if within 2 viewports of the end
+            if (distanceToEnd <= 0.5 * scroller.ViewportHeight
+                    && dataContext.Items.HasMoreItems)
+            {
+                await dataContext.Items.LoadMoreAsync();
+            }
+        }
+    }
+
+    private async void ScrollViewer_Loaded(object sender, RoutedEventArgs e)
+    {
+        var scroller = (ScrollViewer)sender;
+        var dataContext = (FeedViewModel)scroller.DataContext;
+        if (dataContext.Items.Count == 0)
+            await dataContext.Items.LoadMoreAsync();
     }
 }

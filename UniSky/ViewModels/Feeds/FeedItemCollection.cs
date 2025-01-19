@@ -71,6 +71,20 @@ public class FeedItemCollection : ObservableCollection<PostViewModel>, ISupportI
             semaphore.Release();
         }
     }
+    public async Task LoadMoreAsync()
+    {
+        // already refreshing
+        if (!await semaphore.WaitAsync(10)) return;
+
+        try
+        {
+            await InternalLoadMoreItemsAsync(25);
+        }
+        finally
+        {
+            semaphore.Release();
+        }
+    }
 
     public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
     {

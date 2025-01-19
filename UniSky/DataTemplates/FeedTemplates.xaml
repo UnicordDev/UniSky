@@ -80,7 +80,7 @@
                 <TextBlock FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE7BA;</TextBlock>
             </Viewbox>
 
-            <TextBlock Text="{Binding Warning}"
+            <TextBlock Text="{x:Bind Warning}"
                        TextWrapping="Wrap"
                        Margin="8,0"
                        Grid.Column="1"
@@ -92,22 +92,22 @@
                x:DataType="posts:PostEmbedRecordWithMediaViewModel">
         <StackPanel>
             <Grid x:Name="MediaContentContainer"
-                  Visibility="{Binding Media,Converter={StaticResource VisibilityConverter}}">
+                  x:Load="{x:Bind converters:Static.NotNull(Media)}">
                 <ContentControl x:Name="MediaContent"
                                 Margin="0,4,0,0"
                                 HorizontalAlignment="Stretch"
                                 HorizontalContentAlignment="Stretch"
                                 ContentTemplateSelector="{StaticResource PostEmbedChildTemplateSelector}"
-                                Content="{Binding Media}"/>
+                                Content="{x:Bind Media}"/>
             </Grid>
             <Grid x:Name="RecordContentContainer"
-                  Visibility="{Binding Record, Converter={StaticResource VisibilityConverter}}">
+                  x:Load="{x:Bind converters:Static.NotNull(Record)}">
                 <ContentControl x:Name="RecordContent"
                                 Margin="0,4,0,0"
                                 HorizontalAlignment="Stretch"
                                 HorizontalContentAlignment="Stretch"
                                 ContentTemplateSelector="{StaticResource PostEmbedChildTemplateSelector}"
-                                Content="{Binding Record}"/>
+                                Content="{x:Bind Record}"/>
             </Grid>
         </StackPanel>
     </DataTemplate>
@@ -115,7 +115,7 @@
     <DataTemplate x:Key="ExternalEmbedContentTemplate" 
                   x:DataType="posts:PostEmbedExternalViewModel">
         <Button Style="{ThemeResource CleanButtonStyle}"
-                Command="{Binding OpenLinkCommand}"
+                Command="{x:Bind OpenLinkCommand}"
                 BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
                 Padding="0"
                 extensions:Hairline.BorderThickness="1"
@@ -129,11 +129,11 @@
                 </Grid.RowDefinitions>
 
                 <Border x:Name="ThumbnailBox"
-                        Visibility="{Binding ThumbnailUrl, Converter={StaticResource VisibilityConverter}}"
+                        x:Load="{x:Bind converters:Static.NotNull(ThumbnailUrl)}"
                         BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
                         extensions:Hairline.BorderThickness="0,0,0,1">
                     <toolkit:ConstrainedBox AspectRatio="2:1">
-                        <Image Source="{Binding ThumbnailUrl}"
+                        <Image Source="{x:Bind ThumbnailUrl}"
                            VerticalAlignment="Center"
                            Stretch="UniformToFill"/>
                     </toolkit:ConstrainedBox>
@@ -142,28 +142,28 @@
                 <StackPanel Grid.Row="1"
                             Padding="8,8,8,4">
                     <TextBlock x:Name="TitleBlock"
-                               Visibility="{Binding Title, Converter={StaticResource VisibilityConverter}}"
+                               x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Title)}"
                                Grid.Row="0"
                                Grid.Column="1"
                                Style="{ThemeResource BaseTextBlockStyle}" 
-                               Text="{Binding Title}"
+                               Text="{x:Bind Title}"
                                VerticalAlignment="Bottom"
                                TextWrapping="NoWrap"
                                MaxLines="1"/>
 
                     <TextBlock x:Name="SubtitleBlock"
-                               Visibility="{Binding Description, Converter={StaticResource VisibilityConverter}}"
+                               x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Description)}"
                                Grid.Row="1"
                                Grid.Column="1"
                                Margin="0,2,0,0"
                                Style="{ThemeResource CaptionTextBlockStyle}" 
-                               Text="{Binding Description}"
+                               Text="{x:Bind Description}"
                                VerticalAlignment="Top"
                                MaxLines="2"/>
                 </StackPanel>
 
                 <TextBlock Grid.Row="2" 
-                           Text="{Binding Source}"
+                           Text="{x:Bind Source}"
                            Style="{ThemeResource CaptionTextBlockStyle}" 
                            Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
                            TextWrapping="NoWrap"
@@ -175,14 +175,14 @@
     <DataTemplate x:Key="PostEmbedContentTemplate" 
                   x:DataType="posts:PostEmbedPostViewModel">
         <Button Style="{ThemeResource CleanButtonStyle}"
-                Command="{Binding OpenThreadCommand}"
+                Command="{x:Bind OpenThreadCommand}"
                 BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
                 extensions:Hairline.BorderThickness="1"
                 HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Stretch"
                 Padding="8">
             <StackPanel>
-                <Button Command="{Binding Author.OpenProfileCommand}"
+                <Button Command="{x:Bind Author.OpenProfileCommand}"
                         CommandParameter="{Binding ElementName=SmallProfileEllipse}"
                         Style="{ThemeResource CleanButtonStyle}"
                         Padding="0"
@@ -203,7 +203,7 @@
                             <Ellipse.Fill>
                                 <ImageBrush>
                                     <ImageBrush.ImageSource>
-                                        <BitmapImage UriSource="{Binding Author.AvatarUrl}"
+                                        <BitmapImage UriSource="{x:Bind Author.AvatarUrl}"
                                                      DecodePixelWidth="16"
                                                      DecodePixelHeight="16"
                                                      DecodePixelType="Logical"/>
@@ -217,10 +217,10 @@
                                    VerticalAlignment="Top"
                                    TextTrimming="CharacterEllipsis"
                                    MaxLines="1">                
-                            <Run Text="{Binding Author.Name, Mode=OneWay}"           
+                            <Run Text="{x:Bind Author.Name, Mode=OneWay}"           
                                  FontWeight="Bold"                        
                                  Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>                    
-                            <Run Text="{Binding Author.Handle, Mode=OneWay}"/>
+                            <Run Text="{x:Bind Author.Handle, Mode=OneWay}"/>
                         </TextBlock>
 
                         <TextBlock x:Name="DateBlock"
@@ -228,34 +228,34 @@
                                    Margin="2,0"
                                    Foreground="{ThemeResource SystemControlForegroundBaseLowBrush}"
                                    Typography.NumeralAlignment="Tabular"
-                                   Text="{Binding Date}"/>
+                                   Text="{x:Bind Date}"/>
                     </Grid>
                 </Button>
 
-                <labels:LabelsControl x:Name="LabelViewer"
-                                      Visibility="{Binding Labels, Converter={StaticResource VisibilityConverter}}"
-                                      Labels="{Binding Labels}"
-                                      Margin="0,4,0,0"/>
-                
+                <!--<labels:LabelsControl x:Name="LabelViewer"
+                                      Visibility="{x:Bind Labels, Converter={StaticResource VisibilityConverter}}"
+                                      Labels="{x:Bind Labels}"
+                                      Margin="0,4,0,0"/>-->
+
                 <controls:FacetTextBlock x:Name="MainContent"
-                                        Visibility="{Binding Text, Converter={StaticResource VisibilityConverter}}"
-                                        Inlines="{Binding RichText.Facets}"
+                                         x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Text)}"
+                                        Inlines="{x:Bind RichText.Facets}"
                                         TextWrapping="Wrap"
                                         Margin="0,2,0,0"
                                         VerticalAlignment="Top"/>
 
                 <controls:SpoilerControl x:Name="EmbedContentContainer"
+                                         x:Load="{x:Bind converters:Static.NotNull(Embed)}"
                                          Margin="0,4,0,0"
-                                         Warning="{Binding Warning}"
+                                         Warning="{x:Bind Warning}"
                                          WarningTemplate="{StaticResource PostContentWarningTemplate}"
-                                         IsHidden="{Binding Warning.IsHidden, Mode=TwoWay}"
-                                         CanOverride="{Binding Warning.CanOverride, Mode=OneWay, FallbackValue=True}"
-                                         Visibility="{Binding Embed, Converter={StaticResource VisibilityConverter}}">
+                                         IsHidden="{x:Bind Warning.IsHidden, Mode=TwoWay}"
+                                         CanOverride="{x:Bind Warning.CanOverride, Mode=OneWay, FallbackValue=True}">
                     <ContentControl x:Name="EmbedContent"
                                     HorizontalAlignment="Stretch"
                                     HorizontalContentAlignment="Stretch"
                                     ContentTemplateSelector="{StaticResource PostEmbedTemplateSelector}"
-                                    Content="{Binding Embed}"/>
+                                    Content="{x:Bind Embed}"/>
                 </controls:SpoilerControl>
             </StackPanel>
         </Button>
@@ -351,7 +351,7 @@
                     </VisualStateGroup>
                 </VisualStateManager.VisualStateGroups>
 
-                <toolkit:ConstrainedBox AspectRatio="{Binding AspectRatio}">
+                <toolkit:ConstrainedBox AspectRatio="{x:Bind AspectRatio}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -367,10 +367,10 @@
                                 Margin="2"
                                 Padding="0"
                                 Style="{ThemeResource CleanButtonStyle}"
-                                Command="{Binding ShowImageGalleryCommand}"
-                                CommandParameter="{Binding Image1}">
+                                Command="{x:Bind ShowImageGalleryCommand}"
+                                CommandParameter="{x:Bind Image1}">
                             <Image x:Name="PART_Image1A" Stretch="Uniform"
-                                   Source="{Binding Image1.ThumbnailUrl}"
+                                   Source="{x:Bind Image1.ThumbnailUrl}"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Left"/>
                         </Button>
@@ -380,10 +380,10 @@
                                 Margin="2"
                                 Padding="0"
                                 Style="{ThemeResource CleanButtonStyle}"
-                                Command="{Binding ShowImageGalleryCommand}"
-                                CommandParameter="{Binding Image2}">
+                                Command="{x:Bind ShowImageGalleryCommand}"
+                                CommandParameter="{x:Bind Image2}">
                             <Image Stretch="UniformToFill"
-                                   Source="{Binding Image2.ThumbnailUrl}"
+                                   Source="{x:Bind Image2.ThumbnailUrl}"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"/>
                         </Button>
@@ -393,10 +393,10 @@
                                 Margin="2"
                                 Padding="0"
                                 Style="{ThemeResource CleanButtonStyle}"
-                                Command="{Binding ShowImageGalleryCommand}"
-                                CommandParameter="{Binding Image3}">
+                                Command="{x:Bind ShowImageGalleryCommand}"
+                                CommandParameter="{x:Bind Image3}">
                             <Image Stretch="UniformToFill"
-                                   Source="{Binding Image3.ThumbnailUrl}"
+                                   Source="{x:Bind Image3.ThumbnailUrl}"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"/>
                         </Button>
@@ -406,10 +406,10 @@
                                 Margin="2"
                                 Padding="0"
                                 Style="{ThemeResource CleanButtonStyle}"
-                                Command="{Binding ShowImageGalleryCommand}"
-                                CommandParameter="{Binding Image4}">
+                                Command="{x:Bind ShowImageGalleryCommand}"
+                                CommandParameter="{x:Bind Image4}">
                             <Image Stretch="UniformToFill"
-                                   Source="{Binding Image4.ThumbnailUrl}"
+                                   Source="{x:Bind Image4.ThumbnailUrl}"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"/>
                         </Button>
@@ -420,9 +420,9 @@
     </DataTemplate>
 
     <DataTemplate x:Key="InlineVideoEmbedContentTemplate" x:DataType="posts:PostEmbedVideoViewModel">
-        <toolkit:ConstrainedBox AspectRatio="{Binding Ratio}">
-            <MediaPlayerElement PosterSource="{Binding ThumbnailUrl}"
-                                Source="{Binding Source}"
+        <toolkit:ConstrainedBox AspectRatio="{x:Bind Ratio}">
+            <MediaPlayerElement PosterSource="{x:Bind ThumbnailUrl}"
+                                Source="{x:Bind Source}"
                                 AreTransportControlsEnabled="True"
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Left"
@@ -436,7 +436,7 @@
 
 
     <DataTemplate x:Key="VideoEmbedContentTemplate" x:DataType="posts:PostEmbedVideoViewModel">
-        <toolkit:ConstrainedBox AspectRatio="{Binding Ratio}">
+        <toolkit:ConstrainedBox AspectRatio="{x:Bind Ratio}">
             <Grid>
                 <Grid.Resources>
                     <ui:AttachedDropShadow x:Key="PlayButtonShadow" CastTo="{Binding ElementName=ImageElement}" BlurRadius="8" Opacity="1" Color="Black"/>
@@ -444,11 +444,11 @@
                 <Button x:Name="PlayButton"
                         Padding="0"
                         Style="{ThemeResource CleanButtonStyle}"
-                        Command="{Binding ShowVideoPlayerCommand}">
+                        Command="{x:Bind ShowVideoPlayerCommand}">
                     <Grid>
                         <Image x:Name="ImageElement"
                                Stretch="UniformToFill"
-                               Source="{Binding ThumbnailUrl}"
+                               Source="{x:Bind ThumbnailUrl}"
                                VerticalAlignment="Center"
                                HorizontalAlignment="Center"/>
 
@@ -466,10 +466,11 @@
 
     <DataTemplate x:Key="FeedItemContentTemplate"
                   x:DataType="posts:PostViewModel">
-        <Button Style="{ThemeResource CleanButtonStyle}"
+        <Button DataContext="{x:Bind}"
+                Style="{ThemeResource CleanButtonStyle}"
                 Command="{x:Bind OpenThreadCommand}" 
                 BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
-                extensions:Hairline.BorderThickness="{Binding Borders, Mode=OneWay}">
+                extensions:Hairline.BorderThickness="{x:Bind Borders, Mode=OneWay}">
             <StackPanel HorizontalAlignment="Stretch"
                         Padding="12,8,12,4">
 
@@ -609,7 +610,6 @@
 
                         <controls:SpoilerControl x:Name="EmbedContentContainer"
                                                  x:Load="{x:Bind converters:Static.NotNull(Embed)}"
-                                                 x:Phase="2"
                                                  Warning="{x:Bind Warning, Mode=OneWay}"
                                                  WarningTemplate="{StaticResource PostContentWarningTemplate}"
                                                  IsHidden="{x:Bind Warning.IsHidden, Mode=TwoWay}"

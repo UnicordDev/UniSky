@@ -473,7 +473,8 @@
 
                                         <local:ItemsRepeaterScrollHost Grid.Row="8">
                                             <ScrollViewer x:Name="FooterItemsScrollViewer"
-                                                        contract7Present:VerticalAnchorRatio="1">
+                                                          VerticalScrollBarVisibility="Auto"
+                                                          contract7Present:VerticalAnchorRatio="1">
                                                 <local:ItemsRepeater
                                                         x:Name="FooterMenuItemsHost"
                                                         AutomationProperties.AccessibilityView = "Content"/>

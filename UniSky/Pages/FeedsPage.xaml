@@ -51,41 +51,18 @@
             </Pivot.Resources>
             <Pivot.ItemTemplate>
                 <DataTemplate x:DataType="feeds:FeedViewModel">
-                    <Grid>
+                    <Grid BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
+                          extensions:Hairline.BorderThickness="0,1,0,0">
                         <mux:RefreshContainer RefreshRequested="OnRefreshRequested">
-                            <ListView x:Name="PART_FeedList"
-                                      ItemsSource="{x:Bind Items}" 
-                                      ItemTemplate="{StaticResource FeedItemContentTemplate}"
-                                      SelectionMode="None"
-                                      HorizontalAlignment="Stretch"
-                                      HorizontalContentAlignment="Stretch"
-                                      ScrollViewer.IsVerticalScrollChainingEnabled="True"
-                                      BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
-                                      extensions:Hairline.BorderThickness="0,1,0,0">
-                                <ListView.Resources>
-                                    <SolidColorBrush Color="Transparent" x:Key="ListViewItemRevealBackground"/>
-                                    <SolidColorBrush Color="Transparent" x:Key="ListViewItemBackgroundPointerOver"/>
-                                    <Thickness x:Key="ListViewItemRevealBorderThemeThickness">0</Thickness>
-                                </ListView.Resources>
-                                <ListView.ItemContainerStyle>
-                                    <Style TargetType="ListViewItem">
-                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                        <Setter Property="Padding" Value="0"/>
-                                        <Setter Property="BorderThickness" Value="0"/>
-                                    </Style>
-                                </ListView.ItemContainerStyle>
-                                <ListView.FooterTemplate>
-                                    <DataTemplate>
-                                        <Grid HorizontalAlignment="Stretch">
-                                            <ProgressRing Width="32"
-                                                          Height="32" 
-                                                          Margin="16" 
-                                                          IsActive="{Binding IsLoading}"
-                                                          HorizontalAlignment="Center"/>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListView.FooterTemplate>
-                            </ListView>
+                            <mux:ItemsRepeaterScrollHost>
+                                <ScrollViewer Loaded="ScrollViewer_Loaded" 
+                                              ViewChanged="ScrollViewer_ViewChanged">
+                                    <mux:ItemsRepeater x:Name="PART_FeedList"
+                                                       ItemsSource="{x:Bind Items}" 
+                                                       ItemTemplate="{StaticResource FeedItemContentTemplate}">
+                                    </mux:ItemsRepeater>
+                                </ScrollViewer>
+                            </mux:ItemsRepeaterScrollHost>
                         </mux:RefreshContainer>
 
                         <!-- TODO: move this into a DataTemplate w/ selector of type FeedItemErrorViewModel or similar -->
