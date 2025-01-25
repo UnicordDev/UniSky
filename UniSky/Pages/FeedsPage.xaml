@@ -13,7 +13,7 @@
     xmlns:extensions="using:UniSky.Extensions" xmlns:templates="using:UniSky.Templates"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance Type=viewmodels:FeedsViewModel}"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    Background="{ThemeResource ApplicationContentPageBackgroundThemeBrush}"
     NavigationCacheMode="Enabled"
     w1803:KeyboardAcceleratorPlacementMode="Hidden">
     <Page.Resources>
@@ -32,6 +32,8 @@
             <Pivot.HeaderTemplate>
                 <DataTemplate>
                     <TextBlock x:Name="PivotHeaderText"
+                               FontFamily="{ThemeResource PivotHeaderItemFontFamily}"
+                               FontWeight="{ThemeResource PivotHeaderItemThemeFontWeight}"
                                Text="{Binding Name}"
                                Tapped="PivotHeaderText_Tapped"/>
                 </DataTemplate>
@@ -93,7 +95,7 @@
                                     x:Load="{x:Bind IsErrored}"
                                     Padding="16"
                                     HorizontalAlignment="Center">
-                            <TextBlock FontFamily="Segoe MDL2 Assets" 
+                            <TextBlock FontFamily="{ThemeResource SymbolThemeFontFamily}" 
                                        FontSize="96" 
                                        Text="&#xE783;" 
                                        Margin="0,0,0,8"

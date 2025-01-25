@@ -9,8 +9,8 @@
     xmlns:themes="using:UniSky.Themes">
 
     <Application.Resources>
-        <controls:XamlControlsResources ControlsResourcesVersion="Version1">
-            <controls:XamlControlsResources.MergedDictionaries>
+        <themes:ThemeResources>
+            <themes:ThemeResources.MergedDictionaries>
                 <ResourceDictionary>
                     <ResourceDictionary.MergedDictionaries>
                         <ThemeResources xmlns="using:UniSky.Themes"/>
@@ -25,13 +25,8 @@
                     
                     <x:Double x:Key="ControlContentThemeFontSize">14</x:Double>
                     <x:Double x:Key="ContentControlFontSize">14</x:Double>
-
-                    <SolidColorBrush x:Key="SystemControlBackgroundListExtraLowBrush"
-                                     Color="{ThemeResource SystemListExtraLowColor}"/>
-
-                    <SolidColorBrush x:Key="SystemControlSeparatorBrush" Color="{ThemeResource SystemControlSeparatorColor}"/>
                 </ResourceDictionary>
-            </controls:XamlControlsResources.MergedDictionaries>
-        </controls:XamlControlsResources>
+            </themes:ThemeResources.MergedDictionaries>
+        </themes:ThemeResources>
     </Application.Resources>
 </Application>

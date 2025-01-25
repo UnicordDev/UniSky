@@ -54,10 +54,8 @@
                             <DataTemplate>
                                 <Button Padding="4,2"
                                         BorderThickness="0"
-                                        Flyout="{StaticResource LabelButtonFlyout}">
-                                    <Button.Background>
-                                        <SolidColorBrush Color="{StaticResource SystemBaseHighColor}" Opacity="0.15"/>
-                                    </Button.Background>
+                                        Flyout="{StaticResource LabelButtonFlyout}"
+                                        Background="{ThemeResource LabelControlBackgroundBrush}">
                                     <TextBlock Text="{Binding Name}"
                                                Foreground="{ThemeResource SystemBaseMediumHighColor}"
                                                FontSize="12"/>

@@ -9,12 +9,13 @@
     xmlns:pages="using:UniSky.Pages"
     xmlns:sheet="using:UniSky.Controls.Sheet"
     mc:Ignorable="d"
-    NavigationCacheMode="Required">
+    NavigationCacheMode="Required"
+    Background="{ThemeResource ApplicationRootPageBackgroundBrush}">
 
     <Grid>
         <Canvas x:Name="RenderTargetRoot"/>
         
-        <Border Background="#FF0085ff"/>
+        <Border Background="{ThemeResource SplashScreenBackground}"/>
         
         <sheet:SheetRootControl x:Name="SheetRoot"
                                 Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -24,7 +25,7 @@
 
         <Grid x:Name="ExtendedSplash" 
                 IsHitTestVisible="False"
-                Background="#FF0085ff">
+                Background="{ThemeResource SplashScreenBackground}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="2*"/>
                 <RowDefinition Height="*"/>

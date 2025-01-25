@@ -44,9 +44,9 @@ internal class ThemeService(ISettingsService settings) : IThemeService
 
     public AppTheme GetDefaultAppTheme()
     {
-        //var osBuild = SystemInformation.OperatingSystemVersion.Build;
-        //if (osBuild >= 22000)
-        //    return AppTheme.SunValley;
+        var osBuild = SystemInformation.OperatingSystemVersion.Build;
+        if (osBuild >= 22000)
+            return AppTheme.SunValley;
 
         if (SystemInformation.DeviceFamily == "Windows.Mobile")
             return AppTheme.Performance;

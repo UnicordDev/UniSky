@@ -156,7 +156,7 @@
                             x:Name="PaneToggleButtonGrid"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
-                            Margin="0,1,0,0"
+                            Margin="{ThemeResource NavigationViewPaneToggleButtonMargin}"
                             Canvas.ZIndex="100">
 
                             <Grid.RowDefinitions>
@@ -188,6 +188,7 @@
                                 </Button>
                                 <Button
                                     x:Name="TogglePaneButton"
+                                    Width="40"
                                     Style="{TemplateBinding PaneToggleButtonStyle}"
                                     AutomationProperties.LandmarkType="Navigation" HorizontalAlignment="Center"
                                     Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.PaneToggleButtonVisibility}"

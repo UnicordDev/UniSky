@@ -56,11 +56,14 @@
                         Icon="ReportHacked"/>
     </MenuFlyout>
 
-    <Style x:Key="FeedItemActionButtonStyle" TargetType="Button">
+    <Style x:Key="FeedItemActionButtonStyle" 
+           TargetType="Button" 
+           BasedOn="{StaticResource DefaultButtonStyle}">
         <Setter Property="Padding" Value="8"/>
         <Setter Property="Margin" Value="0,0,8,0"/>
         <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}"/>
         <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="Foreground" Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
     </Style>
 
@@ -116,12 +119,13 @@
                   x:DataType="posts:PostEmbedExternalViewModel">
         <Button Style="{ThemeResource CleanButtonStyle}"
                 Command="{Binding OpenLinkCommand}"
-                BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
                 Padding="0"
-                extensions:Hairline.BorderThickness="1"
                 HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Stretch">
-            <Grid>
+            <Grid Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                  BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
+                  extensions:Hairline.BorderThickness="1"
+                  CornerRadius="4">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -131,6 +135,7 @@
                 <Border x:Name="ThumbnailBox"
                         Visibility="{Binding ThumbnailUrl, Converter={StaticResource VisibilityConverter}}"
                         BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
+                        CornerRadius="4,4,0,0"
                         extensions:Hairline.BorderThickness="0,0,0,1">
                     <toolkit:ConstrainedBox AspectRatio="2:1">
                         <Image Source="{Binding ThumbnailUrl}"
@@ -176,12 +181,13 @@
                   x:DataType="posts:PostEmbedPostViewModel">
         <Button Style="{ThemeResource CleanButtonStyle}"
                 Command="{Binding OpenThreadCommand}"
-                BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
-                extensions:Hairline.BorderThickness="1"
                 HorizontalAlignment="Stretch"
-                HorizontalContentAlignment="Stretch"
-                Padding="8">
-            <StackPanel>
+                HorizontalContentAlignment="Stretch">
+            <StackPanel BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
+                        Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                        extensions:Hairline.BorderThickness="1"
+                        Padding="8"
+                        CornerRadius="4">
                 <Button Command="{Binding Author.OpenProfileCommand}"
                         CommandParameter="{Binding ElementName=SmallProfileEllipse}"
                         Style="{ThemeResource CleanButtonStyle}"
@@ -453,7 +459,7 @@
                                HorizontalAlignment="Center"/>
 
                         <TextBlock ui:Effects.Shadow="{StaticResource PlayButtonShadow}" 
-                                   FontFamily="{StaticResource SymbolThemeFontFamily}" 
+                                   FontFamily="{ThemeResource SymbolThemeFontFamily}" 
                                    Foreground="White" 
                                    FontSize="32"
                                    HorizontalAlignment="Center"
@@ -614,7 +620,7 @@
                                                  WarningTemplate="{StaticResource PostContentWarningTemplate}"
                                                  IsHidden="{x:Bind Warning.IsHidden, Mode=TwoWay}"
                                                  CanOverride="{x:Bind Warning.CanOverride, Mode=OneWay}"
-                                                 Margin="0,4,0,0">
+                                                 Margin="0,4">
                             <ContentControl x:Name="EmbedContent"
                                             HorizontalAlignment="Stretch"
                                             HorizontalContentAlignment="Stretch"

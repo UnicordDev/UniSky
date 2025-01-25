@@ -11,7 +11,7 @@
     xmlns:profiles="using:UniSky.ViewModels.Profile"
     xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    Background="{ThemeResource ApplicationContentPageBackgroundThemeBrush}"
     NavigationCacheMode="Required">
     <Page.Resources>
         <ResourceDictionary>
