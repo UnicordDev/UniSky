@@ -48,7 +48,11 @@ public sealed partial class NotificationsPage : Page, IScrollToTop
 
     private void OnSafeAreaUpdated(object sender, SafeAreaUpdatedEventArgs e)
     {
-        TitleBarPadding.Height = new GridLength(e.SafeArea.Bounds.Top);
+        var themeService = ServiceContainer.Scoped.GetRequiredService<IThemeService>();
+        if (themeService.GetTheme() == AppTheme.SunValley)
+            TitleBarPadding.Height = new GridLength(0);
+        else
+            TitleBarPadding.Height = new GridLength(e.SafeArea.Bounds.Top);
     }
 
     private void RootList_ItemClick(object sender, ItemClickEventArgs e)

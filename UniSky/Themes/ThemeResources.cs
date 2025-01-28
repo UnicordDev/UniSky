@@ -14,8 +14,8 @@ internal class ThemeResources : ResourceDictionary
         AppTheme theme;
         if (!DesignMode.DesignModeEnabled)
         {
-            theme = ServiceContainer.Scoped.GetRequiredService<IThemeService>()
-                .GetTheme();
+            var themeService = ServiceContainer.Scoped.GetRequiredService<IThemeService>();
+            theme = themeService.GetTheme();
         }
         else
         {
@@ -28,6 +28,7 @@ internal class ThemeResources : ResourceDictionary
             AppTheme.Fluent => new Uri("ms-appx:///Themes/Fluent.xaml"),
             AppTheme.Performance => new Uri("ms-appx:///Themes/Performance.xaml"),
             AppTheme.SunValley => new Uri("ms-appx:///Themes/SunValley.xaml"),
+            AppTheme.Dim => new Uri("ms-appx:///Themes/Dim.xaml"),
             _ => throw new InvalidOperationException("Unknown theme"),
         };
 

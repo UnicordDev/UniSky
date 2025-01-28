@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.ComponentModel;
+using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Windows.Foundation;
@@ -32,6 +33,8 @@ public class SettingsService : ISettingsService
     private static readonly JsonSerializerOptions Options
         = new JsonSerializerOptions { TypeInfoResolver = SettingsJsonContext.Default };
     private readonly ApplicationDataContainer Settings = ApplicationData.Current.LocalSettings;
+
+    public event PropertyChangedEventHandler SettingChanged;
 
     /// <summary>
     /// Determines whether a setting already exists.
@@ -84,6 +87,8 @@ public class SettingsService : ISettingsService
     public void Save<T>(string key, T value)
     {
         Settings.Values[key] = JsonSerializer.Serialize(value, Options);
+
+        SettingChanged?.Invoke(this, new PropertyChangedEventArgs(key));
     }
 
     /// <inheritdoc />

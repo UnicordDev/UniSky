@@ -28,7 +28,6 @@ public sealed partial class LoginPage : Page
         this.Frame.BackStack.Clear();
 
         var safeAreaService = ServiceContainer.Scoped.GetRequiredService<ISafeAreaService>();
-        safeAreaService.SetTitleBar(TitleBarDrag);
         safeAreaService.SetTitlebarTheme(ElementTheme.Default);
         safeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
 

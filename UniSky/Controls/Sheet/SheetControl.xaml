@@ -12,7 +12,7 @@
                 <ControlTemplate TargetType="sheets:SheetControl">
                     <Grid>                        
                         <Grid x:Name="RootGrid"
-                              Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                              Background="{ThemeResource SheetContentBackgroundBrush}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
@@ -21,8 +21,8 @@
 
                             <Grid x:Name="TitleBarGrid"
                                   Height="48"
-                                  Background="{ThemeResource SystemControlBackgroundListLowBrush}"
-                                  BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
+                                  Background="{ThemeResource SheetTitleBarBackgroundBrush}"
+                                  BorderBrush="{ThemeResource SheetContentSeparatorBrush}"
                                   extensions:Hairline.BorderThickness="0,0,0,1">
                                 
                                 <ContentPresenter x:Name="SheetTitlePresenter"

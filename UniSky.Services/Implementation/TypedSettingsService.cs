@@ -1,12 +1,48 @@
-﻿using Windows.System.Profile;
+﻿using System.ComponentModel;
+using Windows.System.Profile;
 using Windows.UI.Xaml;
 
 using static UniSky.Constants.Settings;
 
 namespace UniSky.Services;
 
-public class TypedSettingsService(ISettingsService settings) : ITypedSettings
+public class TypedSettingsService : ITypedSettings
 {
+    private readonly ISettingsService settings;
+
+    public TypedSettingsService(ISettingsService settings)
+    {
+        this.settings = settings;
+        this.settings.SettingChanged += OnSettingChanged;
+    }
+
+    private void OnSettingChanged(object sender, PropertyChangedEventArgs e)
+    {
+        switch (e.PropertyName)
+        {
+            case REQUESTED_COLOUR_SCHEME:
+                SettingChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RequestedColourScheme)));
+                break;
+            case USE_MULTIPLE_WINDOWS:
+                SettingChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UseMultipleWindows)));
+                break;
+            case AUTO_FEED_REFRESH:
+                SettingChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AutoRefreshFeeds)));
+                break;
+            case USE_TWITTER_LOCALE:
+                SettingChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UseTwitterLocale)));
+                break;
+            case VIDEOS_IN_FEEDS:
+                SettingChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(VideosInFeeds)));
+                break;
+            case SHOW_FEED_CONTEXT:
+                SettingChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ShowFeedContext)));
+                break;
+        }
+    }
+
+    public event PropertyChangedEventHandler SettingChanged;
+
     // typed settings
     public ElementTheme RequestedColourScheme
     {

@@ -248,7 +248,7 @@ public class ModerationTests
                             defaultSetting: "warn",
                             locales: []
                         ),
-                        new ATDid("did:web:labeler.test")
+                        new FishyFlip.Lexicon.App.Bsky.Labeler.LabelerViewDetailed(){Creator = new ProfileView(){Did = new ATDid("did:web:labeler.test")}}
                     )
                 ]
             }
@@ -300,7 +300,7 @@ public class ModerationTests
                             defaultSetting: "warn",
                             locales: []
                         ),
-                        new ATDid("did:web:labeler.test")
+                        new FishyFlip.Lexicon.App.Bsky.Labeler.LabelerViewDetailed(){Creator = new ProfileView(){Did = new ATDid("did:web:labeler.test")}}
                     )
                 ]
             }
@@ -371,7 +371,7 @@ public class ModerationTests
                             defaultSetting: "warn",
                             locales: []
                         ),
-                        new ATDid("did:web:labeler.test")
+                        new FishyFlip.Lexicon.App.Bsky.Labeler.LabelerViewDetailed(){Creator = new ProfileView(){Did = new ATDid("did:web:labeler.test")}}
                     ),
                     new InterpretedLabelValueDefinition(
                         new LabelValueDefinition(
@@ -381,7 +381,7 @@ public class ModerationTests
                             defaultSetting: "warn",
                             locales: []
                         ),
-                        new ATDid("did:web:labeler.test")
+                        new FishyFlip.Lexicon.App.Bsky.Labeler.LabelerViewDetailed(){Creator = new ProfileView(){Did = new ATDid("did:web:labeler.test")}}
                     )
                 ]
             }
@@ -456,7 +456,7 @@ public class ModerationTests
                             defaultSetting: "hide",
                             locales: []
                         ),
-                        new ATDid("did:web:labeler.test")
+                        new FishyFlip.Lexicon.App.Bsky.Labeler.LabelerViewDetailed(){Creator = new ProfileView(){Did = new ATDid("did:web:labeler.test")}}
                     ),
                     new InterpretedLabelValueDefinition(
                         new LabelValueDefinition(
@@ -466,7 +466,7 @@ public class ModerationTests
                             defaultSetting: "warn",
                             locales: []
                         ),
-                        new ATDid("did:web:labeler.test")
+                        new FishyFlip.Lexicon.App.Bsky.Labeler.LabelerViewDetailed(){Creator = new ProfileView(){Did = new ATDid("did:web:labeler.test")}}
                     ),
                     new InterpretedLabelValueDefinition(
                         new LabelValueDefinition(
@@ -476,7 +476,7 @@ public class ModerationTests
                             defaultSetting: "ignore",
                             locales: []
                         ),
-                        new ATDid("did:web:labeler.test")
+                        new FishyFlip.Lexicon.App.Bsky.Labeler.LabelerViewDetailed(){Creator = new ProfileView(){Did = new ATDid("did:web:labeler.test")}}
                     ),
                 ]
             }
@@ -605,7 +605,7 @@ public class ModerationTests
                             adultOnly: true,
                             locales: []
                         ),
-                        new ATDid("did:web:labeler.test")
+                        new FishyFlip.Lexicon.App.Bsky.Labeler.LabelerViewDetailed(){Creator = new ProfileView(){Did = new ATDid("did:web:labeler.test")}}
                     )
                 ]
             }

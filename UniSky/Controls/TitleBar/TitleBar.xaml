@@ -22,7 +22,7 @@
                                 Grid.ColumnSpan="2"/>
 
                         <Grid Grid.Column="1" 
-                              MaxWidth="600"
+                              MaxWidth="{ThemeResource TitleBarMaxWidth}"
                               HorizontalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>

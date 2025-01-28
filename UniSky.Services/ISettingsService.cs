@@ -1,9 +1,12 @@
-﻿namespace UniSky.Services;
+﻿using System.ComponentModel;
+
+namespace UniSky.Services;
 
 #nullable enable
 
 public interface ISettingsService
 {
+    event PropertyChangedEventHandler SettingChanged;
     void Clear();
     bool KeyExists(string key);
     T? Read<T>(string key, T? @default = default);

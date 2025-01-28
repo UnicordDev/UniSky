@@ -51,6 +51,12 @@ public sealed partial class HomePage : Page
         if (e.SafeArea.HasTitleBar)
         {
             PaneHeader.Margin = new Thickness();
+
+            var themeService = ServiceContainer.Scoped.GetRequiredService<IThemeService>();
+            if (themeService.GetTheme() == AppTheme.SunValley)
+            {
+                FrameContainer.Margin = new Thickness(0, e.SafeArea.Bounds.Top + 1, 0, 0);
+            }
         }
         else
         {

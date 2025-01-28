@@ -13,13 +13,23 @@
                         <ResourceDictionary Source="ms-appx:///Themes/Backport/NavigationView_21h1.xaml"/>
                     </ResourceDictionary.MergedDictionaries>
                     <ResourceDictionary.ThemeDictionaries>
-                        <ResourceDictionary x:Key="Dark">
+                        <ResourceDictionary x:Key="Default">
                             <Color x:Key="SystemListExtraLowColor">#10FFFFFF</Color>
                             <Color x:Key="SystemControlSeparatorColor">#FF404040</Color>
+                            
+                            <Color x:Key="LayerOnMicaBaseAltFillColorDefault">#733A3A3A</Color>
+                            <Color x:Key="LayerOnMicaBaseAltFillColorSecondary">#0FFFFFFF</Color>
+                            <Color x:Key="LayerOnMicaBaseAltFillColorTertiary">#2C2C2C</Color>
+                            <Color x:Key="LayerOnMicaBaseAltFillColorTransparent">#00FFFFFF</Color>
                         </ResourceDictionary>
-                        <ResourceDictionary x:Key="Default">
+                        <ResourceDictionary x:Key="Light">
                             <Color x:Key="SystemControlSeparatorColor">#FFDEDEDE</Color>
                             <Color x:Key="SystemListExtraLowColor">#10000000</Color>
+                            
+                            <Color x:Key="LayerOnMicaBaseAltFillColorDefault">#B3FFFFFF</Color>
+                            <Color x:Key="LayerOnMicaBaseAltFillColorSecondary">#0A000000</Color>
+                            <Color x:Key="LayerOnMicaBaseAltFillColorTertiary">#F9F9F9</Color>
+                            <Color x:Key="LayerOnMicaBaseAltFillColorTransparent">#00000000</Color>
                         </ResourceDictionary>
                     </ResourceDictionary.ThemeDictionaries>
 
@@ -28,7 +38,7 @@
                     <FontFamily x:Key="MTCMediaFontFamily">Segoe UI Variable</FontFamily>
                     <FontFamily x:Key="PhoneFontFamilyNormal">Segoe UI Variable</FontFamily>
                     <FontFamily x:Key="PhoneFontFamilySemiLight">Segoe UI Variable</FontFamily>
-                    <FontFamily x:Key="PivotHeaderItemFontFamily">Segoe UI Variable Display</FontFamily>
+                    <FontFamily x:Key="PivotHeaderItemFontFamily">Segoe UI Variable</FontFamily>
                     <FontFamily x:Key="PivotTitleFontFamily">Segoe UI Variable Display</FontFamily>
                     <FontFamily x:Key="SettingsFlyoutHeaderThemeFontFamily">Segoe UI Variable Display</FontFamily>
                     <FontFamily x:Key="KeyTipFontFamily">Segoe UI Variable</FontFamily>
@@ -61,11 +71,27 @@
                         <Setter Property="OpticalMarginAlignment" Value="TrimSideBearings" />
                     </Style>
 
+                    <x:Double x:Key="TitleBarMaxWidth">Infinity</x:Double>
+                    <x:Double x:Key="PivotHeaderItemFontSize">16</x:Double>
+
+                    <SolidColorBrush x:Key="LayerOnMicaBaseAltFillColorDefaultBrush" Color="{StaticResource LayerOnMicaBaseAltFillColorDefault}" />
+                    <SolidColorBrush x:Key="LayerOnMicaBaseAltFillColorSecondaryBrush" Color="{StaticResource LayerOnMicaBaseAltFillColorSecondary}" />
+                    <SolidColorBrush x:Key="LayerOnMicaBaseAltFillColorTertiaryBrush" Color="{StaticResource LayerOnMicaBaseAltFillColorTertiary}" />
+                    <SolidColorBrush x:Key="LayerOnMicaBaseAltFillColorTransparentBrush" Color="{StaticResource LayerOnMicaBaseAltFillColorTransparent}" />
+
+                    <StaticResource x:Key="PivotHeaderItemSelectedPipeFill" ResourceKey="AccentFillColorDefaultBrush"/>
+
+                    <StaticResource x:Key="InfoBadgeBackgroundThemeBrush" ResourceKey="AccentFillColorDefaultBrush"/>
+                    <StaticResource x:Key="InfoBadgeForegroundThemeBrush" ResourceKey="TextOnAccentFillColorPrimaryBrush"/>
+
                     <mica:BackdropMicaBrush
                         x:Key="ApplicationRootPageBackgroundBrush"
                         BackgroundSource="WallpaperBackdrop"
                         FallbackColor="{ThemeResource SolidBackgroundFillColorBase}"
-                        TintColor="{ThemeResource SolidBackgroundFillColorBase}" />
+                        TintColor="{ThemeResource SolidBackgroundFillColorBase}"
+                        TintOpacity="0.7"/>
+                    
+                    <StaticResource x:Key="NavigationViewDefaultPaneBackground" ResourceKey="ApplicationRootPageBackgroundBrush"/>
 
                     <SolidColorBrush x:Key="FooterToggleButtonRevealBackgroundBrush" Color="Transparent"/>
                     <StaticResource x:Key="ApplicationContentPageBackgroundThemeBrush" ResourceKey="CardBackgroundFillColorDefaultBrush"/>
@@ -91,6 +117,14 @@
                     <Thickness x:Key="HomePageFooterWellPadding">1</Thickness>
                     <CornerRadius x:Key="HomePageFooterWellCornerRadius">4</CornerRadius>
 
+                    <StaticResource x:Key="HomePageBackgroundFillBrush" ResourceKey="CardBackgroundFillColorDefaultBrush"/>
+                    <StaticResource x:Key="HomePageBackgroundBorderBrush" ResourceKey="CardStrokeColorDefaultBrush"/>
+                    <CornerRadius x:Key="HomePageBackgroundSmallCornerRadius">8</CornerRadius>
+                    <CornerRadius x:Key="HomePageBackgroundMediumCornerRadius">8,8,0,0</CornerRadius>
+
+                    <StaticResource x:Key="HomePageFrameContainerBackgroundBrush" ResourceKey="CardBackgroundFillColorSecondaryBrush"/>
+                    <StaticResource x:Key="HomePageFrameContainerBorderBrush" ResourceKey="CardStrokeColorDefaultBrush"/>
+
                     <Thickness x:Key="NavigationViewItemContentMargin">-8,0,0,0</Thickness>
 
                     <StaticResource x:Key="LabelControlBackgroundBrush" ResourceKey="CardBackgroundFillColorDefaultBrush"/>
@@ -109,6 +143,42 @@
                     <StaticResource x:Key="PostEmbedContentTemplateBackground" ResourceKey="CardBackgroundFillColorSecondaryBrush"/>
 
                     <StaticResource x:Key="GenericPageHeaderBackgroundBrush" ResourceKey="CardBackgroundFillColorDefaultBrush"/>
+                    <Thickness x:Key="GenericPageHeaderMargin">0,8,0,0</Thickness>
+
+                    <Color x:Key="SheetRootShadowColor">#00000000</Color>
+                    <StaticResource x:Key="SheetContentRootBackdropBackgroundBrush" ResourceKey="SmokeFillColorDefaultBrush"/>
+                    <StaticResource x:Key="SheetContentBackgroundBrush" ResourceKey="SolidBackgroundFillColorBaseBrush"/>
+                    <StaticResource x:Key="SheetContentBorderBrush" ResourceKey="SurfaceStrokeColorDefaultBrush"/>
+                    <StaticResource x:Key="SheetContentSeparatorBrush" ResourceKey="CardStrokeColorDefaultBrush"/>
+                    <StaticResource x:Key="SheetTitleBarBackgroundBrush" ResourceKey="LayerFillColorAltBrush"/>
+                    <StaticResource x:Key="SheetFooterBackgroundBrush" ResourceKey="LayerFillColorAltBrush"/>
+
+                    <CornerRadius x:Key="SheetRootSmallCornerRadius">8,8,0,0</CornerRadius>
+                    <CornerRadius x:Key="SheetRootMediumCornerRadius">8,8,8,8</CornerRadius>
+
+                    <Thickness x:Key="SheetRootNavigationViewAvoidancePadding">48,0,0,0</Thickness>
+
+                    <StaticResource x:Key="ComposeSheetProgressForegroundBrush" ResourceKey="AccentFillColorDefaultBrush"/>
+
+                    <SolidColorBrush x:Key="ComposeSheetErrorBackgroundBrush" Opacity="0.2" Color="{ThemeResource SystemFillColorCriticalBackground}"/>
+                    <SolidColorBrush x:Key="ComposeSheetErrorBorderBrush" Opacity="0.6" Color="{ThemeResource SystemFillColorCritical}"/>
+
+                    <Style x:Key="TransparentButtonStyle" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="BorderBrush" Value="Transparent"/>
+                        <Setter Property="Foreground" Value="{ThemeResource ButtonForeground}" />
+                    </Style>
+
+                    <Style x:Key="StretchyIconButtonStyle" TargetType="Button" BasedOn="{StaticResource TransparentButtonStyle}">
+                        <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}"/>
+                        <Setter Property="FontSize" Value="16"/>
+                    </Style>
+
+                    <Style x:Key="IconButtonStyle" TargetType="Button" BasedOn="{StaticResource StretchyIconButtonStyle}">
+                        <Setter Property="MinWidth" Value="40"/>
+                        <Setter Property="MinHeight" Value="40"/>
+                        <Setter Property="Padding" Value="8" />
+                    </Style>
                     
                     <Style x:Key="CleanPaneButtonButtonStyle" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
                         <Setter Property="Background" Value="Transparent"/>
@@ -350,23 +420,20 @@
                     </Style>
 
                     <Style x:Key="FooterRadioButtonRevealStyle" 
-                           TargetType="RadioButton">
-                        <Setter Property="Background" Value="{ThemeResource FooterToggleButtonRevealBackgroundBrush}"/>
-                        <Setter Property="Foreground" Value="{ThemeResource ToggleButtonForeground}"/>
-                        <Setter Property="BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrush}"/>
-                        <Setter Property="BorderThickness" Value="{ThemeResource ToggleButtonRevealBorderThemeThickness}"/>
-                        <Setter Property="Padding" Value="{ThemeResource ButtonPadding}"/>
+                           TargetType="RadioButton" 
+                           BasedOn="{StaticResource DefaultToggleButtonStyle}">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="BorderBrush" Value="Transparent"/>
+                        <Setter Property="Padding" Value="0"/>
                         <Setter Property="HorizontalAlignment" Value="Stretch"/>
                         <Setter Property="VerticalAlignment" Value="Stretch"/>
                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
                         <Setter Property="VerticalContentAlignment" Value="Center"/>
-                        <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}"/>
-                        <Setter Property="FontSize" Value="16"/>
                         <Setter Property="FontWeight" Value="Normal"/>
                         <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}"/>
                         <Setter Property="FocusVisualMargin" Value="-3"/>
-                        <Setter Property="MinWidth" Value="0"/>
                         <Setter Property="extensions:Hairline.BorderThickness" Value="1"/>
+                        <Setter Property="MinWidth" Value="0"/>
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="ToggleButton">
@@ -375,105 +442,214 @@
                                             <VisualStateGroup x:Name="CommonStates">
                                                 <VisualState x:Name="Normal">
                                                     <Storyboard>
-                                                        <PointerUpThemeAnimation Storyboard.TargetName="RootGrid"/>
+                                                        <DoubleAnimation Storyboard.TargetName="SelectionIndicatorTransform" 
+                                                                   Storyboard.TargetProperty="ScaleX"
+                                                                   Duration="00:00:00.1"
+                                                                   To="0"
+                                                                   EasingFunction="{StaticResource FooterToggleButtonSelectionScaleEase}"/>
                                                     </Storyboard>
                                                 </VisualState>
                                                 <VisualState x:Name="PointerOver">
-                                                    <VisualState.Setters>
-                                                        <Setter Target="RootGrid.(media:RevealBrush.State)" Value="PointerOver"/>
-                                                        <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundPointerOver}"/>
-                                                        <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushPointerOver}"/>
-                                                        <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ToggleButtonForegroundPointerOver}"/>
-                                                    </VisualState.Setters>
                                                     <Storyboard>
-                                                        <PointerUpThemeAnimation Storyboard.TargetName="RootGrid"/>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBackgroundPointerOver}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBorderBrushPointerOver}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonForegroundPointerOver}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <DoubleAnimation Storyboard.TargetName="SelectionIndicatorTransform" 
+                                                                   Storyboard.TargetProperty="ScaleX"
+                                                                   Duration="00:00:00.1"
+                                                                   To="1"
+                                                                   EasingFunction="{StaticResource FooterToggleButtonSelectionScaleEase}"/>
                                                     </Storyboard>
                                                 </VisualState>
                                                 <VisualState x:Name="Pressed">
-                                                    <VisualState.Setters>
-                                                        <Setter Target="RootGrid.(media:RevealBrush.State)" Value="Pressed"/>
-                                                        <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundPressed}"/>
-                                                        <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushPressed}"/>
-                                                        <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ToggleButtonForegroundPressed}"/>
-                                                    </VisualState.Setters>
                                                     <Storyboard>
-                                                        <PointerDownThemeAnimation Storyboard.TargetName="RootGrid"/>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBackgroundPressed}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBorderBrushPressed}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonForegroundPressed}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <DoubleAnimation Storyboard.TargetName="SelectionIndicatorTransform" 
+                                                                   Storyboard.TargetProperty="ScaleX"
+                                                                   Duration="0"
+                                                                   To="1"/>
                                                     </Storyboard>
                                                 </VisualState>
                                                 <VisualState x:Name="Disabled">
-                                                    <VisualState.Setters>
-                                                        <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundDisabled}"/>
-                                                        <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushDisabled}"/>
-                                                        <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ToggleButtonForegroundDisabled}"/>
-                                                    </VisualState.Setters>
+                                                    <Storyboard>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBackgroundDisabled}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonForegroundDisabled}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBorderBrushDisabled}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <DoubleAnimation Storyboard.TargetName="SelectionIndicatorTransform" 
+                                                                   Storyboard.TargetProperty="ScaleX"
+                                                                   Duration="0"
+                                                                   To="0"/>
+                                                    </Storyboard>
                                                 </VisualState>
                                                 <VisualState x:Name="Checked">
-                                                    <VisualState.Setters>
-                                                        <Setter Target="RootGrid.Background" Value="{ThemeResource FooterToggleButtonRevealBackgroundBrush}"/>
-                                                        <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrush}"/>
-                                                        <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ToggleButtonForeground}"/>
-                                                        <Setter Target="SelectionIndicator.Opacity" Value="1"/>
-                                                    </VisualState.Setters>
                                                     <Storyboard>
-                                                        <PointerUpThemeAnimation Storyboard.TargetName="RootGrid"/>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBackgroundPressed}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBorderBrushPressed}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonForegroundPressed}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <DoubleAnimation Storyboard.TargetName="SelectionIndicatorTransform" 
+                                                                   Storyboard.TargetProperty="ScaleX"
+                                                                   Duration="0"
+                                                                   To="1"/>
                                                     </Storyboard>
                                                 </VisualState>
                                                 <VisualState x:Name="CheckedPointerOver">
-                                                    <VisualState.Setters>
-                                                        <Setter Target="RootGrid.(media:RevealBrush.State)" Value="PointerOver"/>
-                                                        <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundPointerOver}"/>
-                                                        <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushPointerOver}"/>
-                                                        <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ToggleButtonForegroundPointerOver}"/>
-                                                        <Setter Target="SelectionIndicator.Opacity" Value="1"/>
-                                                    </VisualState.Setters>
                                                     <Storyboard>
-                                                        <PointerUpThemeAnimation Storyboard.TargetName="RootGrid"/>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBackgroundPointerOver}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBorderBrushPointerOver}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonForegroundPointerOver}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <DoubleAnimation Storyboard.TargetName="SelectionIndicatorTransform" 
+                                                                   Storyboard.TargetProperty="ScaleX"
+                                                                   Duration="0"
+                                                                   To="1"/>
                                                     </Storyboard>
                                                 </VisualState>
                                                 <VisualState x:Name="CheckedPressed">
-                                                    <VisualState.Setters>
-                                                        <Setter Target="RootGrid.(media:RevealBrush.State)" Value="Pressed"/>
-                                                        <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundPressed}"/>
-                                                        <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushPressed}"/>
-                                                        <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ToggleButtonForegroundPressed}"/>
-                                                        <Setter Target="SelectionIndicator.Opacity" Value="1"/>
-                                                    </VisualState.Setters>
                                                     <Storyboard>
-                                                        <PointerDownThemeAnimation Storyboard.TargetName="RootGrid"/>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBackgroundPressed}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBorderBrushPressed}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonForegroundPressed}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <DoubleAnimation Storyboard.TargetName="SelectionIndicatorTransform" 
+                                                                   Storyboard.TargetProperty="ScaleX"
+                                                                   Duration="0"
+                                                                   To="1"/>
                                                     </Storyboard>
                                                 </VisualState>
                                                 <VisualState x:Name="CheckedDisabled">
-                                                    <VisualState.Setters>
-                                                        <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundDisabled}"/>
-                                                        <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushDisabled}"/>
-                                                        <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ToggleButtonForegroundDisabled}"/>
-                                                        <Setter Target="SelectionIndicator.Opacity" Value="1"/>
-                                                    </VisualState.Setters>
+                                                    <Storyboard>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBackgroundDisabled}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonForegroundDisabled}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBorderBrushDisabled}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <DoubleAnimation Storyboard.TargetName="SelectionIndicatorTransform" 
+                                                                   Storyboard.TargetProperty="ScaleX"
+                                                                   Duration="0"
+                                                                   To="1"/>
+                                                    </Storyboard>
+                                                </VisualState>
+                                                <VisualState x:Name="Indeterminate">
+                                                    <Storyboard>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBackgroundIndeterminate}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonForegroundIndeterminate}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBorderBrushIndeterminate}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                    </Storyboard>
+                                                </VisualState>
+                                                <VisualState x:Name="IndeterminatePointerOver">
+                                                    <Storyboard>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBackgroundIndeterminatePointerOver}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBorderBrushIndeterminatePointerOver}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonForegroundIndeterminatePointerOver}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                    </Storyboard>
+                                                </VisualState>
+                                                <VisualState x:Name="IndeterminatePressed">
+                                                    <Storyboard>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBackgroundIndeterminatePressed}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBorderBrushIndeterminatePressed}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonForegroundIndeterminatePressed}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                    </Storyboard>
+                                                </VisualState>
+                                                <VisualState x:Name="IndeterminateDisabled">
+                                                    <Storyboard>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBackgroundIndeterminateDisabled}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonForegroundIndeterminateDisabled}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBorderBrushIndeterminateDisabled}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                    </Storyboard>
                                                 </VisualState>
                                             </VisualStateGroup>
                                         </VisualStateManager.VisualStateGroups>
 
                                         <ContentPresenter x:Name="ContentPresenter" 
-                                                          AutomationProperties.AccessibilityView="Raw"
-                                                          BorderBrush="{TemplateBinding BorderBrush}"
-                                                          BorderThickness="{TemplateBinding BorderThickness}"
-                                                          ContentTemplate="{TemplateBinding ContentTemplate}" 
-                                                          CornerRadius="{TemplateBinding CornerRadius}" 
-                                                          Content="{TemplateBinding Content}" 
-                                                          ContentTransitions="{TemplateBinding ContentTransitions}" 
-                                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                          Padding="{TemplateBinding Padding}"
-                                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                                         AutomationProperties.AccessibilityView="Raw"
+                                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                                         ContentTemplate="{TemplateBinding ContentTemplate}" 
+                                                         CornerRadius="{TemplateBinding CornerRadius}" 
+                                                         Content="{TemplateBinding Content}" 
+                                                         ContentTransitions="{TemplateBinding ContentTransitions}" 
+                                                         HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                         Padding="{TemplateBinding Padding}"
+                                                         VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
 
 
                                         <Grid x:Name="SelectionIndicatorGrid"
-                                                Margin="16,0,16,4"
+                                                Margin="12,0,12,4"
                                                 VerticalAlignment="Bottom">
-                                            <Rectangle
-                                                x:Name="SelectionIndicator"
-                                                Height="2"
-                                                Fill="{ThemeResource NavigationViewSelectionIndicatorForeground}"
-                                                Opacity="0" />
+                                            <Rectangle x:Name="SelectionIndicator"
+                                                 Height="3"
+                                                 RadiusX="2"
+                                                 RadiusY="2"
+                                                 RenderTransformOrigin="0.5,0.5"
+                                                 Fill="{ThemeResource NavigationViewSelectionIndicatorForeground}">
+                                                <Rectangle.RenderTransform>
+                                                    <ScaleTransform x:Name="SelectionIndicatorTransform" ScaleX="0"/>
+                                                </Rectangle.RenderTransform>
+                                            </Rectangle>
                                         </Grid>
                                     </Grid>
                                 </ControlTemplate>

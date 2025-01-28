@@ -18,6 +18,8 @@ internal class ApplicationViewSafeAreaService : ISafeAreaService
     private readonly CoreApplicationView _coreApplicationView;
     private readonly ThemeListener _themeListener;
 
+    private readonly IThemeService themeService;
+
     private SafeAreaInfo _state;
 
     private event EventHandler<SafeAreaUpdatedEventArgs> _event;
@@ -25,8 +27,10 @@ internal class ApplicationViewSafeAreaService : ISafeAreaService
     public SafeAreaInfo State
         => _state;
 
-    public ApplicationViewSafeAreaService()
+    public ApplicationViewSafeAreaService(IThemeService themeService)
     {
+        this.themeService = themeService;
+
         _window = CoreWindow.GetForCurrentThread();
         _window.SizeChanged += CoreWindow_SizeChanged;
         _window.Activated += CoreWindow_Activated;
@@ -134,7 +138,12 @@ internal class ApplicationViewSafeAreaService : ISafeAreaService
 
         var titleBar = _coreApplicationView.TitleBar;
         if (titleBar.IsVisible)
-            top += (float)titleBar.Height;
+        {
+            if (themeService.GetTheme() == AppTheme.SunValley)
+                top += Math.Max(40, (float)titleBar.Height);
+            else
+                top += (float)titleBar.Height;
+        }
 
         var bounds = _window.Bounds;
         var visibleBounds = _applicationView.VisibleBounds;
@@ -149,6 +158,9 @@ internal class ApplicationViewSafeAreaService : ISafeAreaService
 
     public void SetTitlebarTheme(ElementTheme theme)
     {
+        if (themeService.GetTheme() == AppTheme.SunValley)
+            theme = ElementTheme.Default;
+
         var actualTheme = theme switch
         {
             ElementTheme.Default => _themeListener.CurrentTheme == ApplicationTheme.Dark

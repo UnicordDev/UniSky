@@ -5,5 +5,6 @@ public enum AppTheme
     Performance,
     Fluent,
     SunValley,
-    OLED
+    OLED,
+    Dim
 }

@@ -95,8 +95,8 @@
                             <mux:InfoBadge x:Name="NotificationsSidebarInfoBadge"
                                            x:Load="{x:Bind converters:Static.AtLeast(NotificationCount, 1), Mode=OneWay}"
                                            Value="{x:Bind NotificationCount, Mode=OneWay}"
-                                           Background="{ThemeResource SystemColorControlAccentBrush}"
-                                           Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
+                                           Background="{ThemeResource InfoBadgeBackgroundThemeBrush}"
+                                           Foreground="{ThemeResource InfoBadgeForegroundThemeBrush}"
                                            Margin="0,-2,2,0"
                                            HorizontalAlignment="Right" 
                                            VerticalAlignment="Top"/>
@@ -143,10 +143,12 @@
                         HorizontalAlignment="Stretch" 
                         VerticalAlignment="Stretch" 
                         MaxWidth="600"
-                        BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
-                        CornerRadius="0,0,8,8"
+                        Background="{ThemeResource HomePageBackgroundFillBrush}"
+                        BorderBrush="{ThemeResource HomePageBackgroundBorderBrush}"
+                        CornerRadius="{ThemeResource HomePageBackgroundSmallCornerRadius}"
                         ui:UIElementExtensions.ClipToBounds="True">
-                    <ContentControl Content="{x:Bind ViewModel.SelectedMenuItem.Content, Mode=OneWay}"
+                    <ContentControl x:Name="FrameContent"
+                                    Content="{x:Bind ViewModel.SelectedMenuItem.Content, Mode=OneWay}"
                                     HorizontalAlignment="Stretch"
                                     HorizontalContentAlignment="Stretch"
                                     VerticalAlignment="Stretch"
@@ -217,8 +219,8 @@
                                                            x:Load="{x:Bind converters:Static.AtLeast(NotificationCount, 1), Mode=OneWay}"
                                                            Value="{x:Bind NotificationCount, Mode=OneWay}"
                                                            FontFamily="{ThemeResource ContentControlThemeFontFamily}"
-                                                           Background="{ThemeResource SystemColorControlAccentBrush}"
-                                                           Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
+                                                           Background="{ThemeResource InfoBadgeBackgroundThemeBrush}"
+                                                           Foreground="{ThemeResource InfoBadgeForegroundThemeBrush}"
                                                            HorizontalAlignment="Center"
                                                            VerticalAlignment="Center"
                                                            Margin="0,-10,-16,0"/>
@@ -258,6 +260,7 @@
 
                     <VisualState.Setters>
                         <Setter Target="FrameContainer.(extensions:Hairline.BorderThickness)" Value="0"/>
+                        <Setter Target="FrameContainer.CornerRadius" Value="{ThemeResource HomePageBackgroundSmallCornerRadius}"/>
                         <Setter Target="NavView.PaneDisplayMode" Value="LeftMinimal"/>
                         <Setter Target="FooterNavigation.Visibility" Value="Visible"/>
                     </VisualState.Setters>
@@ -269,6 +272,7 @@
 
                     <VisualState.Setters>
                         <Setter Target="FrameContainer.(extensions:Hairline.BorderThickness)" Value="1,0"/>
+                        <Setter Target="FrameContainer.CornerRadius" Value="{ThemeResource HomePageBackgroundMediumCornerRadius}"/>
                         <Setter Target="NavView.PaneDisplayMode" Value="LeftCompact"/>
                         <Setter Target="FooterNavigation.Visibility" Value="Collapsed"/>
                     </VisualState.Setters>

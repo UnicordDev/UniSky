@@ -7,13 +7,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:w1709="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
     xmlns:w1803="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 6)"
+    xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
     xmlns:viewmodels="using:UniSky.ViewModels" 
     xmlns:mux="using:Microsoft.UI.Xaml.Controls" 
     xmlns:feeds="using:UniSky.ViewModels.Feeds" 
     xmlns:extensions="using:UniSky.Extensions" xmlns:templates="using:UniSky.Templates"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance Type=viewmodels:FeedsViewModel}"
-    Background="{ThemeResource ApplicationContentPageBackgroundThemeBrush}"
     NavigationCacheMode="Enabled"
     w1803:KeyboardAcceleratorPlacementMode="Hidden">
     <Page.Resources>
@@ -25,7 +25,8 @@
                                    Invoked="RefreshAccelerator_Invoked"/>
     </w1709:Page.KeyboardAccelerators>
 
-    <Grid x:Name="RootGrid">
+    <Grid x:Name="RootGrid"
+          MaxWidth="600">
         <Pivot x:Name="FeedsPivot"
                ItemsSource="{x:Bind ViewModel.Feeds}"
                ScrollViewer.IsVerticalScrollChainingEnabled="True">
@@ -34,6 +35,7 @@
                     <TextBlock x:Name="PivotHeaderText"
                                FontFamily="{ThemeResource PivotHeaderItemFontFamily}"
                                FontWeight="{ThemeResource PivotHeaderItemThemeFontWeight}"
+                               FontSize="{ThemeResource PivotHeaderItemFontSize}"
                                Text="{Binding Name}"
                                Tapped="PivotHeaderText_Tapped"/>
                 </DataTemplate>
@@ -45,8 +47,7 @@
                 </Style>
             </Pivot.ItemContainerStyle>
             <Pivot.Resources>
-                <x:Double x:Key="PivotHeaderItemFontSize">20</x:Double>
-                <Style TargetType="PivotHeaderItem">
+                <Style TargetType="PivotHeaderItem" BasedOn="{StaticResource DefaultPivotHeaderItemStyle}">
                     <Setter Property="Height" Value="42"/>
                     <Setter Property="VerticalAlignment" Value="Center"/>
                 </Style>
@@ -56,14 +57,14 @@
                     <Grid>
                         <mux:RefreshContainer RefreshRequested="OnRefreshRequested">
                             <ListView x:Name="PART_FeedList"
-                                      ItemsSource="{x:Bind Items}" 
-                                      ItemTemplate="{StaticResource FeedItemContentTemplate}"
-                                      SelectionMode="None"
-                                      HorizontalAlignment="Stretch"
-                                      HorizontalContentAlignment="Stretch"
-                                      ScrollViewer.IsVerticalScrollChainingEnabled="True"
-                                      BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
-                                      extensions:Hairline.BorderThickness="0,1,0,0">
+                               ItemsSource="{x:Bind Items}" 
+                               ItemTemplate="{StaticResource FeedItemContentTemplate}"
+                               SelectionMode="None"
+                               HorizontalAlignment="Stretch"
+                               HorizontalContentAlignment="Stretch"
+                               ScrollViewer.IsVerticalScrollChainingEnabled="True"
+                               BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
+                               extensions:Hairline.BorderThickness="0,1,0,0">
                                 <ListView.Resources>
                                     <SolidColorBrush Color="Transparent" x:Key="ListViewItemRevealBackground"/>
                                     <SolidColorBrush Color="Transparent" x:Key="ListViewItemBackgroundPointerOver"/>
@@ -80,10 +81,10 @@
                                     <DataTemplate>
                                         <Grid HorizontalAlignment="Stretch">
                                             <ProgressRing Width="32"
-                                                          Height="32" 
-                                                          Margin="16" 
-                                                          IsActive="{Binding IsLoading}"
-                                                          HorizontalAlignment="Center"/>
+                                                   Height="32" 
+                                                   Margin="16" 
+                                                   IsActive="{Binding IsLoading}"
+                                                   HorizontalAlignment="Center"/>
                                         </Grid>
                                     </DataTemplate>
                                 </ListView.FooterTemplate>
@@ -92,14 +93,14 @@
 
                         <!-- TODO: move this into a DataTemplate w/ selector of type FeedItemErrorViewModel or similar -->
                         <StackPanel x:Name="TimelineLoadFailure"
-                                    x:Load="{x:Bind IsErrored}"
-                                    Padding="16"
-                                    HorizontalAlignment="Center">
+                             x:Load="{x:Bind IsErrored}"
+                             Padding="16"
+                             HorizontalAlignment="Center">
                             <TextBlock FontFamily="{ThemeResource SymbolThemeFontFamily}" 
-                                       FontSize="96" 
-                                       Text="&#xE783;" 
-                                       Margin="0,0,0,8"
-                                       HorizontalAlignment="Center"/>
+                                FontSize="96" 
+                                Text="&#xE783;" 
+                                Margin="0,0,0,8"
+                                HorizontalAlignment="Center"/>
                             <TextBlock Text="Unable to fetch timeline!" TextAlignment="Center" Style="{ThemeResource TitleTextBlockStyle}"/>
                             <Button Content="Try again" HorizontalAlignment="Center" Style="{ThemeResource TextBlockButtonStyle}" />
                         </StackPanel>
@@ -115,7 +116,11 @@
                 VerticalAlignment="Bottom"
                 MinWidth="48"
                 MinHeight="48"
-                Command="{x:Bind ViewModel.PostCommand}">
+                Command="{x:Bind ViewModel.PostCommand}"
+                w1809:Translation="0,0,16">
+            <w1809:Button.Shadow>
+                <w1809:ThemeShadow/>
+            </w1809:Button.Shadow>
             <TextBlock Text="&#xE724;"
                        FontFamily="{ThemeResource SymbolThemeFontFamily}"
                        FontSize="20"/>

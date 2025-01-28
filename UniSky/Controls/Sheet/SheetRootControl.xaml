@@ -25,7 +25,7 @@
         <ui:AttachedDropShadow x:Key="CommonShadow"
                                x:Name="CommonShadow"
                                BlurRadius="16"
-                               Color="#80000000"
+                               Color="{ThemeResource SheetRootShadowColor}"
                                CastTo="{Binding ElementName=CompositionBackdropContainer}"/>
     </UserControl.Resources>
 
@@ -43,10 +43,9 @@
         <Border x:Name="CompositionBackdropContainer"
                 IsHitTestVisible="False"
                 Visibility="Collapsed"
-                Background="#80000000">
+                Background="{ThemeResource SheetContentRootBackdropBackgroundBrush}">
         </Border>
-
-
+        
         <muxc:RefreshContainer x:Name="RefreshContainer"
                                 RefreshRequested="RefreshContainer_RefreshRequested">
             <muxc:RefreshContainer.Visualizer>
@@ -68,7 +67,7 @@
                             <TranslateTransform x:Name="SheetTransform" Y="0"/>
                         </Border.RenderTransform>
                         <Border x:Name="SheetBorder"
-                                BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
+                                BorderBrush="{ThemeResource SheetContentBorderBrush}"
                                 ui:Effects.Shadow="{StaticResource CommonShadow}">
                             <Border x:Name="SheetRoot"/>
                         </Border>
@@ -94,6 +93,7 @@
                         <Setter Target="HostControl.MaxHeight" Value="Infinity"/>
                         <Setter Target="HostControl.Padding" Value="0,0,0,0"/>
                         <Setter Target="SheetBorder.(extensions:Hairline.BorderThickness)" Value="0"/>
+                        <Setter Target="SheetBorder.CornerRadius" Value="{ThemeResource SheetRootSmallCornerRadius}"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Medium">
@@ -106,8 +106,9 @@
                         <Setter Target="HostControl.VerticalAlignment" Value="Top"/>
                         <Setter Target="HostControl.MaxWidth" Value="600"/>
                         <Setter Target="HostControl.MaxHeight" Value="400"/>
-                        <Setter Target="HostControl.Padding" Value="40,0,0,0"/>
+                        <Setter Target="HostControl.Padding" Value="{ThemeResource SheetRootNavigationViewAvoidancePadding}"/>
                         <Setter Target="SheetBorder.(extensions:Hairline.BorderThickness)" Value="1"/>
+                        <Setter Target="SheetBorder.CornerRadius" Value="{ThemeResource SheetRootMediumCornerRadius}"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
