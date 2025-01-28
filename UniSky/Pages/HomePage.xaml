@@ -14,8 +14,7 @@
     mc:Ignorable="d"
     DataContext="{x:Bind ViewModel}"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    NavigationCacheMode="Required"
-    mux:BackdropMaterial.ApplyToRootOrPageBackground="True">
+    NavigationCacheMode="Required">
 
     <Page.Resources>
         <ExponentialEase x:Key="EaseMove" EasingMode="EaseOut" Exponent="7"/>

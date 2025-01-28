@@ -16,7 +16,7 @@
         <Canvas x:Name="RenderTargetRoot"/>
         
         <Border Background="{ThemeResource SplashScreenBackground}"/>
-        
+
         <sheet:SheetRootControl x:Name="SheetRoot"
                                 Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
             <Frame x:Name="RootFrame"

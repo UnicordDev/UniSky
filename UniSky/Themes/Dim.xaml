@@ -1,5 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:media="using:Microsoft.UI.Xaml.Media"
                     Source="Fluent.xaml">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary>
@@ -44,7 +44,7 @@
                                     <Color x:Key="SystemChromeAltHighColor">#FF12335C</Color>
                                     <Color x:Key="SystemRevealListLowColor">#FF071E46</Color>
                                     <Color x:Key="SystemRevealListMediumColor">#FF12335C</Color>
-                                    <AcrylicBrush x:Key="SystemControlAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintColor="{ThemeResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemChromeMediumColor}" />
+                                    <media:AcrylicBrush x:Key="SystemControlAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintColor="{ThemeResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemChromeMediumColor}" />
                                     <!-- Override system shape defaults -->
                                     <CornerRadius x:Key="ControlCornerRadius">2,2,2,2</CornerRadius>
                                     <CornerRadius x:Key="OverlayCornerRadius">4,4,4,4</CornerRadius>
@@ -119,7 +119,7 @@
                                     <Color x:Key="SystemChromeAltHighColor">#FF7CBEE0</Color>
                                     <Color x:Key="SystemRevealListLowColor">#FFB3E0F8</Color>
                                     <Color x:Key="SystemRevealListMediumColor">#FF7CBEE0</Color>
-                                    <AcrylicBrush x:Key="SystemControlAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintColor="{ThemeResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemChromeMediumColor}" />
+                                    <media:AcrylicBrush x:Key="SystemControlAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintColor="{ThemeResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemChromeMediumColor}" />
                                     <!-- Override system shape defaults -->
                                     <CornerRadius x:Key="ControlCornerRadius">2,2,2,2</CornerRadius>
                                     <CornerRadius x:Key="OverlayCornerRadius">4,4,4,4</CornerRadius>
@@ -169,7 +169,7 @@
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
 
-            <StaticResource x:Key="ApplicationPageBackgroundThemeBrush" ResourceKey="RegionBrush"/>
+            <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" Color="{StaticResource RegionColor}" />
             <SolidColorBrush x:Key="SystemControlSeparatorBrush" Color="#323e4e"/>
             <SolidColorBrush x:Key="SystemControlRevealSeparatorBrush" Color="#323e4e"/>
         </ResourceDictionary>
