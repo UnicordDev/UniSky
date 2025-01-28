@@ -21,7 +21,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <ListView x:Name="RootList"
-                  Grid.RowSpan="3"
+                  Grid.Row="1"
+                  Grid.RowSpan="2"
                   ItemsSource="{x:Bind ViewModel.Posts}" 
                   ItemTemplateSelector="{StaticResource ThreadItemTemplateSelector}"
                   SelectionMode="None"
@@ -47,7 +48,7 @@
         <Grid x:Name="HeaderContainer"
               Grid.Row="0">
             <Grid x:Name="HeaderGrid"
-                  Background="{ThemeResource SystemControlChromeMediumAcrylicElementMediumBrush}"
+                  Background="{ThemeResource GenericPageHeaderBackgroundBrush}"
                   BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
                   extensions:Hairline.BorderThickness="0,0,0,1">
                 <TextBlock x:Uid="ThreadPageTitleBlock"

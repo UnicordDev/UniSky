@@ -21,9 +21,6 @@ public sealed partial class LoginPage : Page
     public LoginPage()
     {
         this.InitializeComponent();
-
-        AppTitleSuffixTextBlock.Text = Constants.Version;
-        AppTitleSuffixTextBlock.Visibility = Visibility.Visible;
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -43,16 +40,6 @@ public sealed partial class LoginPage : Page
 
     private void OnSafeAreaUpdated(object sender, SafeAreaUpdatedEventArgs e)
     {
-        if (e.SafeArea.HasTitleBar)
-        {
-            AppTitleBar.Visibility = Visibility.Visible;
-            AppTitleBar.Height = e.SafeArea.Bounds.Top;
-        }
-        else
-        {
-            AppTitleBar.Visibility = Visibility.Collapsed;
-        }
-
         Margin = new Thickness(e.SafeArea.Bounds.Left, 0, e.SafeArea.Bounds.Right, e.SafeArea.Bounds.Bottom);
     }
 

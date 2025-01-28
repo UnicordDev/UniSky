@@ -1,0 +1,98 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UniSky.Controls" 
+    xmlns:converters="using:UniSky.Converters">
+
+    <converters:VisibilityConverter x:Key="BoolVisibilityConverter"/>
+
+    <Style TargetType="local:TitleBar">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:TitleBar">
+                    <Grid x:Name="AppTitleBar" Background="Transparent">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition x:Name="LeftPaddingColumn" Width="0"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border x:Name="TitleBarDrag"
+                                Background="Transparent"
+                                Grid.Column="1"
+                                Grid.ColumnSpan="2"/>
+
+                        <Grid Grid.Column="1" 
+                              MaxWidth="600"
+                              HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>                            
+
+                            <Button x:Name="BackButton"
+                                    Visibility="{Binding IsBackButtonVisible, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource BoolVisibilityConverter}}"
+                                    Style="{StaticResource NavigationBackButtonNormalStyle}"
+                                    Height="32"
+                                    FontSize="13"
+                                    ToolTipService.ToolTip="Back"
+                                    Command="{TemplateBinding BackButtonCommand}" />
+
+                            <Viewbox VerticalAlignment="Center"
+                                     HorizontalAlignment="Center"
+                                     Margin="8,2,0,0"
+                                     Width="16"
+                                     Height="16"
+                                     Grid.Column="1"
+                                     IsHitTestVisible="False"
+                                     CacheMode="BitmapCache">
+                                <Path x:Name="AppIconPath"
+                                      Data="{StaticResource BlueSkyLogoPath}"
+                                      Fill="{ThemeResource ApplicationForegroundThemeBrush}"/>
+                            </Viewbox>
+
+                            <TextBlock x:Name="AppTitleTextBlock"
+                                       x:Uid="AppTitle"
+                                       Style="{StaticResource CaptionTextBlockStyle}" 
+                                       Text="Unisky"
+                                       VerticalAlignment="Center" 
+                                       Grid.Column="2"
+                                       Margin="8,0,0,0"
+                                       IsHitTestVisible="False"/>
+
+                            <TextBlock x:Name="AppTitleSuffixTextBlock"
+                                       Text="DEBUG"
+                                       Style="{StaticResource CaptionTextBlockStyle}" 
+                                       Opacity="0.5"
+                                       VerticalAlignment="Center" 
+                                       Grid.Column="3"
+                                       Margin="8,0,0,0"
+                                       IsHitTestVisible="False"
+                                       Visibility="Collapsed"/>
+                        </Grid>
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup>
+                                <VisualState x:Name="Active">
+                                    <VisualState.Setters>
+                                        <Setter Target="AppIconPath.Fill" Value="{ThemeResource ApplicationForegroundThemeBrush}"/>
+                                        <Setter Target="AppTitleTextBlock.Foreground" Value="{ThemeResource ApplicationForegroundThemeBrush}"/>
+                                        <Setter Target="AppTitleSuffixTextBlock.Foreground" Value="{ThemeResource ApplicationForegroundThemeBrush}"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Inactive">
+                                    <VisualState.Setters>
+                                        <Setter Target="AppIconPath.Fill" Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                                        <Setter Target="AppTitleTextBlock.Foreground" Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                                        <Setter Target="AppTitleSuffixTextBlock.Foreground" Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

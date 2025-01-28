@@ -186,6 +186,7 @@
       <DependentUpon>SheetRootControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Spoiler\SpoilerControl.cs" />
+    <Compile Include="Controls\TitleBar\TitleBar.cs" />
     <Compile Include="Controls\UniformGrid\TakenSpotsReferenceHolder.cs" />
     <Compile Include="Controls\UniformGrid\UniformGrid.cs" />
     <Compile Include="Controls\UniformGrid\UniformGrid.Helpers.cs" />
@@ -515,6 +516,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Sheet\SheetRootControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TitleBar\TitleBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

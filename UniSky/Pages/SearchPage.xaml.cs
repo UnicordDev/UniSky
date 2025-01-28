@@ -93,6 +93,10 @@ public sealed partial class SearchPage : Page, IScrollToTop
 
     private void RootList_Loaded(object sender, RoutedEventArgs e)
     {
+        var themeService = ServiceContainer.Scoped.GetRequiredService<IThemeService>();
+        if (themeService.GetTheme() == AppTheme.SunValley)
+            return;
+
         if (ApiInformation.IsApiContractPresent(typeof(UniversalApiContract).FullName, 7))
         {
             var scrollViewer = RootList.FindDescendant<ScrollViewer>();

@@ -109,6 +109,8 @@
                     <Thickness x:Key="HomePageFooterWellPadding">0</Thickness>
                     <CornerRadius x:Key="HomePageFooterWellCornerRadius">0</CornerRadius>
 
+                    <Thickness x:Key="NavigationViewItemContentMargin">-16,0,0,0</Thickness>
+
                     <SolidColorBrush x:Key="LabelControlBackgroundBrush" Color="{StaticResource SystemBaseHighColor}" Opacity="0.15"/>
 
                     <SolidColorBrush x:Key="ProfileHeaderRootBackgroundBrush" Color="Transparent"/>
@@ -116,8 +118,15 @@
                     <StaticResource x:Key="ProfilePageHeaderBackgroundBrush" ResourceKey="SystemControlBackgroundChromeMediumBrush"/>
                     <StaticResource x:Key="ProfilePageHeaderStickyBackgroundBrush" ResourceKey="SystemControlChromeMediumAcrylicElementMediumBrush"/>
                     <StaticResource x:Key="ProfilePageHeaderBannerBackgroundBrush" ResourceKey="SystemControlBackgroundChromeMediumLowBrush"/>
-                    
+
                     <Thickness x:Key="NavigationViewPaneToggleButtonMargin">0,1,0,0</Thickness>
+
+                    <SolidColorBrush x:Key="ExternalEmbedContentBackgroundBrush" Color="Transparent"/>
+                    <CornerRadius x:Key="ExternalEmbedThumbnailBoxCornerRadius">0</CornerRadius>
+
+                    <SolidColorBrush x:Key="PostEmbedContentTemplateBackground" Color="Transparent"/>
+
+                    <StaticResource x:Key="GenericPageHeaderBackgroundBrush" ResourceKey="SystemControlChromeMediumAcrylicElementMediumBrush"/>
 
                     <Style x:Key="CleanPaneButtonButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonRevealStyle}">
                         <Setter Property="Background" Value="Transparent"/>

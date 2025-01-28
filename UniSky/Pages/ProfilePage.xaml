@@ -258,6 +258,7 @@
                                 Grid.RowSpan="2"/>
 
                         <Button x:Name="ScrolledFollowButton"
+                                x:Load="{x:Bind converters:Static.Not(ViewModel.IsMe), Mode=OneWay}"
                                 Style="{ThemeResource ButtonRevealStyle}"
                                 Command="{Binding FollowCommand}"
                                 Grid.Column="1"

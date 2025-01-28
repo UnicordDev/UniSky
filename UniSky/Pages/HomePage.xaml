@@ -10,7 +10,7 @@
     xmlns:extensions="using:UniSky.Extensions"
     xmlns:viewmodels="using:UniSky.ViewModels" 
     xmlns:converters="using:UniSky.Converters"
-    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" xmlns:unisky="using:UniSky.Controls"
     mc:Ignorable="d"
     DataContext="{x:Bind ViewModel}"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
@@ -70,7 +70,7 @@
             <mux:NavigationView.MenuItemTemplate>
                 <DataTemplate x:DataType="viewmodels:MenuItemViewModel">
                     <mux:NavigationViewItem IsSelected="{x:Bind IsSelected}">
-                        <Grid Margin="-16,0,0,0">
+                        <Grid Margin="{ThemeResource NavigationViewItemContentMargin}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="40"/>
                                 <ColumnDefinition Width="*"/>
@@ -239,94 +239,11 @@
                     </Grid>
 
                 </Border>
-                <UserControl x:Name="AppTitleBarContainer"
-                             VerticalAlignment="Top">
-                    <Grid x:Name="AppTitleBar"
-                          Background="Transparent">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition x:Name="LeftPaddingColumn" Width="0"/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
 
-                        <Border x:Name="TitleBarDrag"
-                                     Background="Transparent"
-                                     Grid.Column="1"
-                                     Grid.ColumnSpan="2"/>
-
-                        <Grid Grid.Column="1" 
-                              MaxWidth="600"
-                              HorizontalAlignment="Stretch">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="32"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RenderTransform>
-                                <TranslateTransform x:Name="TitleHeaderTransform"/>
-                            </Grid.RenderTransform>
-
-                            <Button x:Name="BackButton"
-                                    x:Load="{x:Bind ViewModel.SelectedMenuItem.Content.CanGoBack, Mode=OneWay}"
-                                    Style="{StaticResource NavigationBackButtonNormalStyle}"
-                                    Height="32"
-                                    FontSize="13"
-                                    ToolTipService.ToolTip="Back"
-                                    Command="{x:Bind ViewModel.SelectedMenuItem.GoBackCommand, Mode=OneWay}" />
-
-                            <Viewbox VerticalAlignment="Center"
-                                     HorizontalAlignment="Center"
-                                     Margin="8,2,0,0"
-                                     Width="16"
-                                     Height="16"
-                                     Grid.Column="1"
-                                     IsHitTestVisible="False"
-                                     CacheMode="BitmapCache">
-                                <Path x:Name="AppIconPath"
-                                     Data="{StaticResource BlueSkyLogoPath}"
-                                     Fill="{ThemeResource ApplicationForegroundThemeBrush}"/>
-                            </Viewbox>
-
-                            <TextBlock x:Name="AppTitleTextBlock"
-                                       x:Uid="AppTitle"
-                                       Style="{StaticResource CaptionTextBlockStyle}" 
-                                       Text="Unisky"
-                                       VerticalAlignment="Center" 
-                                       Grid.Column="2"
-                                       Margin="8,0,0,0"
-                                       IsHitTestVisible="False"/>
-
-                            <TextBlock x:Name="AppTitleSuffixTextBlock"
-                                       Text="DEBUG"
-                                       Style="{StaticResource CaptionTextBlockStyle}" 
-                                       Opacity="0.5"
-                                       VerticalAlignment="Center" 
-                                       Grid.Column="3"
-                                       Margin="8,0,0,0"
-                                       IsHitTestVisible="False"
-                                       Visibility="Collapsed"/>
-                        </Grid>
-
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup>
-                                <VisualState x:Name="Active">
-                                    <VisualState.Setters>
-                                        <Setter Target="AppIconPath.Fill" Value="{ThemeResource ApplicationForegroundThemeBrush}"/>
-                                        <Setter Target="AppTitleTextBlock.Foreground" Value="{ThemeResource ApplicationForegroundThemeBrush}"/>
-                                        <Setter Target="AppTitleSuffixTextBlock.Foreground" Value="{ThemeResource ApplicationForegroundThemeBrush}"/>
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState x:Name="Inactive">
-                                    <VisualState.Setters>
-                                        <Setter Target="AppIconPath.Fill" Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
-                                        <Setter Target="AppTitleTextBlock.Foreground" Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
-                                        <Setter Target="AppTitleSuffixTextBlock.Foreground" Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
-                                    </VisualState.Setters>
-                                </VisualState>
-                            </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
-                    </Grid>
-                </UserControl>
+                <unisky:TitleBar x:Name="TitleBarControl" 
+                                 IsBackButtonVisible="{x:Bind ViewModel.SelectedMenuItem.Content.CanGoBack, Mode=OneWay}"
+                                 BackButtonCommand="{x:Bind ViewModel.SelectedMenuItem.GoBackCommand, Mode=OneWay}"
+                                 VerticalAlignment="Top"/>
             </Grid>
 
         </mux:NavigationView>

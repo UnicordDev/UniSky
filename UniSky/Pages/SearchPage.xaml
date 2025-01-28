@@ -91,7 +91,7 @@
         </Grid.RowDefinitions>
 
         <Border Grid.RowSpan="4"
-                Background="{ThemeResource SystemControlChromeMediumAcrylicElementMediumBrush}"
+                Background="{ThemeResource GenericPageHeaderBackgroundBrush}"
                 BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
                 extensions:Hairline.BorderThickness="0,0,0,1"/>
 

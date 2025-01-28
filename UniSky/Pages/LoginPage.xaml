@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="using:UniSky.ViewModels" 
+    xmlns:controls="using:UniSky.Controls"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance Type=viewmodels:LoginViewModel}" 
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
@@ -155,67 +156,11 @@
             </StackPanel>
 
         </Grid>
-        
-        <Grid x:Name="AppTitleBar"
-              Background="Transparent"
-              Grid.RowSpan="5"
-              Grid.ColumnSpan="3"
-              VerticalAlignment="Top">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition x:Name="LeftPaddingColumn" Width="0"/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
 
-            <Border x:Name="TitleBarDrag"
-                  Background="Transparent"
-                  Grid.Column="1"
-                  Grid.ColumnSpan="2"/>
-
-            <Grid Grid.Column="1" 
-                  HorizontalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="32"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RenderTransform>
-                    <TranslateTransform x:Name="TitleHeaderTransform"/>
-                </Grid.RenderTransform>
-
-                <Viewbox VerticalAlignment="Center"
-                         HorizontalAlignment="Center"
-                         Margin="8,2,0,0"
-                         Width="16"
-                         Height="16"
-                         Grid.Column="1"
-                         IsHitTestVisible="False"
-                         CacheMode="BitmapCache">
-                    <Path x:Name="AppIconPath"
-                          Data="{StaticResource BlueSkyLogoPath}"
-                          Fill="{ThemeResource ApplicationForegroundThemeBrush}"/>
-                </Viewbox>
-
-                <TextBlock x:Name="AppTitleTextBlock"
-                           x:Uid="AppTitle"
-                           Style="{StaticResource CaptionTextBlockStyle}" 
-                           Text="Unisky"
-                           VerticalAlignment="Center" 
-                           Grid.Column="2"
-                           Margin="8,0,0,0"
-                           IsHitTestVisible="False"/>
-
-                <TextBlock x:Name="AppTitleSuffixTextBlock"
-                           Text="DEBUG"
-                           Style="{StaticResource CaptionTextBlockStyle}" 
-                           Opacity="0.5"
-                           VerticalAlignment="Center" 
-                           Grid.Column="3"
-                           Margin="8,0,0,0"
-                           IsHitTestVisible="False"
-                           Visibility="Collapsed"/>
-            </Grid>
-        </Grid>
+        <controls:TitleBar x:Name="TitleBar"
+                           Grid.RowSpan="5"
+                           Grid.ColumnSpan="3"
+                           VerticalAlignment="Top"/>
 
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="AdaptiveStates">

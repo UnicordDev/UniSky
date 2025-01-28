@@ -122,10 +122,10 @@
                 Padding="0"
                 HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Stretch">
-            <Grid Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+            <Grid Background="{ThemeResource ExternalEmbedContentBackgroundBrush}"
                   BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
                   extensions:Hairline.BorderThickness="1"
-                  CornerRadius="4">
+                  CornerRadius="{ThemeResource ControlCornerRadius}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -135,7 +135,7 @@
                 <Border x:Name="ThumbnailBox"
                         Visibility="{Binding ThumbnailUrl, Converter={StaticResource VisibilityConverter}}"
                         BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
-                        CornerRadius="4,4,0,0"
+                        CornerRadius="{ThemeResource ExternalEmbedThumbnailBoxCornerRadius}"
                         extensions:Hairline.BorderThickness="0,0,0,1">
                     <toolkit:ConstrainedBox AspectRatio="2:1">
                         <Image Source="{Binding ThumbnailUrl}"
@@ -184,10 +184,10 @@
                 HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Stretch">
             <StackPanel BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
-                        Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                        Background="{ThemeResource PostEmbedContentTemplateBackground}"
                         extensions:Hairline.BorderThickness="1"
                         Padding="8"
-                        CornerRadius="4">
+                        CornerRadius="{ThemeResource ControlCornerRadius}">
                 <Button Command="{Binding Author.OpenProfileCommand}"
                         CommandParameter="{Binding ElementName=SmallProfileEllipse}"
                         Style="{ThemeResource CleanButtonStyle}"

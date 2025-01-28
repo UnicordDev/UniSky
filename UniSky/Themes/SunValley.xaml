@@ -16,16 +16,10 @@
                         <ResourceDictionary x:Key="Dark">
                             <Color x:Key="SystemListExtraLowColor">#10FFFFFF</Color>
                             <Color x:Key="SystemControlSeparatorColor">#FF404040</Color>
-
-                            <StaticResource x:Key="NavigationViewDefaultPaneBackground" ResourceKey="SystemControlChromeMediumLowAcrylicWindowMediumBrush"/>
-                            <StaticResource x:Key="NavigationViewExpandedPaneBackground" ResourceKey="SystemControlChromeMediumLowAcrylicWindowMediumBrush"/>
                         </ResourceDictionary>
                         <ResourceDictionary x:Key="Default">
                             <Color x:Key="SystemControlSeparatorColor">#FFDEDEDE</Color>
                             <Color x:Key="SystemListExtraLowColor">#10000000</Color>
-
-                            <StaticResource x:Key="NavigationViewDefaultPaneBackground" ResourceKey="SystemControlChromeMediumLowAcrylicWindowMediumBrush"/>
-                            <StaticResource x:Key="NavigationViewExpandedPaneBackground" ResourceKey="SystemControlChromeMediumLowAcrylicWindowMediumBrush"/>
                         </ResourceDictionary>
                     </ResourceDictionary.ThemeDictionaries>
 
@@ -66,7 +60,7 @@
                         <Setter Property="FontSize" Value="20" />
                         <Setter Property="OpticalMarginAlignment" Value="TrimSideBearings" />
                     </Style>
-                    
+
                     <mica:BackdropMicaBrush
                         x:Key="ApplicationRootPageBackgroundBrush"
                         BackgroundSource="WallpaperBackdrop"
@@ -97,6 +91,8 @@
                     <Thickness x:Key="HomePageFooterWellPadding">1</Thickness>
                     <CornerRadius x:Key="HomePageFooterWellCornerRadius">4</CornerRadius>
 
+                    <Thickness x:Key="NavigationViewItemContentMargin">-8,0,0,0</Thickness>
+
                     <StaticResource x:Key="LabelControlBackgroundBrush" ResourceKey="CardBackgroundFillColorDefaultBrush"/>
 
                     <StaticResource x:Key="ProfileHeaderRootBackgroundBrush" ResourceKey="ApplicationRootPageBackgroundBrush"/>
@@ -105,7 +101,14 @@
                     <StaticResource x:Key="ProfilePageHeaderBannerBackgroundBrush" ResourceKey="ControlAltFillColorTertiary"/>
                     <StaticResource x:Key="ProfilePageHeaderStickyBackgroundBrush" ResourceKey="ControlAltFillColorSecondary"/>
 
-                    <Thickness x:Key="NavigationViewPaneToggleButtonMargin">9,0,0,9</Thickness>
+                    <Thickness x:Key="NavigationViewPaneToggleButtonMargin">8,0,0,9</Thickness>
+
+                    <StaticResource x:Key="ExternalEmbedContentBackgroundBrush" ResourceKey="CardBackgroundFillColorSecondaryBrush"/>
+                    <CornerRadius x:Key="ExternalEmbedThumbnailBoxCornerRadius">4,4,0,0</CornerRadius>
+
+                    <StaticResource x:Key="PostEmbedContentTemplateBackground" ResourceKey="CardBackgroundFillColorSecondaryBrush"/>
+
+                    <StaticResource x:Key="GenericPageHeaderBackgroundBrush" ResourceKey="CardBackgroundFillColorDefaultBrush"/>
                     
                     <Style x:Key="CleanPaneButtonButtonStyle" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
                         <Setter Property="Background" Value="Transparent"/>

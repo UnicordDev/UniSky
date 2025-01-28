@@ -63,6 +63,6 @@ public sealed partial class ThreadPage : Page
         if (stackPanel == null)
             return;
 
-        stackPanel.Margin = new Thickness(0, HeaderContainer.ActualHeight, 0, ActualHeight - HeaderContainer.ActualHeight);
+        stackPanel.Margin = new Thickness(0, 0, 0, ActualHeight - HeaderContainer.ActualHeight);
     }
 }
