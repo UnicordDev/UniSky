@@ -50,7 +50,7 @@
                           Grid.Row="1"
                           VerticalAlignment="Top"
                           Foreground="White" 
-                          IsActive="True"
+                          IsActive="False"
                           Width="24"
                           Height="24"/>
         </Grid>

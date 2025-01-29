@@ -29,6 +29,7 @@ public class MutedWordsTests
                     ],
                     hiddenPosts: []
                 ),
+                labelers: [],
                 labelDefs: []
             );
 
@@ -73,6 +74,7 @@ public class MutedWordsTests
                     ],
                     hiddenPosts: []
                 ),
+                labelers: [],
                 labelDefs: []
             );
 
@@ -117,6 +119,7 @@ public class MutedWordsTests
                     ],
                     hiddenPosts: []
                 ),
+                labelers: [],
                 labelDefs: []
             );
 
@@ -165,6 +168,7 @@ public class MutedWordsTests
                     ],
                     hiddenPosts: []
                 ),
+                labelers: [],
                 labelDefs: []
             );
 
@@ -204,6 +208,7 @@ public class MutedWordsTests
                     ],
                     hiddenPosts: []
                 ),
+                labelers: [],
                 labelDefs: []
             );
 
@@ -243,6 +248,7 @@ public class MutedWordsTests
                     ],
                     hiddenPosts: []
                 ),
+                labelers: [],
                 labelDefs: []
             );
 
@@ -282,6 +288,7 @@ public class MutedWordsTests
                     ],
                     hiddenPosts: []
                 ),
+                labelers: [],
                 labelDefs: []
             );
 
@@ -326,6 +333,7 @@ public class MutedWordsTests
                     ],
                     hiddenPosts: []
                 ),
+                labelers: [],
                 labelDefs: []
             );
 
@@ -365,6 +373,7 @@ public class MutedWordsTests
                     ],
                     hiddenPosts: []
                 ),
+                labelers: [],
                 labelDefs: []
             );
 
@@ -404,6 +413,7 @@ public class MutedWordsTests
                     ],
                     hiddenPosts: []
                 ),
+                labelers: [],
                 labelDefs: []
             );
 
@@ -443,6 +453,7 @@ public class MutedWordsTests
                     ],
                     hiddenPosts: []
                 ),
+                labelers: [],
                 labelDefs: []
             );
 

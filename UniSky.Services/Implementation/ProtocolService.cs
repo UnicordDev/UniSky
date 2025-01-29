@@ -51,63 +51,93 @@ public class ProtocolService(ILogger<ProtocolService> logger) : IProtocolService
 
             _lastRefreshed = DateTimeOffset.Now;
 
-            // to ensure the session gets refreshed properly:
-            // - initially authenticate the client with the refresh token
-            // - refresh the sesssion
-            // - reauthenticate with the new session
-
-            var temporaryProtocol = new ATProtocolBuilder(Protocol.Options)
-                .Build();
-
-            var sessionRefresh = sessionModel.Session.Session;
-            var refreshSession = new AuthSession(
-                new Session(sessionRefresh.Did,
-                            sessionRefresh.DidDoc,
-                            sessionRefresh.Handle,
-                            sessionRefresh.Email,
-                            sessionRefresh.RefreshJwt,
-                            sessionRefresh.RefreshJwt,
-                            sessionRefresh.ExpiresIn));
-
-            await temporaryProtocol.AuthenticateWithPasswordSessionAsync(refreshSession);
-
-            var refreshedSession = (await temporaryProtocol.RefreshSessionAsync()
-                .ConfigureAwait(false))
-                .HandleResult();
-
-            var authSession2 = new AuthSession(
-                    new Session(refreshedSession.Did,
-                                refreshedSession.DidDoc ?? sessionRefresh.DidDoc,
-                                refreshedSession.Handle,
-                                sessionRefresh.Email,
-                                refreshedSession.AccessJwt,
-                                refreshedSession.RefreshJwt,
-                                DateTime.MaxValue));
-
-            var session2 = await temporaryProtocol.AuthenticateWithPasswordSessionAsync(authSession2)
-                .ConfigureAwait(false);
-            if (session2 == null)
-                throw new InvalidOperationException("Authentication failed!");
-
-            logger.LogInformation("Successfully refreshed session.");
-
-            var sessionModel2 = new SessionModel(true, sessionModel.Service, authSession2.Session, authSession2);
-            var sessionService = ServiceContainer.Scoped.GetRequiredService<ISessionService>();
-            sessionService.SaveSession(sessionModel2);
-
-            SetProtocol(temporaryProtocol);
-
-            var moderationService = ServiceContainer.Default.GetService<IModerationService>();
-            if (moderationService != null)
+            if (sessionModel.ExpiresAt != null && (sessionModel.ExpiresAt.Value - DateTime.Now) > TimeSpan.FromMinutes(5))
             {
-                await moderationService.ConfigureModerationAsync()
+                var sessionRefresh = sessionModel.Session.Session;
+                var session = new AuthSession(
+                    new Session(sessionRefresh.Did,
+                                sessionRefresh.DidDoc,
+                                sessionRefresh.Handle,
+                                sessionRefresh.Email,
+                                sessionRefresh.AccessJwt,
+                                sessionRefresh.RefreshJwt,
+                                sessionRefresh.ExpiresIn));
+
+                await Protocol.AuthenticateWithPasswordSessionAsync(session);
+
+                var moderationService = ServiceContainer.Default.GetService<IModerationService>();
+                if (moderationService != null)
+                {
+                    await moderationService.ConfigureModerationAsync()
+                        .ConfigureAwait(false);
+                }
+
+                _ = Task.Run(() => DoRefreshAsync(logger, sessionModel));
+            }
+            else
+            {
+                await DoRefreshAsync(logger, sessionModel)
                     .ConfigureAwait(false);
             }
-
         }
         finally
         {
             refreshTokenSemaphore.Release();
+        }
+    }
+
+    private async Task DoRefreshAsync(ILogger<ProtocolService> logger, SessionModel sessionModel)
+    {
+        // to ensure the session gets refreshed properly:
+        // - initially authenticate the client with the refresh token
+        // - refresh the sesssion
+        // - reauthenticate with the new session
+        var temporaryProtocol = new ATProtocolBuilder(Protocol.Options)
+            .Build();
+
+        var sessionRefresh = sessionModel.Session.Session;
+        var refreshSession = new AuthSession(
+            new Session(sessionRefresh.Did,
+                        sessionRefresh.DidDoc,
+                        sessionRefresh.Handle,
+                        sessionRefresh.Email,
+                        sessionRefresh.RefreshJwt,
+                        sessionRefresh.RefreshJwt,
+                        sessionRefresh.ExpiresIn));
+
+        await temporaryProtocol.AuthenticateWithPasswordSessionAsync(refreshSession);
+
+        var refreshedSession = (await temporaryProtocol.RefreshSessionAsync()
+            .ConfigureAwait(false))
+            .HandleResult();
+
+        var authSession2 = new AuthSession(
+                new Session(refreshedSession.Did,
+                            refreshedSession.DidDoc ?? sessionRefresh.DidDoc,
+                            refreshedSession.Handle,
+                            sessionRefresh.Email,
+                            refreshedSession.AccessJwt,
+                            refreshedSession.RefreshJwt,
+                            DateTime.Now + TimeSpan.FromHours(2)));
+
+        var session2 = await temporaryProtocol.AuthenticateWithPasswordSessionAsync(authSession2)
+            .ConfigureAwait(false);
+        if (session2 == null)
+            throw new InvalidOperationException("Authentication failed!");
+
+        logger.LogInformation("Successfully refreshed session.");
+
+        var sessionModel2 = new SessionModel(true, sessionModel.Service, authSession2.Session, authSession2);
+        var sessionService = ServiceContainer.Scoped.GetRequiredService<ISessionService>();
+        sessionService.SaveSession(sessionModel2);
+
+        SetProtocol(temporaryProtocol);
+
+        var moderationService = ServiceContainer.Default.GetService<IModerationService>();
+        if (moderationService != null)
+        {
+            await moderationService.ConfigureModerationAsync()
+                .ConfigureAwait(false);
         }
     }
 

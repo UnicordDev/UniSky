@@ -65,6 +65,6 @@ public record class SessionModel
                                        EmailAddress,
                                        AccessJwt,
                                        RefreshJwt,
-                                       ExpiresAt ?? DateTime.MaxValue),
+                                       ExpiresAt ?? DateTime.MinValue),
                            this.ProofKey ?? "");
 }

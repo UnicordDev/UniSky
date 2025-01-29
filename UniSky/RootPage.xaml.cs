@@ -6,6 +6,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Core;
+using System;
 
 namespace UniSky;
 
@@ -42,6 +43,19 @@ public sealed partial class RootPage : Page
         var serviceLocator = ServiceContainer.Scoped.GetRequiredService<INavigationServiceLocator>();
         var service = serviceLocator.GetNavigationService("Root");
         service.Frame = RootFrame;
+
+        var timer = new DispatcherTimer()
+        {
+            Interval = TimeSpan.FromSeconds(2)
+        };
+
+        timer.Tick += (o, e) =>
+        {
+            if (!dismissed)
+                ExtendedProgressRing.IsActive = true;
+        };
+
+        timer.Start();
     }
 
     void Dismiss()

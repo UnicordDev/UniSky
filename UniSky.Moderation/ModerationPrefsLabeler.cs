@@ -1,10 +1,12 @@
 ﻿using System.Collections.Frozen;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using FishyFlip.Lexicon.App.Bsky.Actor;
 using FishyFlip.Models;
 
 namespace UniSky.Moderation;
 
+[method: JsonConstructor]
 public record ModerationPrefsLabeler(
     ATDid Did,
     IDictionary<string, LabelPreference> Labels,
