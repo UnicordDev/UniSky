@@ -40,77 +40,81 @@ public class ModerationService(
 
             try
             {
-                var moderationCache = await ApplicationData.Current.LocalFolder.TryGetItemAsync($"ModerationCache.{GetSanitisedDid(did)}.json");
-                if (moderationCache is StorageFile file)
-                {
-                    using var stream = await file.OpenStreamForReadAsync();
-                    var cache = await JsonSerializer.DeserializeAsync(stream, JsonContext.Default.ModerationCache);
-                    if (cache == null)
-                        throw new InvalidOperationException("Invalid cache!");
-                    if ((DateTimeOffset.Now - cache.SavedAt) > TimeSpan.FromDays(1))
-                        throw new InvalidOperationException("Cache expired!");
+                var moderationCache = await ApplicationData.Current.LocalFolder.GetFileAsync($"ModerationCache.{GetSanitisedDid(did)}.json");
+                using var stream = await moderationCache.OpenStreamForReadAsync();
 
+                var cache = await JsonSerializer.DeserializeAsync(stream, JsonContext.Default.ModerationCache);
+                if (cache == null)
+                    throw new InvalidOperationException("Invalid cache!");
+                if ((DateTimeOffset.Now - cache.SavedAt) > TimeSpan.FromDays(1))
+                    throw new InvalidOperationException("Cache expired!");
 
+                await protocol.ConfigureLabelersAsync(cache.Options.Prefs.Labelers)
+                    .ConfigureAwait(false);
 
-                    await protocol.ConfigureLabelersAsync(cache.Options.Prefs.Labelers)
-                        .ConfigureAwait(false);
+                logger.LogDebug("Configured labelers header on protocol: {Header}", string.Join(", ", cache.Options.Prefs.Labelers.Select(l => l.Id)));
 
-                    logger.LogDebug("Configured labelers header on protocol: {Header}", string.Join(", ", cache.Options.Prefs.Labelers.Select(l => l.Id)));
+                ModerationOptions = cache.Options;
 
-                    ModerationOptions = cache.Options;
-                    return;
-                }
+                _ = Task.Run(() => FetchModerationOptionsAsync(protocol));
+                return;
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "Failed to load moderation cache, falling back!");
             }
 
-            var moderationPrefs = await protocol.GetModerationPrefsAsync()
+            await FetchModerationOptionsAsync(protocol)
                 .ConfigureAwait(false);
-
-            logger.LogDebug("Got moderation preferences, AdultContent = {AdultContentEnabled}, Labels = {Labels}, Labelers = {Labelers}, MutedWords = {MutedWords}, HiddenPosts = {HiddenPosts}",
-                moderationPrefs.AdultContentEnabled,
-                moderationPrefs.Labels.Count,
-                moderationPrefs.Labelers.Count,
-                moderationPrefs.MutedWords.Count,
-                moderationPrefs.HiddenPosts.Count);
-
-            moderationPrefs = moderationPrefs with
-            {
-                MutedWords =
-                [
-                    .. moderationPrefs.MutedWords,
-                ],
-                HiddenPosts =
-                [
-                    .. moderationPrefs.HiddenPosts,
-                ],
-            };
-
-            var labelDefs = await protocol.GetLabelDefinitionsAsync(moderationPrefs)
-                .ConfigureAwait(false);
-
-            // check if we got all the labelers
-            Debug.Assert(labelDefs.Labelers.Count == moderationPrefs.Labelers.Count);
-            logger.LogDebug("Fetched label definitions, Expected {LabelerCount}, got {FetchedLabelerCount}",
-                moderationPrefs.Labelers.Count,
-                labelDefs.Labelers.Count);
-
-            await protocol.ConfigureLabelersAsync(moderationPrefs.Labelers)
-                .ConfigureAwait(false);
-
-            logger.LogDebug("Configured labelers header on protocol: {Header}", string.Join(", ", moderationPrefs.Labelers.Select(l => l.Id)));
-
-            ModerationOptions = new ModerationOptions(protocol.Session.Did, moderationPrefs, labelDefs.Labelers, labelDefs.LabelDefs);
-
-            _ = Task.Run(SaveCacheAsync);
         }
         catch (Exception ex)
         {
             // TODO: do i just kill the app here? cause this is _bad_
             logger.LogCritical(ex, "Failed to configure moderation, this is bad.");
         }
+    }
+
+    private async Task FetchModerationOptionsAsync(ATProtocol protocol)
+    {
+        var moderationPrefs = await protocol.GetModerationPrefsAsync()
+                        .ConfigureAwait(false);
+
+        logger.LogDebug("Got moderation preferences, AdultContent = {AdultContentEnabled}, Labels = {Labels}, Labelers = {Labelers}, MutedWords = {MutedWords}, HiddenPosts = {HiddenPosts}",
+            moderationPrefs.AdultContentEnabled,
+            moderationPrefs.Labels.Count,
+            moderationPrefs.Labelers.Count,
+            moderationPrefs.MutedWords.Count,
+            moderationPrefs.HiddenPosts.Count);
+
+        moderationPrefs = moderationPrefs with
+        {
+            MutedWords =
+            [
+                .. moderationPrefs.MutedWords,
+            ],
+            HiddenPosts =
+            [
+                .. moderationPrefs.HiddenPosts,
+            ],
+        };
+
+        var labelDefs = await protocol.GetLabelDefinitionsAsync(moderationPrefs)
+            .ConfigureAwait(false);
+
+        // check if we got all the labelers
+        Debug.Assert(labelDefs.Labelers.Count == moderationPrefs.Labelers.Count);
+        logger.LogDebug("Fetched label definitions, Expected {LabelerCount}, got {FetchedLabelerCount}",
+            moderationPrefs.Labelers.Count,
+            labelDefs.Labelers.Count);
+
+        await protocol.ConfigureLabelersAsync(moderationPrefs.Labelers)
+            .ConfigureAwait(false);
+
+        logger.LogDebug("Configured labelers header on protocol: {Header}", string.Join(", ", moderationPrefs.Labelers.Select(l => l.Id)));
+
+        ModerationOptions = new ModerationOptions(protocol.Session.Did, moderationPrefs, labelDefs.Labelers, labelDefs.LabelDefs);
+
+        _ = Task.Run(SaveCacheAsync);
     }
 
     private async Task SaveCacheAsync()
