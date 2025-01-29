@@ -6,11 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FishyFlip" Version="3.3.2" />
     <PackageReference Include="System.Text.Json" Version="9.0.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Libraries\FishyFlip\src\FishyFlip\FishyFlip.csproj" />
     <ProjectReference Include="..\UniSky.Moderation\UniSky.Moderation.csproj" />
   </ItemGroup>
   

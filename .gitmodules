@@ -1,0 +1,3 @@
+[submodule "Libraries/FishyFlip"]
+	path = Libraries/FishyFlip
+	url = https://github.com/UnicordDev/FishyFlip.git

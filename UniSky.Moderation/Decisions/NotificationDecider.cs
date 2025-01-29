@@ -8,7 +8,7 @@ internal static class NotificationDecider
 {
     public static ModerationDecision Decide(ModerationSubjectNotification subject, ModerationOptions options)
     {
-        var decision = new ModerationDecision(subject.Author.Did!, subject.Author.Did!.Handler == options.UserDid.Handler, []);
+        var decision = new ModerationDecision(subject.Author.Did!, subject.Author.Did! == options.UserDid, []);
         foreach (var label in subject.Labels)
             decision = decision.AddLabel(LabelTarget.Content, label, options);
 

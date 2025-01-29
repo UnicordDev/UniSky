@@ -8,7 +8,7 @@ internal static class FeedGeneratorDecider
 {
     public static ModerationDecision Decide(ModerationSubjectFeedGenerator subject, ModerationOptions options)
     {
-        var decision = new ModerationDecision(subject.Creator.Did!, subject.Creator.Did?.Handler == options.UserDid.Handler, []);
+        var decision = new ModerationDecision(subject.Creator.Did!, subject.Creator.Did == options.UserDid, []);
         foreach (var label in subject.Labels)
             decision = decision.AddLabel(LabelTarget.Content, label, options);
 

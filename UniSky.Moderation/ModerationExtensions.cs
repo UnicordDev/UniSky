@@ -17,7 +17,7 @@ public static class ModerationExtensions
     {
         foreach (var items in labelers)
         {
-            protocol.Options.LabelParameters.Add(LabelParameter.Create(items.Did.Handler, items.Redact ? ["redact"] : []));
+            protocol.Options.LabelParameters.Add(LabelParameter.Create(items.Did.ToString(), items.Redact ? ["redact"] : []));
         }
 
         return Task.CompletedTask;
@@ -73,7 +73,7 @@ public static class ModerationExtensions
         {
             if (pref.LabelerDid != null)
             {
-                var labeler = labelers.FirstOrDefault(l => l.Did.Handler == pref.LabelerDid.Handler);
+                var labeler = labelers.FirstOrDefault(l => l.Did == pref.LabelerDid);
                 if (labeler == null) continue;
 
                 labeler.Labels[pref.Label!] = pref.Visibility switch
@@ -114,8 +114,8 @@ public static class ModerationExtensions
             if (def.Creator?.Did == null)
                 continue;
 
-            labelersDict[def.Creator.Did.Handler] = def;
-            labelDefs[def.Creator.Did.Handler] =
+            labelersDict[def.Creator.Did.ToString()] = def;
+            labelDefs[def.Creator.Did.ToString()] =
                 def.Policies?.LabelValueDefinitions?.Select(s => new InterpretedLabelValueDefinition(s, def.Creator.Did)).ToArray() ?? [];
         }
 

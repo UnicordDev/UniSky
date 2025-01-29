@@ -40,20 +40,21 @@ public class ModerationService(
             try
             {
                 var moderationCache = await ApplicationData.Current.LocalFolder.GetFileAsync($"ModerationCache.{GetSanitisedDid(did)}.json");
-                using var stream = await moderationCache.OpenStreamForReadAsync();
+                using (var stream = await moderationCache.OpenStreamForReadAsync())
+                {
+                    var cache = await JsonSerializer.DeserializeAsync(stream, JsonContext.Default.ModerationCache);
+                    if (cache == null)
+                        throw new InvalidOperationException("Invalid cache!");
+                    if ((DateTimeOffset.Now - cache.SavedAt) > TimeSpan.FromDays(1))
+                        throw new InvalidOperationException("Cache expired!");
 
-                var cache = await JsonSerializer.DeserializeAsync(stream, JsonContext.Default.ModerationCache);
-                if (cache == null)
-                    throw new InvalidOperationException("Invalid cache!");
-                if ((DateTimeOffset.Now - cache.SavedAt) > TimeSpan.FromDays(1))
-                    throw new InvalidOperationException("Cache expired!");
+                    await protocol.ConfigureLabelersAsync(cache.Options.Prefs.Labelers)
+                        .ConfigureAwait(false);
 
-                await protocol.ConfigureLabelersAsync(cache.Options.Prefs.Labelers)
-                    .ConfigureAwait(false);
+                    logger.LogDebug("Configured labelers header on protocol: {Header}", string.Join(", ", cache.Options.Prefs.Labelers.Select(l => l.Id)));
 
-                logger.LogDebug("Configured labelers header on protocol: {Header}", string.Join(", ", cache.Options.Prefs.Labelers.Select(l => l.Id)));
-
-                ModerationOptions = cache.Options;
+                    ModerationOptions = cache.Options;
+                }
 
                 _ = Task.Run(() => FetchModerationOptionsAsync(protocol));
                 return;
@@ -113,7 +114,8 @@ public class ModerationService(
 
         ModerationOptions = new ModerationOptions(protocol.Session.Did, moderationPrefs, labelDefs.Labelers, labelDefs.LabelDefs);
 
-        _ = Task.Run(SaveCacheAsync);
+        //_ = Task.Run();
+        await SaveCacheAsync();
     }
 
     private async Task SaveCacheAsync()
@@ -143,7 +145,7 @@ public class ModerationService(
             return true;
         }
 
-        if (ModerationOptions.Labelers.TryGetValue(labelDef.DefinedBy.Handler, out var detailed))
+        if (ModerationOptions.Labelers.TryGetValue(labelDef.DefinedBy.ToString(), out var detailed))
         {
             displayName = detailed.Creator?.DisplayName ?? "Unknown Labeler";
             return true;

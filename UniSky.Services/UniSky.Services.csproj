@@ -160,9 +160,6 @@
     <EmbeddedResource Include="Properties\UniSky.Services.rd.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FishyFlip">
-      <Version>3.3.2</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.14</Version>
     </PackageReference>
@@ -171,6 +168,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Libraries\FishyFlip\src\FishyFlip\FishyFlip.csproj">
+      <Project>{f8a5216c-0701-44e5-ab1e-1a99f9564191}</Project>
+      <Name>FishyFlip</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UniSky.Models\UniSky.Models.csproj">
       <Project>{7491ea1a-e1b7-469c-a3c2-5202aa14ce26}</Project>
       <Name>UniSky.Models</Name>

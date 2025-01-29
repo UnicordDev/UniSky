@@ -24,7 +24,7 @@ internal static class PostDecider
 
     public static ModerationDecision Decide(ModerationSubjectPost subject, ModerationOptions options)
     {
-        var decision = new ModerationDecision(subject.Author!.Did!, subject.Author!.Did!.Handler == options.UserDid.Handler, []);
+        var decision = new ModerationDecision(subject.Author!.Did!, subject.Author!.Did == options.UserDid, []);
         foreach (var label in subject.Labels)
             decision = decision.AddLabel(LabelTarget.Content, label, options);
 
@@ -58,7 +58,7 @@ internal static class PostDecider
 
     private static ModerationDecision DecideQuotedPost(ViewRecord subject, ModerationOptions options)
     {
-        var decision = new ModerationDecision(subject.Author!.Did!, subject.Author!.Did!.Handler == options.UserDid.Handler, []);
+        var decision = new ModerationDecision(subject.Author!.Did!, subject.Author!.Did == options.UserDid, []);
         foreach (var label in subject.Labels ?? [])
             decision = decision.AddLabel(LabelTarget.Content, label, options);
 
@@ -70,7 +70,7 @@ internal static class PostDecider
 
     private static ModerationDecision DecideBlockedQuotedPost(ViewBlocked subject, ModerationOptions options)
     {
-        var decision = new ModerationDecision(subject.Author!.Did!, subject.Author!.Did!.Handler == options.UserDid.Handler, []);
+        var decision = new ModerationDecision(subject.Author!.Did!, subject.Author!.Did == options.UserDid, []);
 
         if (subject.Author.Viewer?.Muted == true)
         {

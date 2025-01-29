@@ -13,7 +13,7 @@ internal static class UserListDecider
         ModerationDecision decision;
         if (subject.Creator is ProfileView { Did: { } } creator)
         {
-            decision = new ModerationDecision(creator.Did, creator.Did.Handler == options.UserDid.Handler, []);
+            decision = new ModerationDecision(creator.Did, creator.Did == options.UserDid, []);
             foreach (var label in subject.Labels)
                 decision = decision.AddLabel(LabelTarget.Content, label, options);
 
@@ -25,7 +25,7 @@ internal static class UserListDecider
         }
 
         var did = new ATDid(subject.Uri.Hostname);
-        decision = new ModerationDecision(did, did.Handler == options.UserDid.Handler, []);
+        decision = new ModerationDecision(did, did == options.UserDid, []);
         foreach (var label in subject.Labels)
             decision = decision.AddLabel(LabelTarget.Content, label, options);
 

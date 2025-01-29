@@ -21,5 +21,5 @@ public record ModerationPrefsLabeler(
         : this(did, (IDictionary<string, LabelPreference>)labels) { }
 
     public string Id
-        => Did.Handler + (Redact ? ";redact" : "");
+        => Did.ToString() + (Redact ? ";redact" : "");
 }

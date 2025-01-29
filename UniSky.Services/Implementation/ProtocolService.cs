@@ -63,7 +63,8 @@ public class ProtocolService(ILogger<ProtocolService> logger) : IProtocolService
                                 sessionRefresh.RefreshJwt,
                                 sessionRefresh.ExpiresIn));
 
-                await Protocol.AuthenticateWithPasswordSessionAsync(session);
+                await Protocol.AuthenticateWithPasswordSessionResultAsync(session)
+                    .ConfigureAwait(false);
 
                 var moderationService = ServiceContainer.Default.GetService<IModerationService>();
                 if (moderationService != null)
@@ -105,7 +106,9 @@ public class ProtocolService(ILogger<ProtocolService> logger) : IProtocolService
                         sessionRefresh.RefreshJwt,
                         sessionRefresh.ExpiresIn));
 
-        await temporaryProtocol.AuthenticateWithPasswordSessionAsync(refreshSession);
+        var session = (await temporaryProtocol.AuthenticateWithPasswordSessionResultAsync(refreshSession)
+            .ConfigureAwait(false))
+            .HandleResult();
 
         var refreshedSession = (await temporaryProtocol.RefreshSessionAsync()
             .ConfigureAwait(false))
@@ -120,8 +123,10 @@ public class ProtocolService(ILogger<ProtocolService> logger) : IProtocolService
                             refreshedSession.RefreshJwt,
                             DateTime.Now + TimeSpan.FromHours(2)));
 
-        var session2 = await temporaryProtocol.AuthenticateWithPasswordSessionAsync(authSession2)
-            .ConfigureAwait(false);
+        var session2 = (await temporaryProtocol.AuthenticateWithPasswordSessionResultAsync(authSession2)
+            .ConfigureAwait(false))
+            .HandleResult();
+
         if (session2 == null)
             throw new InvalidOperationException("Authentication failed!");
 
