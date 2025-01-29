@@ -55,7 +55,11 @@ public sealed partial class SearchPage : Page, IScrollToTop
 
     private void OnSafeAreaUpdated(object sender, SafeAreaUpdatedEventArgs e)
     {
-        TitleBarPadding.Height = new GridLength(e.SafeArea.Bounds.Top);
+        var themeService = ServiceContainer.Scoped.GetRequiredService<IThemeService>();
+        if (themeService.GetTheme() == AppTheme.SunValley)
+            TitleBarPadding.Height = new GridLength(0);
+        else
+            TitleBarPadding.Height = new GridLength(e.SafeArea.Bounds.Top);
     }
 
     private async void SearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
@@ -93,6 +97,10 @@ public sealed partial class SearchPage : Page, IScrollToTop
 
     private void RootList_Loaded(object sender, RoutedEventArgs e)
     {
+        var themeService = ServiceContainer.Scoped.GetRequiredService<IThemeService>();
+        if (themeService.GetTheme() == AppTheme.SunValley)
+            return;
+
         if (ApiInformation.IsApiContractPresent(typeof(UniversalApiContract).FullName, 7))
         {
             var scrollViewer = RootList.FindDescendant<ScrollViewer>();

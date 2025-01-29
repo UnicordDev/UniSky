@@ -6,9 +6,10 @@
     xmlns:extensions="using:UniSky.Extensions"
     xmlns:notifications="using:UniSky.ViewModels.Notifications"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:converters="using:UniSky.Converters" xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:converters="using:UniSky.Converters" 
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    mc:Ignorable="d">
 
     <Page.Resources>
         <ResourceDictionary>
@@ -112,17 +113,17 @@
         </Grid.RowDefinitions>
 
         <Border Grid.RowSpan="2"
-                Background="{ThemeResource SystemControlChromeMediumAcrylicElementMediumBrush}"
+                Background="{ThemeResource GenericPageHeaderBackgroundBrush}"
                 BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
                 extensions:Hairline.BorderThickness="0,0,0,1"/>
+        
+        <Border Grid.Row="1" Padding="{ThemeResource GenericPageHeaderMargin}">
+            <TextBlock x:Uid="NotificationsPageTitleBlock"
+                       Margin="12,4,12,12"
+                       Text="NOTIFICATIONS"
+                       Style="{ThemeResource BaseTextBlockStyle}"/>
+        </Border>
 
-        <TextBlock x:Uid="NotificationsPageTitleBlock"
-                   Grid.Row="1"
-                   Margin="12,4,12,12"
-                   Text="NOTIFICATIONS"
-                   Style="{ThemeResource BaseTextBlockStyle}"/>
-        
-        
         <ListView x:Name="RootList"
                   Grid.Row="2"
                   Canvas.ZIndex="-1"

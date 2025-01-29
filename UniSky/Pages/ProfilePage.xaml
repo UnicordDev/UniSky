@@ -8,12 +8,12 @@
     xmlns:profile="using:UniSky.ViewModels.Profile" 
     xmlns:converters="using:UniSky.Converters"
     xmlns:extensions="using:UniSky.Extensions"
+    xmlns:labels="using:UniSky.Controls.Labels"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:mux="using:Microsoft.UI.Xaml.Controls"
     xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
-    xmlns:aurora="using:System.Windows.Shell.Aurora" xmlns:labels="using:UniSky.Controls.Labels"
+    xmlns:aurora="using:System.Windows.Shell.Aurora"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     Loaded="Page_Loaded"
     NavigationCacheMode="Enabled"
     d:MaxWidth="600">
@@ -32,7 +32,7 @@
                   HorizontalAlignment="Stretch"
                   HorizontalContentAlignment="Stretch"
                   ScrollViewer.IsVerticalScrollChainingEnabled="True"
-                  w1809:ScrollViewer.CanContentRenderOutsideBounds="True">
+                  w1809:ScrollViewer.CanContentRenderOutsideBounds="False">
             <ListView.Resources>
                 <SolidColorBrush Color="Transparent" x:Key="ListViewItemRevealBackground"/>
                 <SolidColorBrush Color="Transparent" x:Key="ListViewItemBackgroundPointerOver"/>
@@ -47,6 +47,7 @@
             <ListView.Header>
                 <Grid x:Name="ProfileContainer"
                       extensions:Hairline.BorderThickness="0,0,0,1"
+                      Background="{ThemeResource ProfileHeaderRootBackgroundBrush}"
                       BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
                       SizeChanged="Page_SizeChanged">
                     <Grid.RowDefinitions>
@@ -60,24 +61,29 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
+                    <Border Canvas.ZIndex="-3"
+                            Grid.ColumnSpan="2"
+                            Grid.RowSpan="4"
+                            Background="{ThemeResource ProfilePageHeaderCoverBrush}"/>
+
                     <Border Canvas.ZIndex="-2"
                             Grid.ColumnSpan="2"
                             Grid.RowSpan="3"
-                            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"/>
+                            Background="{ThemeResource ProfilePageHeaderBackgroundBrush}"/>
 
                     <Border Canvas.ZIndex="-2"
                             Grid.ColumnSpan="2"
                             Grid.Row="4"
-                            Background="{ThemeResource SystemControlChromeMediumAcrylicElementMediumBrush}"/>
+                            Background="{ThemeResource ProfilePageHeaderStickyBackgroundBrush}"/>
 
                     <Grid x:Name="HeaderGrid"
                           Grid.ColumnSpan="2"
-                          Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}">
+                          Background="{ThemeResource ProfilePageHeaderBannerBackgroundBrush}">
                         <controls:ConstrainedBox x:Name="ProfileBanner" AspectRatio="3:1">
                             <Grid>
-                                <aurora:PreviewPaneAuroraControl x:Name="PreviewPaneAurora"
+                                <!--<aurora:PreviewPaneAuroraControl x:Name="PreviewPaneAurora"
                                                                  x:Load="{x:Bind converters:Static.NullOrWhiteSpace(ViewModel.BannerUrl), Mode=OneWay}"
-                                                                 Color="{ThemeResource SystemAccentColor}"/>
+                                                                 Color="{ThemeResource SystemAccentColor}"/>-->
                                 <Image Source="{Binding BannerUrl}"
                                        HorizontalAlignment="Center"
                                        Stretch="UniformToFill"/>
@@ -129,6 +135,7 @@
                         <TextBlock x:Name="DisplayNameBlock" 
                                    Grid.Row="0"
                                    Style="{ThemeResource SubtitleTextBlockStyle}" 
+                                   FontFamily="{ThemeResource HeadingThemeFontFamily}"
                                    Text="{Binding Name}"
                                    TextWrapping="NoWrap"
                                    MaxLines="1"
@@ -136,6 +143,7 @@
                         <TextBlock x:Name="HandleBlock" 
                                    Grid.Row="1"
                                    Style="{ThemeResource BaseTextBlockStyle}" 
+                                   FontFamily="{ThemeResource ContentControlThemeFontFamily}"
                                    Text="{Binding Handle}"
                                    TextWrapping="NoWrap"
                                    MaxLines="1"
@@ -144,6 +152,7 @@
                                    Grid.Row="2"
                                    Grid.ColumnSpan="2"
                                    Style="{ThemeResource CaptionTextBlockStyle}"
+                                   FontFamily="{ThemeResource ContentControlThemeFontFamily}"
                                    Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
                                    Typography.NumeralAlignment="Tabular"
                                    Margin="0,4,0,0"
@@ -171,6 +180,7 @@
                                 Canvas.ZIndex="-1">
                         <TextBlock Text="{Binding Bio}"
                                    Style="{ThemeResource BodyTextBlockStyle}"
+                                   FontFamily="{ThemeResource ContentControlThemeFontFamily}"
                                    Margin="12,0,12,8"
                                    TextWrapping="Wrap"
                                    IsTextSelectionEnabled="True"
@@ -183,10 +193,10 @@
                     <Grid x:Name="StickyFooter"
                           Grid.Row="3"
                           Grid.ColumnSpan="3"
+                          Padding="8,2"
                           BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
                           extensions:Hairline.BorderThickness="0,1,0,0">
-                        <ItemsControl ItemsSource="{Binding Feeds}"
-                                      Margin="2,0">
+                        <ItemsControl ItemsSource="{Binding Feeds}" >
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <StackPanel Orientation="Horizontal"/>
@@ -201,8 +211,7 @@
                                                      FontSize="{ThemeResource ContentControlFontSize}"
                                                      FontFamily="{ThemeResource ContentControlThemeFontFamily}"
                                                      IsChecked="{Binding Selected, Mode=TwoWay}"
-                                                     Padding="10,8"
-                                                     extensions:Hairline.Margin="0,-1,0,-1"/>
+                                                     Padding="10,8"/>
                                     </Border>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
@@ -227,11 +236,14 @@
                         <TextBlock x:Name="ScrolledDisplayNameBlock"
                                    Grid.Row="0"
                                    Style="{ThemeResource SubtitleTextBlockStyle}" 
+                                   FontFamily="{ThemeResource ContentControlThemeFontFamily}"
                                    Text="{Binding Name}"
                                    TextWrapping="NoWrap"
                                    TextTrimming="CharacterEllipsis"
                                    MaxLines="1"/>
-                        <TextBlock x:Name="ScrolledHandleBlock" Style="{ThemeResource CaptionTextBlockStyle}" 
+                        <TextBlock x:Name="ScrolledHandleBlock" 
+                                   Style="{ThemeResource CaptionTextBlockStyle}" 
+                                   FontFamily="{ThemeResource ContentControlThemeFontFamily}"
                                    Grid.Row="1"
                                    Text="{Binding Handle}"
                                    TextWrapping="NoWrap"
@@ -245,6 +257,7 @@
                                 Grid.RowSpan="2"/>
 
                         <Button x:Name="ScrolledFollowButton"
+                                x:Load="{x:Bind converters:Static.Not(ViewModel.IsMe), Mode=OneWay}"
                                 Style="{ThemeResource ButtonRevealStyle}"
                                 Command="{Binding FollowCommand}"
                                 Grid.Column="1"

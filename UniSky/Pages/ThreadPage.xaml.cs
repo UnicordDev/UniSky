@@ -48,7 +48,12 @@ public sealed partial class ThreadPage : Page
 
     private void OnSafeAreaUpdated(object sender, SafeAreaUpdatedEventArgs e)
     {
-        HeaderGrid.Padding = e.SafeArea.Bounds with { Bottom = 0, Left = 0, Right = 0 };
+        var themeService = ServiceContainer.Scoped.GetRequiredService<IThemeService>();
+        if (themeService.GetTheme() == AppTheme.SunValley)
+            HeaderGrid.Padding = new Thickness(0);
+        else
+            HeaderGrid.Padding = new Thickness(0, e.SafeArea.Bounds.Top, 0, 0);
+
         HandleScrolling();
     }
 
@@ -63,6 +68,6 @@ public sealed partial class ThreadPage : Page
         if (stackPanel == null)
             return;
 
-        stackPanel.Margin = new Thickness(0, HeaderContainer.ActualHeight, 0, ActualHeight - HeaderContainer.ActualHeight);
+        stackPanel.Margin = new Thickness(0, 0, 0, ActualHeight - HeaderContainer.ActualHeight);
     }
 }

@@ -5,33 +5,33 @@ using Windows.ApplicationModel;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
 
-namespace UniSky.Themes
+namespace UniSky.Themes;
+
+internal class ThemeResources : ResourceDictionary
 {
-    internal class ThemeResources : ResourceDictionary
+    public ThemeResources()
     {
-        public ThemeResources()
+        AppTheme theme;
+        if (!DesignMode.DesignModeEnabled)
         {
-            AppTheme theme;
-            if (!DesignMode.DesignModeEnabled)
-            {
-                theme = ServiceContainer.Scoped.GetRequiredService<IThemeService>()
-                    .GetTheme();
-            }
-            else
-            {
-                theme = AppTheme.Fluent;
-            }
-
-            Uri uri = theme switch
-            {
-                AppTheme.OLED => new Uri("ms-appx:///Themes/OLED.xaml"),
-                AppTheme.Fluent => new Uri("ms-appx:///Themes/Fluent.xaml"),
-                AppTheme.Performance => new Uri("ms-appx:///Themes/Performance.xaml"),
-                AppTheme.SunValley => new Uri("ms-appx:///Themes/SunValley.xaml"),
-                _ => throw new InvalidOperationException("Unknown theme"),
-            };
-
-            Application.LoadComponent(this, uri, ComponentResourceLocation.Application);
+            var themeService = ServiceContainer.Scoped.GetRequiredService<IThemeService>();
+            theme = themeService.GetTheme();
         }
+        else
+        {
+            theme = AppTheme.Fluent;
+        }
+
+        Uri uri = theme switch
+        {
+            AppTheme.OLED => new Uri("ms-appx:///Themes/OLED.xaml"),
+            AppTheme.Fluent => new Uri("ms-appx:///Themes/Fluent.xaml"),
+            AppTheme.Performance => new Uri("ms-appx:///Themes/Performance.xaml"),
+            AppTheme.SunValley => new Uri("ms-appx:///Themes/SunValley.xaml"),
+            AppTheme.Dim => new Uri("ms-appx:///Themes/Dim.xaml"),
+            _ => throw new InvalidOperationException("Unknown theme"),
+        };
+
+        Application.LoadComponent(this, uri, ComponentResourceLocation.Application);
     }
 }

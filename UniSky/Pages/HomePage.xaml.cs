@@ -30,16 +30,11 @@ public sealed partial class HomePage : Page
     public HomePage()
     {
         this.InitializeComponent();
-
-        AppTitleSuffixTextBlock.Text = Constants.Version;
-        AppTitleSuffixTextBlock.Visibility = Visibility.Visible;
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
-
-        Window.Current.SetTitleBar(TitleBarDrag);
 
         var safeAreaService = ServiceContainer.Scoped.GetRequiredService<ISafeAreaService>();
         safeAreaService.SetTitlebarTheme(ElementTheme.Default);
@@ -55,26 +50,19 @@ public sealed partial class HomePage : Page
     {
         if (e.SafeArea.HasTitleBar)
         {
-            AppTitleBar.Visibility = Visibility.Visible;
-            AppTitleBar.Height = e.SafeArea.Bounds.Top;
             PaneHeader.Margin = new Thickness();
+
+            var themeService = ServiceContainer.Scoped.GetRequiredService<IThemeService>();
+            if (themeService.GetTheme() == AppTheme.SunValley)
+            {
+                FrameContainer.Margin = new Thickness(0, e.SafeArea.Bounds.Top + 1, 0, 0);
+            }
         }
         else
         {
-            AppTitleBar.Visibility = Visibility.Collapsed;
             PaneHeader.Margin = new Thickness(0, e.SafeArea.Bounds.Top, 0, 0);
         }
 
-        if (e.SafeArea.IsActive)
-        {
-            VisualStateManager.GoToState(AppTitleBarContainer, "Active", true);
-        }
-        else
-        {
-            VisualStateManager.GoToState(AppTitleBarContainer, "Inactive", true);
-        }
-
-        AppTitleBarContainer.RequestedTheme = e.SafeArea.Theme;
         Margin = new Thickness(e.SafeArea.Bounds.Left, 0, e.SafeArea.Bounds.Right, e.SafeArea.Bounds.Bottom);
     }
 

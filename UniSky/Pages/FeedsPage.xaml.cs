@@ -40,7 +40,11 @@ public sealed partial class FeedsPage : Page, IScrollToTop
 
     private void OnSafeAreaUpdated(object sender, SafeAreaUpdatedEventArgs e)
     {
-        RootGrid.Padding = new Thickness(0, e.SafeArea.Bounds.Top, 0, 0);
+        var themeService = ServiceContainer.Scoped.GetRequiredService<IThemeService>();
+        if (themeService.GetTheme() == AppTheme.SunValley)
+            RootGrid.Padding = new Thickness(0);
+        else
+            RootGrid.Padding = new Thickness(0, e.SafeArea.Bounds.Top, 0, 0);
     }
 
     private async void OnRefreshRequested(MUXC.RefreshContainer sender, MUXC.RefreshRequestedEventArgs args)

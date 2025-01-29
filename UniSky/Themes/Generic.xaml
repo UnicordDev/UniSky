@@ -8,6 +8,7 @@
         <ResourceDictionary Source="/Controls/RadialProgressBar/RadialProgressBar.xaml"/>
         <ResourceDictionary Source="/Controls/Spoiler/SpoilerControl.xaml"/>
         <ResourceDictionary Source="/Controls/Labels/LabelsControl.xaml"/>
+        <ResourceDictionary Source="/Controls/TitleBar/TitleBar.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

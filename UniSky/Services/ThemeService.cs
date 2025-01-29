@@ -2,19 +2,25 @@
 
 namespace UniSky.Services;
 
-internal class ThemeService(ISettingsService settings) : IThemeService
+internal class ThemeService : IThemeService
 {
     private const string Themes_AppTheme = "AppTheme";
     private const string Themes_AppThemeSetOnLaunch = "AppThemeSet";
+    private readonly ISettingsService settings;
 
-    public AppTheme GetTheme()
+    public ThemeService(ISettingsService settings)
     {
+        this.settings = settings;
+
         if (settings.TryRead<int>(Themes_AppThemeSetOnLaunch, out var value))
         {
             settings.Save(Themes_AppTheme, value);
             settings.TryDelete(Themes_AppThemeSetOnLaunch);
         }
+    }
 
+    public AppTheme GetTheme()
+    {
         if (settings.TryRead<int>(Themes_AppTheme, out var theme))
             return (AppTheme)theme;
 
@@ -44,9 +50,9 @@ internal class ThemeService(ISettingsService settings) : IThemeService
 
     public AppTheme GetDefaultAppTheme()
     {
-        //var osBuild = SystemInformation.OperatingSystemVersion.Build;
-        //if (osBuild >= 22000)
-        //    return AppTheme.SunValley;
+        var osBuild = SystemInformation.OperatingSystemVersion.Build;
+        if (osBuild >= 22000)
+            return AppTheme.SunValley;
 
         if (SystemInformation.DeviceFamily == "Windows.Mobile")
             return AppTheme.Performance;

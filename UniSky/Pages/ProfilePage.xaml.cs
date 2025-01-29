@@ -229,10 +229,11 @@ public sealed partial class ProfilePage : Page, IScrollToTop
     {
         if (ProfileContainer.ActualHeight == 0)
             return;
-
+        
         var safeAreaService = ServiceContainer.Scoped.GetRequiredService<ISafeAreaService>();
+        var themeService = ServiceContainer.Scoped.GetRequiredService<IThemeService>();
 
-        var titleBarHeight = (float)safeAreaService.State.Bounds.Top + 4;
+        var titleBarHeight = themeService.GetTheme() == AppTheme.SunValley ? 4 : (float)safeAreaService.State.Bounds.Top + 4;
         var stickyHeight = (float)StickyFooter.ActualHeight;
         var totalSize = (float)ProfileContainer.ActualHeight;
         var clampHeight = (float)(52 + titleBarHeight) + stickyHeight;

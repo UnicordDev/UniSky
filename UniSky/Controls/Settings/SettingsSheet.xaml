@@ -40,8 +40,9 @@
                       SelectedIndex="{Binding ApplicationTheme, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}">
                 <ComboBoxItem x:Uid="SettingsAppThemeItem_Performance" Content="Performance" />
                 <ComboBoxItem x:Uid="SettingsAppThemeItem_Fluent" Content="Fluent" />
-                <ComboBoxItem x:Uid="SettingsAppThemeItem_SunValley" Content="Sun Valley" IsEnabled="False" />
+                <ComboBoxItem x:Uid="SettingsAppThemeItem_SunValley" Content="Sun Valley" IsEnabled="{Binding SunValleyThemeSupported}" />
                 <ComboBoxItem x:Uid="SettingsAppThemeItem_OLED" Content="OLED" IsEnabled="False" />
+                <ComboBoxItem x:Uid="SettingsAppThemeItem_Nighttime" Content="Nighttime"  />
             </ComboBox>
             
             <ToggleSwitch x:Uid="SettingsUseMultipleWindowsSwitch"

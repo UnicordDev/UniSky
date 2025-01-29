@@ -35,6 +35,8 @@
                                         <Setter Target="PaneHeaderContentBorder.(Grid.ColumnSpan)" Value="3"/>
                                         <Setter Target="PaneContentGrid.Margin" Value="0,0,0,32"/>
                                         <Setter Target="PaneToggleButtonGrid.VerticalAlignment" Value="Bottom"/>
+                                        <Setter Target="PaneToggleButtonGrid.Margin" Value="{ThemeResource NavigationViewPaneToggleButtonMargin}"/>
+                                        <Setter Target="PaneToggleButtonGrid.Width" Value="42"/>
                                     </VisualState.Setters>
                                 </VisualState>
 
@@ -156,7 +158,6 @@
                             x:Name="PaneToggleButtonGrid"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
-                            Margin="0,1,0,0"
                             Canvas.ZIndex="100">
 
                             <Grid.RowDefinitions>

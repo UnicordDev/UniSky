@@ -1,15 +1,34 @@
-﻿using Microsoft.Toolkit.Uwp.Helpers;
+﻿using System.ComponentModel;
+using Microsoft.Toolkit.Uwp.Helpers;
 using UniSky.Services;
 using Windows.ApplicationModel.Resources.Core;
 using Windows.UI.Xaml;
 
 namespace UniSky.ViewModels.Settings;
 
-public class SettingsViewModel(ITypedSettings settingsService, IThemeService themeService) : ViewModelBase, ITypedSettings
+public class SettingsViewModel : ViewModelBase, ITypedSettings
 {
-    private readonly int _initialColour = (int)settingsService.RequestedColourScheme;
-    private readonly bool _initialTwitterLocale = settingsService.UseTwitterLocale;
-    private readonly int _initialTheme = (int)themeService.GetThemeForDisplay();
+    private readonly ITypedSettings settingsService;
+    private readonly IThemeService themeService;
+    private readonly int _initialColour;
+    private readonly bool _initialTwitterLocale;
+    private readonly int _initialTheme;
+
+    public SettingsViewModel(ITypedSettings settingsService, IThemeService themeService)
+    {
+        this.settingsService = settingsService;
+        this.themeService = themeService;
+        this.settingsService.SettingChanged += OnSettingChanged;
+
+        _initialColour = (int)settingsService.RequestedColourScheme;
+        _initialTwitterLocale = settingsService.UseTwitterLocale;
+        _initialTheme = (int)themeService.GetThemeForDisplay();
+    }
+
+    private void OnSettingChanged(object sender, PropertyChangedEventArgs e)
+    {
+        this.OnPropertyChanged(e.PropertyName);
+    }
 
     public bool SunValleyThemeSupported
         => SystemInformation.OperatingSystemVersion.Build >= 17763;
@@ -78,4 +97,17 @@ public class SettingsViewModel(ITypedSettings settingsService, IThemeService the
 
     public bool IsDirty
         => ApplicationTheme != _initialTheme || ColourScheme != _initialColour || _initialTwitterLocale != UseTwitterLocale;
+
+    public event PropertyChangedEventHandler SettingChanged
+    {
+        add
+        {
+            settingsService.SettingChanged += value;
+        }
+
+        remove
+        {
+            settingsService.SettingChanged -= value;
+        }
+    }
 }

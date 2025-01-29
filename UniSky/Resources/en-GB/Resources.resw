@@ -398,7 +398,7 @@
     <value>RESTART REQUIRED</value>
   </data>
   <data name="SettingsNeedsRelaunchInfoBlock.Text" xml:space="preserve">
-    <value>Unisky must be restarted for some changes to take effect. Do you want to relaunch now?</value>
+    <value>Unisky must be restarted for some changes to take effect. Do you want to restart now?</value>
   </data>
   <data name="SettingsOptionsHeaderBlock.Text" xml:space="preserve">
     <value>Options</value>
@@ -505,5 +505,11 @@
   </data>
   <data name="SettingsVideosInFeedsSwitch.Header" xml:space="preserve">
     <value>Show videos inline in feeds</value>
+  </data>
+  <data name="SettingsNeedsRelaunchDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Not now</value>
+  </data>
+  <data name="SettingsNeedsRelaunchDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Restart</value>
   </data>
 </root>

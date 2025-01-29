@@ -234,18 +234,14 @@
         <Grid x:Name="ErrorContainer"
               x:Load="{x:Bind ViewModel.IsErrored, Mode=OneWay}"
               Padding="12,0"
+              Background="{ThemeResource ComposeSheetErrorBackgroundBrush}"
+              BorderBrush="{ThemeResource ComposeSheetErrorBorderBrush}"
               extensions:Hairline.Margin="-1"
               extensions:Hairline.BorderThickness="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Grid.Background>
-                <SolidColorBrush Opacity="0.2" Color="{ThemeResource SystemErrorTextColor}"/>
-            </Grid.Background>
-            <Grid.BorderBrush>
-                <SolidColorBrush Opacity="0.6" Color="{ThemeResource SystemErrorTextColor}"/>
-            </Grid.BorderBrush>
 
             <Viewbox Width="16"
                      Height="16"
@@ -376,10 +372,10 @@
                                             <Grid>
                                                 <Ellipse Width="32"
                                                          Height="32"
-                                                         Fill="{ThemeResource SystemColorControlAccentBrush}"/>
+                                                         Fill="{ThemeResource InfoBadgeBackgroundThemeBrush}"/>
                                                 <Viewbox Width="16"
                                                          Height="16">
-                                                    <TextBlock FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE711;</TextBlock>
+                                                    <TextBlock Foreground="{ThemeResource InfoBadgeForegroundThemeBrush}" FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE711;</TextBlock>
                                                 </Viewbox>
                                             </Grid>
                                         </Button>
@@ -408,8 +404,8 @@
 
         <Grid x:Name="FooterContainer"
               Grid.Row="2" 
-              Background="{ThemeResource SystemControlBackgroundListExtraLowBrush}"
-              BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
+              Background="{ThemeResource SheetFooterBackgroundBrush}"
+              BorderBrush="{ThemeResource SheetContentSeparatorBrush}"
               Padding="0,0,0,2"
               extensions:Hairline.BorderThickness="0,1,0,0">
             <Grid.ColumnDefinitions>
@@ -442,7 +438,8 @@
                                        Maximum="{x:Bind ViewModel.MaxCharacters, FallbackValue=300}" 
                                        Value="{x:Bind ViewModel.Characters, Mode=OneWay}"
                                        Width="32"
-                                       Height="32"/>
+                                       Height="32"
+                                       Foreground="{ThemeResource ComposeSheetProgressForegroundBrush}"/>
         </Grid>
     </Grid>
 </sheet:SheetControl>
