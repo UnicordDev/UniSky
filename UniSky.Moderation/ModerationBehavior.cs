@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 
 namespace UniSky.Moderation;
 
@@ -96,12 +97,20 @@ public struct ModerationBehavior
             _ => throw new InvalidOperationException()
         };
 
+    [JsonInclude]
     public ModerationBehaviorType ProfileList;
+    [JsonInclude]
     public ModerationBehaviorType ProfileView;
+    [JsonInclude]
     public ModerationBehaviorType Avatar;
+    [JsonInclude]
     public ModerationBehaviorType Banner;
+    [JsonInclude]
     public ModerationBehaviorType DisplayName;
+    [JsonInclude]
     public ModerationBehaviorType ContentList;
+    [JsonInclude]
     public ModerationBehaviorType ContentView;
+    [JsonInclude]
     public ModerationBehaviorType ContentMedia;
 }

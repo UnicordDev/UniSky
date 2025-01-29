@@ -26,7 +26,7 @@ public class ModerationTests
         var options = new ModerationOptions(
             new ATDid("did:web:alice.test"),
             new ModerationPrefs(true, new Dictionary<string, LabelPreference>() { ["porn"] = LabelPreference.Hide }, [], [], []),
-            new Dictionary<string, InterpretedLabelValueDefinition[]>());
+            [], []);
 
         var moderator = new Moderator(options);
         var result = moderator.ModerateProfile(profileViewBasic);
@@ -55,7 +55,7 @@ public class ModerationTests
         var options = new ModerationOptions(
             new ATDid("did:web:alice.test"),
             new ModerationPrefs(true, new Dictionary<string, LabelPreference>() { ["porn"] = LabelPreference.Ignore }, [], [], []),
-            new Dictionary<string, InterpretedLabelValueDefinition[]>());
+            [], []);
 
         var moderator = new Moderator(options);
         var result = moderator.ModerateProfile(profileViewBasic);
@@ -84,7 +84,7 @@ public class ModerationTests
         var options = new ModerationOptions(
             new ATDid("did:web:alice.test"),
             new ModerationPrefs(true, new Dictionary<string, LabelPreference>() { ["porn"] = LabelPreference.Hide }, [], [], []),
-            new Dictionary<string, InterpretedLabelValueDefinition[]>());
+            [], []);
 
         var moderator = new Moderator(options);
         var result = moderator.ModerateProfile(profileViewBasic);
@@ -128,6 +128,7 @@ public class ModerationTests
                 [],
                 []
             ),
+            [],
             []
         );
 
@@ -159,6 +160,7 @@ public class ModerationTests
                 [],
                 []
             ),
+            [],
             []
         );
 
@@ -193,6 +195,7 @@ public class ModerationTests
                 [],
                 []
             ),
+            [],
             []
         );
 
@@ -237,6 +240,7 @@ public class ModerationTests
                 mutedWords: [],
                 hiddenPosts: []
             ),
+            [],
             new()
             {
                 ["did:web:labeler.test"] = [
@@ -248,7 +252,7 @@ public class ModerationTests
                             defaultSetting: "warn",
                             locales: []
                         ),
-                        new FishyFlip.Lexicon.App.Bsky.Labeler.LabelerViewDetailed(){Creator = new ProfileView(){Did = new ATDid("did:web:labeler.test")}}
+                        new ATDid("did:web:labeler.test")
                     )
                 ]
             }
@@ -289,6 +293,7 @@ public class ModerationTests
                 mutedWords: [],
                 hiddenPosts: []
             ),
+            labelers: [],
             labelDefs: new()
             {
                 ["did:web:labeler.test"] = [
@@ -300,7 +305,7 @@ public class ModerationTests
                             defaultSetting: "warn",
                             locales: []
                         ),
-                        new FishyFlip.Lexicon.App.Bsky.Labeler.LabelerViewDetailed(){Creator = new ProfileView(){Did = new ATDid("did:web:labeler.test")}}
+                        new ATDid("did:web:labeler.test")
                     )
                 ]
             }
@@ -360,6 +365,7 @@ public class ModerationTests
                 mutedWords: [],
                 hiddenPosts: []
             ),
+            labelers: [],
             labelDefs: new()
             {
                 ["did:web:labeler.test"] = [
@@ -371,7 +377,7 @@ public class ModerationTests
                             defaultSetting: "warn",
                             locales: []
                         ),
-                        new FishyFlip.Lexicon.App.Bsky.Labeler.LabelerViewDetailed(){Creator = new ProfileView(){Did = new ATDid("did:web:labeler.test")}}
+                        new ATDid("did:web:labeler.test")
                     ),
                     new InterpretedLabelValueDefinition(
                         new LabelValueDefinition(
@@ -381,7 +387,7 @@ public class ModerationTests
                             defaultSetting: "warn",
                             locales: []
                         ),
-                        new FishyFlip.Lexicon.App.Bsky.Labeler.LabelerViewDetailed(){Creator = new ProfileView(){Did = new ATDid("did:web:labeler.test")}}
+                        new ATDid("did:web:labeler.test")
                     )
                 ]
             }
@@ -445,6 +451,7 @@ public class ModerationTests
                 mutedWords: [],
                 hiddenPosts: []
             ),
+            labelers: [],
             labelDefs: new()
             {
                 ["did:web:labeler.test"] = [
@@ -456,7 +463,7 @@ public class ModerationTests
                             defaultSetting: "hide",
                             locales: []
                         ),
-                        new FishyFlip.Lexicon.App.Bsky.Labeler.LabelerViewDetailed(){Creator = new ProfileView(){Did = new ATDid("did:web:labeler.test")}}
+                        new ATDid("did:web:labeler.test")
                     ),
                     new InterpretedLabelValueDefinition(
                         new LabelValueDefinition(
@@ -466,7 +473,7 @@ public class ModerationTests
                             defaultSetting: "warn",
                             locales: []
                         ),
-                        new FishyFlip.Lexicon.App.Bsky.Labeler.LabelerViewDetailed(){Creator = new ProfileView(){Did = new ATDid("did:web:labeler.test")}}
+                        new ATDid("did:web:labeler.test")
                     ),
                     new InterpretedLabelValueDefinition(
                         new LabelValueDefinition(
@@ -476,7 +483,7 @@ public class ModerationTests
                             defaultSetting: "ignore",
                             locales: []
                         ),
-                        new FishyFlip.Lexicon.App.Bsky.Labeler.LabelerViewDetailed(){Creator = new ProfileView(){Did = new ATDid("did:web:labeler.test")}}
+                        new ATDid("did:web:labeler.test")
                     ),
                 ]
             }
@@ -593,6 +600,7 @@ public class ModerationTests
                 mutedWords: [],
                 hiddenPosts: []
             ),
+            labelers: [],
             labelDefs: new()
             {
                 ["did:web:labeler.test"] = [
@@ -605,7 +613,7 @@ public class ModerationTests
                             adultOnly: true,
                             locales: []
                         ),
-                        new FishyFlip.Lexicon.App.Bsky.Labeler.LabelerViewDetailed(){Creator = new ProfileView(){Did = new ATDid("did:web:labeler.test")}}
+                        new ATDid("did:web:labeler.test")
                     )
                 ]
             }
@@ -660,6 +668,7 @@ public class ModerationTests
                 mutedWords: [],
                 hiddenPosts: []
             ),
+            labelers: [],
             labelDefs: []
         );
 

@@ -116,7 +116,7 @@ public static class ModerationExtensions
 
             labelersDict[def.Creator.Did.Handler] = def;
             labelDefs[def.Creator.Did.Handler] =
-                def.Policies?.LabelValueDefinitions?.Select(s => new InterpretedLabelValueDefinition(s, def)).ToArray() ?? [];
+                def.Policies?.LabelValueDefinitions?.Select(s => new InterpretedLabelValueDefinition(s, def.Creator.Did)).ToArray() ?? [];
         }
 
         return new(labelersDict.ToFrozenDictionary(), labelDefs.ToFrozenDictionary());

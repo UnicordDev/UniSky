@@ -2,14 +2,20 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using FishyFlip;
 using FishyFlip.Lexicon.App.Bsky.Labeler;
+using FishyFlip.Models;
 using Microsoft.Extensions.Logging;
+using UniSky.Helpers;
+using UniSky.Models;
 using UniSky.Moderation;
 using Windows.ApplicationModel.Resources;
+using Windows.Storage;
 
 namespace UniSky.Services;
 
@@ -30,6 +36,36 @@ public class ModerationService(
         try
         {
             var protocol = protocolService.Protocol;
+            var did = protocol.Session.Did;
+
+            try
+            {
+                var moderationCache = await ApplicationData.Current.LocalFolder.TryGetItemAsync($"ModerationCache.{GetSanitisedDid(did)}.json");
+                if (moderationCache is StorageFile file)
+                {
+                    using var stream = await file.OpenStreamForReadAsync();
+                    var cache = await JsonSerializer.DeserializeAsync(stream, JsonContext.Default.ModerationCache);
+                    if (cache == null)
+                        throw new InvalidOperationException("Invalid cache!");
+                    if ((DateTimeOffset.Now - cache.SavedAt) > TimeSpan.FromDays(1))
+                        throw new InvalidOperationException("Cache expired!");
+
+
+
+                    await protocol.ConfigureLabelersAsync(cache.Options.Prefs.Labelers)
+                        .ConfigureAwait(false);
+
+                    logger.LogDebug("Configured labelers header on protocol: {Header}", string.Join(", ", cache.Options.Prefs.Labelers.Select(l => l.Id)));
+
+                    ModerationOptions = cache.Options;
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to load moderation cache, falling back!");
+            }
+
             var moderationPrefs = await protocol.GetModerationPrefsAsync()
                 .ConfigureAwait(false);
 
@@ -66,7 +102,9 @@ public class ModerationService(
 
             logger.LogDebug("Configured labelers header on protocol: {Header}", string.Join(", ", moderationPrefs.Labelers.Select(l => l.Id)));
 
-            ModerationOptions = new ModerationOptions(protocol.Session.Did, moderationPrefs, labelDefs.LabelDefs);
+            ModerationOptions = new ModerationOptions(protocol.Session.Did, moderationPrefs, labelDefs.Labelers, labelDefs.LabelDefs);
+
+            _ = Task.Run(SaveCacheAsync);
         }
         catch (Exception ex)
         {
@@ -75,18 +113,36 @@ public class ModerationService(
         }
     }
 
+    private async Task SaveCacheAsync()
+    {
+        try
+        {
+            var protocol = protocolService.Protocol;
+            var did = protocol.Session.Did;
+            var cache = new ModerationCache(DateTimeOffset.Now, ModerationOptions);
+
+            var moderationCache = await ApplicationData.Current.LocalFolder.CreateFileAsync($"ModerationCache.{GetSanitisedDid(did)}.json", CreationCollisionOption.ReplaceExisting);
+
+            using var stream = await moderationCache.OpenStreamForWriteAsync();
+            await JsonSerializer.SerializeAsync(stream, cache, JsonContext.Default.ModerationCache);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to writer moderation cache");
+        }
+    }
 
     public bool TryGetDisplayNameForLabeler(InterpretedLabelValueDefinition labelDef, out string displayName)
     {
-        if (labelDef.DefinedBy == null || labelDef.Detailed == null)
+        if (labelDef.DefinedBy == null)
         {
             displayName = "Bluesky Moderation Service";
             return true;
         }
 
-        if (labelDef.Detailed != null)
+        if (ModerationOptions.Labelers.TryGetValue(labelDef.DefinedBy.Handler, out var detailed))
         {
-            displayName = labelDef.Detailed.Creator?.DisplayName ?? "Unknown Labeler";
+            displayName = detailed.Creator?.DisplayName ?? "Unknown Labeler";
             return true;
         }
 
@@ -119,5 +175,14 @@ public class ModerationService(
 
         label = new LabelStrings(locale.Name, locale.Description);
         return true;
+    }
+
+    private static string GetSanitisedDid(ATDid did)
+    {
+        var sanitisedDid = did.ToString();
+        foreach (var item in Path.GetInvalidFileNameChars())
+            sanitisedDid = sanitisedDid.Replace(item, '_');
+
+        return sanitisedDid;
     }
 }
