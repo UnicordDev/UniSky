@@ -8,7 +8,6 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using FishyFlip;
-using FishyFlip.Lexicon.App.Bsky.Labeler;
 using FishyFlip.Models;
 using Microsoft.Extensions.Logging;
 using UniSky.Helpers;
