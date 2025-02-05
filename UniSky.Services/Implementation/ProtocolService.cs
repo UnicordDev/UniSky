@@ -51,34 +51,34 @@ public class ProtocolService(ILogger<ProtocolService> logger) : IProtocolService
 
             _lastRefreshed = DateTimeOffset.Now;
 
-            if (sessionModel.ExpiresAt != null && (sessionModel.ExpiresAt.Value - DateTime.Now) > TimeSpan.FromMinutes(5))
-            {
-                var sessionRefresh = sessionModel.Session.Session;
-                var session = new AuthSession(
-                    new Session(sessionRefresh.Did,
-                                sessionRefresh.DidDoc,
-                                sessionRefresh.Handle,
-                                sessionRefresh.Email,
-                                sessionRefresh.AccessJwt,
-                                sessionRefresh.RefreshJwt,
-                                sessionRefresh.ExpiresIn));
+            //if (sessionModel.ExpiresAt != null && (sessionModel.ExpiresAt.Value - DateTime.Now) > TimeSpan.FromMinutes(5))
+            //{
+            //    var sessionRefresh = sessionModel.Session.Session;
+            //    var session = new AuthSession(
+            //        new Session(sessionRefresh.Did,
+            //                    sessionRefresh.DidDoc,
+            //                    sessionRefresh.Handle,
+            //                    sessionRefresh.Email,
+            //                    sessionRefresh.AccessJwt,
+            //                    sessionRefresh.RefreshJwt,
+            //                    sessionRefresh.ExpiresIn));
 
-                await Protocol.AuthenticateWithPasswordSessionAsync(session);
+            //    await Protocol.AuthenticateWithPasswordSessionAsync(session);
 
-                var moderationService = ServiceContainer.Default.GetService<IModerationService>();
-                if (moderationService != null)
-                {
-                    await moderationService.ConfigureModerationAsync()
-                        .ConfigureAwait(false);
-                }
+            //    var moderationService = ServiceContainer.Default.GetService<IModerationService>();
+            //    if (moderationService != null)
+            //    {
+            //        await moderationService.ConfigureModerationAsync()
+            //            .ConfigureAwait(false);
+            //    }
 
-                _ = Task.Run(() => DoRefreshAsync(logger, sessionModel));
-            }
-            else
-            {
+            //    _ = Task.Run(() => DoRefreshAsync(logger, sessionModel));
+            //}
+            //else
+            //{
                 await DoRefreshAsync(logger, sessionModel)
                     .ConfigureAwait(false);
-            }
+            //}
         }
         finally
         {
