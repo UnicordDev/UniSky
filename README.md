@@ -29,7 +29,7 @@ $ git submodule update --init --recursive
 From here, building should be as simple as double clicking `UniSky.sln`, ensuring your targets are appropriate to your testing platform (e.g. Debug x64), and hitting F5. 
 
 ## Testing
-Unisky currently lacks any kind of unit testing. This will likely change as I adopt a more sane workflow, but for now, I suggest going around the app and making sure everything you'd use regularly works, and ensuring all configurations build. A handy way of doing this, is Visual Studio's Batch Build feature, accessible like so:
+Before submitting contribtuions, please ensure all configurations build. A handy way of doing this, is Visual Studio's Batch Build feature, accessible like so:
 
 ![batch build](https://i.imgur.com/8bvkRRv.png)
 
