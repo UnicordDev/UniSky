@@ -13,6 +13,8 @@ public partial class LabelViewModel : ViewModelBase
     private string description;
     [ObservableProperty]
     private string appliedBy;
+    [ObservableProperty]
+    private string icon;
 
     public LabelViewModel() { }
     public LabelViewModel(LabelModerationCause label)
@@ -22,6 +24,7 @@ public partial class LabelViewModel : ViewModelBase
         {
             Name = strings.Name;
             Description = strings.Description;
+            Icon = label.LabelDef.DefinedByProfile?.Avatar;
         }
         else
         {

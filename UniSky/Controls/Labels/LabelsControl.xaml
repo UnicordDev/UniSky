@@ -4,7 +4,9 @@
     xmlns:local="using:UniSky.Controls.Labels" 
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:moderation="using:UniSky.ViewModels.Moderation"
-    xmlns:w1903="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 8)" >
+    xmlns:w1903="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 8)" xmlns:converters="using:UniSky.Converters">
+
+    <converters:VisibilityConverter x:Key="BoolVisibilityConverter"/>
 
     <Flyout x:Key="LabelButtonFlyout"
             Placement="Bottom"
@@ -56,9 +58,27 @@
                                         BorderThickness="0"
                                         Flyout="{StaticResource LabelButtonFlyout}"
                                         Background="{ThemeResource LabelControlBackgroundBrush}">
-                                    <TextBlock Text="{Binding Name}"
-                                               Foreground="{ThemeResource SystemBaseMediumHighColor}"
-                                               FontSize="12"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Ellipse Width="12" Height="12"
+                                               VerticalAlignment="Center"
+                                               Visibility="{Binding Icon, Converter={StaticResource BoolVisibilityConverter}}">
+                                            <Ellipse.Fill>
+                                                <ImageBrush>
+                                                    <ImageBrush.ImageSource>
+                                                        <BitmapImage UriSource="{Binding Icon}"
+                                                                     DecodePixelWidth="12"
+                                                                     DecodePixelHeight="12"
+                                                                     DecodePixelType="Logical"/>
+                                                    </ImageBrush.ImageSource>
+                                                </ImageBrush>
+                                            </Ellipse.Fill>
+                                        </Ellipse>
+                                        <TextBlock Text="{Binding Name}"
+                                                   Margin="4,0,0,0"
+                                                   Foreground="{ThemeResource SystemBaseMediumHighColor}"
+                                                   FontSize="12"
+                                                   Visibility="{Binding Name, Converter={StaticResource BoolVisibilityConverter}}"/>
+                                    </StackPanel>
                                 </Button>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
