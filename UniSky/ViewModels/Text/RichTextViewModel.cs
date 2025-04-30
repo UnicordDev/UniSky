@@ -47,7 +47,7 @@ public class RichTextViewModel
 
     private readonly string text;
     private readonly byte[] utf8Text;
-    private readonly Facet[] facets;
+    private readonly Facet[] rawFacets;
 
     public IList<FacetInline> Facets { get; }
 
@@ -55,20 +55,20 @@ public class RichTextViewModel
     {
         this.text = text;
         this.utf8Text = UTF8NoBom.GetBytes(text);
-        this.facets = [.. facets];
+        this.rawFacets = [.. facets];
 
         this.Facets = ParseFacets();
     }
 
     private IList<FacetInline> ParseFacets()
     {
-        var facetInlines = new List<FacetInline>(facets.Length + 5);
+        var facetInlines = new List<FacetInline>(rawFacets.Length + 5);
 
         var idx = 0L;
         var utf8Span = new Span<byte>(utf8Text);
-        for (int i = 0; i < facets.Length; i++)
+        for (int i = 0; i < rawFacets.Length; i++)
         {
-            var facet = facets[i];
+            var facet = rawFacets[i];
             var start = facet.Index!.ByteStart;
             var end = facet.Index!.ByteEnd;
 
