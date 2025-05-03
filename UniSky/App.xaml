@@ -21,12 +21,15 @@
                         <ResourceDictionary Source="/Templates/TextBoxStyles.xaml"/>
                         <ResourceDictionary Source="/Templates/RichTextBlockStyles.xaml"/>
                         <ResourceDictionary Source="/Templates/MediaTransportControlsStyles.xaml"/>
+                        <ResourceDictionary Source="/Templates/PivotStyles.xaml"/>
+                        <ResourceDictionary Source="/Templates/ListViewStyles.xaml"/>
                     </ResourceDictionary.MergedDictionaries>
                     
                     <x:Double x:Key="ControlContentThemeFontSize">14</x:Double>
                     <x:Double x:Key="ContentControlFontSize">14</x:Double>
                 </ResourceDictionary>
             </themes:ThemeResources.MergedDictionaries>
+           
         </themes:ThemeResources>
     </Application.Resources>
 </Application>

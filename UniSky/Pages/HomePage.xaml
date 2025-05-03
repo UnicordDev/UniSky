@@ -137,23 +137,28 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
+                
+                <Grid x:Name="FrameContainerContainer">
+                    <Border x:Name="HairlineMargins"
+                        MaxWidth="600" 
+                        BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
+                        extensions:Hairline.BorderThickness="1,0"/>
 
-                <Border x:Name="FrameContainer"
+                    <Border x:Name="FrameContainer"
                         HorizontalAlignment="Stretch" 
                         VerticalAlignment="Stretch" 
-                        MaxWidth="600"
                         Background="{ThemeResource HomePageBackgroundFillBrush}"
                         BorderBrush="{ThemeResource HomePageBackgroundBorderBrush}"
                         CornerRadius="{ThemeResource HomePageBackgroundSmallCornerRadius}"
                         ui:UIElementExtensions.ClipToBounds="True">
-                    <ContentControl x:Name="FrameContent"
+                        <ContentControl x:Name="FrameContent"
                                     Content="{x:Bind ViewModel.SelectedMenuItem.Content, Mode=OneWay}"
                                     HorizontalAlignment="Stretch"
                                     HorizontalContentAlignment="Stretch"
                                     VerticalAlignment="Stretch"
                                     VerticalContentAlignment="Stretch"/>
-                </Border>
-
+                    </Border>
+                </Grid>
                 <Border x:Name="FooterNavigation"
                         Visibility="Collapsed"
                         Grid.Row="1" 
@@ -258,7 +263,7 @@
                     </VisualState.StateTriggers>
 
                     <VisualState.Setters>
-                        <Setter Target="FrameContainer.(extensions:Hairline.BorderThickness)" Value="0"/>
+                        <Setter Target="HairlineMargins.Visibility" Value="Collapsed"/>
                         <Setter Target="FrameContainer.CornerRadius" Value="{ThemeResource HomePageBackgroundSmallCornerRadius}"/>
                         <Setter Target="NavView.PaneDisplayMode" Value="LeftMinimal"/>
                         <Setter Target="FooterNavigation.Visibility" Value="Visible"/>
@@ -270,7 +275,7 @@
                     </VisualState.StateTriggers>
 
                     <VisualState.Setters>
-                        <Setter Target="FrameContainer.(extensions:Hairline.BorderThickness)" Value="1,0"/>
+                        <Setter Target="HairlineMargins.Visibility" Value="Visible"/>
                         <Setter Target="FrameContainer.CornerRadius" Value="{ThemeResource HomePageBackgroundMediumCornerRadius}"/>
                         <Setter Target="NavView.PaneDisplayMode" Value="LeftCompact"/>
                         <Setter Target="FooterNavigation.Visibility" Value="Collapsed"/>
