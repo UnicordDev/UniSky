@@ -20,31 +20,18 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <ListView x:Name="RootList"
+                  Style="{StaticResource FeedListViewStyle}"
                   Grid.Row="1"
                   Grid.RowSpan="2"
                   ItemsSource="{x:Bind ViewModel.Posts}" 
                   ItemTemplateSelector="{StaticResource ThreadItemTemplateSelector}"
-                  SelectionMode="None"
-                  HorizontalAlignment="Stretch"
-                  HorizontalContentAlignment="Stretch"
-                  ScrollViewer.IsVerticalScrollChainingEnabled="True"
                   BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
                   extensions:ScrollToSelectedBehavior.SelectedValue="{x:Bind ViewModel.Selected, Mode=OneWay}">
-            <ListView.Resources>
-                <SolidColorBrush Color="Transparent" x:Key="ListViewItemRevealBackground"/>
-                <SolidColorBrush Color="Transparent" x:Key="ListViewItemBackgroundPointerOver"/>
-                <Thickness x:Key="ListViewItemRevealBorderThemeThickness">0</Thickness>
-            </ListView.Resources>
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                    <Setter Property="Padding" Value="0"/>
-                    <Setter Property="BorderThickness" Value="0"/>
-                </Style>
-            </ListView.ItemContainerStyle>
         </ListView>
-        
+
         <Grid x:Name="HeaderContainer"
+              BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
+              MaxWidth="600"
               Grid.Row="0">
             <Grid x:Name="HeaderGrid" 
                   Background="{ThemeResource GenericPageHeaderBackgroundBrush}"
@@ -61,8 +48,32 @@
         </Grid>
 
         <ProgressBar Grid.Row="1"
+                     MaxWidth="600"
                      VerticalAlignment="Top"
                      IsIndeterminate="{x:Bind ViewModel.IsLoading, Mode=OneWay}"
                      Background="Transparent"/>
+        
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Small">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="HeaderContainer.(extensions:Hairline.BorderThickness)" Value="0"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Medium">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="621" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="HeaderContainer.(extensions:Hairline.BorderThickness)" Value="1,0"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
     </Grid>
 </Page>

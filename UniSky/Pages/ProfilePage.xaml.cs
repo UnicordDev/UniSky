@@ -94,6 +94,21 @@ public sealed partial class ProfilePage : Page, IScrollToTop
 
     private void Page_Loaded(object sender, RoutedEventArgs e)
     {
+        InitializeScrollEffect();
+    }
+
+    private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        UpdateSizeDependentProperties();
+    }
+
+    private void OnSafeAreaUpdated(object sender, SafeAreaUpdatedEventArgs e)
+    {
+        UpdateSizeDependentProperties();
+    }
+
+    private void InitializeScrollEffect()
+    {
         // Retrieve the ScrollViewer that the GridView is using internally
         var scrollViewer = RootList.FindDescendant<ScrollViewer>();
 
@@ -117,6 +132,8 @@ public sealed partial class ProfilePage : Page, IScrollToTop
         // offset doesn't always work so enable translation on a few of these
         ElementCompositionPreview.SetIsTranslationEnabled(ProfileImage, true);
         ElementCompositionPreview.SetIsTranslationEnabled(ScrolledDisplayNameContainer, true);
+        ElementCompositionPreview.SetIsTranslationEnabled(ProfileContainer, true);
+        ElementCompositionPreview.SetIsTranslationEnabled(HeaderGrid, true);
 
         // create the background visual that will host the blur for the header image
         _blurredBackgroundImageVisual = _compositor.CreateSpriteVisual();
@@ -183,11 +200,12 @@ public sealed partial class ProfilePage : Page, IScrollToTop
 
         // move everything with the scroll viewer, make it sticky
         var headerTranslationAnimation = EF.Conditional(progressNode < 1, 0, -scrollingProperties.Translation.Y - pixelsToMoveNode);
-        _profileContainer.StartAnimation("Offset.Y", headerTranslationAnimation);
+        var headerTranslateAnimation = EF.Vector3(0, headerTranslationAnimation, 0);
+        _profileContainer.StartAnimation("Translation", headerTranslateAnimation);
 
         // move the header image with relation to the scroll amount, making sure to not overlap the sticky section
-        var headerGridTranslationAnimation = (EF.Min(pixelsToMoveNode, totalSizeNode - headerSizeNode - stickySizeNode)) * progressNode;
-        _headerGrid.StartAnimation("Offset.Y", headerGridTranslationAnimation);
+        var headerGridTranslationAnimation = EF.Vector3(0, (EF.Min(pixelsToMoveNode, totalSizeNode - headerSizeNode - stickySizeNode)) * progressNode, 0);
+        _headerGrid.StartAnimation("Translation", headerGridTranslationAnimation);
 
         // create a springy effect when overscrolled
         var headerScaleAnimation = EF.Lerp(1, 1.25f, EF.Clamp(scrollingProperties.Translation.Y / 50, 0, 1));
@@ -215,21 +233,11 @@ public sealed partial class ProfilePage : Page, IScrollToTop
         _scrolledDisplayNameContainer.StartAnimation("Opacity", scrolledTextOpacityAnimation);
     }
 
-    private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
-    {
-        UpdateSizeDependentProperties();
-    }
-
-    private void OnSafeAreaUpdated(object sender, SafeAreaUpdatedEventArgs e)
-    {
-        UpdateSizeDependentProperties();
-    }
-
     private void UpdateSizeDependentProperties()
     {
         if (ProfileContainer.ActualHeight == 0)
             return;
-        
+
         var safeAreaService = ServiceContainer.Scoped.GetRequiredService<ISafeAreaService>();
         var themeService = ServiceContainer.Scoped.GetRequiredService<IThemeService>();
 

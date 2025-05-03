@@ -25,9 +25,8 @@
                                    Invoked="RefreshAccelerator_Invoked"/>
     </w1709:Page.KeyboardAccelerators>
 
-    <Grid x:Name="RootGrid"
-          MaxWidth="600">
-        <Pivot x:Name="FeedsPivot"
+    <Grid x:Name="RootGrid">
+        <Pivot Style="{StaticResource FeedsPivotStyle}" x:Name="FeedsPivot"
                ItemsSource="{x:Bind ViewModel.Feeds}"
                ScrollViewer.IsVerticalScrollChainingEnabled="True">
             <Pivot.HeaderTemplate>
@@ -57,26 +56,9 @@
                     <Grid>
                         <mux:RefreshContainer RefreshRequested="OnRefreshRequested">
                             <ListView x:Name="PART_FeedList"
-                               ItemsSource="{x:Bind Items}" 
-                               ItemTemplate="{StaticResource FeedItemContentTemplate}"
-                               SelectionMode="None"
-                               HorizontalAlignment="Stretch"
-                               HorizontalContentAlignment="Stretch"
-                               ScrollViewer.IsVerticalScrollChainingEnabled="True"
-                               BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
-                               extensions:Hairline.BorderThickness="0,1,0,0">
-                                <ListView.Resources>
-                                    <SolidColorBrush Color="Transparent" x:Key="ListViewItemRevealBackground"/>
-                                    <SolidColorBrush Color="Transparent" x:Key="ListViewItemBackgroundPointerOver"/>
-                                    <Thickness x:Key="ListViewItemRevealBorderThemeThickness">0</Thickness>
-                                </ListView.Resources>
-                                <ListView.ItemContainerStyle>
-                                    <Style TargetType="ListViewItem">
-                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                        <Setter Property="Padding" Value="0"/>
-                                        <Setter Property="BorderThickness" Value="0"/>
-                                    </Style>
-                                </ListView.ItemContainerStyle>
+                                      Style="{StaticResource FeedListViewStyle}"
+                                      ItemsSource="{x:Bind Items}" 
+                                      ItemTemplate="{StaticResource FeedItemContentTemplate}">
                                 <ListView.FooterTemplate>
                                     <DataTemplate>
                                         <Grid HorizontalAlignment="Stretch">
@@ -110,20 +92,22 @@
             </Pivot.ItemTemplate>
         </Pivot>
 
-        <Button Margin="16" 
-                Style="{ThemeResource AccentButtonStyle}" 
-                HorizontalAlignment="Right" 
-                VerticalAlignment="Bottom"
-                MinWidth="48"
-                MinHeight="48"
-                Command="{x:Bind ViewModel.PostCommand}"
-                w1809:Translation="0,0,16">
-            <w1809:Button.Shadow>
-                <w1809:ThemeShadow/>
-            </w1809:Button.Shadow>
-            <TextBlock Text="&#xE724;"
-                       FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                       FontSize="20"/>
-        </Button>
+        <Grid MaxWidth="600">
+            <Button Margin="16" 
+                    Style="{ThemeResource AccentButtonStyle}" 
+                    HorizontalAlignment="Right" 
+                    VerticalAlignment="Bottom"
+                    MinWidth="48"
+                    MinHeight="48"
+                    Command="{x:Bind ViewModel.PostCommand}"
+                    w1809:Translation="0,0,16">
+                <w1809:Button.Shadow>
+                    <w1809:ThemeShadow/>
+                </w1809:Button.Shadow>
+                <TextBlock Text="&#xE724;"
+                           FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                           FontSize="20"/>
+            </Button>
+        </Grid>
     </Grid>
 </Page>

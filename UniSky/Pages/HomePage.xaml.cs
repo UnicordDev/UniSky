@@ -55,7 +55,7 @@ public sealed partial class HomePage : Page
             var themeService = ServiceContainer.Scoped.GetRequiredService<IThemeService>();
             if (themeService.GetTheme() == AppTheme.SunValley)
             {
-                FrameContainer.Margin = new Thickness(0, e.SafeArea.Bounds.Top + 1, 0, 0);
+                FrameContainerContainer.Margin = new Thickness(0, e.SafeArea.Bounds.Top + 1, 0, 0);
             }
         }
         else

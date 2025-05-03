@@ -14,8 +14,9 @@
     xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
     xmlns:aurora="using:System.Windows.Shell.Aurora"
     mc:Ignorable="d"
-    Loaded="Page_Loaded"
     NavigationCacheMode="Enabled"
+    Loaded="Page_Loaded"
+    SizeChanged="Page_SizeChanged"
     d:MaxWidth="600">
     <Page.Resources>
         <FeedTemplates xmlns="using:UniSky.Templates"/>
@@ -26,30 +27,16 @@
 
     <Grid>
         <ListView x:Name="RootList"
+                  Style="{StaticResource FeedListViewStyle}"
                   ItemsSource="{Binding SelectedFeed.Items}" 
                   ItemTemplate="{StaticResource FeedItemContentTemplate}"
-                  SelectionMode="None"
-                  HorizontalAlignment="Stretch"
-                  HorizontalContentAlignment="Stretch"
-                  ScrollViewer.IsVerticalScrollChainingEnabled="True"
                   w1809:ScrollViewer.CanContentRenderOutsideBounds="False">
-            <ListView.Resources>
-                <SolidColorBrush Color="Transparent" x:Key="ListViewItemRevealBackground"/>
-                <SolidColorBrush Color="Transparent" x:Key="ListViewItemBackgroundPointerOver"/>
-                <Thickness x:Key="ListViewItemRevealBorderThemeThickness">0</Thickness>
-            </ListView.Resources>
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                    <Setter Property="Padding" Value="0"/>
-                </Style>
-            </ListView.ItemContainerStyle>
             <ListView.Header>
                 <Grid x:Name="ProfileContainer"
-                      extensions:Hairline.BorderThickness="0,0,0,1"
-                      Background="{ThemeResource ProfileHeaderRootBackgroundBrush}"
+                      MaxWidth="600"
+                      extensions:Hairline.BorderThickness="1,0,1,1"
                       BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
-                      SizeChanged="Page_SizeChanged">
+                      Background="{ThemeResource ProfileHeaderRootBackgroundBrush}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
@@ -292,6 +279,7 @@
                         <Setter Target="ProfileImage.(Grid.Row)" Value="1"/>
                         <Setter Target="ProfileImage.(Grid.RowSpan)" Value="1"/>
                         <Setter Target="ProfileImage.VerticalAlignment" Value="Top"/>
+                        <Setter Target="ProfileContainer.(extensions:Hairline.BorderThickness)" Value="0,0,0,1"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Medium">
@@ -305,6 +293,21 @@
                         <Setter Target="ProfileImage.(Grid.Row)" Value="0"/>
                         <Setter Target="ProfileImage.(Grid.RowSpan)" Value="2"/>
                         <Setter Target="ProfileImage.VerticalAlignment" Value="Bottom"/>
+                        <Setter Target="ProfileContainer.(extensions:Hairline.BorderThickness)" Value="0,0,0,1"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Large">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="621" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="ProfileImage.Width" Value="112"/>
+                        <Setter Target="ProfileImage.Height" Value="112"/>
+                        <Setter Target="ProfileImage.(Grid.Row)" Value="0"/>
+                        <Setter Target="ProfileImage.(Grid.RowSpan)" Value="2"/>
+                        <Setter Target="ProfileImage.VerticalAlignment" Value="Bottom"/>
+                        <Setter Target="ProfileContainer.(extensions:Hairline.BorderThickness)" Value="1,0,1,1"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
