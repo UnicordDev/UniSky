@@ -1,4 +1,5 @@
-﻿using Microsoft.Toolkit.Uwp.UI.Extensions;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Toolkit.Uwp.UI.Extensions;
 using UniSky.Services;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -12,9 +13,10 @@ public class StandardOverlayControl : OverlayControl
         this.DefaultStyleKey = typeof(StandardOverlayControl);
     }
 
-    protected override void OnShown(RoutedEventArgs args)
+    protected override void OnShowing(OverlayShowingEventArgs args)
     {
-        base.OnShown(args);
+        base.OnShowing(args);
+        this.ApplyTemplate();
 
         if (Controller.IsStandalone)
         {
@@ -24,7 +26,11 @@ public class StandardOverlayControl : OverlayControl
         {
             VisualStateManager.GoToState(this, "Standard", false);
         }
+    }
 
+    protected override void OnShown(RoutedEventArgs args)
+    {
+        base.OnShown(args);
         var TitleBarDragArea = this.FindDescendantByName("TitleBarDragArea");
         Controller.SafeAreaService.SetTitleBar(TitleBarDragArea);
         Controller.SafeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;

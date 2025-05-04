@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Toolkit.Uwp.UI.Extensions;
+using UniSky.Controls.Overlay;
+using UniSky.Controls.Sheet;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -43,15 +47,7 @@ public abstract class OverlayService
             throw new InvalidOperationException("Failed to create app window! Falling back!");
 
         var controller = new AppWindowOverlayController(appWindow, control, parameter as IOverlaySizeProvider);
-        control.SetOverlayController(controller);
-        control.InvokeShowing(parameter);
-
-        ElementCompositionPreview.SetAppWindowContent(appWindow, control);
-
-        await appWindow.TryShowAsync();
-
-        control.InvokeShown();
-
+        await controller.ShowAsync(parameter);
         return controller;
     }
 
@@ -62,18 +58,13 @@ public abstract class OverlayService
         var currentViewId = ApplicationView.GetForCurrentView().Id;
         var view = CoreApplication.CreateNewView();
         var newViewId = 0;
-        await view.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+        await view.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
         {
             newViewId = ApplicationView.GetForCurrentView().Id;
 
             var control = factory();
             controller = new ApplicationViewOverlayController(control, currentViewId, newViewId, parameter as IOverlaySizeProvider);
-            control.SetOverlayController(controller);
-
-            Window.Current.Activate();
-
-            control.InvokeShowing(parameter);
-            control.InvokeShown();
+            await controller.ShowAsync(parameter);
         });
 
         await ApplicationViewSwitcher.TryShowAsStandaloneAsync(newViewId, ViewSizePreference.UseMinimum);

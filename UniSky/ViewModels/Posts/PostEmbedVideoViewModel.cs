@@ -12,6 +12,9 @@ using UniSky.ViewModels.VideoPlayer;
 using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.Media.Streaming.Adaptive;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Animation;
 
 namespace UniSky.ViewModels.Posts;
 
@@ -49,6 +52,13 @@ public partial class PostEmbedVideoViewModel : PostEmbedViewModel
     [RelayCommand]
     private async Task ShowVideoPlayerAsync(object parameter)
     {
+        var settingsService = ServiceContainer.Scoped.GetRequiredService<ITypedSettings>();
+        if (parameter is UIElement control && !settingsService.UseMultipleWindows)
+        {
+            ConnectedAnimationService.GetForCurrentView()
+                .PrepareToAnimate("VideoPlayerView", control);
+        }
+
         var genericOverlay = ServiceContainer.Scoped.GetRequiredService<IStandardOverlayService>();
         await genericOverlay.ShowAsync<VideoPlayerOverlay>(new ShowVideoPlayerArgs(video));
     }

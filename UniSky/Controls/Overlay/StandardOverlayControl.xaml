@@ -8,20 +8,18 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:StandardOverlayControl">
-                    <Grid x:Name="RootGrid"
-                          Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
+                    <Grid x:Name="RootGrid">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                            <Grid x:Name="TitleBarGrid"
-                              Background="{ThemeResource SystemControlBackgroundListLowBrush}"
-                              BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
-                              extensions:Hairline.BorderThickness="0,0,0,1">
+                        <Grid x:Name="TitleBarGrid"
+                                  Background="{ThemeResource SystemControlBackgroundListLowBrush}"
+                                  BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
+                                  extensions:Hairline.BorderThickness="0,0,0,1">
 
-                                <ContentPresenter x:Name="SheetTitlePresenter"
+                            <ContentPresenter x:Name="SheetTitlePresenter"
                                                   Grid.ColumnSpan="3"
                                                   VerticalAlignment="Center"
                                                   HorizontalAlignment="Left"
@@ -29,12 +27,12 @@
                                                   ContentTemplate="{TemplateBinding TitleContentTemplate}"
                                                   Margin="16,0"/>
 
-                                <Border x:Name="TitleBarDragArea"
+                            <Border x:Name="TitleBarDragArea"
                                     Grid.ColumnSpan="3"
                                     Background="Transparent"/>
-                            </Grid>
+                        </Grid>
 
-                            <ContentPresenter x:Name="SheetContentPresenter"
+                        <ContentPresenter x:Name="SheetContentPresenter"
                                           Grid.Row="1"
                                           HorizontalAlignment="Stretch"
                                           VerticalAlignment="Stretch"
@@ -42,20 +40,19 @@
                                           VerticalContentAlignment="Stretch"
                                           Content="{TemplateBinding OverlayContent}"
                                           ContentTemplate="{TemplateBinding OverlayContentTemplate}"/>
-                        </Grid>
 
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="WindowStates">
                                 <VisualState x:Name="Standard">
                                     <VisualState.Setters>
                                         <Setter Target="TitleBarGrid.Visibility" Value="Collapsed"/>
-                                        <Setter Target="SheetTitlePresenter.FontSize" Value="14"/>
+                                        <Setter Target="RootGrid.Background" Value="Transparent"/>
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="FullWindow">
                                     <VisualState.Setters>
                                         <Setter Target="TitleBarGrid.Visibility" Value="Visible"/>
-                                        <Setter Target="SheetTitlePresenter.FontSize" Value="12"/>
+                                        <Setter Target="RootGrid.Background" Value="{ThemeResource ApplicationPageBackgroundThemeBrush}"/>
                                     </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>

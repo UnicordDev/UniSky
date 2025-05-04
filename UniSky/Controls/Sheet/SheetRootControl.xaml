@@ -30,15 +30,15 @@
     </UserControl.Resources>
 
     <Grid Background="{x:Bind Background}">
-        <Border x:Name="ContentRoot"
-                Child="{x:Bind ContentElement}"
-                IsHitTestVisible="True"
-                AllowFocusOnInteraction="True"
-                RenderTransformOrigin="0.5,0.5">
-            <Border.RenderTransform>
+        <UserControl x:Name="ContentRoot"
+                     Content="{x:Bind ContentElement}"
+                     IsHitTestVisible="True"
+                     AllowFocusOnInteraction="True"
+                     RenderTransformOrigin="0.5,0.5">
+            <UserControl.RenderTransform>
                 <ScaleTransform x:Name="ContentScale" ScaleX="1" ScaleY="1"/>
-            </Border.RenderTransform>
-        </Border>
+            </UserControl.RenderTransform>
+        </UserControl>
 
         <Border x:Name="CompositionBackdropContainer"
                 IsHitTestVisible="False"
@@ -130,11 +130,11 @@
                                 <DiscreteObjectKeyFrame KeyTime="00:00:00.0" Value="Visible"/>
                             </ObjectAnimationUsingKeyFrames>
                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentRoot"
-                                                           Storyboard.TargetProperty="AllowFocusOnInteraction">
+                                                           Storyboard.TargetProperty="IsEnabled">
                                 <DiscreteObjectKeyFrame KeyTime="00:00:00.0" Value="False"/>
                             </ObjectAnimationUsingKeyFrames>
                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentRoot"
-                                                           Storyboard.TargetProperty="IsHitTestVisible">
+                                                           Storyboard.TargetProperty="IsTabStop">
                                 <DiscreteObjectKeyFrame KeyTime="00:00:00.0" Value="False"/>
                             </ObjectAnimationUsingKeyFrames>
                             <DoubleAnimation x:Name="ShowDoubleAnimation"
@@ -190,11 +190,11 @@
                                 <DiscreteObjectKeyFrame KeyTime="00:00:00.0" Value="Collapsed"/>
                             </ObjectAnimationUsingKeyFrames>
                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentRoot"
-                                                           Storyboard.TargetProperty="AllowFocusOnInteraction">
+                                                           Storyboard.TargetProperty="IsEnabled">
                                 <DiscreteObjectKeyFrame KeyTime="00:00:00.0" Value="True"/>
                             </ObjectAnimationUsingKeyFrames>
                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentRoot"
-                                                           Storyboard.TargetProperty="IsHitTestVisible">
+                                                           Storyboard.TargetProperty="IsTabStop">
                                 <DiscreteObjectKeyFrame KeyTime="00:00:00.0" Value="True"/>
                             </ObjectAnimationUsingKeyFrames>
                             <DoubleAnimation x:Name="HideDoubleAnimation"

@@ -108,8 +108,8 @@ public class SheetControl : OverlayControl, ISheetControl
         this.DefaultStyleKey = typeof(SheetControl);
 
         // default hide
-        this.PrimaryButtonCommand = new AsyncRelayCommand(() => Controller?.TryHideSheetAsync());
-        this.SecondaryButtonCommand = new AsyncRelayCommand(() => Controller?.TryHideSheetAsync());
+        this.PrimaryButtonCommand = new AsyncRelayCommand(() => Controller?.TryHideAsync());
+        this.SecondaryButtonCommand = new AsyncRelayCommand(() => Controller?.TryHideAsync());
     }
 
     protected override void OnHidden(RoutedEventArgs args)

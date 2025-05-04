@@ -1,0 +1,152 @@
+﻿<UserControl
+    x:Class="UniSky.Controls.Overlay.OverlayRootControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UniSky.Controls.Overlay"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:w1709="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
+    xmlns:ui="using:Microsoft.Toolkit.Uwp.UI"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+    <UserControl.Resources>
+        <ExponentialEase x:Key="ExponentialEaseEnter"
+                         EasingMode="EaseOut"
+                         Exponent="7"/>
+        <ExponentialEase x:Key="ExponentialEaseExit"
+                         EasingMode="EaseIn"
+                         Exponent="5"/>
+
+        <ui:AttachedDropShadow x:Key="CommonShadow"
+                               x:Name="CommonShadow"
+                               BlurRadius="16"
+                               Color="{ThemeResource SheetRootShadowColor}"
+                               CastTo="{Binding ElementName=CompositionBackdropContainer}"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <Border x:Name="CompositionBackdropContainer"
+                IsHitTestVisible="False"
+                Visibility="Collapsed"
+                Background="{ThemeResource SheetContentRootBackdropBackgroundBrush}">
+        </Border>
+
+        <Grid x:Name="HostControl"
+              RenderTransformOrigin="0.5,0.5"
+              Opacity="0">
+            <Grid.RenderTransform>
+                <ScaleTransform x:Name="OverlayScale" ScaleX="1" ScaleY="1"/>
+            </Grid.RenderTransform>
+            <Border x:Name="SheetBorder"
+                    BorderBrush="{ThemeResource SheetContentBorderBrush}"
+                    ui:Effects.Shadow="{StaticResource CommonShadow}">
+                <Border x:Name="SheetRoot"/>
+            </Border>
+
+
+            <Button x:Name="PrimaryTitleBarButton"
+                    TabIndex="0"
+                    Grid.Column="2"
+                    Width="48"
+                    Height="48"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Margin="16"
+                    Click="PrimaryTitleBarButton_Click"
+                    FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                    FontSize="16"
+                    Content="&#xE8BB;">
+                <w1709:Button.KeyboardAccelerators>
+                    <w1709:KeyboardAccelerator Key="Escape"/>
+                </w1709:Button.KeyboardAccelerators>
+            </Button>
+
+        </Grid>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="OverlayStates">
+                <VisualState x:Name="Open">
+                    <VisualState.Storyboard>
+                        <Storyboard x:Name="ShowOverlayStoryboard"
+                                    Completed="ShowOverlayStoryboard_Completed">
+                            <DoubleAnimation From="0" To="1"
+                                             Storyboard.TargetName="HostControl"
+                                             Storyboard.TargetProperty="Opacity"
+                                             Duration="0:0:0.30"
+                                             EasingFunction="{StaticResource ExponentialEaseEnter}"/>
+                            <DoubleAnimation From="0" To="1"
+                                             Storyboard.TargetName="CompositionBackdropContainer"
+                                             Storyboard.TargetProperty="Opacity"
+                                             Duration="0:0:0.30"
+                                             EasingFunction="{StaticResource ExponentialEaseEnter}"/>
+
+                            <!--<DoubleAnimation From="0.85" To="1" 
+                                             Storyboard.TargetName="OverlayScale"
+                                             Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
+                                             Duration="0:0:0.30"
+                                             EasingFunction="{StaticResource ExponentialEaseEnter}"/>
+                            <DoubleAnimation From="0.85" To="1" 
+                                             Storyboard.TargetName="OverlayScale"
+                                             Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
+                                             Duration="0:0:0.30"
+                                             EasingFunction="{StaticResource ExponentialEaseEnter}"/>-->
+
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HostControl" 
+                                           Storyboard.TargetProperty="Visibility"
+                                           BeginTime="0:0:0.0">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="Visible" />
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CompositionBackdropContainer" 
+                                           Storyboard.TargetProperty="Visibility"
+                                           BeginTime="0:0:0.0">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="Visible" />
+                            </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </VisualState.Storyboard>
+                </VisualState>
+                <VisualState x:Name="Closed">
+                    <VisualState.Storyboard>
+                        <Storyboard x:Name="HideOverlayStoryboard"
+                                    Completed="HideOverlayStoryboard_Completed">
+                            <DoubleAnimation From="1" To="0"
+                                             Storyboard.TargetName="HostControl"
+                                             Storyboard.TargetProperty="Opacity"
+                                             Duration="0:0:0.15"
+                                             EasingFunction="{StaticResource ExponentialEaseExit}"/>
+                            <DoubleAnimation From="1" To="0"
+                                             Storyboard.TargetName="CompositionBackdropContainer"
+                                             Storyboard.TargetProperty="Opacity"
+                                             Duration="0:0:0.15"
+                                             EasingFunction="{StaticResource ExponentialEaseExit}"/>
+
+
+                            <DoubleAnimation From="1" To="0.85" 
+                                             Storyboard.TargetName="OverlayScale"
+                                             Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
+                                             Duration="0:0:0.15"
+                                             EasingFunction="{StaticResource ExponentialEaseExit}"/>
+                            <DoubleAnimation From="1" To="0.85" 
+                                             Storyboard.TargetName="OverlayScale"
+                                             Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
+                                             Duration="0:0:0.15"
+                                             EasingFunction="{StaticResource ExponentialEaseExit}"/>
+
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HostControl" 
+                                           Storyboard.TargetProperty="Visibility"
+                                           BeginTime="0:0:0.15">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CompositionBackdropContainer" 
+                                                           Storyboard.TargetProperty="Visibility"
+                                                           BeginTime="0:0:0.15">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+                            </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </VisualState.Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
+</UserControl>

@@ -5,18 +5,18 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Uwp.UI;
 using UniSky.Services;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Markup;
 using MUXC = Microsoft.UI.Xaml.Controls;
-
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace UniSky.Controls.Sheet
 {
     [ContentProperty(Name = nameof(ContentElement))]
-    public sealed partial class SheetRootControl : UserControl
+    public sealed partial class SheetRootControl : UserControl, IOverlayRootControl
     {
         public FrameworkElement ContentElement
         {
@@ -37,7 +37,9 @@ namespace UniSky.Controls.Sheet
         public static readonly DependencyProperty TotalHeightProperty =
             DependencyProperty.Register("TotalHeight", typeof(double), typeof(SheetRootControl), new PropertyMetadata(0.0));
 
-        private SemaphoreSlim _hideSemaphore = new SemaphoreSlim(1, 1);
+        private IOverlayController _controller;
+        private TaskCompletionSource<object> _showTcs;
+        private TaskCompletionSource<bool> _hideTcs;
 
         public SheetRootControl()
         {
@@ -61,8 +63,16 @@ namespace UniSky.Controls.Sheet
             return base.ArrangeOverride(finalSize);
         }
 
-        internal void ShowSheet(ISheetControl control, object parameter)
+
+        private void ShowSheet(IOverlayController controller, IOverlayControl control, object parameter)
         {
+            if (_controller != null)
+            {
+                throw new InvalidOperationException("Attempting to show two sheets at once!");
+            }
+
+            _controller = controller;
+
             SheetRoot.Child = (FrameworkElement)control;
             control.InvokeShowing(parameter);
 
@@ -75,39 +85,22 @@ namespace UniSky.Controls.Sheet
             systemNavigationManager.BackRequested += OnBackRequested;
         }
 
-        private async void OnBackRequested(object sender, BackRequestedEventArgs e)
+        private bool HideSheet()
         {
-            e.Handled = true;
-            await HideSheetAsync();
-        }
-
-        internal async Task<bool> HideSheetAsync()
-        {
-            if (!await _hideSemaphore.WaitAsync(100))
+            if (_controller == null)
                 return false;
 
-            try
-            {
-                if (SheetRoot.Child is ISheetControl control)
-                {
-                    if (!await control.InvokeHidingAsync())
-                        return false;
-                }
+            VisualStateManager.GoToState(this, "Closed", true);
 
-                VisualStateManager.GoToState(this, "Closed", true);
+            var safeAreaService = ServiceContainer.Scoped.GetRequiredService<ISafeAreaService>();
+            safeAreaService.SafeAreaUpdated -= OnSafeAreaUpdated;
 
-                var safeAreaService = ServiceContainer.Scoped.GetRequiredService<ISafeAreaService>();
-                safeAreaService.SafeAreaUpdated -= OnSafeAreaUpdated;
+            var systemNavigationManager = SystemNavigationManager.GetForCurrentView();
+            systemNavigationManager.BackRequested -= OnBackRequested;
 
-                var systemNavigationManager = SystemNavigationManager.GetForCurrentView();
-                systemNavigationManager.BackRequested -= OnBackRequested;
+            _controller = null;
 
-                return true;
-            }
-            finally
-            {
-                _hideSemaphore.Release();
-            }
+            return true;
         }
 
         private void OnSafeAreaUpdated(object sender, SafeAreaUpdatedEventArgs e)
@@ -126,33 +119,72 @@ namespace UniSky.Controls.Sheet
             }
         }
 
+        private async void OnBackRequested(object sender, BackRequestedEventArgs e)
+        {
+            if (this._controller == null) return;
+
+            e.Handled = true;
+            await this._controller.TryHideAsync();
+        }
+
         private async void RefreshContainer_RefreshRequested(MUXC.RefreshContainer sender, MUXC.RefreshRequestedEventArgs args)
         {
+            if (this._controller == null) return;
+
             var deferral = args.GetDeferral();
-            await HideSheetAsync();
+            await this._controller.TryHideAsync();
             deferral.Complete();
         }
 
-        private void ShowSheetStoryboard_Completed(object sender, object e)
+        private async void ShowSheetStoryboard_Completed(object sender, object e)
         {
-            if (SheetRoot.Child is ISheetControl control)
+            var elementToFocus = FocusManager.FindFirstFocusableElement(SheetRoot.Child);
+            if (ApiInformation.IsMethodPresent(typeof(FocusManager).FullName, "TryFocusAsync")
+                && elementToFocus is DependencyObject dep)
+            {
+                await FocusManager.TryFocusAsync(dep, FocusState.Programmatic);
+            }
+            else if (elementToFocus is Control controlToFocus)
+            {
+                controlToFocus.Focus(FocusState.Programmatic);
+            }
+
+            if (SheetRoot.Child is IOverlayControl control)
             {
                 control.InvokeShown();
             }
 
             CommonShadow.CastTo = CompositionBackdropContainer;
             Effects.SetShadow(SheetBorder, CommonShadow);
+
+            _showTcs.SetResult(null);
         }
 
         private void HideSheetStoryboard_Completed(object sender, object e)
         {
-            if (SheetRoot.Child is ISheetControl control)
+            if (SheetRoot.Child is IOverlayControl control)
             {
                 control.InvokeHidden();
                 SheetRoot.Child = null;
             }
 
             Effects.SetShadow(SheetBorder, null);
+        }
+
+        async Task IOverlayRootControl.ShowAsync(IOverlayController controller, IOverlayControl control, object param)
+        {
+            _hideTcs?.TrySetResult(false);
+
+            _showTcs = new TaskCompletionSource<object>();
+            ShowSheet(controller, control, param);
+            await _showTcs.Task;
+        }
+
+        Task<bool> IOverlayRootControl.HideAsync()
+        {
+            _showTcs?.TrySetResult(null);
+
+            return Task.FromResult(HideSheet());
         }
     }
 }

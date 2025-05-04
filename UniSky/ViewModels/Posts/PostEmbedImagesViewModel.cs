@@ -12,6 +12,8 @@ using UniSky.Controls.Gallery;
 using UniSky.Services;
 using UniSky.Services.Overlay;
 using UniSky.ViewModels.Gallery;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Animation;
 
 namespace UniSky.ViewModels.Posts;
 
@@ -100,9 +102,21 @@ public partial class PostEmbedImagesViewModel : PostEmbedViewModel
     [RelayCommand]
     private async Task ShowImageGalleryAsync(object parameter)
     {
+        var settingsService = ServiceContainer.Scoped.GetRequiredService<ITypedSettings>();
+        if (parameter is Control control)
+            parameter = control.Tag;
+        else
+            control = null;
+
         var idx = Array.IndexOf(Images, parameter);
         if (idx == -1)
             idx = 0;
+
+        if (control != null && !settingsService.UseMultipleWindows)
+        {
+            ConnectedAnimationService.GetForCurrentView()
+                .PrepareToAnimate("GalleryView", control);
+        }
 
         var genericOverlay = ServiceContainer.Scoped.GetRequiredService<IStandardOverlayService>();
         await genericOverlay.ShowAsync<GalleryControl>(new ShowGalleryArgs(id, embedView, embed, idx));

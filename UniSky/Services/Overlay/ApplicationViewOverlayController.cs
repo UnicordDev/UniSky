@@ -38,6 +38,8 @@ internal class ApplicationViewOverlayController : IOverlayController
         this.settingsService = ServiceContainer.Scoped.GetRequiredService<ISettingsService>();
         this.settingsKey = "CoreWindow_LastSize_" + control.GetType().FullName.Replace(".", "_");
 
+        this.control.SetOverlayController(this);
+
         // a surprise tool that'll help us later
         // (instanciating this now so it handles min. window sizes, etc.)
         this.SafeAreaService = ServiceContainer.Scoped.GetRequiredService<ISafeAreaService>();
@@ -101,7 +103,16 @@ internal class ApplicationViewOverlayController : IOverlayController
     public bool IsStandalone => true;
     public ISafeAreaService SafeAreaService { get; }
 
-    public async Task<bool> TryHideSheetAsync()
+    public Task ShowAsync(object parameter)
+    {
+        control.InvokeShowing(parameter);
+        Window.Current.Activate();
+        control.InvokeShown();
+
+        return Task.CompletedTask;
+    }
+
+    public async Task<bool> TryHideAsync()
     {
         if (await control.InvokeHidingAsync())
         {
@@ -116,7 +127,7 @@ internal class ApplicationViewOverlayController : IOverlayController
     private async void OnBackRequested(object sender, BackRequestedEventArgs e)
     {
         e.Handled = true;
-        await TryHideSheetAsync();
+        await TryHideAsync();
     }
 
     private async void OnCloseRequested(object sender, SystemNavigationCloseRequestedPreviewEventArgs e)

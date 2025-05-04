@@ -374,7 +374,8 @@
                                 Padding="0"
                                 Style="{ThemeResource CleanButtonStyle}"
                                 Command="{Binding ShowImageGalleryCommand}"
-                                CommandParameter="{Binding Image1}">
+                                CommandParameter="{Binding ElementName=PART_Image1}"
+                                Tag="{Binding Image1}">
                             <Image x:Name="PART_Image1A" Stretch="Uniform"
                                    Source="{Binding Image1.ThumbnailUrl}"
                                    VerticalAlignment="Center"
@@ -387,7 +388,8 @@
                                 Padding="0"
                                 Style="{ThemeResource CleanButtonStyle}"
                                 Command="{Binding ShowImageGalleryCommand}"
-                                CommandParameter="{Binding Image2}">
+                                CommandParameter="{Binding ElementName=PART_Image2}"
+                                Tag="{Binding Image2}">
                             <Image Stretch="UniformToFill"
                                    Source="{Binding Image2.ThumbnailUrl}"
                                    VerticalAlignment="Center"
@@ -400,7 +402,8 @@
                                 Padding="0"
                                 Style="{ThemeResource CleanButtonStyle}"
                                 Command="{Binding ShowImageGalleryCommand}"
-                                CommandParameter="{Binding Image3}">
+                                CommandParameter="{Binding ElementName=PART_Image3}"
+                                Tag="{Binding Image3}">
                             <Image Stretch="UniformToFill"
                                    Source="{Binding Image3.ThumbnailUrl}"
                                    VerticalAlignment="Center"
@@ -413,7 +416,8 @@
                                 Padding="0"
                                 Style="{ThemeResource CleanButtonStyle}"
                                 Command="{Binding ShowImageGalleryCommand}"
-                                CommandParameter="{Binding Image4}">
+                                CommandParameter="{Binding ElementName=PART_Image4}"
+                                Tag="{Binding Image4}">
                             <Image Stretch="UniformToFill"
                                    Source="{Binding Image4.ThumbnailUrl}"
                                    VerticalAlignment="Center"
@@ -450,7 +454,8 @@
                 <Button x:Name="PlayButton"
                         Padding="0"
                         Style="{ThemeResource CleanButtonStyle}"
-                        Command="{Binding ShowVideoPlayerCommand}">
+                        Command="{Binding ShowVideoPlayerCommand}"
+                        CommandParameter="{Binding ElementName=ImageElement}">
                     <Grid>
                         <Image x:Name="ImageElement"
                                Stretch="UniformToFill"
