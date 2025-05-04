@@ -20,11 +20,8 @@ internal class SheetService(ITypedSettings settingsService, ISafeAreaService saf
             return await ShowOverlayForWindow<T>(factory, parameter);
 
         var control = factory();
-        var controller = new SheetRootController(sheetRoot, safeAreaService);
-
-        control.SetOverlayController(controller);
-
-        sheetRoot.ShowSheet(control, parameter);
+        var controller = new OverlayRootController(control, sheetRoot, safeAreaService);
+        await controller.ShowAsync(parameter);
         return controller;
     }
 }

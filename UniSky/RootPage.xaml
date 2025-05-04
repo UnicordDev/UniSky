@@ -7,14 +7,15 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:viewmodels="using:UniSky.ViewModels"
     xmlns:pages="using:UniSky.Pages"
-    xmlns:sheet="using:UniSky.Controls.Sheet"
+    xmlns:sheet="using:UniSky.Controls.Sheet" xmlns:overlay="using:UniSky.Controls.Overlay"
     mc:Ignorable="d"
     NavigationCacheMode="Required"
     Background="{ThemeResource ApplicationRootPageBackgroundBrush}">
 
     <Grid>
+        <!-- Elements that are being rendered to a RenderTargetBitmap are temporarily hosted inside this Canvas -->
         <Canvas x:Name="RenderTargetRoot"/>
-        
+
         <Border Background="{ThemeResource SplashScreenBackground}"/>
 
         <sheet:SheetRootControl x:Name="SheetRoot"
@@ -22,6 +23,8 @@
             <Frame x:Name="RootFrame"
                    Navigated="RootFrame_Navigated"/>
         </sheet:SheetRootControl>
+
+        <overlay:OverlayRootControl x:Name="OverlayRoot"/>
 
         <Grid x:Name="ExtendedSplash" 
                 IsHitTestVisible="False"

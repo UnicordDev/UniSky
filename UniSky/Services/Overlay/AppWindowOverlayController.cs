@@ -8,6 +8,7 @@ using Windows.Graphics.Display;
 using Windows.UI.ViewManagement;
 using Windows.UI.WindowManagement;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Hosting;
 
 namespace UniSky.Services.Overlay;
 
@@ -16,6 +17,7 @@ internal class AppWindowOverlayController : IOverlayController
     private readonly AppWindow appWindow;
     private readonly IOverlayControl control;
     private readonly ISettingsService settingsService;
+    private readonly IOverlaySizeProvider overlaySizeProvider;
 
     private readonly string settingsKey;
     private readonly long titlePropertyChangedRef;
@@ -28,23 +30,15 @@ internal class AppWindowOverlayController : IOverlayController
         this.control = control;
         this.settingsService = ServiceContainer.Scoped.GetRequiredService<ISettingsService>();
         this.SafeAreaService = new AppWindowSafeAreaService(appWindow);
-
         this.settingsKey = "CoreWindow_LastSize_" + control.GetType().FullName.Replace(".", "_");
-        var initialSize = control.PreferredWindowSize;
-        if (overlaySizeProvider != null)
-        {
-            var size = overlaySizeProvider.GetDesiredSize();
-            if (size != null)
-                initialSize = size.Value;
-        }
+        this.overlaySizeProvider = overlaySizeProvider;
+
+        this.control.SetOverlayController(this);
 
         appWindow.PersistedStateId = settingsKey;
         appWindow.CloseRequested += OnCloseRequested;
         appWindow.Closed += OnClosed;
         appWindow.Changed += OnChanged;
-        appWindow.RequestSize(initialSize);
-
-        PlaceAppWindow(initialSize);
 
         this.titlePropertyChangedRef = this.Control.RegisterPropertyChangedCallback(OverlayControl.TitleContentProperty, OnTitleChanged);
         OnTitleChanged(Control, OverlayControl.TitleContentProperty);
@@ -54,7 +48,33 @@ internal class AppWindowOverlayController : IOverlayController
     public bool IsStandalone => true;
     public ISafeAreaService SafeAreaService { get; }
 
-    public async Task<bool> TryHideSheetAsync()
+    public async Task ShowAsync(object parameter)
+    {
+        control.InvokeShowing(parameter);
+
+        ElementCompositionPreview.SetAppWindowContent(appWindow, (UIElement)control);
+
+        var initialSize = control.PreferredWindowSize;
+        if (overlaySizeProvider != null)
+        {
+            var size = overlaySizeProvider.GetDesiredSize();
+            if (size != null)
+                initialSize = size.Value;
+        }
+
+        appWindow.RequestSize(initialSize);
+
+        PlaceAppWindow(initialSize);
+
+        if (!await appWindow.TryShowAsync())
+        {
+            throw new InvalidOperationException("Failed to create app window! Falling back!");
+        }
+
+        control.InvokeShown();
+    }
+
+    public async Task<bool> TryHideAsync()
     {
         if (await control.InvokeHidingAsync())
         {
@@ -143,7 +163,7 @@ internal class AppWindowOverlayController : IOverlayController
                 Math.Max(offsetFromLeftEdge, offsetFromRightEdge) < ((displaySize.Width / 3.0) * 1.0)) // not enough space 
             {
                 var windowCenter = new Point(
-                    (visibleBounds.X - currentRegion.WorkAreaOffset.X + visibleBounds.Width / 2.0) + 21, 
+                    (visibleBounds.X - currentRegion.WorkAreaOffset.X + visibleBounds.Width / 2.0) + 21,
                     visibleBounds.Y - currentRegion.WorkAreaOffset.Y + visibleBounds.Height / 2.0);
                 var windowSize = new Size(visibleBounds.Width, visibleBounds.Height);
 

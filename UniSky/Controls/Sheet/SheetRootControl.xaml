@@ -30,15 +30,15 @@
     </UserControl.Resources>
 
     <Grid Background="{x:Bind Background}">
-        <Border x:Name="ContentRoot"
-                Child="{x:Bind ContentElement}"
-                IsHitTestVisible="True"
-                AllowFocusOnInteraction="True"
-                RenderTransformOrigin="0.5,0.5">
-            <Border.RenderTransform>
+        <UserControl x:Name="ContentRoot"
+                     Content="{x:Bind ContentElement}"
+                     IsHitTestVisible="True"
+                     AllowFocusOnInteraction="True"
+                     RenderTransformOrigin="0.5,0.5">
+            <UserControl.RenderTransform>
                 <ScaleTransform x:Name="ContentScale" ScaleX="1" ScaleY="1"/>
-            </Border.RenderTransform>
-        </Border>
+            </UserControl.RenderTransform>
+        </UserControl>
 
         <Border x:Name="CompositionBackdropContainer"
                 IsHitTestVisible="False"
@@ -68,7 +68,8 @@
                         </Border.RenderTransform>
                         <Border x:Name="SheetBorder"
                                 BorderBrush="{ThemeResource SheetContentBorderBrush}"
-                                ui:Effects.Shadow="{StaticResource CommonShadow}">
+                                ui:Effects.Shadow="{StaticResource CommonShadow}"
+                                TabFocusNavigation="Cycle">
                             <Border x:Name="SheetRoot"/>
                         </Border>
                     </Border>

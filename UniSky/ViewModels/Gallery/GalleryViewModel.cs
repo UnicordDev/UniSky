@@ -53,7 +53,7 @@ public partial class GalleryImageViewModel : ViewModelBase
 
     public GalleryImageViewModel(ATIdentifier id, Image image)
     {
-        // TODO: this 
+        // TODO: this
         ImageUrl = $"https://cdn.bsky.app/img/feed_fullsize/plain/{id}/{image.ImageValue.Ref.Link}@jpeg";
     }
 }

@@ -165,7 +165,7 @@ public partial class ComposeViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task PostAsync()
+    public async Task PostAsync()
     {
         this.SetErrored(null);
         using var ctx = this.GetLoadingContext();
@@ -283,7 +283,7 @@ public partial class ComposeViewModel : ViewModelBase
     [RelayCommand]
     private async Task Hide()
     {
-        await this.SheetController.TryHideSheetAsync();
+        await this.SheetController.TryHideAsync();
     }
 
     [RelayCommand]
