@@ -31,8 +31,8 @@ public class StandardOverlayControl : OverlayControl
     protected override void OnShown(RoutedEventArgs args)
     {
         base.OnShown(args);
-        var TitleBarDragArea = this.FindDescendantByName("TitleBarDragArea");
-        Controller.SafeAreaService.SetTitleBar(TitleBarDragArea);
+        //var TitleBarDragArea = this.FindDescendantByName("TitleBarDragArea");
+        //Controller.SafeAreaService.SetTitleBar(TitleBarDragArea);
         Controller.SafeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
     }
 

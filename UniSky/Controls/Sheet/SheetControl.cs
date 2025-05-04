@@ -129,9 +129,9 @@ public class SheetControl : OverlayControl, ISheetControl
         if (Controller != null && Controller.IsStandalone)
         {
             VisualStateManager.GoToState(this, "FullWindow", false);
-            var titleBarDragArea = this.FindDescendantByName("TitleBarDragArea");
+            //var titleBarDragArea = this.FindDescendantByName("TitleBarDragArea");
             Controller.SafeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
-            Controller.SafeAreaService.SetTitleBar(titleBarDragArea);
+            //Controller.SafeAreaService.SetTitleBar(titleBarDragArea);
 
             this.SizeChanged += OnSizeChanged;
         }

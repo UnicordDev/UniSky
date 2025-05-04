@@ -68,7 +68,8 @@
                         </Border.RenderTransform>
                         <Border x:Name="SheetBorder"
                                 BorderBrush="{ThemeResource SheetContentBorderBrush}"
-                                ui:Effects.Shadow="{StaticResource CommonShadow}">
+                                ui:Effects.Shadow="{StaticResource CommonShadow}"
+                                TabFocusNavigation="Cycle">
                             <Border x:Name="SheetRoot"/>
                         </Border>
                     </Border>
@@ -130,11 +131,11 @@
                                 <DiscreteObjectKeyFrame KeyTime="00:00:00.0" Value="Visible"/>
                             </ObjectAnimationUsingKeyFrames>
                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentRoot"
-                                                           Storyboard.TargetProperty="IsEnabled">
+                                                           Storyboard.TargetProperty="AllowFocusOnInteraction">
                                 <DiscreteObjectKeyFrame KeyTime="00:00:00.0" Value="False"/>
                             </ObjectAnimationUsingKeyFrames>
                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentRoot"
-                                                           Storyboard.TargetProperty="IsTabStop">
+                                                           Storyboard.TargetProperty="IsHitTestVisible">
                                 <DiscreteObjectKeyFrame KeyTime="00:00:00.0" Value="False"/>
                             </ObjectAnimationUsingKeyFrames>
                             <DoubleAnimation x:Name="ShowDoubleAnimation"
@@ -190,11 +191,11 @@
                                 <DiscreteObjectKeyFrame KeyTime="00:00:00.0" Value="Collapsed"/>
                             </ObjectAnimationUsingKeyFrames>
                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentRoot"
-                                                           Storyboard.TargetProperty="IsEnabled">
+                                                           Storyboard.TargetProperty="AllowFocusOnInteraction">
                                 <DiscreteObjectKeyFrame KeyTime="00:00:00.0" Value="True"/>
                             </ObjectAnimationUsingKeyFrames>
                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentRoot"
-                                                           Storyboard.TargetProperty="IsTabStop">
+                                                           Storyboard.TargetProperty="IsHitTestVisible">
                                 <DiscreteObjectKeyFrame KeyTime="00:00:00.0" Value="True"/>
                             </ObjectAnimationUsingKeyFrames>
                             <DoubleAnimation x:Name="HideDoubleAnimation"

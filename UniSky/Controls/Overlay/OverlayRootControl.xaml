@@ -35,7 +35,8 @@
 
         <Grid x:Name="HostControl"
               RenderTransformOrigin="0.5,0.5"
-              Opacity="0">
+              Opacity="0"
+              TabFocusNavigation="Cycle">
             <Grid.RenderTransform>
                 <ScaleTransform x:Name="OverlayScale" ScaleX="1" ScaleY="1"/>
             </Grid.RenderTransform>
@@ -49,9 +50,9 @@
             <Button x:Name="PrimaryTitleBarButton"
                     TabIndex="0"
                     Grid.Column="2"
-                    Width="48"
-                    Height="48"
-                    HorizontalAlignment="Left"
+                    Width="40"
+                    Height="40"
+                    HorizontalAlignment="Right"
                     VerticalAlignment="Top"
                     Margin="16"
                     Click="PrimaryTitleBarButton_Click"
