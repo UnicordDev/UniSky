@@ -57,7 +57,6 @@ public sealed partial class NotificationsPage : Page, IScrollToTop
 
     private void RootList_ItemClick(object sender, ItemClickEventArgs e)
     {
-
     }
 
     private void RootList_Loaded(object sender, RoutedEventArgs e)
@@ -76,9 +75,18 @@ public sealed partial class NotificationsPage : Page, IScrollToTop
     public void ScrollToTop()
     {
         var scrollViewer = RootList.FindDescendant<ScrollViewer>();
-        if (scrollViewer == null) 
+        if (scrollViewer == null)
             return;
 
         scrollViewer.ChangeView(0, 0, 1);
+    }
+
+    private async void Page_Loaded(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            await this.ViewModel?.RefreshAsync();
+        }
+        catch { }
     }
 }

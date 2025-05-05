@@ -1,4 +1,6 @@
-﻿namespace UniSky.ViewModels.Notifications;
+﻿using System.Threading.Tasks;
+
+namespace UniSky.ViewModels.Notifications;
 
 public partial class NotificationsPageViewModel : ViewModelBase
 {
@@ -7,5 +9,10 @@ public partial class NotificationsPageViewModel : ViewModelBase
     public NotificationsPageViewModel()
     {
         this.Notifications = new NotificationsCollection(this);
+    }
+
+    public async Task RefreshAsync()
+    {
+        await Notifications.RefreshAsync();
     }
 }

@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.Messaging;
 using FishyFlip;
 using FishyFlip.Lexicon.App.Bsky.Notification;
 using FishyFlip.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using UniSky.Extensions;
+using UniSky.Messages;
 using UniSky.Pages;
 using UniSky.Services;
+using Windows.UI.Notifications;
 using Windows.UI.Xaml;
 
 namespace UniSky.ViewModels;
@@ -28,6 +31,15 @@ public partial class NotificationsMenuItemViewModel : MenuItemViewModel
     {
         this.notificationUpdateTimer = new DispatcherTimer() { Interval = TimeSpan.FromMinutes(1) };
         this.notificationUpdateTimer.Tick += OnNotificationTimerTick;
+
+        WeakReferenceMessenger.Default.Register<MarkAsReadNotification>(this,
+            (o, e) => ((NotificationsMenuItemViewModel)o).OnMarkedAsRead(e));
+    }
+
+    private void OnMarkedAsRead(MarkAsReadNotification e)
+    {
+        NotificationCount = (int)0;
+        badgeService.UpdateBadge(0);
     }
 
     public override async Task LoadAsync()

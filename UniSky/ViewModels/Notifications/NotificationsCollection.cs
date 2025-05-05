@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.Messaging;
 using FishyFlip;
 using FishyFlip.Lexicon.App.Bsky.Feed;
 using FishyFlip.Lexicon.App.Bsky.Notification;
 using FishyFlip.Tools;
 using Microsoft.Extensions.DependencyInjection;
+using Org.BouncyCastle.Utilities.Collections;
+using UniSky.Messages;
 using UniSky.Moderation;
 using UniSky.Services;
 using Windows.Foundation;
@@ -30,22 +34,47 @@ public class NotificationsCollection : ObservableCollection<NotificationViewMode
         = ServiceContainer.Scoped.GetRequiredService<IModerationService>();
 
     private string cursor;
+    private HashSet<string> contains;
 
     public NotificationsCollection(NotificationsPageViewModel parent)
     {
         this.parent = parent;
+        this.contains = new HashSet<string>();
     }
 
     public bool HasMoreItems { get; private set; } = true;
+
+    public async Task RefreshAsync()
+    {
+        var service = protocolService.Protocol;
+
+        if (await semaphore.WaitAsync(500))
+        {
+            try
+            {
+                this.cursor = null;
+                await InternalLoadMoreItemsAsync(Count);
+            }
+            finally
+            {
+                semaphore.Release();
+            }
+        }
+
+        await service.Notification.UpdateSeenAsync(DateTime.Now);
+
+        WeakReferenceMessenger.Default.Send<MarkAsReadNotification>();
+    }
 
 
     public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
     {
         return Task.Run(async () =>
         {
+            await semaphore.WaitAsync();
+
             try
             {
-                await semaphore.WaitAsync();
                 return await InternalLoadMoreItemsAsync((int)count);
             }
             finally
@@ -78,7 +107,11 @@ public class NotificationsCollection : ObservableCollection<NotificationViewMode
                 .Where(s => !moderator.ModerateNotification(s)
                                       .GetUI(ModerationContext.ContentList)
                                       .Filter)
+                .Where(s => !contains.Contains(s.Cid))
                 .ToList();
+
+            foreach (var notif in notifications)
+                contains.Add(notif.Cid);
 
             var hydratePostIds = notifications.Where(n =>
                 n.Reason is (NotificationReason.Like or NotificationReason.Repost) &&
@@ -86,11 +119,19 @@ public class NotificationsCollection : ObservableCollection<NotificationViewMode
                 .Select(s => s.ReasonSubject)
                 .Distinct();
 
-            var posts = (await service.GetPostsAsync(hydratePostIds.ToList())
-                .ConfigureAwait(false))
-                .HandleResult()
-                .Posts
-                .ToDictionary(k => k.Uri.ToString());
+            var posts = new Dictionary<string, PostView>();
+            if (hydratePostIds.Any())
+            {
+                var p = (await service.GetPostsAsync(hydratePostIds.ToList())
+                    .ConfigureAwait(false))
+                    .HandleResult()
+                    .Posts;
+
+                foreach (var post in p)
+                {
+                    posts.TryAdd(post.Uri.ToString(), post);
+                }
+            }
 
             var initialCount = Count;
 
