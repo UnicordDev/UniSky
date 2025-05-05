@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using FishyFlip;
 using FishyFlip.Lexicon.App.Bsky.Notification;
 using FishyFlip.Tools;
 using Microsoft.Extensions.DependencyInjection;

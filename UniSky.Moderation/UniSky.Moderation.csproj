@@ -6,9 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FishyFlip" Version="3.3.2" />
-    <PackageReference Include="System.Collections.Immutable" Version="9.0.1" />
-    <PackageReference Include="System.Text.Json" Version="9.0.1" />
+    <PackageReference Include="FishyFlip" Version="3.9.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="9.0.4" />
+    <PackageReference Include="System.Text.Json" Version="9.0.4" />
   </ItemGroup>
   
   <Import Project="../UniSky.targets" />

@@ -3,7 +3,6 @@ using FishyFlip.Lexicon.App.Bsky.Feed;
 using FishyFlip.Lexicon.Com.Atproto.Label;
 using FishyFlip.Lexicon.Tools.Ozone.Moderation;
 using FishyFlip.Models;
-using IdentityModel.OidcClient;
 
 namespace UniSky.Moderation.Test;
 
