@@ -11,6 +11,7 @@ using FishyFlip.Lexicon.App.Bsky.Feed;
 using FishyFlip.Lexicon.App.Bsky.Notification;
 using FishyFlip.Tools;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Org.BouncyCastle.Utilities.Collections;
 using UniSky.Messages;
 using UniSky.Moderation;
@@ -29,9 +30,11 @@ public class NotificationsCollection : ObservableCollection<NotificationViewMode
 
     private readonly NotificationsPageViewModel parent;
     private readonly IProtocolService protocolService
-            = ServiceContainer.Scoped.GetRequiredService<IProtocolService>();
+        = ServiceContainer.Scoped.GetRequiredService<IProtocolService>();
     private readonly IModerationService moderationService
         = ServiceContainer.Scoped.GetRequiredService<IModerationService>();
+    private readonly ILogger<NotificationsCollection> logger
+        = ServiceContainer.Scoped.GetRequiredService<ILogger<NotificationsCollection>>();
 
     private string cursor;
     private HashSet<string> contains;
@@ -184,6 +187,7 @@ public class NotificationsCollection : ObservableCollection<NotificationViewMode
         }
         catch (Exception ex)
         {
+            logger.LogError(ex, "Failed to load Notifications");
             HasMoreItems = false;
             return new LoadMoreItemsResult() { Count = 0 };
         }
