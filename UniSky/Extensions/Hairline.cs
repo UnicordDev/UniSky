@@ -149,8 +149,6 @@ namespace UniSky.Extensions
 
         private static void ApplyResources(DisplayInformation info)
         {
-            return;
-
             var hairlineWidth = (1.0 / (info.LogicalDpi / 96.0));
             var hairlineThickness = new Thickness(hairlineWidth);
 

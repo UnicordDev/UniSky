@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Toolkit.Uwp.UI.Controls;
 using Microsoft.Toolkit.Uwp.UI.Extensions;
 using UniSky.Controls.Overlay;
 using UniSky.Services;
@@ -41,13 +42,12 @@ public sealed partial class GalleryControl : StandardOverlayControl
 
         var vm = (GalleryViewModel)DataContext;
         var selected = vm.Images[vm.SelectedIndex];
-        var source = (BitmapImage)sender;
+        var source = (ImageEx)sender;
 
-        if (source.UriSource.AbsolutePath != new Uri(selected.ImageUrl).AbsolutePath)
+        if (source.Tag != selected)
             return;
 
         var container = FlippyView.ContainerFromIndex(vm.SelectedIndex);
-        var mainImage = container.FindDescendantByName("MainImage");
 
         var animation = ConnectedAnimationService.GetForCurrentView()
             .GetAnimation("GalleryView");
@@ -56,7 +56,8 @@ public sealed partial class GalleryControl : StandardOverlayControl
         {
             if (ApiInformation.IsTypePresent(typeof(DirectConnectedAnimationConfiguration).FullName))
                 animation.Configuration = new DirectConnectedAnimationConfiguration();
-            animation.TryStart(mainImage);
+
+            animation.TryStart(source);
         }
     }
 }

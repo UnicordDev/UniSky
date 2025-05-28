@@ -16,7 +16,6 @@
     mc:Ignorable="d"
     NavigationCacheMode="Enabled"
     Loaded="Page_Loaded"
-    SizeChanged="Page_SizeChanged"
     d:MaxWidth="600">
     <Page.Resources>
         <FeedTemplates xmlns="using:UniSky.Templates"/>
@@ -33,6 +32,7 @@
                   w1809:ScrollViewer.CanContentRenderOutsideBounds="False">
             <ListView.Header>
                 <Grid x:Name="ProfileContainer"
+                      SizeChanged="Page_SizeChanged"
                       MaxWidth="600"
                       extensions:Hairline.BorderThickness="1,0,1,1"
                       BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
@@ -91,8 +91,7 @@
                              Grid.RowSpan="2"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Bottom"
-                             IsHitTestVisible="False"
-                             ContinuumNavigationTransitionInfo.IsEntranceElement="True">
+                             IsHitTestVisible="False">
                         <Ellipse.Fill>
                             <ImageBrush ImageSource="{Binding AvatarUrl}"/>
                         </Ellipse.Fill>

@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using EF = Microsoft.Toolkit.Uwp.UI.Animations.Expressions.ExpressionFunctions;
 
@@ -71,6 +72,14 @@ public sealed partial class ProfilePage : Page, IScrollToTop
             this.DataContext = ViewModel = ActivatorUtilities.CreateInstance<ProfilePageViewModel>(ServiceContainer.Default, basic);
         else
             this.DataContext = ViewModel = ActivatorUtilities.CreateInstance<ProfilePageViewModel>(ServiceContainer.Default);
+
+
+        var animation = ConnectedAnimationService.GetForCurrentView()
+                .GetAnimation("ProfilePageImage");
+        if (animation != null)
+        {
+            animation.TryStart(ProfileImage, [DisplayNameBlock, HandleBlock]);
+        }
     }
 
     protected override void OnNavigatedFrom(NavigationEventArgs e)

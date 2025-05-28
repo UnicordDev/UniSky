@@ -45,16 +45,19 @@ public partial class GalleryImageViewModel : ViewModelBase
 {
     [ObservableProperty]
     private string imageUrl;
-
+    [ObservableProperty]
+    private string placeholderUrl;
     public GalleryImageViewModel(ViewImage image)
     {
         ImageUrl = image.Fullsize;
+        PlaceholderUrl = image.Thumb;
     }
 
     public GalleryImageViewModel(ATIdentifier id, Image image)
     {
         // TODO: this
         ImageUrl = $"https://cdn.bsky.app/img/feed_fullsize/plain/{id}/{image.ImageValue.Ref.Link}@jpeg";
+        PlaceholderUrl = ImageUrl;
     }
 }
 

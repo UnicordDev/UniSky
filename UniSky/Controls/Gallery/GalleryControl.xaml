@@ -8,6 +8,7 @@
     xmlns:gallery="using:UniSky.ViewModels.Gallery"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
@@ -25,11 +26,13 @@
                               MinZoomFactor="1.0">
                     <Viewbox MaxWidth="{Binding ViewportWidth, ElementName=OutputScrollViewer, Mode=OneWay}"  
                              MaxHeight="{Binding ViewportHeight, ElementName=OutputScrollViewer, Mode=OneWay}">
-                        <Image x:Name="MainImage" Tag="{Binding ImageUrl}">
-                            <Image.Source>
-                                <BitmapImage UriSource="{Binding ImageUrl}" ImageOpened="MainImage_Loaded"/>
-                            </Image.Source>
-                        </Image>
+
+                        <controls:ImageEx Tag="{Binding}"
+                                          PlaceholderSource="{Binding PlaceholderUrl}"
+                                          Source="{Binding ImageUrl}"
+                                          PlaceholderStretch="Uniform"
+                                          Stretch="Uniform"
+                                          Loaded="MainImage_Loaded"/>
                     </Viewbox>
                 </ScrollViewer>
             </DataTemplate>

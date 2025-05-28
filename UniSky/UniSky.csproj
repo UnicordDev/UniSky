@@ -167,7 +167,16 @@
     <Compile Include="Controls\Gallery\GalleryControl.xaml.cs">
       <DependentUpon>GalleryControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ImageEx\ImageEx.cs" />
+    <Compile Include="Controls\ImageEx\ImageEx.Members.cs" />
+    <Compile Include="Controls\ImageEx\ImageExBase.cs" />
+    <Compile Include="Controls\ImageEx\ImageExBase.Members.cs" />
+    <Compile Include="Controls\ImageEx\ImageExBase.Placeholder.cs" />
+    <Compile Include="Controls\ImageEx\ImageExBase.Source.cs" />
+    <Compile Include="Controls\ImageEx\ImageExFailedEventArgs.cs" />
+    <Compile Include="Controls\ImageEx\ImageExOpenedEventArgs.cs" />
     <Compile Include="Controls\Labels\LabelsControl.cs" />
+    <Compile Include="Controls\Labels\LabelTemplateSelector.cs" />
     <Compile Include="Controls\Overlay\OverlayRootControl.xaml.cs">
       <DependentUpon>OverlayRootControl.xaml</DependentUpon>
     </Compile>
@@ -214,6 +223,7 @@
       <DependentUpon>ThreadTemplates.xaml</DependentUpon>
     </Compile>
     <Compile Include="Extensions\Hairline.cs" />
+    <Compile Include="Extensions\RectExtensions.cs" />
     <Compile Include="Extensions\ScrollToSelectedBehaviour.cs" />
     <Compile Include="Extensions\SynchronizationContextExtensions.cs" />
     <Compile Include="Helpers\AngleSharp\CustomHttpClientRequester.cs" />
@@ -305,6 +315,7 @@
     <Compile Include="ViewModels\MenuItems\MenuItemViewModel.cs" />
     <Compile Include="ViewModels\Moderation\LabelViewModel.cs" />
     <Compile Include="ViewModels\MenuItems\NotificationsMenuItemViewModel.cs" />
+    <Compile Include="ViewModels\Moderation\ModerationViewModel.cs" />
     <Compile Include="ViewModels\Notifications\NotificationsCollection.cs" />
     <Compile Include="ViewModels\Notifications\NotificationsPageViewModel.cs" />
     <Compile Include="ViewModels\Notifications\NotificationViewModel.cs" />
@@ -494,6 +505,10 @@
     <Page Include="Controls\Gallery\GalleryControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ImageEx\ImageEx.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\Labels\LabelsControl.xaml">
       <SubType>Designer</SubType>

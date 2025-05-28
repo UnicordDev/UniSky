@@ -9,6 +9,7 @@
         <ResourceDictionary Source="/Controls/Spoiler/SpoilerControl.xaml"/>
         <ResourceDictionary Source="/Controls/Labels/LabelsControl.xaml"/>
         <ResourceDictionary Source="/Controls/TitleBar/TitleBar.xaml"/>
+        <ResourceDictionary Source="/Controls/ImageEx/ImageEx.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>
