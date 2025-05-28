@@ -176,7 +176,6 @@
     <Compile Include="Controls\ImageEx\ImageExFailedEventArgs.cs" />
     <Compile Include="Controls\ImageEx\ImageExOpenedEventArgs.cs" />
     <Compile Include="Controls\Labels\LabelsControl.cs" />
-    <Compile Include="Controls\Labels\LabelTemplateSelector.cs" />
     <Compile Include="Controls\Overlay\OverlayRootControl.xaml.cs">
       <DependentUpon>OverlayRootControl.xaml</DependentUpon>
     </Compile>
@@ -315,7 +314,6 @@
     <Compile Include="ViewModels\MenuItems\MenuItemViewModel.cs" />
     <Compile Include="ViewModels\Moderation\LabelViewModel.cs" />
     <Compile Include="ViewModels\MenuItems\NotificationsMenuItemViewModel.cs" />
-    <Compile Include="ViewModels\Moderation\ModerationViewModel.cs" />
     <Compile Include="ViewModels\Notifications\NotificationsCollection.cs" />
     <Compile Include="ViewModels\Notifications\NotificationsPageViewModel.cs" />
     <Compile Include="ViewModels\Notifications\NotificationViewModel.cs" />
