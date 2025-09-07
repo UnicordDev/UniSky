@@ -714,8 +714,12 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <PRIResource Include="Resources\en-GB\custom-twitter\Resources.resw" />
-    <PRIResource Include="Resources\en-GB\Resources.resw" />
+    <PRIResource Include="Resources\en-GB\custom-twitter\Resources.resw">
+      <SubType>Designer</SubType>
+    </PRIResource>
+    <PRIResource Include="Resources\en-GB\Resources.resw">
+      <SubType>Designer</SubType>
+    </PRIResource>
     <PRIResource Include="Resources\pl-PL\Resources.resw" />
     <PRIResource Include="Resources\pl-PL\custom-twitter\Resources.resw" />
     <None Include="UniSky_TemporaryKey.pfx" />

@@ -183,6 +183,25 @@
                             x:Uid="PostRetweetButton"
                             Grid.Column="1"
                             Style="{StaticResource FeedItemActionButtonStyle}">
+                        <Button.Flyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem x:Uid="PostRetweetItem" x:Name="RetweetItem" Text="Repost" Command="{x:Bind RetweetCommand}">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8EB;"/>
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem x:Uid="PostUndoRetweetItem" x:Name="UndoRetweetItem" Text="Undo Repost" Command="{x:Bind RetweetCommand}">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE7A7;"/>
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem x:Uid="PostQRTItem" Text="Quote post..." Command="{x:Bind QuoteTweetCommand}">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE789;"/>
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                            </MenuFlyout>
+                        </Button.Flyout>
                         <StackPanel Orientation="Horizontal">
                             <Viewbox Height="14">
                                 <TextBlock>&#xE8EB;</TextBlock>
@@ -255,18 +274,30 @@
                                                 Value="&#xEB51;"/>
                 </core:DataTriggerBehavior>
                 <core:DataTriggerBehavior Binding="{x:Bind IsRetweeted}"
-                                        ComparisonCondition="Equal"
-                                        Value="True">
+                                              ComparisonCondition="Equal"
+                                              Value="True">
                     <core:ChangePropertyAction TargetObject="{Binding ElementName=RetweetButton}" 
-                                                PropertyName="Foreground"
-                                                Value="{StaticResource RetweetBrush}"/>
+                                                   PropertyName="Foreground"
+                                                   Value="{StaticResource RetweetBrush}"/>
+                    <core:ChangePropertyAction TargetObject="{Binding ElementName=RetweetItem}"
+                                                   PropertyName="Visibility"
+                                                   Value="Collapsed"/>
+                    <core:ChangePropertyAction TargetObject="{Binding ElementName=UndoRetweetItem}"
+                                                   PropertyName="Visibility"
+                                                   Value="Visible"/>
                 </core:DataTriggerBehavior>
                 <core:DataTriggerBehavior Binding="{x:Bind IsRetweeted}"
-                                        ComparisonCondition="Equal"
-                                        Value="False">
+                                              ComparisonCondition="Equal"
+                                              Value="False">
                     <core:ChangePropertyAction TargetObject="{Binding ElementName=RetweetButton}" 
-                                                PropertyName="Foreground"
-                                                Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                                                   PropertyName="Foreground"
+                                                   Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                    <core:ChangePropertyAction TargetObject="{Binding ElementName=RetweetItem}"
+                                                   PropertyName="Visibility"
+                                                   Value="Visible"/>
+                    <core:ChangePropertyAction TargetObject="{Binding ElementName=UndoRetweetItem}"
+                                                   PropertyName="Visibility"
+                                                   Value="Collapsed"/>
                 </core:DataTriggerBehavior>
             </i:Interaction.Behaviors>
         </StackPanel>
@@ -407,18 +438,37 @@
                                     x:Uid="PostRetweetButton"
                                     Grid.Column="1"
                                     Style="{StaticResource FeedItemActionButtonStyle}">
+                                <Button.Flyout>
+                                    <MenuFlyout>
+                                        <MenuFlyoutItem x:Uid="PostRetweetItem" x:Name="RetweetItem" Text="Repost" Command="{x:Bind RetweetCommand}">
+                                            <MenuFlyoutItem.Icon>
+                                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8EB;"/>
+                                            </MenuFlyoutItem.Icon>
+                                        </MenuFlyoutItem>
+                                        <MenuFlyoutItem x:Uid="PostUndoRetweetItem" x:Name="UndoRetweetItem" Text="Undo Repost" Command="{x:Bind RetweetCommand}">
+                                            <MenuFlyoutItem.Icon>
+                                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE7A7;"/>
+                                            </MenuFlyoutItem.Icon>
+                                        </MenuFlyoutItem>
+                                        <MenuFlyoutItem x:Uid="PostQRTItem" Text="Quote post..." Command="{x:Bind QuoteTweetCommand}">
+                                            <MenuFlyoutItem.Icon>
+                                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE789;"/>
+                                            </MenuFlyoutItem.Icon>
+                                        </MenuFlyoutItem>
+                                    </MenuFlyout>
+                                </Button.Flyout>
                                 <StackPanel Orientation="Horizontal">
                                     <Viewbox Height="14">
                                         <TextBlock>&#xE8EB;</TextBlock>
                                     </Viewbox>
                                     <TextBlock x:Name="RetweetsText"
-                                               x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Retweets), Mode=OneWay}"
-                                               x:Phase="3"
-                                               Text="{x:Bind Retweets, Mode=OneWay}"
-                                               Margin="8,-1,0,0"
-                                               FontSize="12"
-                                               FontFamily="{ThemeResource ContentControlThemeFontFamily}"
-                                               Typography.NumeralAlignment="Tabular"/>
+                                                x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Retweets), Mode=OneWay}"
+                                                x:Phase="3"
+                                                Text="{x:Bind Retweets, Mode=OneWay}"
+                                                Margin="8,-1,0,0"
+                                                FontSize="12"
+                                                FontFamily="{ThemeResource ContentControlThemeFontFamily}"
+                                                Typography.NumeralAlignment="Tabular"/>
                                 </StackPanel>
                             </Button>
 
@@ -480,18 +530,30 @@
                                                    Value="&#xEB51;"/>
                     </core:DataTriggerBehavior>
                     <core:DataTriggerBehavior Binding="{x:Bind IsRetweeted}"
-                                              ComparisonCondition="Equal"
-                                              Value="True">
+                               ComparisonCondition="Equal"
+                               Value="True">
                         <core:ChangePropertyAction TargetObject="{Binding ElementName=RetweetButton}" 
-                                                   PropertyName="Foreground"
-                                                   Value="{StaticResource RetweetBrush}"/>
+                                    PropertyName="Foreground"
+                                    Value="{StaticResource RetweetBrush}"/>
+                        <core:ChangePropertyAction TargetObject="{Binding ElementName=RetweetItem}"
+                                    PropertyName="Visibility"
+                                    Value="Collapsed"/>
+                        <core:ChangePropertyAction TargetObject="{Binding ElementName=UndoRetweetItem}"
+                                    PropertyName="Visibility"
+                                    Value="Visible"/>
                     </core:DataTriggerBehavior>
                     <core:DataTriggerBehavior Binding="{x:Bind IsRetweeted}"
-                                              ComparisonCondition="Equal"
-                                              Value="False">
+                               ComparisonCondition="Equal"
+                               Value="False">
                         <core:ChangePropertyAction TargetObject="{Binding ElementName=RetweetButton}" 
-                                                   PropertyName="Foreground"
-                                                   Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                                    PropertyName="Foreground"
+                                    Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                        <core:ChangePropertyAction TargetObject="{Binding ElementName=RetweetItem}"
+                                    PropertyName="Visibility"
+                                    Value="Visible"/>
+                        <core:ChangePropertyAction TargetObject="{Binding ElementName=UndoRetweetItem}"
+                                    PropertyName="Visibility"
+                                    Value="Collapsed"/>
                     </core:DataTriggerBehavior>
                 </i:Interaction.Behaviors>
             </StackPanel>

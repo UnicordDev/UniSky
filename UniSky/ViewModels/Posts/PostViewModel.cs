@@ -22,6 +22,7 @@ using UniSky.Helpers;
 using UniSky.Moderation;
 using UniSky.Pages;
 using UniSky.Services;
+using UniSky.ViewModels.Compose;
 using UniSky.ViewModels.Moderation;
 using UniSky.ViewModels.Profile;
 using UniSky.ViewModels.Text;
@@ -232,7 +233,7 @@ public partial class PostViewModel : ViewModelBase
     private async Task ReplyAsync()
     {
         var service = ServiceContainer.Scoped.GetRequiredService<ISheetService>();
-        await service.ShowAsync<ComposeSheet>(this);
+        await service.ShowAsync<ComposeSheet>(new ComposeSheetOptions(this, Quote: null));
     }
 
     [RelayCommand]
@@ -300,6 +301,41 @@ public partial class PostViewModel : ViewModelBase
         var navigationService = ServiceContainer.Scoped.GetRequiredService<INavigationServiceLocator>()
             .GetNavigationService("Home");
         navigationService.Navigate<ThreadPage>(this.Uri);
+    }
+
+    [RelayCommand]
+    private async Task Retweet()
+    {
+        var protocol = ServiceContainer.Scoped.GetRequiredService<IProtocolService>()
+            .Protocol;
+
+        if (IsRetweeted)
+        {
+            var retweet = Interlocked.Exchange(ref this.repost, null); // not stressed about threading here, just cleaner way to exchange values
+            if (retweet == null)
+                return;
+
+            IsRetweeted = false;
+            RetweetCount--;
+
+            _ = (await protocol.Feed.DeleteRepostAsync(like.Rkey).ConfigureAwait(false))
+                .HandleResult();
+        }
+        else
+        {
+            IsRetweeted = true;
+            RetweetCount++;
+
+            this.repost = (await protocol.CreateRepostAsync(new StrongRef(View.Uri, View.Cid)).ConfigureAwait(false))
+                .HandleResult()?.Uri;
+        }
+    }
+
+    [RelayCommand]
+    private async Task QuoteTweet()
+    {
+        var service = ServiceContainer.Scoped.GetRequiredService<ISheetService>();
+        await service.ShowAsync<ComposeSheet>(new ComposeSheetOptions(null, Quote: this));
     }
 
     private string ToNumberString(int n)

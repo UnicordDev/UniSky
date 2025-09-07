@@ -70,9 +70,13 @@ namespace UniSky.Controls.Compose
                 element.Drop += HandleDrop;
             }
 
-            if (e.Parameter is PostViewModel replyTo)
+            if (e.Parameter is ComposeSheetOptions options)
             {
-                this.ViewModel = ActivatorUtilities.CreateInstance<ComposeViewModel>(ServiceContainer.Scoped, replyTo, Controller);
+                this.ViewModel = ActivatorUtilities.CreateInstance<ComposeViewModel>(ServiceContainer.Scoped, options, Controller);
+            }
+            else if (e.Parameter is PostViewModel replyTo)
+            {
+                this.ViewModel = ActivatorUtilities.CreateInstance<ComposeViewModel>(ServiceContainer.Scoped, new ComposeSheetOptions(ReplyTo: replyTo, Quote: null), Controller);
             }
             else
             {

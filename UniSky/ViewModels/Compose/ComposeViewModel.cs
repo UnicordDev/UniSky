@@ -32,6 +32,8 @@ using Windows.Storage.Streams;
 
 namespace UniSky.ViewModels.Compose;
 
+public record ComposeSheetOptions(PostViewModel ReplyTo, PostViewModel Quote);
+
 public partial class ComposeViewModel : ViewModelBase
 {
     private static readonly string[] IMAGE_FILE_EXTENSIONS =
@@ -50,6 +52,10 @@ public partial class ComposeViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasReply))]
     private PostViewModel replyTo;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasQuote))]
+    private PostViewModel quote;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CanPost))]
@@ -75,6 +81,8 @@ public partial class ComposeViewModel : ViewModelBase
         => Text?.Length ?? 0;
     public bool HasReply
         => ReplyTo != null;
+    public bool HasQuote
+        => Quote != null;
 
     public ObservableCollection<ComposeViewAttachmentViewModel> AttachedFiles { get; }
 
@@ -87,7 +95,7 @@ public partial class ComposeViewModel : ViewModelBase
                             IProtocolService protocolService,
                             IImageCompressionService compressionService,
                             ILogger<ComposeViewModel> logger,
-                            PostViewModel replyTo = null)
+                            ComposeSheetOptions options = null)
     {
         this.protocolService = protocolService;
         this.logger = logger;
@@ -96,7 +104,8 @@ public partial class ComposeViewModel : ViewModelBase
         this.resources = ResourceLoader.GetForCurrentView();
 
         this.Text = "";
-        this.ReplyTo = replyTo;
+        this.ReplyTo = options?.ReplyTo;
+        this.Quote = options?.Quote;
         this.MaxCharacters = 300;
         this.AttachedFiles = [];
         this.AttachedFiles.CollectionChanged += (o, ev) =>
@@ -193,10 +202,12 @@ public partial class ComposeViewModel : ViewModelBase
             }
 
             var facets = FacetHelpers.Parse(text, profiles);
-            var replyRef = await GetReplyDefAsync().ConfigureAwait(false);
-            var embed = await CreateEmbedAsync().ConfigureAwait(false);
+            var replyRef = await GetReplyDefAsync()
+                .ConfigureAwait(false);
+            var embed = await CreateEmbedAsync()
+                .ConfigureAwait(false);
 
-            var postModel = new Post(text, reply: replyRef, embed: embed, facets: [..facets]);
+            var postModel = new Post(text, reply: replyRef, embed: embed, facets: [.. facets]);
             var post = (await protocolService.Protocol.CreatePostAsync(postModel)
                 .ConfigureAwait(false))
                 .HandleResult();
@@ -215,6 +226,21 @@ public partial class ComposeViewModel : ViewModelBase
     }
 
     private async Task<ATObject> CreateEmbedAsync()
+    {
+        if (Quote != null)
+        {
+            var embedRecord = new EmbedRecord(new StrongRef(Quote.View.Uri, Quote.View.Cid));
+            var mediaEmbed = await CreateMediaEmbedAsync();
+            if (mediaEmbed == null)
+                return embedRecord;
+
+            return new RecordWithMedia(embedRecord, mediaEmbed);
+        }
+
+        return await CreateMediaEmbedAsync();
+    }
+
+    private async Task<ATObject> CreateMediaEmbedAsync()
     {
         if (AttachedUri != null)
         {
@@ -243,11 +269,9 @@ public partial class ComposeViewModel : ViewModelBase
 
             return null;
         }
-        else
-        {
-            return await UploadImageEmbedAsync()
-                .ConfigureAwait(false);
-        }
+
+        return await UploadImageEmbedAsync()
+            .ConfigureAwait(false);
     }
 
     private async Task<ATObject> UploadImageEmbedAsync()

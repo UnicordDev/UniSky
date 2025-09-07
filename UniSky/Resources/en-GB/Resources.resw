@@ -512,4 +512,13 @@
   <data name="SettingsNeedsRelaunchDialog.PrimaryButtonText" xml:space="preserve">
     <value>Restart</value>
   </data>
+  <data name="PostRetweetItem.Text" xml:space="preserve">
+    <value>Repost</value>
+  </data>
+  <data name="PostQRTItem.Text" xml:space="preserve">
+    <value>Quote post...</value>
+  </data>
+  <data name="PostUndoRetweetItem.Text" xml:space="preserve">
+    <value>Undo Repost</value>
+  </data>
 </root>

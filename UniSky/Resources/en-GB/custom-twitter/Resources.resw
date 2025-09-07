@@ -183,4 +183,13 @@
   <data name="FeedContextLabel_Description" xml:space="preserve">
     <value>Context added by the current feed to indicate why a tweet was included.</value>
   </data>
+  <data name="PostQRTItem.Text" xml:space="preserve">
+    <value>Quote tweet...</value>
+  </data>
+  <data name="PostRetweetItem.Text" xml:space="preserve">
+    <value>Retweet</value>
+  </data>
+  <data name="PostUndoRetweetItem.Text" xml:space="preserve">
+    <value>Undo Retweet</value>
+  </data>
 </root>

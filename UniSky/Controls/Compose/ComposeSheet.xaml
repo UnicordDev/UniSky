@@ -275,6 +275,7 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid x:Name="ReplyContainer"
                       x:Load="{x:Bind ViewModel.HasReply}"
@@ -326,11 +327,28 @@
                                     Content="{x:Bind ViewModel.AttachedUri, Mode=OneWay}"
                                     ContentTemplate="{StaticResource ComposeEmbedContentTemplate}"/>
                 </Grid>
+
+                <Grid x:Name="QuoteContainer"
+                      x:Load="{x:Bind ViewModel.HasQuote}"
+                      Grid.Row="3"
+                      Margin="4"
+                      Padding="12,8"
+                      MaxHeight="128"
+                      MaxWidth="500"
+                      BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
+                      extensions:Hairline.BorderThickness="1">
+                    <ContentControl x:Name="QuoteContent"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch"
+                                    Content="{x:Bind ViewModel.Quote}"
+                                    ContentTemplate="{StaticResource ReplyingToPostContentTemplate}">
+                    </ContentControl>
+                </Grid>
                 
-                <Grid Grid.Row="3">
+                <Grid Grid.Row="4">
                     <ListView x:Name="UploadsList"
                               x:Load="{x:Bind ViewModel.HasAttachments, Mode=OneWay}"
-                              Margin="-12"
+                              Margin="-8,0,-12,-8"
                               Padding="12"
                               Height="150"
                               ItemsSource="{x:Bind ViewModel.AttachedFiles}"
