@@ -31,7 +31,8 @@
                                       Content="{TemplateBinding Content}" 
                                       ContentTransitions="{TemplateBinding ContentTransitions}"
                                       HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      Padding="{TemplateBinding Padding}"
+                                      Padding="0"
+                                      Margin="0"
                                       VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">

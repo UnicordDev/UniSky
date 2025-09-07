@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,6 +30,11 @@ public partial class PostEmbedImagesViewModel : PostEmbedViewModel
     [ObservableProperty]
     private AspectRatioConstraint aspectRatio;
 
+    [ObservableProperty]
+    private double maxWidth = double.PositiveInfinity;
+    [ObservableProperty]
+    private double maxHeight = double.PositiveInfinity;
+
     private readonly ATIdentifier id;
     private readonly EmbedImages embed;
     private readonly ViewImages embedView;
@@ -54,7 +60,7 @@ public partial class PostEmbedImagesViewModel : PostEmbedViewModel
         this.embed = embed;
 
         Count = embed.Images.Count;
-        Images = embed.Images.Select(i => new PostEmbedImageViewModel(this, id, i)).ToArray();
+        Images = [.. embed.Images.Select(i => new PostEmbedImageViewModel(this, id, i))];
 
         // this would be problematic
         Debug.Assert(Images.Length > 0 && Images.Length <= 4);
@@ -69,7 +75,7 @@ public partial class PostEmbedImagesViewModel : PostEmbedViewModel
     {
         this.embedView = embed;
         Count = embed.Images.Count;
-        Images = embed.Images.Select(i => new PostEmbedImageViewModel(this, i)).ToArray();
+        Images = [.. embed.Images.Select(i => new PostEmbedImageViewModel(this, i))];
 
         // this would be problematic
         Debug.Assert(Images.Length > 0 && Images.Length <= 4);
@@ -85,18 +91,47 @@ public partial class PostEmbedImagesViewModel : PostEmbedViewModel
         if (Images.Length == 1 && firstRatio == null)
         {
             AspectRatio = new();
+            MaxWidth = double.PositiveInfinity;
+            MaxHeight = double.PositiveInfinity;
         }
         else
         {
             AspectRatio = new AspectRatioConstraint(Images.Length switch
             {
-                1 => Math.Max((double)firstRatio.Width / firstRatio.Height, 0.75),
+                1 => firstRatio.Width > 640 || firstRatio.Height > 640 ?
+                    Math.Max((double)firstRatio.Width / firstRatio.Height, 0.5)
+                    : ((double)firstRatio.Width / firstRatio.Height),
                 2 => 2.0,
                 3 => 2.0,
                 4 => 3.0 / 2.0,
                 _ => throw new NotImplementedException()
             });
+
+            if (Images.Length == 1)
+            {
+                MaxWidth = Images[0].MaxWidth + 16;
+                MaxHeight = Images[0].MaxHeight + 16;
+            }
+            else
+            {
+                MaxWidth = double.PositiveInfinity;
+                MaxHeight = double.PositiveInfinity;
+            }
         }
+    } 
+
+    private void OnImagePropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != nameof(MaxHeight))
+            return;
+
+        if (sender is not PostEmbedImageViewModel vm || double.IsInfinity(vm.MaxWidth) || double.IsInfinity(vm.MaxHeight))
+            return;
+
+        if (Array.IndexOf(Images, vm) != 0)
+            return;
+
+        SetAspectRatio(new AspectRatio((long)vm.MaxWidth, (long)vm.MaxHeight));
     }
 
     [RelayCommand]

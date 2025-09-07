@@ -357,7 +357,10 @@
                     </VisualStateGroup>
                 </VisualStateManager.VisualStateGroups>
 
-                <toolkit:ConstrainedBox AspectRatio="{Binding AspectRatio}">
+                <toolkit:ConstrainedBox AspectRatio="{Binding AspectRatio}"
+                                        MaxWidth="{Binding MaxWidth}"
+                                        MaxHeight="{Binding MaxHeight}"
+                                        HorizontalAlignment="Left">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -379,7 +382,9 @@
                             <Image x:Name="PART_Image1A" Stretch="Uniform"
                                    Source="{Binding Image1.ThumbnailUrl}"
                                    VerticalAlignment="Center"
-                                   HorizontalAlignment="Left"/>
+                                   HorizontalAlignment="Left"
+                                   MaxWidth="{Binding Image1.MaxWidth}"
+                                   MaxHeight="{Binding Image1.MaxHeight}"/>
                         </Button>
                         <Button x:Name="PART_Image2" 
                                 Grid.Row="0" 
@@ -393,7 +398,9 @@
                             <Image Stretch="UniformToFill"
                                    Source="{Binding Image2.ThumbnailUrl}"
                                    VerticalAlignment="Center"
-                                   HorizontalAlignment="Center"/>
+                                   HorizontalAlignment="Center"
+                                   MaxWidth="{Binding Image2.MaxWidth}"
+                                   MaxHeight="{Binding Image2.MaxHeight}"/>
                         </Button>
                         <Button x:Name="PART_Image3" 
                                 Grid.Row="1" 
@@ -407,7 +414,9 @@
                             <Image Stretch="UniformToFill"
                                    Source="{Binding Image3.ThumbnailUrl}"
                                    VerticalAlignment="Center"
-                                   HorizontalAlignment="Center"/>
+                                   HorizontalAlignment="Center"
+                                   MaxWidth="{Binding Image3.MaxWidth}"
+                                   MaxHeight="{Binding Image3.MaxHeight}"/>
                         </Button>
                         <Button x:Name="PART_Image4" 
                                 Grid.Row="1" 
@@ -421,7 +430,9 @@
                             <Image Stretch="UniformToFill"
                                    Source="{Binding Image4.ThumbnailUrl}"
                                    VerticalAlignment="Center"
-                                   HorizontalAlignment="Center"/>
+                                   HorizontalAlignment="Center"
+                                   MaxWidth="{Binding Image4.MaxWidth}"
+                                   MaxHeight="{Binding Image4.MaxHeight}"/>
                         </Button>
                     </Grid>
                 </toolkit:ConstrainedBox>
