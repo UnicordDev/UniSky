@@ -32,20 +32,22 @@ public class XamlElementCaptureService : IElementCaptureService
             try
             {
                 if (VisualTreeHelper.GetParent(element) == null)
+                {
                     rootElement.Children.Add(element);
 
-                element.Measure(targetSize);
-                element.Arrange(new Rect(new Point(), targetSize));
+                    element.Measure(targetSize);
+                    element.Arrange(new Rect(new Point(), targetSize));
+                }
 
                 var rtb = new RenderTargetBitmap();
                 await rtb.RenderAsync(element);
 
                 var pixels = await rtb.GetPixelsAsync();
                 var softwareBitmap = SoftwareBitmap.CreateCopyFromBuffer(
-                    pixels, 
-                    BitmapPixelFormat.Bgra8, 
+                    pixels,
+                    BitmapPixelFormat.Bgra8,
                     rtb.PixelWidth,
-                    rtb.PixelHeight, 
+                    rtb.PixelHeight,
                     BitmapAlphaMode.Premultiplied);
 
                 softwareBitmapCompletion.SetResult(softwareBitmap);

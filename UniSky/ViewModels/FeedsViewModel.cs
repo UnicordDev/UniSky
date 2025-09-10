@@ -60,27 +60,36 @@ public partial class FeedsViewModel : ViewModelBase
             var generatedFeeds = feeds.Where(s => s.TypeValue == "feed")
                 .Select(s => new ATUri(s.Value))
                 .ToList();
+
             var generators = (await protocol.GetFeedGeneratorsAsync(generatedFeeds)
                 .ConfigureAwait(false))
                 .HandleResult();
 
             syncContext.Post(() =>
             {
-                // TODO: this _all_ sucks
+                // TODO: this _all_ sucks and needs to be cached
                 foreach (var feed in feeds)
                 {
                     if (feed.TypeValue == "feed")
                     {
-                        var generatedFeed = generators.Feeds.FirstOrDefault(f => f.Uri.ToString() == feed.Value);
+                        var generatedFeed = generators.Feeds
+                            .FirstOrDefault(f => f.Uri.ToString() == feed.Value);
+
+                        if (generatedFeed == null)
+                        {
+                            logger.LogWarning("Didn't find {Type} for {Uri}", GeneratorView.RecordType, feed.Value);
+                            continue;
+                        }
+
                         Feeds.Add(new FeedViewModel(FeedType.Custom, generatedFeed.Uri, generatedFeed, this.protocolService));
                     }
-
-                    if (feed.TypeValue == "timeline")
+                    else if (feed is { TypeValue: "timeline", Value: "following" })
                     {
-                        if (feed.Value == "following")
-                        {
-                            Feeds.Add(new FeedViewModel(FeedType.Following, null, null, this.protocolService));
-                        }
+                        Feeds.Add(new FeedViewModel(FeedType.Following, null, null, this.protocolService));
+                    }
+                    else
+                    {
+                        logger.LogWarning("Unknown feed type {TypeValue} ({Value})", feed.TypeValue, feed.Value);
                     }
                 }
             });

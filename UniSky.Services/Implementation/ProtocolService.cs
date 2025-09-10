@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Net.Http.Headers;
 using System.ServiceModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using UniSky.Models;
 using UniSky.Moderation;
+using Windows.System.UserProfile;
 
 namespace UniSky.Services;
 
@@ -32,6 +35,20 @@ public class ProtocolService(ILogger<ProtocolService> logger) : IProtocolService
         }
 
         protocol.SessionUpdated += OnSessionUpdated;
+
+        protocol.Client.DefaultRequestHeaders.AcceptLanguage.Clear();
+        foreach (var item in GlobalizationPreferences.Languages)
+        {
+            var idx = item.IndexOf('-');
+            if (idx > 0)
+            {
+                var langCode = item.Substring(0, idx);
+                protocol.Client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue(langCode));
+            }
+
+            protocol.Client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue(item));
+        }
+
         _protocol = protocol;
     }
 
@@ -51,34 +68,8 @@ public class ProtocolService(ILogger<ProtocolService> logger) : IProtocolService
 
             _lastRefreshed = DateTimeOffset.Now;
 
-            //if (sessionModel.ExpiresAt != null && (sessionModel.ExpiresAt.Value - DateTime.Now) > TimeSpan.FromMinutes(5))
-            //{
-            //    var sessionRefresh = sessionModel.Session.Session;
-            //    var session = new AuthSession(
-            //        new Session(sessionRefresh.Did,
-            //                    sessionRefresh.DidDoc,
-            //                    sessionRefresh.Handle,
-            //                    sessionRefresh.Email,
-            //                    sessionRefresh.AccessJwt,
-            //                    sessionRefresh.RefreshJwt,
-            //                    sessionRefresh.ExpiresIn));
-
-            //    await Protocol.AuthenticateWithPasswordSessionAsync(session);
-
-            //    var moderationService = ServiceContainer.Default.GetService<IModerationService>();
-            //    if (moderationService != null)
-            //    {
-            //        await moderationService.ConfigureModerationAsync()
-            //            .ConfigureAwait(false);
-            //    }
-
-            //    _ = Task.Run(() => DoRefreshAsync(logger, sessionModel));
-            //}
-            //else
-            //{
-                await DoRefreshAsync(logger, sessionModel)
-                    .ConfigureAwait(false);
-            //}
+            await DoRefreshAsync(logger, sessionModel)
+                .ConfigureAwait(false);
         }
         finally
         {

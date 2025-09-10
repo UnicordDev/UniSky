@@ -19,7 +19,7 @@
     </ResourceDictionary.MergedDictionaries>
 
     <local:ThreadItemTemplateSelector x:Key="ThreadItemTemplateSelector"
-                                      ThreadPostTemplate="{StaticResource ThreadItemContentTemplate}"
+                                      ThreadPostTemplate="{StaticResource FeedItemContentTemplate}"
                                       ThreadHighlightedPostTemplate="{StaticResource ThreadItemHighlightedContentTemplate}"/>
 
     <DataTemplate x:Key="ThreadItemHighlightedContentTemplate"
