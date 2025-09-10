@@ -273,6 +273,9 @@
     <Compile Include="Helpers\UIElementExtensions.cs" />
     <Compile Include="Helpers\UrlHelpers.cs" />
     <Compile Include="Messages\MarkAsReadNotification.cs" />
+    <Compile Include="Pages\BookmarksPage.xaml.cs">
+      <DependentUpon>BookmarksPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\NotificationsPage.xaml.cs">
       <DependentUpon>NotificationsPage.xaml</DependentUpon>
     </Compile>
@@ -306,6 +309,8 @@
     <Compile Include="Services\AngleSharpEmbedExtractor.cs" />
     <Compile Include="Services\XamlElementCaptureService.cs" />
     <Compile Include="Themes\ThemeResources.cs" />
+    <Compile Include="ViewModels\Bookmarks\BookmarksCollection.cs" />
+    <Compile Include="ViewModels\Bookmarks\BookmarksPageViewModel.cs" />
     <Compile Include="ViewModels\Compose\ComposeViewAttachmentViewModel.cs" />
     <Compile Include="ViewModels\Compose\ComposeViewLinkCardViewModel.cs" />
     <Compile Include="ViewModels\Compose\ComposeViewModel.cs" />
@@ -551,6 +556,10 @@
     <Page Include="DataTemplates\ThreadTemplates.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\BookmarksPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\FeedsPage.xaml">
       <SubType>Designer</SubType>

@@ -28,9 +28,10 @@ public enum HomePages
     Notifications,
     Feeds,
     Lists,
+    Bookmarks,
     Chat,
     Profile,
-    Settings
+    Settings,
 }
 
 public partial class HomeViewModel : ViewModelBase
@@ -70,6 +71,7 @@ public partial class HomeViewModel : ViewModelBase
             [HomePages.Notifications] = new NotificationsMenuItemViewModel(this),
             [HomePages.Feeds] = new MenuItemViewModel(this, HomePages.Feeds, "\uE728", typeof(Page)),
             [HomePages.Lists] = new MenuItemViewModel(this, HomePages.Lists, "\uE71D", typeof(Page)),
+            [HomePages.Bookmarks] = new MenuItemViewModel(this, HomePages.Bookmarks, "\uE840", typeof(BookmarksPage)),
             [HomePages.Chat] = new MenuItemViewModel(this, HomePages.Chat, "\uE8F2", typeof(Page)),
             [HomePages.Profile] = new ProfileMenuItemViewModel(this),
             [HomePages.Settings] = new MenuItemViewModel(this, HomePages.Settings, "\uE713", typeof(Page))
@@ -82,6 +84,7 @@ public partial class HomeViewModel : ViewModelBase
             AvailableMenuItems[HomePages.Notifications],
             AvailableMenuItems[HomePages.Feeds],
             AvailableMenuItems[HomePages.Lists],
+            AvailableMenuItems[HomePages.Bookmarks],
             AvailableMenuItems[HomePages.Chat],
         ];
 
