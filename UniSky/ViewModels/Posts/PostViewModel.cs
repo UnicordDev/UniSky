@@ -10,6 +10,7 @@ using CommunityToolkit.Mvvm.Input;
 using FishyFlip;
 using FishyFlip.Lexicon;
 using FishyFlip.Lexicon.App.Bsky.Actor;
+using FishyFlip.Lexicon.App.Bsky.Bookmark;
 using FishyFlip.Lexicon.App.Bsky.Embed;
 using FishyFlip.Lexicon.App.Bsky.Feed;
 using FishyFlip.Lexicon.Com.Atproto.Repo;
@@ -58,11 +59,16 @@ public partial class PostViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Replies))]
     private int replyCount;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Bookmarks))]
+    private int bookmarkCount;
 
     [ObservableProperty]
     private bool isLiked;
     [ObservableProperty]
     private bool isRetweeted;
+    [ObservableProperty]
+    private bool isBookmarked;
 
     [ObservableProperty]
     private ProfileViewModel retweetedBy;
@@ -108,6 +114,8 @@ public partial class PostViewModel : ViewModelBase
         => ToNumberString(RetweetCount);
     public string Replies
         => ToNumberString(ReplyCount);
+    public string Bookmarks
+        => ToNumberString(BookmarkCount);
 
     public bool HasEmbed
         => Embed != null;
@@ -179,6 +187,7 @@ public partial class PostViewModel : ViewModelBase
         LikeCount = (int)(view.LikeCount ?? 0);
         RetweetCount = (int)(view.RepostCount ?? 0);
         ReplyCount = (int)(view.ReplyCount ?? 0);
+        BookmarkCount = (int)(view.BookmarkCount ?? 0);
 
         if (view.Viewer is not null)
         {
@@ -194,6 +203,7 @@ public partial class PostViewModel : ViewModelBase
                 IsRetweeted = true;
             }
 
+            IsBookmarked = view.Viewer.Bookmarked == true;
             CanReply = view.Viewer.ReplyDisabled != true;
         }
 
@@ -226,6 +236,24 @@ public partial class PostViewModel : ViewModelBase
 
             this.like = (await protocol.CreateLikeAsync(new StrongRef(View.Uri, View.Cid)).ConfigureAwait(false))
                 .HandleResult()?.Uri;
+        }
+    }
+
+    [RelayCommand]
+    private async Task BookmarkAsync()
+    {
+        var protocol = ServiceContainer.Scoped.GetRequiredService<IProtocolService>().Protocol;
+
+        if (IsBookmarked)
+        {
+            IsBookmarked = false;
+            BookmarkCount--;
+            _ = (await protocol.DeleteBookmarkAsync(View.Uri).ConfigureAwait(false)).HandleResult();
+        } else
+        {
+            BookmarkCount++;
+            IsBookmarked = true;
+            _ = (await protocol.CreateBookmarkAsync(View.Uri, View.Cid).ConfigureAwait(false)).HandleResult();
         }
     }
 

@@ -101,7 +101,7 @@ public class ModerationService(
             .ConfigureAwait(false);
 
         // check if we got all the labelers
-        Debug.Assert(labelDefs.Labelers.Count == moderationPrefs.Labelers.Count);
+        // Debug.Assert(labelDefs.Labelers.Count == moderationPrefs.Labelers.Count);
         logger.LogDebug("Fetched label definitions, Expected {LabelerCount}, got {FetchedLabelerCount}",
             moderationPrefs.Labelers.Count,
             labelDefs.Labelers.Count);

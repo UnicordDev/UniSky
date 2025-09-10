@@ -127,7 +127,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FishyFlip">
-      <Version>4.1.0-alpha.4</Version>
+      <Version>4.1.0-alpha.5</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging">
       <Version>9.0.8</Version>

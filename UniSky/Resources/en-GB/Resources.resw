@@ -488,6 +488,9 @@
   <data name="HomePage_Search" xml:space="preserve">
     <value>Search</value>
   </data>
+	<data name="HomePage_Bookmarks" xml:space="preserve">
+    <value>Bookmarks</value>
+  </data>
   <data name="HomePage_Settings" xml:space="preserve">
     <value>Settings</value>
   </data>
@@ -521,4 +524,13 @@
   <data name="PostUndoRetweetItem.Text" xml:space="preserve">
     <value>Undo Repost</value>
   </data>
+	<data name="BookmarksPageTitleBlock.Text" xml:space="preserve">
+		<value>BOOKMARKS</value>
+	</data>
+	<data name="BookmarksPageNoItemsTitle.Text" xml:space="preserve">
+		<value>Nothing is bookmarked!</value>
+	</data>
+	<data name="BookmarksPageNoItemsSubtitle.Text" xml:space="preserve">
+		<value>Bookmark some posts to get started.</value>
+	</data>
 </root>

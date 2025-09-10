@@ -12,7 +12,8 @@
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    x:DefaultBindMode="OneWay">
 
     <ResourceDictionary.MergedDictionaries>
         <FeedTemplates xmlns="using:UniSky.Templates"/>
@@ -158,6 +159,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
                     <Button x:Name="RepliesButton"
@@ -237,11 +239,37 @@
                         </StackPanel>
                     </Button>
 
+                    <Button x:Name="BookmarkButton"
+                            x:Uid="PostBookmarkButton"
+                            Grid.Column="3"
+                            Style="{StaticResource FeedItemActionButtonStyle}"
+                            Command="{x:Bind BookmarkCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox Height="14">
+                                <Grid>
+                                    <TextBlock x:Name="BookmarkIcon">&#xE840;</TextBlock>
+                                    <TextBlock
+                                        x:Name="BookmarkIconFilled"
+                                        x:Load="{x:Bind IsBookmarked}"
+                                        Foreground="{ ThemeResource BookmarkBrush }">&#xE842;</TextBlock>
+                                </Grid>
+                            </Viewbox>
+                            <TextBlock x:Name="BookmarksText"
+                                x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Bookmarks), Mode=OneWay}"
+                                x:Phase="3"
+                                Text="{x:Bind Bookmarks, Mode=OneWay}"
+                                Margin="8,-1,0,0"
+                                FontSize="12"
+                                FontFamily="{ThemeResource ContentControlThemeFontFamily}"
+                                Typography.NumeralAlignment="Tabular"/>
+                        </StackPanel>
+                    </Button>
+
                     <Button x:Name="MoreButton"
                             x:Uid="PostMoreButton"
                             Style="{StaticResource FeedItemActionButtonStyle}"
                             HorizontalAlignment="Right"
-                            Grid.Column="3"
+                            Grid.Column="4"
                             Margin="8,0,0,0"
                             Flyout="{StaticResource FeedItemMoreButtonFlyout}">
 
@@ -298,6 +326,26 @@
                     <core:ChangePropertyAction TargetObject="{Binding ElementName=UndoRetweetItem}"
                                                    PropertyName="Visibility"
                                                    Value="Collapsed"/>
+                </core:DataTriggerBehavior>
+                <core:DataTriggerBehavior Binding="{x:Bind IsBookmarked}"
+                                              ComparisonCondition="Equal"
+                                              Value="False">
+                    <core:ChangePropertyAction TargetObject="{Binding ElementName=BookmarkIcon}" 
+                                                   PropertyName="Foreground"
+                                                   Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                    <core:ChangePropertyAction TargetObject="{Binding ElementName=BookmarksText}" 
+                                                   PropertyName="Foreground"
+                                                   Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                </core:DataTriggerBehavior>
+                <core:DataTriggerBehavior Binding="{x:Bind IsBookmarked}"
+                                              ComparisonCondition="Equal"
+                                              Value="True">
+                    <core:ChangePropertyAction TargetObject="{Binding ElementName=BookmarkIcon}" 
+                                                   PropertyName="Foreground"
+                                                   Value="{ThemeResource BookmarkBrush}"/>
+                    <core:ChangePropertyAction TargetObject="{Binding ElementName=BookmarksText}" 
+                                                   PropertyName="Foreground"
+                                                   Value="{ThemeResource BookmarkBrush}"/>
                 </core:DataTriggerBehavior>
             </i:Interaction.Behaviors>
         </StackPanel>
@@ -413,6 +461,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
                             <Button x:Name="RepliesButton"
@@ -492,11 +541,37 @@
                                 </StackPanel>
                             </Button>
 
+                            <Button x:Name="BookmarkButton"
+                                x:Uid="PostBookmarkButton"
+                                Grid.Column="3"
+                                Style="{StaticResource FeedItemActionButtonStyle}"
+                                Command="{x:Bind BookmarkCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Viewbox Height="14">
+                                        <Grid>
+                                            <TextBlock x:Name="BookmarkIcon">&#xE840;</TextBlock>
+                                            <TextBlock
+                                                x:Name="BookmarkIconFilled"
+                                                x:Load="{x:Bind IsBookmarked}"
+                                                Foreground="{ ThemeResource BookmarkBrush }">&#xE842;</TextBlock>
+                                        </Grid>
+                                    </Viewbox>
+                                    <TextBlock x:Name="BookmarksText"
+                                        x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Bookmarks), Mode=OneWay}"
+                                        x:Phase="3"
+                                        Text="{x:Bind Bookmarks, Mode=OneWay}"
+                                        Margin="8,-1,0,0"
+                                        FontSize="12"
+                                        FontFamily="{ThemeResource ContentControlThemeFontFamily}"
+                                        Typography.NumeralAlignment="Tabular"/>
+                                </StackPanel>
+                            </Button>
+
                             <Button x:Name="MoreButton"
                                     x:Uid="PostMoreButton"
                                     Style="{StaticResource FeedItemActionButtonStyle}"
                                     HorizontalAlignment="Right"
-                                    Grid.Column="3"
+                                    Grid.Column="4"
                                     Margin="8,0,0,0"
                                     Flyout="{StaticResource FeedItemMoreButtonFlyout}">
 
@@ -554,6 +629,26 @@
                         <core:ChangePropertyAction TargetObject="{Binding ElementName=UndoRetweetItem}"
                                     PropertyName="Visibility"
                                     Value="Collapsed"/>
+                    </core:DataTriggerBehavior>
+                    <core:DataTriggerBehavior Binding="{x:Bind IsBookmarked}"
+                                              ComparisonCondition="Equal"
+                                              Value="False">
+                        <core:ChangePropertyAction TargetObject="{Binding ElementName=BookmarkIcon}" 
+                                                   PropertyName="Foreground"
+                                                   Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                        <core:ChangePropertyAction TargetObject="{Binding ElementName=BookmarksText}" 
+                                                   PropertyName="Foreground"
+                                                   Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                    </core:DataTriggerBehavior>
+                    <core:DataTriggerBehavior Binding="{x:Bind IsBookmarked}"
+                                              ComparisonCondition="Equal"
+                                              Value="True">
+                        <core:ChangePropertyAction TargetObject="{Binding ElementName=BookmarkIcon}" 
+                                                   PropertyName="Foreground"
+                                                   Value="{ThemeResource BookmarkBrush}"/>
+                        <core:ChangePropertyAction TargetObject="{Binding ElementName=BookmarksText}" 
+                                                   PropertyName="Foreground"
+                                                   Value="{ThemeResource BookmarkBrush}"/>
                     </core:DataTriggerBehavior>
                 </i:Interaction.Behaviors>
             </StackPanel>
