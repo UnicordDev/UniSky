@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Runtime.ConstrainedExecution;
 using System.Threading;
 using System.Threading.Tasks;
 using FishyFlip;
@@ -75,49 +76,56 @@ public class BookmarksCollection : ObservableCollection<PostViewModel>, ISupport
 
     private async Task<LoadMoreItemsResult> InternalLoadMoreItemsAsync(int count)
     {
-        var service = protocolService.Protocol;
-        var viewModel = parent;
-        viewModel.Error = null;
-
-        count = Math.Clamp(count, 5, 100);
-
-        using var context = viewModel.GetLoadingContext();
-
         try
         {
-            var results = (await protocolService.Protocol.GetBookmarksAsync(limit: count, cursor: this.cursor)
-                .ConfigureAwait(false))
-                .HandleResult();
+            var service = protocolService.Protocol;
+            var viewModel = parent;
+            viewModel.Error = null;
 
-            this.cursor = results.Cursor;
+            count = Math.Clamp(count, 5, 100);
 
-            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            using var context = viewModel.GetLoadingContext();
+
+            try
             {
-                var moderator = new Moderator(moderationService.ModerationOptions);
-                foreach (var bookmark in results.Bookmarks)
+                var results = (await protocolService.Protocol.GetBookmarksAsync(limit: count, cursor: this.cursor)
+                    .ConfigureAwait(false))
+                    .HandleResult();
+
+                this.cursor = results.Cursor;
+
+                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
-                    if (bookmark.Item is not PostView post) continue;
-                    if (moderator.ModeratePost(post)
-                                 .GetUI(ModerationContext.ContentList)
-                                 .Filter)
-                        continue;
+                    var moderator = new Moderator(moderationService.ModerationOptions);
+                    foreach (var bookmark in results.Bookmarks)
+                    {
+                        if (bookmark.Item is not PostView post) continue;
+                        if (moderator.ModeratePost(post)
+                                     .GetUI(ModerationContext.ContentList)
+                                     .Filter)
+                            continue;
 
-                    if (ids.Contains(post.Cid)) continue;
+                        if (ids.Contains(post.Cid)) continue;
 
-                    Add(new PostViewModel(post));
-                    ids.Add(post.Cid);
-                }
-            });
+                        Add(new PostViewModel(post));
+                        ids.Add(post.Cid);
+                    }
+                });
 
-            if (results.Bookmarks.Count == 0 || string.IsNullOrWhiteSpace(this.cursor))
+                if (results.Bookmarks.Count == 0 || string.IsNullOrWhiteSpace(this.cursor))
+                    HasMoreItems = false;
+
+                return new LoadMoreItemsResult() { Count = (uint)results.Bookmarks.Count };
+            }
+            catch (Exception ex)
+            {
                 HasMoreItems = false;
-
-            return new LoadMoreItemsResult() { Count = (uint)results.Bookmarks.Count };
+                return new LoadMoreItemsResult() { Count = 0 };
+            }
         }
-        catch (Exception ex)
+        finally
         {
-            HasMoreItems = false;
-            return new LoadMoreItemsResult() { Count = 0 };
+            this.parent.IsEmpty = Count == 0;
         }
     }
 }
