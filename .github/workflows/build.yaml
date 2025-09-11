@@ -34,13 +34,13 @@ jobs:
       with:
         fetch-depth: 0
         
-    - name: Cache NuGet
-      uses: actions/cache@v3
-      with:
-        path: ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-        restore-keys: |
-          ${{ runner.os }}-nuget-
+    # - name: Cache NuGet
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: ~/.nuget/packages
+    #     key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+    #     restore-keys: |
+    #       ${{ runner.os }}-nuget-
 
     # Adjust the package version to include the current date and time, except on Store builds
     - name: Adjust Package Version
@@ -168,7 +168,8 @@ jobs:
           "AppxBundle" = $env:Appx_Bundle
           "AppxBundlePlatforms" = $env:Appx_Bundle_Platforms
           "PackageCertificateKeyFile" = "GitHubActionsWorkflow.pfx"
-          "GenerateAppxPackageOnBuild" = "true"
+          "GenerateAppxPackageOnBuild" = "true",
+          "UseSharedCompilation" = "false"
         }
 
         if($env:Matrix_Version -eq 'WoA32') {
