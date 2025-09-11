@@ -168,7 +168,7 @@ jobs:
           "AppxBundle" = $env:Appx_Bundle
           "AppxBundlePlatforms" = $env:Appx_Bundle_Platforms
           "PackageCertificateKeyFile" = "GitHubActionsWorkflow.pfx"
-          "GenerateAppxPackageOnBuild" = "true",
+          "GenerateAppxPackageOnBuild" = "true"
           "UseSharedCompilation" = "false"
         }
 
