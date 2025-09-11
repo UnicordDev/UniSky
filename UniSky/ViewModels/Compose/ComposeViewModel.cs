@@ -207,7 +207,7 @@ public partial class ComposeViewModel : ViewModelBase
             var embed = await CreateEmbedAsync()
                 .ConfigureAwait(false);
 
-            var postModel = new Post(text, reply: replyRef, embed: embed, facets: [.. facets]);
+            var postModel = new Post(text, reply: replyRef, embed: embed, facets: [.. facets], tags: ["unisky"]);
             var post = (await protocolService.Protocol.CreatePostAsync(postModel)
                 .ConfigureAwait(false))
                 .HandleResult();
