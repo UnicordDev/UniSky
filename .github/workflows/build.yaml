@@ -21,7 +21,7 @@ jobs:
           - configuration: Debug
             version: Store
 
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     env:
       Solution_Name: UniSky.sln
@@ -34,13 +34,13 @@ jobs:
       with:
         fetch-depth: 0
         
-    # - name: Cache NuGet
-    #   uses: actions/cache@v3
-    #   with:
-    #     path: ~/.nuget/packages
-    #     key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-    #     restore-keys: |
-    #       ${{ runner.os }}-nuget-
+    - name: Cache NuGet
+      uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
 
     # Adjust the package version to include the current date and time, except on Store builds
     - name: Adjust Package Version
@@ -169,7 +169,6 @@ jobs:
           "AppxBundlePlatforms" = $env:Appx_Bundle_Platforms
           "PackageCertificateKeyFile" = "GitHubActionsWorkflow.pfx"
           "GenerateAppxPackageOnBuild" = "true"
-          "UseSharedCompilation" = "false"
         }
 
         if($env:Matrix_Version -eq 'WoA32') {

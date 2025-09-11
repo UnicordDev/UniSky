@@ -692,10 +692,10 @@
       <Version>0.2.13</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging">
-      <Version>9.0.8</Version>
+      <Version>9.0.9</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Debug">
-      <Version>9.0.8</Version>
+      <Version>9.0.9</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.14</Version>
@@ -719,7 +719,7 @@
       <Version>0.6.1</Version>
     </PackageReference>
     <PackageReference Include="System.Text.Json">
-      <Version>9.0.8</Version>
+      <Version>9.0.9</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
