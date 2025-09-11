@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Globalization;
 using FishyFlip;
 using FishyFlip.Lexicon.App.Bsky.Notification;
-using FishyFlip.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using UniSky.Services;
 using Windows.ApplicationModel.Background;
-using Windows.Data.Xml.Dom;
-using Windows.UI.Notifications;
 
 namespace UniSky.Background;
 
@@ -35,11 +31,10 @@ public sealed class BadgeBackgroundTask : IBackgroundTask
     {
         var deferral = taskInstance.GetDeferral();
         var logger = ServiceContainer.Default.GetRequiredService<ILogger<BadgeBackgroundTask>>();
-        var badgeService = ServiceContainer.Default.GetRequiredService<IBadgeService>();
-        var badgeCount = 0;
-
         try
         {
+            var badgeCount = 0;
+            var badgeService = ServiceContainer.Default.GetRequiredService<IBadgeService>();
             var sessionService = ServiceContainer.Default.GetRequiredService<ISessionService>();
             var protocolService = ServiceContainer.Default.GetRequiredService<IProtocolService>();
             var atLogger = ServiceContainer.Default.GetRequiredService<ILogger<ATProtocol>>();

@@ -36,6 +36,14 @@ public enum HomePages
 
 public partial class HomeViewModel : ViewModelBase
 {
+    private const string HOME_ICON_GLYPH = "\uE80F";
+    private const string SEARCH_ICON_GLYPH = "\uE71E";
+    private const string FEEDS_ICON_GLYPH = "\uE728";
+    private const string LISTS_ICON_GLYPH = "\uE71D";
+    private const string CHAT_ICON_GLYPH = "\uE8F2";
+    private const string SETTINGS_ICON_GLYPH = "\uE713";
+    private const string BOOKMARKS_ICON_GLYPH = "\uE840";
+
     private readonly ILogger<HomeViewModel> logger;
     private readonly INavigationService homeNavigationService;
     private readonly IProtocolService protocolService;
@@ -66,15 +74,15 @@ public partial class HomeViewModel : ViewModelBase
 
         AvailableMenuItems = new Dictionary<HomePages, MenuItemViewModel>()
         {
-            [HomePages.Home] = new MenuItemViewModel(this, HomePages.Home, "\uE80F", typeof(FeedsPage)),
-            [HomePages.Search] = new MenuItemViewModel(this, HomePages.Search, "\uE71E", typeof(SearchPage)),
+            [HomePages.Home] = new MenuItemViewModel(this, HomePages.Home, HOME_ICON_GLYPH, typeof(FeedsPage)),
+            [HomePages.Search] = new MenuItemViewModel(this, HomePages.Search, SEARCH_ICON_GLYPH, typeof(SearchPage)),
             [HomePages.Notifications] = new NotificationsMenuItemViewModel(this),
-            [HomePages.Feeds] = new MenuItemViewModel(this, HomePages.Feeds, "\uE728", typeof(Page)),
-            [HomePages.Lists] = new MenuItemViewModel(this, HomePages.Lists, "\uE71D", typeof(Page)),
-            [HomePages.Bookmarks] = new MenuItemViewModel(this, HomePages.Bookmarks, "\uE840", typeof(BookmarksPage)),
-            [HomePages.Chat] = new MenuItemViewModel(this, HomePages.Chat, "\uE8F2", typeof(Page)),
+            [HomePages.Feeds] = new MenuItemViewModel(this, HomePages.Feeds, FEEDS_ICON_GLYPH, typeof(Page)),
+            [HomePages.Lists] = new MenuItemViewModel(this, HomePages.Lists, LISTS_ICON_GLYPH, typeof(Page)),
+            [HomePages.Bookmarks] = new MenuItemViewModel(this, HomePages.Bookmarks, BOOKMARKS_ICON_GLYPH, typeof(BookmarksPage)),
+            [HomePages.Chat] = new MenuItemViewModel(this, HomePages.Chat, CHAT_ICON_GLYPH, typeof(Page)),
             [HomePages.Profile] = new ProfileMenuItemViewModel(this),
-            [HomePages.Settings] = new MenuItemViewModel(this, HomePages.Settings, "\uE713", typeof(Page))
+            [HomePages.Settings] = new MenuItemViewModel(this, HomePages.Settings, SETTINGS_ICON_GLYPH, typeof(Page))
         };
 
         MenuItems =
