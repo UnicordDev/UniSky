@@ -11,6 +11,7 @@
     xmlns:labels="using:UniSky.Controls.Labels"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:mux="using:Microsoft.UI.Xaml.Controls"
+    xmlns:ui="using:Microsoft.Toolkit.Uwp.UI"
     xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
     xmlns:aurora="using:System.Windows.Shell.Aurora"
     mc:Ignorable="d"
@@ -33,6 +34,7 @@
             <ListView.Header>
                 <Grid x:Name="ProfileContainer"
                       SizeChanged="Page_SizeChanged"
+                      ui:UIElementExtensions.ClipToBounds="True"
                       MaxWidth="600"
                       extensions:Hairline.BorderThickness="1,0,1,1"
                       BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
@@ -113,6 +115,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -126,16 +129,32 @@
                                    TextWrapping="NoWrap"
                                    MaxLines="1"
                                    IsHitTestVisible="False"/>
-                        <TextBlock x:Name="HandleBlock" 
-                                   Grid.Row="1"
-                                   Style="{ThemeResource BaseTextBlockStyle}" 
-                                   FontFamily="{ThemeResource ContentControlThemeFontFamily}"
-                                   Text="{Binding Handle}"
-                                   TextWrapping="NoWrap"
-                                   MaxLines="1"
-                                   IsHitTestVisible="False"/>
+                        <Grid x:Name="HandleBlock" 
+                                    Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Style="{ThemeResource BaseTextBlockStyle}" 
+                                       FontFamily="{ThemeResource ContentControlThemeFontFamily}"
+                                       Text="{Binding Handle}"
+                                       TextWrapping="NoWrap"
+                                       MaxLines="1"
+                                       IsHitTestVisible="False"/>
+                            <TextBlock Grid.Column="1"
+                                       Visibility="{Binding Pronouns, Converter={StaticResource VisibilityConverter}}"
+                                       Style="{ThemeResource BaseTextBlockStyle}" 
+                                       FontWeight="Normal"  
+                                       Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                                       FontFamily="{ThemeResource ContentControlThemeFontFamily}"
+                                       TextWrapping="NoWrap"
+                                       MaxLines="1"
+                                       IsHitTestVisible="False">
+                                &#x00A0;•&#x00A0;<Run Text="{Binding Pronouns}"/>
+                            </TextBlock>
+                        </Grid>
                         <TextBlock x:Name="InfoBlock" 
-                                   Grid.Row="2"
+                                   Grid.Row="3"
                                    Grid.ColumnSpan="2"
                                    Style="{ThemeResource CaptionTextBlockStyle}"
                                    FontFamily="{ThemeResource ContentControlThemeFontFamily}"
@@ -227,14 +246,25 @@
                                    TextWrapping="NoWrap"
                                    TextTrimming="CharacterEllipsis"
                                    MaxLines="1"/>
-                        <TextBlock x:Name="ScrolledHandleBlock" 
-                                   Style="{ThemeResource CaptionTextBlockStyle}" 
-                                   FontFamily="{ThemeResource ContentControlThemeFontFamily}"
-                                   Grid.Row="1"
-                                   Text="{Binding Handle}"
-                                   TextWrapping="NoWrap"
-                                   TextTrimming="CharacterEllipsis"
-                                   MaxLines="1"/>
+                        <StackPanel x:Name="ScrolledHandleBlock"
+                                    Grid.Row="1"
+                                    Orientation="Horizontal">
+                            <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" 
+                                       FontFamily="{ThemeResource ContentControlThemeFontFamily}"
+                                       Text="{Binding Handle}"
+                                       TextWrapping="NoWrap"
+                                       TextTrimming="CharacterEllipsis"
+                                       MaxLines="1"/>
+                            <TextBlock Visibility="{Binding Pronouns, Converter={StaticResource VisibilityConverter}}"
+                                       Style="{ThemeResource CaptionTextBlockStyle}" 
+                                       FontFamily="{ThemeResource ContentControlThemeFontFamily}"
+                                       Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                                       TextWrapping="NoWrap"
+                                       TextTrimming="CharacterEllipsis"
+                                       MaxLines="1">
+                                &#x00A0;•&#x00A0;<Run Text="{Binding Pronouns}"/>
+                            </TextBlock>
+                        </StackPanel>
 
                         <Border Background="Transparent"
                                 Tapped="ProfileContainer_Tapped"

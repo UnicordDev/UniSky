@@ -40,6 +40,8 @@ public partial class ProfileViewModel : ViewModelBase
     private string bannerUrl;
     [ObservableProperty]
     private string bio;
+    [ObservableProperty]
+    private string pronouns;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsMutual))]
@@ -53,7 +55,7 @@ public partial class ProfileViewModel : ViewModelBase
     private bool isMe;
 
     public ObservableCollection<LabelViewModel> Labels { get; }
-    public ModerationDecision Moderation { get; private set; }
+    public ModerationDecision ModDecision { get; private set; }
 
     public bool IsMutual
         => IsFollowing && FollowsYou;
@@ -66,6 +68,7 @@ public partial class ProfileViewModel : ViewModelBase
         this.AvatarUrl = "ms-appx:///Assets/Default/Avatar.png";
         this.Name = "Example User";
         this.Handle = "@example.com";
+        this.Pronouns = "it/its";
         this.Labels = [];
     }
 
@@ -90,16 +93,20 @@ public partial class ProfileViewModel : ViewModelBase
                         view.DisplayName,
                         view.Avatar,
                         view.Description,
-                        view.Viewer);
-                Moderation = moderator.ModerateProfile(view);
+                        view.Viewer,
+                        pronouns: view.Pronouns);
+
+                ModDecision = moderator.ModerateProfile(view);
                 break;
             case ProfileViewBasic profile:
                 SetData(profile.Did,
                         profile.Handle,
                         profile.DisplayName,
                         profile.Avatar,
-                        viewerState: profile.Viewer);
-                Moderation = moderator.ModerateProfile(profile);
+                        viewerState: profile.Viewer,
+                        pronouns: profile.Pronouns);
+
+                ModDecision = moderator.ModerateProfile(profile);
                 break;
             case ProfileViewDetailed detailed:
                 SetData(detailed.Did,
@@ -108,12 +115,14 @@ public partial class ProfileViewModel : ViewModelBase
                         detailed.Avatar,
                         detailed.Description,
                         detailed.Viewer,
-                        detailed.Banner);
-                Moderation = moderator.ModerateProfile(detailed);
+                        detailed.Banner,
+                        detailed.Pronouns);
+
+                ModDecision = moderator.ModerateProfile(detailed);
                 break;
         }
 
-        if (Moderation != null)
+        if (ModDecision != null)
         {
             DoModeration();
         }
@@ -121,26 +130,26 @@ public partial class ProfileViewModel : ViewModelBase
 
     private void DoModeration()
     {
-        var ui = Moderation.GetUI(ModerationContext.ProfileList);
+        var ui = ModDecision.GetUI(ModerationContext.ProfileList);
         foreach (var cause in ui.Informs)
         {
             if (cause is LabelModerationCause label)
                 Labels.Add(new LabelViewModel(label));
         }
 
-        var avatar = Moderation.GetUI(ModerationContext.Avatar);
+        var avatar = ModDecision.GetUI(ModerationContext.Avatar);
         if (avatar.Blur || avatar.Alert)
             AvatarUrl = null;
 
-        var banner = Moderation.GetUI(ModerationContext.Banner);
+        var banner = ModDecision.GetUI(ModerationContext.Banner);
         if (banner.Blur)
             BannerUrl = null;
 
-        var displayName = Moderation.GetUI(ModerationContext.DisplayName);
+        var displayName = ModDecision.GetUI(ModerationContext.DisplayName);
         if (displayName.Blur)
             this.Name = this.Handle;
 
-        var blockCause = Moderation.BlockCause;
+        var blockCause = ModDecision.BlockCause;
         if (blockCause != null)
         {
             if (blockCause.Type is (ModerationCauseType.Blocking or ModerationCauseType.BlockOther))
@@ -191,7 +200,8 @@ public partial class ProfileViewModel : ViewModelBase
                                 string avatar,
                                 string bio = "",
                                 ViewerState viewerState = null,
-                                string banner = "")
+                                string banner = "",
+                                string pronouns = "")
     {
         var protocol = ServiceContainer.Default.GetRequiredService<IProtocolService>()
             .Protocol;
@@ -211,6 +221,7 @@ public partial class ProfileViewModel : ViewModelBase
         this.Name = string.IsNullOrWhiteSpace(displayName) ? ConvertHandle(handle, true) : displayName;
         this.Bio = bio?.Trim() ?? "";
         this.BannerUrl = banner;
+        this.Pronouns = pronouns?.Trim() ?? "";
     }
 
     private static string ConvertHandle(ATHandle handle, bool forDisplayName = false)
