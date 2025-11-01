@@ -66,6 +66,7 @@
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="Foreground" Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+
     </Style>
 
     <DataTemplate x:Key="PostContentWarningTemplate"
@@ -182,6 +183,7 @@
                   x:DataType="posts:PostEmbedPostViewModel">
         <Button Style="{ThemeResource CleanButtonStyle}"
                 Command="{Binding OpenThreadCommand}"
+                ContextFlyout="{StaticResource FeedItemMoreButtonFlyout}"
                 HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Stretch">
             <StackPanel BorderBrush="{ThemeResource SystemControlSeparatorBrush}"
@@ -491,6 +493,7 @@
                   x:DataType="posts:PostViewModel">
         <Button Style="{ThemeResource CleanButtonStyle}"
                 Command="{x:Bind OpenThreadCommand}" 
+                ContextFlyout="{StaticResource FeedItemMoreButtonFlyout}"
                 BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
                 extensions:Hairline.BorderThickness="{Binding Borders, Mode=OneWay}">
             <StackPanel HorizontalAlignment="Stretch"
@@ -711,7 +714,7 @@
                 </Button.Flyout>
                 <StackPanel Orientation="Horizontal">
                     <Viewbox Height="14">
-                        <TextBlock>&#xE8EB;</TextBlock>
+                        <TextBlock x:Name="RetweetsIcon">&#xE8EB;</TextBlock>
                     </Viewbox>
                     <TextBlock x:Name="RetweetsText"
                                 x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Retweets), Mode=OneWay}"
@@ -782,74 +785,90 @@
                     <TextBlock>&#xE712;</TextBlock>
                 </Viewbox>
             </Button>
-            
+
             <i:Interaction.Behaviors>
-                <core:DataTriggerBehavior Binding="{x:Bind IsLiked}"
+                <i:DataTriggerBehavior Binding="{x:Bind IsLiked}"
                                             ComparisonCondition="Equal"
                                             Value="True">
-                    <core:ChangePropertyAction TargetObject="{Binding ElementName=LikeButton}" 
+                    <i:ChangePropertyAction TargetObject="{Binding ElementName=LikesText}" 
                                                 PropertyName="Foreground"
                                                 Value="{StaticResource LikeBrush}"/>
-                    <core:ChangePropertyAction TargetObject="{Binding ElementName=LikeTextBlock}" 
+
+                    <i:ChangePropertyAction TargetObject="{Binding ElementName=LikeTextBlock}" 
+                                                PropertyName="Foreground"
+                                                Value="{StaticResource LikeBrush}"/>
+
+                    <i:ChangePropertyAction TargetObject="{Binding ElementName=LikeTextBlock}" 
                                                 PropertyName="Text"
                                                 Value="&#xEB52;"/>
-                </core:DataTriggerBehavior>
-                <core:DataTriggerBehavior Binding="{x:Bind IsLiked}"
+                </i:DataTriggerBehavior>
+                <i:DataTriggerBehavior Binding="{x:Bind IsLiked}"
                                             ComparisonCondition="Equal"
                                             Value="False">
-                    <core:ChangePropertyAction TargetObject="{Binding ElementName=LikeButton}" 
+                    <i:ChangePropertyAction TargetObject="{Binding ElementName=LikesText}" 
                                                 PropertyName="Foreground"
                                                 Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
-                    <core:ChangePropertyAction TargetObject="{Binding ElementName=LikeTextBlock}" 
+                    <i:ChangePropertyAction TargetObject="{Binding ElementName=LikeTextBlock}" 
+                                                PropertyName="Foreground"
+                                                Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                    <i:ChangePropertyAction TargetObject="{Binding ElementName=LikeTextBlock}" 
                                                 PropertyName="Text"
                                                 Value="&#xEB51;"/>
-                </core:DataTriggerBehavior>
-                <core:DataTriggerBehavior Binding="{x:Bind IsRetweeted}"
+                </i:DataTriggerBehavior>
+                <i:DataTriggerBehavior Binding="{x:Bind IsRetweeted}"
                                             ComparisonCondition="Equal"
                                             Value="True">
-                    <core:ChangePropertyAction TargetObject="{Binding ElementName=RetweetButton}" 
+                    <i:ChangePropertyAction TargetObject="{Binding ElementName=RetweetsIcon}" 
                                                 PropertyName="Foreground"
                                                 Value="{StaticResource RetweetBrush}"/>
-                    <core:ChangePropertyAction TargetObject="{Binding ElementName=RetweetItem}"
+                    <i:ChangePropertyAction TargetObject="{Binding ElementName=RetweetsText}" 
+                                                PropertyName="Foreground"
+                                                Value="{StaticResource RetweetBrush}"/>
+
+                    <i:ChangePropertyAction TargetObject="{Binding ElementName=RetweetItem}"
                                                 PropertyName="Visibility"
                                                 Value="Collapsed"/>
-                    <core:ChangePropertyAction TargetObject="{Binding ElementName=UndoRetweetItem}"
+                    <i:ChangePropertyAction TargetObject="{Binding ElementName=UndoRetweetItem}"
                                                 PropertyName="Visibility"
                                                 Value="Visible"/>
-                </core:DataTriggerBehavior>
-                <core:DataTriggerBehavior Binding="{x:Bind IsRetweeted}"
+                </i:DataTriggerBehavior>
+                <i:DataTriggerBehavior Binding="{x:Bind IsRetweeted}"
                                             ComparisonCondition="Equal"
                                             Value="False">
-                    <core:ChangePropertyAction TargetObject="{Binding ElementName=RetweetButton}" 
+                    <i:ChangePropertyAction TargetObject="{Binding ElementName=RetweetsIcon}" 
                                                 PropertyName="Foreground"
                                                 Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
-                    <core:ChangePropertyAction TargetObject="{Binding ElementName=RetweetItem}"
+                    <i:ChangePropertyAction TargetObject="{Binding ElementName=RetweetsText}" 
+                                                PropertyName="Foreground"
+                                                Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+
+                    <i:ChangePropertyAction TargetObject="{Binding ElementName=RetweetItem}"
                                                 PropertyName="Visibility"
                                                 Value="Visible"/>
-                    <core:ChangePropertyAction TargetObject="{Binding ElementName=UndoRetweetItem}"
+                    <i:ChangePropertyAction TargetObject="{Binding ElementName=UndoRetweetItem}"
                                                 PropertyName="Visibility"
                                                 Value="Collapsed"/>
-                </core:DataTriggerBehavior>
-                <core:DataTriggerBehavior Binding="{x:Bind IsBookmarked}"
+                </i:DataTriggerBehavior>
+                <i:DataTriggerBehavior Binding="{x:Bind IsBookmarked}"
                                             ComparisonCondition="Equal"
                                             Value="False">
-                    <core:ChangePropertyAction TargetObject="{Binding ElementName=BookmarkIcon}" 
+                    <i:ChangePropertyAction TargetObject="{Binding ElementName=BookmarkIcon}" 
                                                 PropertyName="Foreground"
                                                 Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
-                    <core:ChangePropertyAction TargetObject="{Binding ElementName=BookmarksText}" 
+                    <i:ChangePropertyAction TargetObject="{Binding ElementName=BookmarksText}" 
                                                 PropertyName="Foreground"
                                                 Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
-                </core:DataTriggerBehavior>
-                <core:DataTriggerBehavior Binding="{x:Bind IsBookmarked}"
+                </i:DataTriggerBehavior>
+                <i:DataTriggerBehavior Binding="{x:Bind IsBookmarked}"
                                             ComparisonCondition="Equal"
                                             Value="True">
-                    <core:ChangePropertyAction TargetObject="{Binding ElementName=BookmarkIcon}" 
+                    <i:ChangePropertyAction TargetObject="{Binding ElementName=BookmarkIcon}" 
                                                 PropertyName="Foreground"
                                                 Value="{ThemeResource BookmarkBrush}"/>
-                    <core:ChangePropertyAction TargetObject="{Binding ElementName=BookmarksText}" 
+                    <i:ChangePropertyAction TargetObject="{Binding ElementName=BookmarksText}" 
                                                 PropertyName="Foreground"
                                                 Value="{ThemeResource BookmarkBrush}"/>
-                </core:DataTriggerBehavior>
+                </i:DataTriggerBehavior>
             </i:Interaction.Behaviors>
         </Grid>
     </DataTemplate>

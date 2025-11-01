@@ -118,14 +118,14 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PostsRun.Text" xml:space="preserve">
-    <value>Posts</value>
+    <value>posts</value>
   </data>
   <data name="FollowersRun.Text" xml:space="preserve">
-    <value>Followers</value>
+    <value>followers</value>
     <comment>n users following person, not doing plural because it will almost always be &gt; 10</comment>
   </data>
   <data name="FollowingRun.Text" xml:space="preserve">
-    <value>Following</value>
+    <value>following</value>
     <comment>n users followed by person, not doing plural because it will almost always be &gt; 10</comment>
   </data>
   <data name="Feed_Posts" xml:space="preserve">
@@ -488,7 +488,7 @@
   <data name="HomePage_Search" xml:space="preserve">
     <value>Search</value>
   </data>
-	<data name="HomePage_Bookmarks" xml:space="preserve">
+  <data name="HomePage_Bookmarks" xml:space="preserve">
     <value>Bookmarks</value>
   </data>
   <data name="HomePage_Settings" xml:space="preserve">
@@ -524,13 +524,13 @@
   <data name="PostUndoRetweetItem.Text" xml:space="preserve">
     <value>Undo Repost</value>
   </data>
-	<data name="BookmarksPageTitleBlock.Text" xml:space="preserve">
-		<value>BOOKMARKS</value>
-	</data>
-	<data name="BookmarksPageNoItemsTitle.Text" xml:space="preserve">
-		<value>Nothing is bookmarked!</value>
-	</data>
-	<data name="BookmarksPageNoItemsSubtitle.Text" xml:space="preserve">
-		<value>Bookmark some posts to get started.</value>
-	</data>
+  <data name="BookmarksPageTitleBlock.Text" xml:space="preserve">
+    <value>BOOKMARKS</value>
+  </data>
+  <data name="BookmarksPageNoItemsTitle.Text" xml:space="preserve">
+    <value>Nothing is bookmarked!</value>
+  </data>
+  <data name="BookmarksPageNoItemsSubtitle.Text" xml:space="preserve">
+    <value>Bookmark some posts to get started.</value>
+  </data>
 </root>

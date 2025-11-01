@@ -140,9 +140,9 @@
 
         <ProgressBar Grid.Row="3"
                      MaxWidth="600"
-               VerticalAlignment="Top"
-               IsIndeterminate="{x:Bind ViewModel.IsLoading, Mode=OneWay}"
-               Background="Transparent"/>
+                     VerticalAlignment="Top"
+                     IsIndeterminate="{x:Bind ViewModel.IsLoading, Mode=OneWay}"
+                     Background="Transparent"/>
 
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
