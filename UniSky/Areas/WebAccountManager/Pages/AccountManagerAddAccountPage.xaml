@@ -1,0 +1,235 @@
+﻿<Page
+    x:Class="UniSky.Areas.WebAccountManager.Pages.AccountManagerAddAccountPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UniSky.Areas.WebAccountManager.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:UniSky.Controls"
+    xmlns:extensions="using:UniSky.Extensions"
+    xmlns:converters="using:UniSky.Converters"
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationRootPageBackgroundBrush}"
+    x:DefaultBindMode="OneWay">
+    <Grid>
+        <Grid x:Name="ContentRoot"
+              Background="{ThemeResource HomePageBackgroundFillBrush}"
+              RenderTransformOrigin="0.5,0.5">
+            <Grid.RowDefinitions>
+                <RowDefinition x:Name="TitleBarPadding" Height="0"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Border x:Name="HeaderBackground"
+                Grid.RowSpan="2"
+                Background="{ThemeResource GenericPageHeaderBackgroundBrush}"
+                BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
+                extensions:Hairline.BorderThickness="0,0,0,1"/>
+
+            <Border Grid.Row="1" 
+                Padding="{ThemeResource GenericPageHeaderMargin}">
+                <TextBlock x:Uid="AccountManagerRootPageTitleBlock"
+                       Margin="12,0,12,12"
+                       Text="LOGIN"
+                       Style="{ThemeResource BaseTextBlockStyle}"/>
+            </Border>
+
+            <ProgressBar Grid.Row="2"
+                     VerticalAlignment="Top"
+                     IsIndeterminate="{x:Bind ViewModel.IsLoading, Mode=OneWay}"
+                     Background="Transparent"/>
+
+            <Grid x:Name="Step1Content"
+                  x:Load="{x:Bind ViewModel.IsStep1}"
+                  Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Margin="12">
+                    <TextBlock Text="Enter your Bluesky handle, we'll figure out the rest!"
+                               Style="{ThemeResource BaseTextBlockStyle}"
+                               Margin="0,0,8,8"/>
+                    <TextBox x:Name="HandleTextBox"
+                             IsEnabled="{x:Bind converters:Static.Not(ViewModel.IsLoading)}"
+                             Text="{x:Bind ViewModel.Handle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             PlaceholderText="wamwoowam.co.uk or wamwoowwam.bsky.social"
+                             InputScope="Url" 
+                             IsSpellCheckEnabled="False" 
+                             IsTextPredictionEnabled="False"
+                             KeyUp="HandleTextBox_KeyUp"
+                             TabIndex="1"/>
+                </StackPanel>
+
+
+                <Border x:Name="FooterBackground"
+                    Grid.Row="1"
+                    Background="{ThemeResource GenericPageHeaderBackgroundBrush}"
+                    BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
+                    extensions:Hairline.BorderThickness="0,1,0,0"/>
+
+                <Grid Margin="12"
+                      Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Style="{ThemeResource TextBlockButtonStyle}" 
+                            IsEnabled="{x:Bind converters:Static.Not(ViewModel.IsLoading)}"
+                            TabIndex="3">
+                        Use an app password instead...
+                    </Button>
+
+                    <Button x:Uid="AccountManagerRootPageNextButton" 
+                            IsEnabled="{x:Bind converters:Static.Not(ViewModel.IsLoading)}"
+                            Grid.Column="2"
+                            MinWidth="120"
+                            TabIndex="2"
+                            Style="{ThemeResource AccentButtonStyle}"
+                            Click="Button_Click">
+                        Next
+                    </Button>
+                </Grid>
+            </Grid>
+
+            <Grid x:Name="Step2Content"
+                   x:Load="{x:Bind ViewModel.IsStep2}"
+                   Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid Margin="24,80,24,0"
+                      VerticalAlignment="Top"
+                      HorizontalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="&#xE774;"
+                               Margin="0,0,0,24"
+                               FontSize="48"
+                               FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                               VerticalAlignment="Center"/>
+                    <StackPanel Margin="16,0,0,24" VerticalAlignment="Center" Grid.Column="1">
+                        <TextBlock TextWrapping="Wrap" 
+                                   Text="Continue in your browser!" 
+                                   Style="{ThemeResource TitleTextBlockStyle}"/>
+                        <TextBlock Text="We've opened your browser, log in and we'll refresh this page!" 
+                                   TextWrapping="Wrap"
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                    </StackPanel>
+
+
+                    <ProgressBar Grid.ColumnSpan="2"
+                                 VerticalAlignment="Bottom"
+                                 IsIndeterminate="True"
+                                 Background="Transparent"/>
+                </Grid>
+
+                <Border x:Name="FooterBackground2"
+                     Grid.Row="1"
+                     Background="{ThemeResource GenericPageHeaderBackgroundBrush}"
+                     BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
+                     extensions:Hairline.BorderThickness="0,1,0,0"/>
+
+                <Grid Margin="12"
+                       Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button x:Uid="AccountManagerRootPageCancelButton" 
+                             Grid.Column="2"
+                             MinWidth="120"
+                             TabIndex="1">
+                        Cancel
+                    </Button>
+                </Grid>
+            </Grid>
+
+            <Grid x:Name="Step3Content"
+                   x:Load="{x:Bind ViewModel.IsStep3}"
+                   Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid Margin="24,80,24,0"
+                      VerticalAlignment="Top"
+                      HorizontalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <lib:PersonPicture DisplayName="{x:Bind ViewModel.LoginUser.Name}"
+                                       ProfilePicture="{x:Bind ViewModel.LoginUser.AvatarUrl}"
+                                       Margin="0,0,0,24"
+                                       Width="48" Height="48"
+                                       FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                       VerticalAlignment="Center"/>
+                    <StackPanel Margin="16,0,0,24" VerticalAlignment="Center" Grid.Column="1">
+                        <TextBlock TextWrapping="Wrap" 
+                                   Text="Hi there!" 
+                                   Style="{ThemeResource TitleTextBlockStyle}"/>
+                        <TextBlock Text="We're getting everything ready for you!" 
+                                   TextWrapping="Wrap"
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                    </StackPanel>
+
+
+                    <ProgressBar Grid.ColumnSpan="2"
+                                 VerticalAlignment="Bottom"
+                                 IsIndeterminate="True"
+                                 Background="Transparent"/>
+                </Grid>
+            </Grid>
+
+            <controls:TitleBar x:Name="TitleBar"
+                               Grid.RowSpan="4"
+                               VerticalAlignment="Top" />
+        </Grid>
+
+        <!--<Grid x:Name="ExtendedSplash" 
+               IsHitTestVisible="False"
+               Grid.RowSpan="5"
+               Background="{ThemeResource SplashScreenBackground}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Viewbox x:Name="ExtendedSplashContainer"
+                    Grid.RowSpan="2"
+                    StretchDirection="DownOnly">
+                <Grid x:Name="ExtendedSplashImage" 
+                    Width="620"
+                    Height="300">
+                    <Viewbox Width="100"
+                            Height="100"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            CacheMode="BitmapCache">
+                        <Path Data="{StaticResource BlueSkyLogoPath}"
+                            Fill="White"/>
+                    </Viewbox>
+                </Grid>
+            </Viewbox>
+            <ProgressRing x:Name="ExtendedProgressRing"
+                        Grid.Row="1"
+                        VerticalAlignment="Top"
+                        Foreground="White" 
+                        IsActive="False"
+                        Width="24"
+                        Height="24"/>
+        </Grid>-->
+    </Grid>
+</Page>

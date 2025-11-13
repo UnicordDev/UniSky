@@ -4,6 +4,7 @@
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap2="http://schemas.microsoft.com/appx/manifest/uap/windows10/2"
   xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   xmlns:uap18="http://schemas.microsoft.com/appx/manifest/uap/windows10/18"
@@ -33,7 +34,7 @@
   <Applications>
     <Application Id="App"
       Executable="$targetnametoken$.exe"
-      EntryPoint="UniSky.App" uap18:RuntimeBehavior="windowsApp" uap18:TrustLevel="appContainer">
+      EntryPoint="UniSky.App" uap18:RuntimeBehavior="windowsApp" uap18:TrustLevel="mediumIL">
       <uap:VisualElements
         DisplayName="ms-resource:AppName"
         Square150x150Logo="Assets\Square150x150Logo.png"
@@ -46,21 +47,39 @@
           Square310x310Logo="Assets\LargeTile.png" 
           ShortName="ms-resource:AppName">
           <uap:ShowNameOnTiles>
-            <uap:ShowOn Tile="square150x150Logo"/>
             <uap:ShowOn Tile="square310x310Logo"/>
             <uap:ShowOn Tile="wide310x150Logo"/>
+            <uap:ShowOn Tile="square150x150Logo"/>
           </uap:ShowNameOnTiles>
         </uap:DefaultTile>
         <uap:SplashScreen Image="Assets\SplashScreen.png" BackgroundColor="#0085ff" uap5:Optional="true" />
         <uap:LockScreen Notification="badge" BadgeLogo="Assets\BadgeLogo.png"/>
       </uap:VisualElements>
       <Extensions>
+
+        <uap:Extension Category="windows.webAccountProvider">
+          <uap:WebAccountProvider Url="https://atproto.wamwoowam.co.uk/" BackgroundEntryPoint="UniSky.Background.WebAccountProviderTask" />
+        </uap:Extension>
+        <!--<uap2:Extension Category="windows.webAccountProvider">
+          <uap2:WebAccountProvider Url="https://atproto.wamwoowam.co.uk/"
+                                   BackgroundEntryPoint="UniSky.Background.WebAccountProviderTask"
+                                   DisplayName="Bluesky"
+                                   DisplayPurpose="Login using your Bluesky account/ATProto identity"
+                                   Square44x44Logo="Assets\Bluesky\Square44x44Logo.png">
+          </uap2:WebAccountProvider>
+        </uap2:Extension>-->
         <uap:Extension Category="windows.protocol">
           <uap:Protocol Name="unisky">
             <uap:DisplayName>Unisky</uap:DisplayName>
             <uap:Logo>Assets\Square44x44Logo.png</uap:Logo>
           </uap:Protocol>
         </uap:Extension>
+        <Extension Category="windows.backgroundTasks" EntryPoint="UniSky.Background.WebAccountProviderTask">
+          <BackgroundTasks>
+            <Task Type="systemEvent"/>
+            <Task Type="general"/>
+          </BackgroundTasks>
+        </Extension>
         <Extension Category="windows.backgroundTasks" EntryPoint="UniSky.Background.BadgeBackgroundTask">
           <BackgroundTasks>
             <Task Type="systemEvent"/>
@@ -74,5 +93,7 @@
   <Capabilities>
     <Capability Name="internetClient" />
     <rescap:Capability Name="confirmAppClose" />
+    <uap:Capability Name="enterpriseAuthentication" />
+    <uap:Capability Name="userAccountInformation"/>
   </Capabilities>
 </Package>

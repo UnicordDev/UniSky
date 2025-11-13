@@ -55,9 +55,11 @@ internal static class BirdAnimation
             clip.Scale = new Vector2(initialScale, initialScale);
             clip.Offset = new Vector2(offsetX, offsetY);
 
-            frameVisual.AnchorPoint = new Vector2(0.5f);
+            frameVisual.AnchorPoint = new Vector2(0.5f, 0.5f);
             frameVisual.Offset = new Vector3((float)(size.Width / 2), (float)(size.Height / 2), 0);
             frameVisual.Clip = clip;
+
+            //frameVisual.RelativeOffsetAdjustment = new Vector3(0.5f, 0.5, 0);
 
             var ease = compositor.CreateCubicBezierEasingFunction(new Vector2(0.7f, 0), new Vector2(0.84f, 0));
             var ease2 = compositor.CreateCubicBezierEasingFunction(new Vector2(0, 0.55f), new Vector2(0.45f, 1));

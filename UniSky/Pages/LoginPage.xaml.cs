@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using UniSky.Services;
 using UniSky.ViewModels;
+using Windows.Security.Authentication.Web.Core;
+using Windows.Security.Authentication.Web.Provider;
+using Windows.Security.Credentials;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -31,12 +34,19 @@ public sealed partial class LoginPage : Page
         safeAreaService.SetTitlebarTheme(ElementTheme.Default);
         safeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
 
+        
+
         if (e.Parameter is not LoginViewModel vm)
             return;
 
         DataContext = ViewModel = vm;
     }
 
+    protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+    {
+        base.OnNavigatingFrom(e);
+    }
+    
     private void OnSafeAreaUpdated(object sender, SafeAreaUpdatedEventArgs e)
     {
         Margin = new Thickness(e.SafeArea.Bounds.Left, 0, e.SafeArea.Bounds.Right, e.SafeArea.Bounds.Bottom);

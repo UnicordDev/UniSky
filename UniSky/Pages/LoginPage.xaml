@@ -103,7 +103,8 @@
                          InputScope="Url"
                          TabIndex="-1"
                          Margin="0,0,0,16"
-                         Text="{x:Bind ViewModel.Host, Mode=TwoWay}">
+                         Text="{x:Bind ViewModel.Host, Mode=TwoWay}"
+                         IsSpellCheckEnabled="False" IsTextPredictionEnabled="False">
                 </TextBox>
 
                 <TextBox x:Uid="LoginUsernameBox" 
@@ -111,7 +112,8 @@
                          InputScope="EmailNameOrAddress" 
                          TabIndex="0"
                          Margin="0,0,0,16"
-                         Text="{x:Bind ViewModel.Username, Mode=TwoWay}">
+                         Text="{x:Bind ViewModel.Username, Mode=TwoWay}"
+                         IsSpellCheckEnabled="False" IsTextPredictionEnabled="False">
                 </TextBox>
 
                 <PasswordBox x:Uid="LoginPasswordBox" 

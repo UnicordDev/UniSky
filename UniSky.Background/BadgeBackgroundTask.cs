@@ -12,19 +12,6 @@ public sealed class BadgeBackgroundTask : IBackgroundTask
 {
     public BadgeBackgroundTask()
     {
-        var collection = new ServiceCollection();
-        collection.AddLogging(c => c.AddDebug()
-            .SetMinimumLevel(LogLevel.Trace));
-
-        collection.AddSingleton<IProtocolService, ProtocolService>();
-        collection.AddSingleton<ISettingsService, SettingsService>();
-        collection.AddSingleton<ITypedSettings, TypedSettingsService>();
-
-        collection.AddTransient<ILoginService, LoginService>();
-        collection.AddTransient<ISessionService, SessionService>();
-        collection.AddTransient<IBadgeService, BadgeService>();
-
-        ServiceContainer.Default.ConfigureServices(collection.BuildServiceProvider());
     }
 
     public async void Run(IBackgroundTaskInstance taskInstance)

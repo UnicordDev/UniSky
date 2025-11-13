@@ -33,7 +33,7 @@
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x86|x64|arm|arm64</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <GenerateTestArtifacts>False</GenerateTestArtifacts>
@@ -149,6 +149,10 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Areas\WebAccountManager\Pages\AccountManagerAddAccountPage.xaml.cs">
+      <DependentUpon>AccountManagerAddAccountPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Areas\WebAccountManager\ViewModels\AccountManagerAddAccountViewModel.cs" />
     <Compile Include="Controls\Compose\ComposeAddAltTextDialog.xaml.cs">
       <DependentUpon>ComposeAddAltTextDialog.xaml</DependentUpon>
     </Compile>
@@ -272,6 +276,7 @@
     <Compile Include="Helpers\StringExtensions.cs" />
     <Compile Include="Helpers\UIElementExtensions.cs" />
     <Compile Include="Helpers\UrlHelpers.cs" />
+    <Compile Include="Messages\ProtocolActivatedMessage.cs" />
     <Compile Include="Messages\MarkAsReadNotification.cs" />
     <Compile Include="Pages\BookmarksPage.xaml.cs">
       <DependentUpon>BookmarksPage.xaml</DependentUpon>
@@ -379,6 +384,26 @@
     <Content Include="Assets\BadgeLogo.scale-150.png" />
     <Content Include="Assets\BadgeLogo.scale-200.png" />
     <Content Include="Assets\BadgeLogo.scale-400.png" />
+    <Content Include="Assets\Bluesky\Square44x44Logo.altform-lightunplated_targetsize-16.png" />
+    <Content Include="Assets\Bluesky\Square44x44Logo.altform-lightunplated_targetsize-24.png" />
+    <Content Include="Assets\Bluesky\Square44x44Logo.altform-lightunplated_targetsize-256.png" />
+    <Content Include="Assets\Bluesky\Square44x44Logo.altform-lightunplated_targetsize-32.png" />
+    <Content Include="Assets\Bluesky\Square44x44Logo.altform-lightunplated_targetsize-48.png" />
+    <Content Include="Assets\Bluesky\Square44x44Logo.altform-unplated_targetsize-16.png" />
+    <Content Include="Assets\Bluesky\Square44x44Logo.altform-unplated_targetsize-24.png" />
+    <Content Include="Assets\Bluesky\Square44x44Logo.altform-unplated_targetsize-256.png" />
+    <Content Include="Assets\Bluesky\Square44x44Logo.altform-unplated_targetsize-32.png" />
+    <Content Include="Assets\Bluesky\Square44x44Logo.altform-unplated_targetsize-48.png" />
+    <Content Include="Assets\Bluesky\Square44x44Logo.scale-100.png" />
+    <Content Include="Assets\Bluesky\Square44x44Logo.scale-125.png" />
+    <Content Include="Assets\Bluesky\Square44x44Logo.scale-150.png" />
+    <Content Include="Assets\Bluesky\Square44x44Logo.scale-200.png" />
+    <Content Include="Assets\Bluesky\Square44x44Logo.scale-400.png" />
+    <Content Include="Assets\Bluesky\Square44x44Logo.targetsize-16.png" />
+    <Content Include="Assets\Bluesky\Square44x44Logo.targetsize-24.png" />
+    <Content Include="Assets\Bluesky\Square44x44Logo.targetsize-256.png" />
+    <Content Include="Assets\Bluesky\Square44x44Logo.targetsize-32.png" />
+    <Content Include="Assets\Bluesky\Square44x44Logo.targetsize-48.png" />
     <Content Include="Assets\custom-twitter\LargeTile.scale-100.png" />
     <Content Include="Assets\custom-twitter\LargeTile.scale-125.png" />
     <Content Include="Assets\custom-twitter\LargeTile.scale-150.png" />
@@ -489,6 +514,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Areas\WebAccountManager\Pages\AccountManagerAddAccountPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Compose\ComposeAddAltTextDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -677,7 +706,7 @@
       <Version>8.4.0</Version>
     </PackageReference>
     <PackageReference Include="FishyFlip">
-      <Version>4.1.0-alpha.14</Version>
+      <Version>4.1.0-alpha.21</Version>
     </PackageReference>
     <PackageReference Include="Humanizer.Core">
       <Version>2.14.1</Version>

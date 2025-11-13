@@ -122,12 +122,14 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ModuleInitializer.cs" />
+    <Compile Include="WebAccountProviderTask.cs" />
     <Compile Include="BadgeBackgroundTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FishyFlip">
-      <Version>4.1.0-alpha.14</Version>
+      <Version>4.1.0-alpha.21</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging">
       <Version>9.0.10</Version>

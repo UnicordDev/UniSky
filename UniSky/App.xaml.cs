@@ -1,9 +1,12 @@
 ﻿using System;
+using CommunityToolkit.Mvvm.Messaging;
 using Humanizer.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using UniSky.Areas.WebAccountManager.Pages;
 using UniSky.Extensions;
 using UniSky.Helpers.Localisation;
+using UniSky.Messages;
 using UniSky.Services;
 using UniSky.Services.Overlay;
 using Windows.ApplicationModel;
@@ -102,11 +105,19 @@ sealed partial class App : Application
 
     protected override void OnActivated(IActivatedEventArgs args)
     {
+        Hairline.Initialize();
+
         if (args is ProtocolActivatedEventArgs e)
         {
             this.OnProtocolActivated(e);
         }
+
+        if (args is WebAccountProviderActivatedEventArgs wap)
+        {
+            this.OnWebAccountProviderActivated(wap);
+        }
     }
+
 
     /// <summary>
     /// Invoked when the application is launched normally by the end user.  Other entry points
@@ -115,7 +126,6 @@ sealed partial class App : Application
     /// <param name="e">Details about the launch request and process.</param>
     protected override void OnLaunched(LaunchActivatedEventArgs e)
     {
-        Hairline.Initialize();
 
         //DebugSettings.EnableFrameRateCounter = true;
         //DebugSettings.EnableRedrawRegions = true;
@@ -159,13 +169,28 @@ sealed partial class App : Application
 
     private void OnProtocolActivated(ProtocolActivatedEventArgs e)
     {
-        Hairline.Initialize();
-
         if (Window.Current.Content is not Frame rootFrame)
         {
             rootFrame = new Frame();
             rootFrame.NavigationFailed += OnNavigationFailed;
             rootFrame.Navigate(typeof(RootPage), e.SplashScreen);
+            Window.Current.Content = rootFrame;
+        }
+
+        // Ensure the current window is active
+        Window.Current.Activate();
+
+
+        WeakReferenceMessenger.Default.Send(new ProtocolActivatedMessage() { EventArgs = e });
+    }
+
+    private void OnWebAccountProviderActivated(WebAccountProviderActivatedEventArgs e)
+    {
+        if (Window.Current.Content is not Frame rootFrame)
+        {
+            rootFrame = new Frame();
+            rootFrame.NavigationFailed += OnNavigationFailed;
+            rootFrame.Navigate(typeof(AccountManagerAddAccountPage), e);
             Window.Current.Content = rootFrame;
         }
 

@@ -84,7 +84,6 @@ public partial class ProfileViewModel : ViewModelBase
     {
         Labels.Clear();
 
-        var moderator = new Moderator(moderationService.ModerationOptions);
         switch (obj)
         {
             case ProfileView view:
@@ -96,7 +95,8 @@ public partial class ProfileViewModel : ViewModelBase
                         view.Viewer,
                         pronouns: view.Pronouns);
 
-                ModDecision = moderator.ModerateProfile(view);
+                if (moderationService.ModerationOptions != null)
+                    ModDecision = new Moderator(moderationService.ModerationOptions).ModerateProfile(view);
                 break;
             case ProfileViewBasic profile:
                 SetData(profile.Did,
@@ -106,7 +106,8 @@ public partial class ProfileViewModel : ViewModelBase
                         viewerState: profile.Viewer,
                         pronouns: profile.Pronouns);
 
-                ModDecision = moderator.ModerateProfile(profile);
+                if (moderationService.ModerationOptions != null)
+                    ModDecision = new Moderator(moderationService.ModerationOptions).ModerateProfile(profile);
                 break;
             case ProfileViewDetailed detailed:
                 SetData(detailed.Did,
@@ -118,7 +119,8 @@ public partial class ProfileViewModel : ViewModelBase
                         detailed.Banner,
                         detailed.Pronouns);
 
-                ModDecision = moderator.ModerateProfile(detailed);
+                if (moderationService.ModerationOptions != null)
+                    ModDecision = new Moderator(moderationService.ModerationOptions).ModerateProfile(detailed);
                 break;
         }
 
