@@ -19,153 +19,152 @@ using Windows.UI.Xaml.Input;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace UniSky.Controls.Compose
+namespace UniSky.Controls.Compose;
+
+public sealed partial class ComposeSheet : SheetControl
 {
-    public sealed partial class ComposeSheet : SheetControl
+    private readonly ResourceLoader strings;
+
+    public ComposeViewModel ViewModel
     {
-        private readonly ResourceLoader strings;
+        get => (ComposeViewModel)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
 
-        public ComposeViewModel ViewModel
+    public static readonly DependencyProperty ViewModelProperty =
+        DependencyProperty.Register("ViewModel", typeof(ComposeViewModel), typeof(ComposeSheet), new PropertyMetadata(null));
+
+    public ComposeSheet()
+         : base()
+    {
+        this.InitializeComponent();
+        this.Showing += OnShowing;
+        this.Shown += OnShown;
+        this.Hiding += OnHiding;
+        this.Hidden += OnHidden;
+
+        if (ApiInformation.IsEventPresent(typeof(UIElement).FullName, "PreviewKeyDown"))
         {
-            get => (ComposeViewModel)GetValue(ViewModelProperty);
-            set => SetValue(ViewModelProperty, value);
+            PrimaryTextBox.PreviewKeyDown += OnPreviewKeyDown;
         }
 
-        public static readonly DependencyProperty ViewModelProperty =
-            DependencyProperty.Register("ViewModel", typeof(ComposeViewModel), typeof(ComposeSheet), new PropertyMetadata(null));
+        this.strings = ResourceLoader.GetForCurrentView();
+    }
 
-        public ComposeSheet()
-             : base()
+    protected override void OnBottomInsetsChanged(double leftInset, double rightInset)
+    {
+        FooterContainer.Padding = new Thickness(leftInset, 0, rightInset, 2);
+    }
+
+    public bool Not(bool b, bool a)
+        => !a && !b;
+
+    private void OnShowing(IOverlayControl sender, OverlayShowingEventArgs e)
+    {
+        if (Window.Current.Content is FrameworkElement element)
         {
-            this.InitializeComponent();
-            this.Showing += OnShowing;
-            this.Shown += OnShown;
-            this.Hiding += OnHiding;
-            this.Hidden += OnHidden;
-
-            if (ApiInformation.IsEventPresent(typeof(UIElement).FullName, "PreviewKeyDown"))
-            {
-                PrimaryTextBox.PreviewKeyDown += OnPreviewKeyDown;
-            }
-
-            this.strings = ResourceLoader.GetForCurrentView();
+            element.AllowDrop = true;
+            element.DragEnter += HandleDrag;
+            element.DragOver += HandleDrag;
+            element.DragLeave += HandleDrag;
+            element.Drop += HandleDrop;
         }
 
-        protected override void OnBottomInsetsChanged(double leftInset, double rightInset)
+        if (e.Parameter is ComposeSheetOptions options)
         {
-            FooterContainer.Padding = new Thickness(leftInset, 0, rightInset, 2);
+            this.ViewModel = ActivatorUtilities.CreateInstance<ComposeViewModel>(ServiceContainer.Scoped, options, Controller);
         }
-
-        public bool Not(bool b, bool a)
-            => !a && !b;
-
-        private void OnShowing(IOverlayControl sender, OverlayShowingEventArgs e)
+        else if (e.Parameter is PostViewModel replyTo)
         {
-            if (Window.Current.Content is FrameworkElement element)
-            {
-                element.AllowDrop = true;
-                element.DragEnter += HandleDrag;
-                element.DragOver += HandleDrag;
-                element.DragLeave += HandleDrag;
-                element.Drop += HandleDrop;
-            }
-
-            if (e.Parameter is ComposeSheetOptions options)
-            {
-                this.ViewModel = ActivatorUtilities.CreateInstance<ComposeViewModel>(ServiceContainer.Scoped, options, Controller);
-            }
-            else if (e.Parameter is PostViewModel replyTo)
-            {
-                this.ViewModel = ActivatorUtilities.CreateInstance<ComposeViewModel>(ServiceContainer.Scoped, new ComposeSheetOptions(ReplyTo: replyTo, Quote: null), Controller);
-            }
-            else
-            {
-                this.ViewModel = ActivatorUtilities.CreateInstance<ComposeViewModel>(ServiceContainer.Scoped, Controller);
-            }
+            this.ViewModel = ActivatorUtilities.CreateInstance<ComposeViewModel>(ServiceContainer.Scoped, new ComposeSheetOptions(ReplyTo: replyTo, Quote: null), Controller);
         }
-
-        private void OnHidden(IOverlayControl sender, RoutedEventArgs args)
+        else
         {
-            if (Window.Current.Content is FrameworkElement element)
-            {
-                element.AllowDrop = false;
-                element.DragEnter -= HandleDrag;
-                element.DragOver -= HandleDrag;
-                element.DragLeave -= HandleDrag;
-                element.Drop -= HandleDrop;
-            }
+            this.ViewModel = ActivatorUtilities.CreateInstance<ComposeViewModel>(ServiceContainer.Scoped, Controller);
         }
+    }
 
-        private void OnShown(IOverlayControl sender, RoutedEventArgs args)
+    private void OnHidden(IOverlayControl sender, RoutedEventArgs args)
+    {
+        if (Window.Current.Content is FrameworkElement element)
         {
-            PrimaryTextBox.Focus(FocusState.Programmatic);
+            element.AllowDrop = false;
+            element.DragEnter -= HandleDrag;
+            element.DragOver -= HandleDrag;
+            element.DragLeave -= HandleDrag;
+            element.Drop -= HandleDrop;
         }
+    }
 
-        private async void OnHiding(IOverlayControl sender, OverlayHidingEventArgs e)
+    private void OnShown(IOverlayControl sender, RoutedEventArgs args)
+    {
+        PrimaryTextBox.Focus(FocusState.Programmatic);
+    }
+
+    private async void OnHiding(IOverlayControl sender, OverlayHidingEventArgs e)
+    {
+        var deferral = e.GetDeferral();
+        try
         {
-            var deferral = e.GetDeferral();
-            try
+            if (ViewModel.IsDirty)
             {
-                if (ViewModel.IsDirty)
+                var discardDraftDialog = new ComposeDiscardDraftDialog();
+                if (Controller != null && ApiInformation.IsApiContractPresent(typeof(UniversalApiContract).FullName, 8))
+                    discardDraftDialog.XamlRoot = Controller.Root.XamlRoot;
+
+                if (await discardDraftDialog.ShowAsync() != ContentDialogResult.Primary)
                 {
-                    var discardDraftDialog = new ComposeDiscardDraftDialog();
-                    if (Controller != null && ApiInformation.IsApiContractPresent(typeof(UniversalApiContract).FullName, 8))
-                        discardDraftDialog.XamlRoot = Controller.Root.XamlRoot;
-
-                    if (await discardDraftDialog.ShowAsync() != ContentDialogResult.Primary)
-                    {
-                        e.Cancel = true;
-                        return;
-                    }
+                    e.Cancel = true;
+                    return;
                 }
             }
-            finally
-            {
-                deferral.Complete();
-            }
         }
-
-        private void HandleDrag(object sender, DragEventArgs e)
+        finally
         {
-            if (e.DataView.Contains(StandardDataFormats.Bitmap) ||
-                e.DataView.Contains(StandardDataFormats.StorageItems))
-            {
-                e.AcceptedOperation = DataPackageOperation.Copy;
-                e.DragUIOverride.Caption = strings.GetString("UploadToBluesky");
-                e.DragUIOverride.IsCaptionVisible = true;
-            }
-            else if (e.DataView.Contains(StandardDataFormats.Text) ||
-                     e.DataView.Contains(StandardDataFormats.WebLink))
-            {
-                e.AcceptedOperation = DataPackageOperation.Link;
-            }
+            deferral.Complete();
         }
+    }
 
-        private void HandleDrop(object sender, DragEventArgs e)
+    private void HandleDrag(object sender, DragEventArgs e)
+    {
+        if (e.DataView.Contains(StandardDataFormats.Bitmap) ||
+            e.DataView.Contains(StandardDataFormats.StorageItems))
         {
-            e.Handled = ViewModel.HandleDrop(e.DataView);
+            e.AcceptedOperation = DataPackageOperation.Copy;
+            e.DragUIOverride.Caption = strings.GetString("UploadToBluesky");
+            e.DragUIOverride.IsCaptionVisible = true;
         }
-
-        private void PrimaryTextBox_Paste(object sender, TextControlPasteEventArgs e)
+        else if (e.DataView.Contains(StandardDataFormats.Text) ||
+                 e.DataView.Contains(StandardDataFormats.WebLink))
         {
-            e.Handled = ViewModel.HandlePaste();
+            e.AcceptedOperation = DataPackageOperation.Link;
         }
+    }
 
-        private async void OnPreviewKeyDown(object sender, KeyRoutedEventArgs e)
+    private void HandleDrop(object sender, DragEventArgs e)
+    {
+        e.Handled = ViewModel.HandleDrop(e.DataView);
+    }
+
+    private void PrimaryTextBox_Paste(object sender, TextControlPasteEventArgs e)
+    {
+        e.Handled = ViewModel.HandlePaste();
+    }
+
+    private async void OnPreviewKeyDown(object sender, KeyRoutedEventArgs e)
+    {
+        var coreWindow = CoreWindow.GetForCurrentThread();
+        if (e.Key == VirtualKey.Enter)
         {
-            var coreWindow = CoreWindow.GetForCurrentThread();
-            if (e.Key == VirtualKey.Enter)
+            var state = coreWindow.GetAsyncKeyState(VirtualKey.Control);
+            if (state.HasFlag(CoreVirtualKeyStates.Down))
             {
-                var state = coreWindow.GetAsyncKeyState(VirtualKey.Control);
-                if (state.HasFlag(CoreVirtualKeyStates.Down))
-                {
-                    if (!ViewModel.CanPost)
-                        return;
+                if (!ViewModel.CanPost)
+                    return;
 
-                    e.Handled = true;
+                e.Handled = true;
 
-                    await ViewModel.PostAsync();
-                }
+                await ViewModel.PostAsync();
             }
         }
     }
