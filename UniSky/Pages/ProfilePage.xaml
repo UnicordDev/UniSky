@@ -34,7 +34,6 @@
             <ListView.Header>
                 <Grid x:Name="ProfileContainer"
                       SizeChanged="Page_SizeChanged"
-                      ui:UIElementExtensions.ClipToBounds="True"
                       MaxWidth="600"
                       extensions:Hairline.BorderThickness="1,0,1,1"
                       BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
@@ -70,9 +69,9 @@
                           Background="{ThemeResource ProfilePageHeaderBannerBackgroundBrush}">
                         <controls:ConstrainedBox x:Name="ProfileBanner" AspectRatio="3:1">
                             <Grid>
-                                <!--<aurora:PreviewPaneAuroraControl x:Name="PreviewPaneAurora"
+                                <aurora:PreviewPaneAuroraControl x:Name="PreviewPaneAurora"
                                                                  x:Load="{x:Bind converters:Static.NullOrWhiteSpace(ViewModel.BannerUrl), Mode=OneWay}"
-                                                                 Color="{ThemeResource SystemAccentColor}"/>-->
+                                                                 Color="{ThemeResource SystemAccentColor}"/>
                                 <Image Source="{Binding BannerUrl}"
                                        HorizontalAlignment="Center"
                                        Stretch="UniformToFill"/>
