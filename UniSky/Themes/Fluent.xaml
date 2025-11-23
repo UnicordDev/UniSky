@@ -160,6 +160,12 @@
                     <SolidColorBrush x:Key="ComposeSheetErrorBackgroundBrush" Opacity="0.2" Color="{ThemeResource SystemErrorTextColor}"/>
                     <SolidColorBrush x:Key="ComposeSheetErrorBorderBrush" Opacity="0.6" Color="{ThemeResource SystemErrorTextColor}"/>
 
+                    <Thickness x:Key="FeedsSidebarItemPadding">8,4</Thickness>
+                    <SolidColorBrush x:Key="FeedsSidebarBackgroundBrush" Color="Transparent"/>
+                    <SolidColorBrush x:Key="FeedsSidebarBorderBrush" Color="Transparent"/>
+                    <Thickness x:Key="FeedsSidebarBorderThickness">0</Thickness>
+                    <CornerRadius x:Key="FeedsSidebarCornerRadius">0</CornerRadius>
+                    
                     <Style x:Key="TransparentButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonRevealStyle}">
                         <Setter Property="Background" Value="Transparent"/>
                         <Setter Property="Foreground" Value="{ThemeResource ButtonForeground}" />

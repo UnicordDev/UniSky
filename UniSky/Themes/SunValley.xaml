@@ -13,7 +13,7 @@
                         <ResourceDictionary x:Key="Default">
                             <Color x:Key="SystemListExtraLowColor">#10FFFFFF</Color>
                             <Color x:Key="SystemControlSeparatorColor">#FF404040</Color>
-                            
+
                             <Color x:Key="LayerOnMicaBaseAltFillColorDefault">#733A3A3A</Color>
                             <Color x:Key="LayerOnMicaBaseAltFillColorSecondary">#0FFFFFFF</Color>
                             <Color x:Key="LayerOnMicaBaseAltFillColorTertiary">#2C2C2C</Color>
@@ -22,7 +22,7 @@
                         <ResourceDictionary x:Key="Light">
                             <Color x:Key="SystemControlSeparatorColor">#FFDEDEDE</Color>
                             <Color x:Key="SystemListExtraLowColor">#10000000</Color>
-                            
+
                             <Color x:Key="LayerOnMicaBaseAltFillColorDefault">#B3FFFFFF</Color>
                             <Color x:Key="LayerOnMicaBaseAltFillColorSecondary">#0A000000</Color>
                             <Color x:Key="LayerOnMicaBaseAltFillColorTertiary">#F9F9F9</Color>
@@ -87,7 +87,7 @@
                         FallbackColor="{ThemeResource SolidBackgroundFillColorBase}"
                         TintColor="{ThemeResource SolidBackgroundFillColorBase}"
                         TintOpacity="0.7"/>
-                    
+
                     <StaticResource x:Key="NavigationViewDefaultPaneBackground" ResourceKey="ApplicationRootPageBackgroundBrush"/>
 
                     <SolidColorBrush x:Key="FooterToggleButtonRevealBackgroundBrush" Color="Transparent"/>
@@ -160,6 +160,12 @@
                     <SolidColorBrush x:Key="ComposeSheetErrorBackgroundBrush" Opacity="0.2" Color="{ThemeResource SystemFillColorCriticalBackground}"/>
                     <SolidColorBrush x:Key="ComposeSheetErrorBorderBrush" Opacity="0.6" Color="{ThemeResource SystemFillColorCritical}"/>
 
+                    <Thickness x:Key="FeedsSidebarItemPadding">16,4</Thickness>
+                    <StaticResource x:Key="FeedsSidebarBackgroundBrush" ResourceKey="CardBackgroundFillColorDefaultBrush"/>
+                    <StaticResource x:Key="FeedsSidebarBorderBrush" ResourceKey="CardStrokeColorDefaultBrush"/>
+                    <Thickness x:Key="FeedsSidebarBorderThickness">1</Thickness>
+                    <CornerRadius x:Key="FeedsSidebarCornerRadius">4</CornerRadius>
+
                     <Style x:Key="TransparentButtonStyle" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
                         <Setter Property="Background" Value="Transparent"/>
                         <Setter Property="BorderBrush" Value="Transparent"/>
@@ -176,7 +182,7 @@
                         <Setter Property="MinHeight" Value="40"/>
                         <Setter Property="Padding" Value="8" />
                     </Style>
-                    
+
                     <Style x:Key="CleanPaneButtonButtonStyle" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
                         <Setter Property="Background" Value="Transparent"/>
                         <Setter Property="BorderBrush" Value="Transparent"/>
@@ -656,6 +662,7 @@
                 </ResourceDictionary>
             </lib:XamlControlsResources.MergedDictionaries>
         </lib:XamlControlsResources>
+        <ResourceDictionary Source="/Themes/Backport/WinUIResources_21h1.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

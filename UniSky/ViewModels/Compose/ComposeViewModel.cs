@@ -29,6 +29,7 @@ using Windows.Media.Capture;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
+using Windows.System;
 
 namespace UniSky.ViewModels.Compose;
 
@@ -194,7 +195,7 @@ public partial class ComposeViewModel : ViewModelBase
             ProfileViewDetailed[] profiles = [];
             if (handles.Length > 0)
             {
-                var feedProfiles = (await protocol.Actor.GetProfilesAsync(handles.Cast<ATIdentifier>().ToList())
+                var feedProfiles = (await protocol.Actor.GetProfilesAsync([.. handles.Cast<ATIdentifier>()])
                     .ConfigureAwait(false))
                     .HandleResult();
 

@@ -637,6 +637,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Themes\Backport\WinUIResources_21h1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\Dim.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
