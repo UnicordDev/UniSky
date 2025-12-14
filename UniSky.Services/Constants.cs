@@ -7,6 +7,9 @@ namespace UniSky;
 
 public static class Constants
 {
+    public const string CLIENT_ID = "https://u.hasthebig.gay/~wam/unisky/client-metadata.json";
+    public const string OAUTH_CALLBACK = "https://u.hasthebig.gay/~wam/unisky/oauth-callback.html";
+
     public static string Version
     {
         get

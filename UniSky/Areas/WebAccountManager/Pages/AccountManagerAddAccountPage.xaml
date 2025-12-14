@@ -10,7 +10,7 @@
     xmlns:converters="using:UniSky.Converters"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationRootPageBackgroundBrush}"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     x:DefaultBindMode="OneWay">
     <Grid>
         <Grid x:Name="ContentRoot"
@@ -56,12 +56,19 @@
                     <TextBox x:Name="HandleTextBox"
                              IsEnabled="{x:Bind converters:Static.Not(ViewModel.IsLoading)}"
                              Text="{x:Bind ViewModel.Handle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             PlaceholderText="wamwoowam.co.uk or wamwoowwam.bsky.social"
+                             PlaceholderText="wamwoowam.co.uk or wamwoowam.bsky.social"
                              InputScope="Url" 
                              IsSpellCheckEnabled="False" 
                              IsTextPredictionEnabled="False"
                              KeyUp="HandleTextBox_KeyUp"
                              TabIndex="1"/>
+                    <PasswordBox x:Name="HandlePasswordBox"
+                             IsEnabled="{x:Bind converters:Static.Not(ViewModel.IsLoading)}"
+                             Password="{x:Bind ViewModel.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             PlaceholderText="Password"
+                             InputScope="Password" 
+                             KeyUp="HandleTextBox_KeyUp"
+                             TabIndex="2"/>
                 </StackPanel>
 
 

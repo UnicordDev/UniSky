@@ -56,18 +56,14 @@
         <uap:LockScreen Notification="badge" BadgeLogo="Assets\BadgeLogo.png"/>
       </uap:VisualElements>
       <Extensions>
-
-        <uap:Extension Category="windows.webAccountProvider">
-          <uap:WebAccountProvider Url="https://atproto.wamwoowam.co.uk/" BackgroundEntryPoint="UniSky.Background.WebAccountProviderTask" />
-        </uap:Extension>
-        <!--<uap2:Extension Category="windows.webAccountProvider">
-          <uap2:WebAccountProvider Url="https://atproto.wamwoowam.co.uk/"
+        <uap2:Extension Category="windows.webAccountProvider">
+          <uap2:WebAccountProvider Url="https://atproto.hasthebig.gay/"
                                    BackgroundEntryPoint="UniSky.Background.WebAccountProviderTask"
                                    DisplayName="Bluesky"
                                    DisplayPurpose="Login using your Bluesky account/ATProto identity"
                                    Square44x44Logo="Assets\Bluesky\Square44x44Logo.png">
           </uap2:WebAccountProvider>
-        </uap2:Extension>-->
+        </uap2:Extension>
         <uap:Extension Category="windows.protocol">
           <uap:Protocol Name="unisky">
             <uap:DisplayName>Unisky</uap:DisplayName>
@@ -94,6 +90,5 @@
     <Capability Name="internetClient" />
     <rescap:Capability Name="confirmAppClose" />
     <uap:Capability Name="enterpriseAuthentication" />
-    <uap:Capability Name="userAccountInformation"/>
   </Capabilities>
 </Package>

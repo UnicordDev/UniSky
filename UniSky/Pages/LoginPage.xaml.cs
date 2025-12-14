@@ -34,8 +34,6 @@ public sealed partial class LoginPage : Page
         safeAreaService.SetTitlebarTheme(ElementTheme.Default);
         safeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
 
-        
-
         if (e.Parameter is not LoginViewModel vm)
             return;
 

@@ -16,6 +16,7 @@ public record class SessionModel
     public string? ProofKey { get; init; }
     public DidDoc? DidDoc { get; init; }
     public DateTime? ExpiresAt { get; set; }
+    public bool IsOAuth { get; init; }
 
     [JsonConstructor]
     public SessionModel(bool isActive,
@@ -27,7 +28,8 @@ public record class SessionModel
                         string handle,
                         string? emailAddress,
                         string? proofKey,
-                        DateTime? expiresAt = null)
+                        DateTime? expiresAt = null,
+                        bool isOAuth = false)
     {
         IsActive = isActive;
         Service = service;
@@ -39,9 +41,11 @@ public record class SessionModel
         ProofKey = proofKey;
         DidDoc = didDoc;
         ExpiresAt = expiresAt;
+        IsOAuth = isOAuth;
     }
 
-    public SessionModel(bool isActive,
+    public SessionModel(bool isActive, 
+                        bool isOAuth,
                         string service,
                         Session session,
                         AuthSession? authSession = null)
@@ -54,7 +58,8 @@ public record class SessionModel
                session.Handle.Handle,
                session.Email,
                authSession?.ProofKey,
-               session.ExpiresIn)
+               session.ExpiresIn,
+               isOAuth)
     { }
 
     [JsonIgnore]

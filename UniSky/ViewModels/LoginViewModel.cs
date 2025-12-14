@@ -1,27 +1,28 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using FishyFlip;
+using FishyFlip.Lexicon.App.Bsky.Actor;
 using FishyFlip.Lexicon.Com.Atproto.Server;
 using FishyFlip.Models;
 using FishyFlip.Tools;
 using Microsoft.Extensions.Logging;
 using OwlCore.Extensions;
 using UniSky.Extensions;
+using UniSky.Messages;
 using UniSky.Models;
 using UniSky.Services;
 using UniSky.ViewModels.Error;
-using Windows.ApplicationModel.Store.Preview;
-using Windows.Networking.Connectivity;
-using Windows.Security.Authentication.Web;
-using Windows.Security.Authentication.Web.Core;
-using Windows.Security.Authentication.Web.Provider;
-using Windows.Security.Credentials;
-using Windows.UI.ApplicationSettings;
+using UniSky.ViewModels.Profile;
+using Windows.ApplicationModel.Activation;
+using Windows.System;
+using Windows.UI.ViewManagement;
+using static UniSky.Constants;
 
 namespace UniSky.ViewModels;
 
@@ -31,6 +32,7 @@ public partial class LoginViewModel : ViewModelBase
     private readonly ISessionService sessionService;
     private readonly IRootNavigator rootNavigator;
     private readonly ILoggerFactory loggerFactory;
+    private readonly IProtocolService protocolService;
 
     [ObservableProperty]
     private bool _advanced;
@@ -41,7 +43,15 @@ public partial class LoginViewModel : ViewModelBase
     [ObservableProperty]
     private string _host;
 
+    [ObservableProperty]
+    private int _step;
+    [ObservableProperty]
+    private ProfileViewModel _loginUser;
+
+    private readonly ATProtocol protocol;
+
     public LoginViewModel(ILoginService loginService,
+                          IProtocolService protocolService,
                           ISessionService sessionService,
                           IRootNavigator rootNavigator,
                           ILoggerFactory loggerFactory)
@@ -50,14 +60,22 @@ public partial class LoginViewModel : ViewModelBase
         this.sessionService = sessionService;
         this.rootNavigator = rootNavigator;
         this.loggerFactory = loggerFactory;
+        this.protocolService = protocolService;
 
         Advanced = false;
         Username = "";
         Password = "";
         Host = "https://bsky.social";
 
-        var pane = AccountsSettingsPane.GetForCurrentView();
-        pane.AccountCommandsRequested += Pane_AccountCommandsRequested;
+        var builder = new ATProtocolBuilder()
+            .EnableAutoRenewSession(true)
+            .WithUserAgent(Constants.UserAgent)
+            .WithLogger(loggerFactory.CreateLogger("ATProtocol_Login"));
+
+        this.protocol = builder.Build();
+
+        WeakReferenceMessenger.Default.Register<ProtocolActivatedMessage>(this,
+            (o, e) => ((LoginViewModel)o).OnProtocolActivated(e.EventArgs));
     }
 
     [RelayCommand]
@@ -70,14 +88,6 @@ public partial class LoginViewModel : ViewModelBase
         {
             var normalisedHost = new UriBuilder(Host)
                 .Host.ToLowerInvariant();
-
-            var builder = new ATProtocolBuilder()
-                .EnableAutoRenewSession(true)
-                .WithUserAgent(Constants.UserAgent)
-                .WithInstanceUrl(new Uri(Host))
-                .WithLogger(loggerFactory.CreateLogger("ATProtocol_Login"));
-
-            using var protocol = builder.Build();
 
 
             var createSession = (await protocol.CreateSessionAsync(Username, Password)
@@ -100,7 +110,7 @@ public partial class LoginViewModel : ViewModelBase
                                       createSession.RefreshJwt,
                                       DateTime.MaxValue);
             var loginModel = this.loginService.SaveLogin(normalisedHost, Username, Password);
-            var sessionModel = new SessionModel(true, normalisedHost, session);
+            var sessionModel = new SessionModel(true, false, normalisedHost, session);
 
             sessionService.SaveSession(sessionModel);
 
@@ -114,51 +124,95 @@ public partial class LoginViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task ToggleAdvancedAsync()
+    private async Task OAuthLogin()
     {
-        //Advanced = !Advanced;
+        Error = null;
+        using var context = GetLoadingContext();
 
-
-        AccountsSettingsPane.Show();
-
-
-    }
-
-    private async void Pane_AccountCommandsRequested(AccountsSettingsPane sender, AccountsSettingsPaneCommandsRequestedEventArgs args)
-    {
-        var deferral = args.GetDeferral();
-
-        //var accounts = await WebAccountManager.FindAllProviderWebAccountsAsync();
-        //foreach (WebAccount account in accounts)
-        //{
-        //    WebAccountCommand command = new WebAccountCommand(account, WebACcountCommandInvoked, SupportedWebAccountActions.Reconnect);
-        //    args.WebAccountCommands.Add(command);
-        //}
-
-        var oauthProvider = await WebAuthenticationCoreManager.FindAccountProviderAsync("https://atproto.wamwoowam.co.uk/");
-        args.WebAccountProviderCommands.Add(new WebAccountProviderCommand(oauthProvider, OnGetBlueskyTokenAsync));
-
-        deferral.Complete();
-    }
-
-    private async void WebACcountCommandInvoked(WebAccountCommand command, WebAccountInvokedArgs args)
-    {
-        WebTokenRequest request = new WebTokenRequest(command.WebAccount.WebAccountProvider);
-        WebTokenRequestResult result = await WebAuthenticationCoreManager.RequestTokenAsync(request);
-    }
-
-    private async void OnGetBlueskyTokenAsync(WebAccountProviderCommand command)
-    {
-        await syncContext.PostAsync(async () =>
+        try
         {
+            var identifer = ATIdentifier.Parse(Username, CultureInfo.InvariantCulture);
+            var uri = (await protocol.GenerateOAuth2AuthenticationUrlResultAsync(CLIENT_ID, OAUTH_CALLBACK, ["atproto", "transition:generic"], identifer)
+                    .ConfigureAwait(false))
+                    .HandleResult();
+
+            await syncContext.PostAsync(async () =>
+            {
+                var options = new LauncherOptions()
+                {
+                    DesiredRemainingView = ViewSizePreference.UseMinimum
+                };
+
+                await Launcher.LaunchUriAsync(new Uri(uri), options);
+            });
+
+            Step = 1;
+        }
+        catch (Exception ex)
+        {
+            Step = 0;
+            syncContext.Post(() =>
+                 Error = new ExceptionViewModel(ex));
+        }
+    }
+
+    private void OnProtocolActivated(ProtocolActivatedEventArgs e)
+    {
+        if (e.Uri.Host != "oauth-callback")
+        {
+            return;
+        }
+
+        Task.Run(async () =>
+        {
+            Step = 2;
             try
             {
-                WebTokenRequest request = new WebTokenRequest(command.WebAccountProvider, "asdf", "asdf", WebTokenRequestPromptType.ForceAuthentication);
-                WebTokenRequestResult result = await WebAuthenticationCoreManager.RequestTokenAsync(request);
+                var createSession = (await protocol.AuthenticateWithOAuth2CallbackResultAsync(e.Uri.ToString())
+                    .ConfigureAwait(false))
+                    .HandleResult();
+
+
+                protocolService.SetProtocol(protocol);
+
+                var profile = (await protocol.GetProfileAsync(createSession.Did)
+                    .ConfigureAwait(false))
+                    .HandleResult();
+
+                syncContext.Post(() =>
+                {
+                    LoginUser = new ProfileViewModel(profile);
+                });
+
+
+                var didDoc = createSession.DidDoc;
+                if (didDoc == null)
+                {
+                    didDoc = (await protocol.GetDidDocAsync(createSession.Did, CancellationToken.None)
+                        .ConfigureAwait(false))
+                        .HandleResult();
+                }
+
+                var normalisedHost = new Uri(didDoc.Service.FirstOrDefault(d => d.Type == "AtprotoPersonalDataServer")?.ServiceEndpoint).Host;
+                var session = new Session(createSession.Did,
+                                          didDoc,
+                                          createSession.Handle,
+                                          createSession.Email,
+                                          createSession.AccessJwt,
+                                          createSession.RefreshJwt,
+                                          DateTime.MaxValue);
+                //var loginModel = this.loginService.SaveLogin(normalisedHost, Username, Password);
+                var sessionModel = new SessionModel(true, true, normalisedHost, session, protocol.AuthSession);
+
+                sessionService.SaveSession(sessionModel);
+
+                await rootNavigator.GoToHomeAsync(sessionModel.DID);
             }
             catch (Exception ex)
             {
-
+                Step = 0;
+                syncContext.Post(() =>
+                     Error = new ExceptionViewModel(ex));
             }
         });
     }

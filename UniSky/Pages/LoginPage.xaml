@@ -7,6 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="using:UniSky.ViewModels" 
     xmlns:controls="using:UniSky.Controls"
+    xmlns:ui="using:Microsoft.Toolkit.Uwp.UI.Extensions"
+    xmlns:converters="using:UniSky.Converters" xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance Type=viewmodels:LoginViewModel}" 
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
@@ -86,8 +88,19 @@
         </Border>
 
         <Grid x:Name="RightGrid"
-              Margin="16">
-            <StackPanel>
+              Margin="8"
+              Padding="8">
+            <Grid.ChildrenTransitions>
+                <TransitionCollection>
+                    <EntranceThemeTransition FromVerticalOffset="0" 
+                                                 FromHorizontalOffset="100" 
+                                                 IsStaggeringEnabled="True"/>
+                    <RepositionThemeTransition IsStaggeringEnabled="False"/>
+                </TransitionCollection>
+            </Grid.ChildrenTransitions>
+
+            <StackPanel x:Name="LoginStep1"
+                        x:Load="{x:Bind ViewModel.Step.Equals(0)}">
                 <StackPanel.ChildrenTransitions>
                     <TransitionCollection>
                         <EntranceThemeTransition FromVerticalOffset="0" 
@@ -96,67 +109,108 @@
                         <RepositionThemeTransition IsStaggeringEnabled="False"/>
                     </TransitionCollection>
                 </StackPanel.ChildrenTransitions>
-                <TextBox x:Name="HostBox"
-                         x:Uid="LoginHostBox"
-                         x:Load="{x:Bind Is(ViewModel.Advanced)}"
-                         Header="Host"
-                         InputScope="Url"
-                         TabIndex="-1"
-                         Margin="0,0,0,16"
-                         Text="{x:Bind ViewModel.Host, Mode=TwoWay}"
-                         IsSpellCheckEnabled="False" IsTextPredictionEnabled="False">
-                </TextBox>
 
-                <TextBox x:Uid="LoginUsernameBox" 
-                         Header="Username" 
+
+                <TextBox x:Uid="LoginHandleBox" 
+                         Header="Handle" 
                          InputScope="EmailNameOrAddress" 
                          TabIndex="0"
                          Margin="0,0,0,16"
                          Text="{x:Bind ViewModel.Username, Mode=TwoWay}"
+                         IsEnabled="{x:Bind converters:Static.Not(ViewModel.IsLoading)}"
                          IsSpellCheckEnabled="False" IsTextPredictionEnabled="False">
                 </TextBox>
 
-                <PasswordBox x:Uid="LoginPasswordBox" 
-                             Header="Password" 
-                             InputScope="Password" 
-                             TabIndex="1"
-                             Margin="0,0,0,16"
-                             Password="{x:Bind ViewModel.Password, Mode=TwoWay}">
-                </PasswordBox>
-
                 <TextBlock x:Name="ErrorText"
-                           x:Load="{x:Bind IsNotNull(ViewModel.Error), Mode=OneWay}" 
+                           x:Load="{x:Bind IsNotNull(ViewModel.Error), Mode=OneWay}"
                            Text="{x:Bind ViewModel.Error.Message}"
+                           TextWrapping="Wrap"
+                           MaxHeight="100"
                            Margin="0,0,0,16"
                            Foreground="{ThemeResource SystemErrorTextColor}"/>
 
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Button x:Uid="LoginAdvancedButton"
-                            Content="Advanced"
-                            Style="{ThemeResource TextBlockButtonStyle}"
-                            Grid.Column="0"
-                            TabIndex="3"
-                            Command="{x:Bind ViewModel.ToggleAdvancedCommand}"/>
 
-                    <ProgressRing Grid.Column="2" 
+                    <Button x:Uid="LoginWithOAuthButton" 
+                            Content="Login with OAuth"
+                            HorizontalAlignment="Stretch"
+                            TabIndex="1"
+                            Style="{ThemeResource AccentButtonStyle}"
+                            Grid.Column="1"
+                            IsEnabled="{x:Bind converters:Static.Not(ViewModel.IsLoading)}"
+                            Command="{x:Bind ViewModel.OAuthLoginCommand}"/>
+
+                    <ProgressRing Grid.Column="1" 
                                   IsActive="{x:Bind ViewModel.IsLoading}"
                                   Margin="0,0,8,0"></ProgressRing>
 
-                    <Button x:Uid="LoginButton" 
-                            Content="Login"
+                    <Button x:Uid="UseAppPasswordButton" 
+                            Content="Use an App Password"
+                            Style="{ThemeResource TextBlockButtonStyle}"
                             TabIndex="2"
-                            Style="{ThemeResource AccentButtonStyle}"
-                            Grid.Column="2"
-                            HorizontalAlignment="Right"
-                            MinWidth="100"
+                            Grid.Column="0"
+                            Margin="0" 
+                            Padding="0"
+                            IsEnabled="{x:Bind converters:Static.Not(ViewModel.IsLoading)}"
                             Command="{x:Bind ViewModel.LoginCommand}"/>
                 </Grid>
             </StackPanel>
 
+            <StackPanel x:Name="LoginStep2"
+                        x:Load="{x:Bind ViewModel.Step.Equals(1)}">
+                <TextBlock Text="&#xE774;"
+                           Margin="0,0,0,8"
+                           FontSize="56"
+                           FontFamily="{ThemeResource SymbolThemeFontFamily}"/>
+                <TextBlock TextWrapping="Wrap" 
+                           Text="Check your browser!" 
+                           Style="{ThemeResource TitleTextBlockStyle}"
+                           Margin="0,0,0,4"/>
+                <TextBlock Text="We've opened your browser, log in and we'll refresh this page!" 
+                           TextWrapping="Wrap"
+                           Style="{ThemeResource BodyTextBlockStyle}"/>
+
+                <Button x:Uid="AccountManagerRootPageCancelButton" 
+                        Style="{ThemeResource TextBlockButtonStyle}"
+                        Padding="0"
+                        Margin="0,8,0,0">
+                    Back
+                </Button>
+
+                <ProgressBar Grid.ColumnSpan="2"
+                            VerticalAlignment="Bottom"
+                            Margin="0,0,0,-16"
+                            IsIndeterminate="True"
+                            Background="Transparent"/>
+            </StackPanel>
+
+            <StackPanel x:Name="LoginStep3"
+                        x:Load="{x:Bind ViewModel.Step.Equals(2)}">
+                <lib:PersonPicture DisplayName="{x:Bind ViewModel.LoginUser.Name}"
+                                   ProfilePicture="{x:Bind ViewModel.LoginUser.AvatarUrl}"
+                                   Margin="0,0,0,8"
+                                   Width="56" Height="56"
+                                   HorizontalAlignment="Left"
+                                   FontFamily="{ThemeResource SymbolThemeFontFamily}"/>
+                <TextBlock TextWrapping="Wrap"
+                           Style="{ThemeResource TitleTextBlockStyle}"
+                           Margin="0,0,0,4">
+                    Hi <Run Text="{x:Bind ViewModel.LoginUser.Name, FallbackValue=there}"/>!
+                </TextBlock>
+                <TextBlock Text="We're getting everything ready for you!" 
+                           TextWrapping="Wrap"
+                           Style="{ThemeResource BodyTextBlockStyle}"/>
+
+                <ProgressBar Grid.ColumnSpan="2"
+                             VerticalAlignment="Bottom"
+                             Margin="0,0,0,-16"
+                             IsIndeterminate="True"
+                             Background="Transparent"/>
+            </StackPanel>
         </Grid>
 
         <controls:TitleBar x:Name="TitleBar"

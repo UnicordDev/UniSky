@@ -44,6 +44,8 @@ public partial class AccountManagerAddAccountViewModel : ViewModelBase
 
     [ObservableProperty]
     private string _handle;
+    [ObservableProperty]
+    private string _password;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsStep1))]
@@ -89,21 +91,44 @@ public partial class AccountManagerAddAccountViewModel : ViewModelBase
         {
             var identifer = ATIdentifier.Parse(Handle, CultureInfo.InvariantCulture);
 
-            var uri = (await protocol.GenerateOAuth2AuthenticationUrlResultAsync(CLIENT_ID, OAUTH_CALLBACK, ["atproto", "transition:generic"], identifer)
-                .ConfigureAwait(false))
-                .HandleResult();
-
-            syncContext.Post(async () =>
+            if (string.IsNullOrWhiteSpace(Password))
             {
-                var options = new LauncherOptions()
+                var uri = (await protocol.GenerateOAuth2AuthenticationUrlResultAsync(CLIENT_ID, OAUTH_CALLBACK, ["atproto", "transition:generic"], identifer)
+                    .ConfigureAwait(false))
+                    .HandleResult();
+
+                syncContext.Post(async () =>
                 {
-                    DesiredRemainingView = ViewSizePreference.UseMinimum
-                };
+                    var options = new LauncherOptions()
+                    {
+                        DesiredRemainingView = ViewSizePreference.UseMinimum
+                    };
 
-                await Launcher.LaunchUriAsync(new Uri(uri), options);
-            });
+                    await Launcher.LaunchUriAsync(new Uri(uri), options);
+                });
 
-            Step = 1;
+                Step = 1;
+            }
+            else
+            {
+                Step = 2;
+
+                var session = (await protocol.AuthenticateWithPasswordResultAsync(Handle, Password)
+                    .ConfigureAwait(false))
+                    .HandleResult();
+
+                protocolService.SetProtocol(protocol);
+
+                var profile = (await protocol.GetProfileAsync(session.Did)
+                    .ConfigureAwait(false))
+                    .HandleResult();
+
+                syncContext.Post(async () =>
+                {
+                    LoginUser = new ProfileViewModel(profile);
+                    await CreateAccountAsync(session, profile);
+                });
+            }
         }
         catch (Exception ex)
         {
@@ -113,55 +138,63 @@ public partial class AccountManagerAddAccountViewModel : ViewModelBase
 
     private async void OnProtocolActivated(ProtocolActivatedEventArgs e)
     {
+        if (e.Uri.Host != "oauth-callback")
+        {
+            return;
+        }
+
+        Step = 2;
+
+        var session = (await protocol.AuthenticateWithOAuth2CallbackResultAsync(e.Uri.ToString())
+            .ConfigureAwait(false))
+            .HandleResult();
+
+        protocolService.SetProtocol(protocol);
+
+        var profile = (await protocol.GetProfileAsync(session.Did)
+            .ConfigureAwait(false))
+            .HandleResult();
+
+        syncContext.Post(async () =>
+        {
+            LoginUser = new ProfileViewModel(profile);
+            await CreateAccountAsync(session, profile);
+        });
+
+    }
+
+    private async Task CreateAccountAsync(Session session, ProfileViewDetailed profile)
+    {
         var args = (WebAccountProviderRequestTokenOperation)eventArgs.Operation;
         var request = args.ProviderRequest;
 
-        if (e.Uri.Host == "oauth-callback")
+        try
         {
-            Step = 2;
+            var props = new Dictionary<string, string>(request.ClientRequest.Properties);
+            if (!string.IsNullOrEmpty(session.Email))
+                props["Email"] = session.Email;
 
-            var session = (await protocol.AuthenticateWithOAuth2CallbackResultAsync(e.Uri.ToString())
-                .ConfigureAwait(false))
-                .HandleResult();
-
-            protocolService.SetProtocol(protocol);
-
-            var profile = (await protocol.GetProfileAsync(session.Did)
-                .ConfigureAwait(false))
-                .HandleResult();
-
-            syncContext.Post(() =>
+            var account = await AccountManager.AddWebAccountAsync(session.Did.ToString().Replace(':', '_'), profile.DisplayName ?? profile.Handle.ToString(), props, WebAccountScope.PerUser);
+            if (profile.Avatar != null)
             {
-                LoginUser = new ProfileViewModel(profile);
-            });
+                var streamRef = RandomAccessStreamReference.CreateFromUri(new Uri(profile.Avatar));
+                using var stream = await streamRef.OpenReadAsync();
 
-
-            try
-            {
-                var props = new Dictionary<string, string>(request.ClientRequest.Properties);
-                if (!string.IsNullOrEmpty(session.Email))
-                    props["Email"] = session.Email;
-
-                var account = await AccountManager.AddWebAccountAsync(session.Did.ToString().Replace(':', '_'), profile.DisplayName ?? profile.Handle.ToString(), props);
-                //if (profile.Avatar != null)
-                //{
-                //    var streamRef = RandomAccessStreamReference.CreateFromUri(new Uri(profile.Avatar));
-                //    using var stream = await streamRef.OpenReadAsync();
-
-                //    await AccountManager.SetWebAccountPictureAsync(account, stream);
-                //}
-
-                var tokenResponse = new WebTokenResponse(session.AccessJwt, account);
-                var providerTokenResponse = new WebProviderTokenResponse(tokenResponse);
-                args.ProviderResponses.Add(providerTokenResponse);
-                args.CacheExpirationTime = session.ExpiresIn;
-                args.ReportCompleted();
-            }
-            catch (Exception ex)
-            {
-
+                await AccountManager.SetWebAccountPictureAsync(account, stream);
             }
 
+            var view = new WebAccountClientView(WebAccountClientViewType.IdAndProperties, args.ProviderRequest.ApplicationCallbackUri);
+            await AccountManager.SetViewAsync(account, view);
+
+            var tokenResponse = new WebTokenResponse("asd", account);
+            var providerTokenResponse = new WebProviderTokenResponse(tokenResponse);
+            args.ProviderResponses.Add(providerTokenResponse);
+            args.CacheExpirationTime = DateTimeOffset.Now.AddDays(30);
+            args.ReportCompleted();
+        }
+        catch (Exception ex)
+        {
+            args.ReportError(new WebProviderError((uint)ex.HResult, ex.Message));
         }
     }
 }
