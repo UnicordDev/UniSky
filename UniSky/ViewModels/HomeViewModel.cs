@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -13,7 +14,10 @@ using UniSky.Extensions;
 using UniSky.Pages;
 using UniSky.Services;
 using Windows.Foundation.Metadata;
+using Windows.Networking.PushNotifications;
 using Windows.Phone;
+using Windows.Security.Authentication.Web;
+using Windows.Security.Credentials;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
@@ -129,6 +133,10 @@ public partial class HomeViewModel : ViewModelBase
         using var loading = this.GetLoadingContext();
         var protocol = this.protocolService.Protocol;
 
+        await Task.WhenAll(
+            MenuItems.Concat(FooterMenuItems)
+                     .Select(s => s.LoadAsync()));
+
         try
         {
             await this.notificationsService.InitializeAsync();
@@ -138,9 +146,6 @@ public partial class HomeViewModel : ViewModelBase
             logger.LogError(ex, "Failed to start notifications service!");
         }
 
-        await Task.WhenAll(
-            MenuItems.Concat(FooterMenuItems)
-                     .Select(s => s.LoadAsync()));
     }
 
     [RelayCommand]

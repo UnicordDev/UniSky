@@ -51,5 +51,7 @@ public static class Constants
 
         public const string SHOW_FEED_CONTEXT = "ShowFeedContext_v1";
         public const bool SHOW_FEED_CONTEXT_DEFAULT = false;
+
+        public const string INSTALL_ID = "InstallId_v1";
     }
 }

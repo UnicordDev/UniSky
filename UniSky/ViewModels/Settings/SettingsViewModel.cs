@@ -95,6 +95,9 @@ public class SettingsViewModel : ViewModelBase, ITypedSettings
         set => settingsService.ShowFeedContext = value;
     }
 
+    public string InstallId
+        => settingsService.InstallId;
+
     public bool IsDirty
         => ApplicationTheme != _initialTheme || ColourScheme != _initialColour || _initialTwitterLocale != UseTwitterLocale;
 
