@@ -80,9 +80,18 @@ public class TypedSettingsService : ITypedSettings
         get => settings.Read(SHOW_FEED_CONTEXT, SHOW_FEED_CONTEXT_DEFAULT);
         set => settings.Save(SHOW_FEED_CONTEXT, value);
     }
-    
+
     public string InstallId
     {
-        get => settings.Read(INSTALL_ID, Guid.NewGuid().ToString());
+        get
+        {
+            if (!settings.TryRead(INSTALL_ID, out string installId))
+            {
+                installId = Guid.NewGuid().ToString();
+                settings.Save(INSTALL_ID, installId);
+            }
+
+            return installId;
+        }
     }
 }
