@@ -3,6 +3,7 @@ using FishyFlip;
 using FishyFlip.Lexicon.App.Bsky.Embed;
 using FishyFlip.Lexicon.App.Bsky.Feed;
 using Microsoft.Extensions.Caching.Memory;
+using UniSky.Models;
 using UniSky.Notifications.Models;
 
 namespace UniSky.Notifications.Services.Providers;
@@ -14,6 +15,9 @@ public class ReplyProvider(IMemoryCache cache) : INotificationProvider
         NotificationEvent notification,
         ToastContentBuilder builder)
     {
+        if (notification.Registration.Options.HasFlag(NotificationOptions.ExcludeReplies))
+            return false;
+
         var postUri = notification.SourceRecordUri!;
         var post = await cache.GetOrCreateAsync(postUri!.ToString() + "PostView",
             Helpers.CacheForTime(TimeSpan.FromHours(1), async (entry) =>

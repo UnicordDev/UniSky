@@ -14,6 +14,9 @@ public partial class ContentWarningViewModel : ViewModelBase
     private string warning;
 
     [ObservableProperty]
+    private string appliedBy;
+
+    [ObservableProperty]
     private bool isHidden;
 
     [ObservableProperty]
@@ -34,6 +37,11 @@ public partial class ContentWarningViewModel : ViewModelBase
             else
             {
                 Warning = label.LabelDef.Identifier.ToString();
+            }
+
+            if (moderationService.TryGetDisplayNameForLabeler(label.LabelDef, out var displayName))
+            {
+                AppliedBy = $"Applied by {displayName}";
             }
         }
         else

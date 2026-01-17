@@ -3,6 +3,7 @@ using FishyFlip;
 using FishyFlip.Lexicon.App.Bsky.Actor;
 using FishyFlip.Lexicon.App.Bsky.Feed;
 using Microsoft.Extensions.Caching.Memory;
+using UniSky.Models;
 using UniSky.Notifications.Models;
 
 namespace UniSky.Notifications.Services.Providers;
@@ -14,6 +15,9 @@ public class LikeProvider(IMemoryCache cache) : INotificationProvider
         NotificationEvent notification,
         ToastContentBuilder builder)
     {
+        if (notification.Registration.Options.HasFlag(NotificationOptions.ExcludeLikes))
+            return false;
+
         var postUri = notification.SubjectRecordUri!;
         var likerUri = notification.SourceRecordUri!;
 
@@ -33,7 +37,6 @@ public class LikeProvider(IMemoryCache cache) : INotificationProvider
 
         if (post == null)
             return false;
-
 
         var displayName = !string.IsNullOrWhiteSpace(actor!.DisplayName) ? actor.DisplayName : $"@{actor.Handle}";
 

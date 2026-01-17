@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using UniSky.Models;
 using Windows.UI.Xaml;
 
 namespace UniSky.Services;
@@ -13,4 +14,5 @@ public interface ITypedSettings
     bool VideosInFeeds { get; set; }
     bool ShowFeedContext { get; set; }
     string InstallId { get; }
+    NotificationOptions NotificationOptions { get; set; }
 }

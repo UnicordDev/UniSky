@@ -45,6 +45,12 @@
                 <ComboBoxItem x:Uid="SettingsAppThemeItem_Nighttime" Content="Nighttime"  />
             </ComboBox>
             
+            <ToggleSwitch x:Uid="EnableNotifications"
+                          Header="Enable push notifications (experimental)" 
+                          HorizontalAlignment="Stretch" 
+                          Margin="0,0,0,4" 
+                          IsOn="{Binding NotificationsEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            
             <ToggleSwitch x:Uid="SettingsUseMultipleWindowsSwitch"
                           Header="Use multiple windows when showing sheets" 
                           HorizontalAlignment="Stretch" 
@@ -75,6 +81,7 @@
                           Margin="0,0,0,4" 
                           IsOn="{Binding ShowFeedContext, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
+
             <TextBlock x:Uid="SettingsAboutHeaderBlock"
                        Style="{ThemeResource SubtitleTextBlockStyle}" Text="About"/>
             <TextBlock TextWrapping="Wrap">
@@ -84,6 +91,7 @@
             <TextBlock TextWrapping="Wrap">
                 Icon by <Hyperlink NavigateUri="https://bsky.app/profile/xubiod.net">@xubiod.net</Hyperlink> &lt;3
             </TextBlock>
+            <TextBlock TextWrapping="Wrap" Text="{Binding InstallId}"/>
         </StackPanel>        
     </ScrollViewer>
 </sheets:SheetControl>

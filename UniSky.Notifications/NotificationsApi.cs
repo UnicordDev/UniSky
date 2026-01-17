@@ -52,7 +52,6 @@ public static class NotificationsApi
         }
 
         await db.SaveChangesAsync();
-
         await Task.WhenAll(WeakReferenceMessenger.Default.Send(new RegistrationsUpdatedMessage()));
 
         return TypedResults.Accepted((string?)null);

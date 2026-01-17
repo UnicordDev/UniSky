@@ -15,6 +15,8 @@ public enum NotificationOptions
     ExcludeRepostLikes = 64,
     ExcludeRepostReposts = 128,
 
+    ExcludeEverything = ExcludeLikes | ExcludeNewFollowers | ExcludeReplies | ExcludeMentions | ExcludeQuotes | ExcludeReposts,
+
     FollowingOnly = 65536
 }
 

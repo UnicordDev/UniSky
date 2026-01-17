@@ -5,10 +5,6 @@ using System.Text.Json;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.WinUI.Notifications;
 using FishyFlip;
-using FishyFlip.Lexicon.App.Bsky.Actor;
-using FishyFlip.Lexicon.App.Bsky.Feed;
-using FishyFlip.Lexicon.Com.Atproto.Admin;
-using FishyFlip.Lexicon.Com.Atproto.Repo;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
@@ -27,7 +23,7 @@ public class PushService(
     IHttpClientFactory httpClientFactory,
     IServiceProvider services) : IHostedService, IRecipient<NotificationEventMessage>
 {
-    private ATProtocol at = new ATProtocolBuilder()
+    private readonly ATProtocol at = new ATProtocolBuilder()
         .WithLogger(protocolLogger)
         .EnableBlueskyModerationService()
         .Build();
@@ -36,51 +32,63 @@ public class PushService(
     {
         try
         {
+            await using var scope = services.CreateAsyncScope();
+            await using var db = scope.ServiceProvider.GetRequiredService<NotificationDbContext>();
+
             logger.LogInformation("Got event {Event}", notificationEvent.SourceType);
             var service = services.GetKeyedService<INotificationProvider>(notificationEvent.SourceType);
             if (service == null)
                 return;
 
-            var notification = new ToastContentBuilder()
-                .AddArgument("Type", notificationEvent.SourceCollection)
-                .AddArgument("Record", notificationEvent.SubjectRecordUri?.ToString());
+            var tokens = await GetAccessTokens();
 
-            if (!await service.PopulateNotification(at, notificationEvent, notification))
-                return;
+            var subject = notificationEvent.SubjectDid.ToString();
+            var registrations = await db.Registrations.Where(r => r.Did == subject)
+                .ToListAsync();
 
-            var notificationXml = notification
-                .GetToastContent()
-                .GetContent();
-
-            var registrations = await GetRegistrationsAsync(notificationEvent);
             logger.LogInformation("Got {N} registrations for DID {DID}", registrations.Count, notificationEvent.SubjectDid);
 
-            var tokens = await GetAccessTokens();
-            await Task.WhenAll(registrations.Select(reg => SendNotificationAsync(notificationXml, tokens, reg)));
+            for (int i = 0; i < registrations.Count; i++)
+            {
+                var registration = registrations[i];
+                var notification = new ToastContentBuilder()
+                    .AddArgument("Type", notificationEvent.SourceCollection)
+                    .AddArgument("Record", notificationEvent.SubjectRecordUri?.ToString());
+
+                if (!await service.PopulateNotification(at, notificationEvent with { Registration = registration }, notification))
+                    continue;
+
+                var notificationXml = notification
+                    .GetToastContent()
+                    .GetContent();
+
+                if (!await SendNotificationAsync(notificationXml, tokens, registration))
+                    db.Remove(registrations[i]);
+            }
+
+            await db.SaveChangesAsync();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             logger.LogError(ex, "Error in event handler!");
         }
     }
 
-    private async Task SendNotificationAsync(string notificationXml, OAuthToken tokens, NotificationRegistration registration)
+    private async Task<bool> SendNotificationAsync(string notificationXml, OAuthToken tokens, NotificationRegistration registration)
     {
-        //logger.LogInformation("Posting {Xml} to {Url}", notificationXml, registration.ChannelUrl);
-
         using var client = httpClientFactory.CreateClient();
+
         using var request = new HttpRequestMessage(HttpMethod.Post, registration.ChannelUrl);
         request.Headers.Add("Authorization", "Bearer " + tokens.AccessToken);
         request.Headers.Add("X-WNS-RequestForStatus", "true");
         request.Headers.Add("X-WNS-Type", "wns/toast");
-
         request.Content = new StringContent(notificationXml, Encoding.UTF8, "text/xml");
 
         try
         {
             using var response = await client.SendAsync(request);
             if (response.IsSuccessStatusCode)
-                return;
+                return true;
 
             logger.LogWarning("Failed to post notification! {StatusCode}", response.StatusCode);
 
@@ -88,11 +96,10 @@ public class PushService(
             {
                 case HttpStatusCode.Unauthorized:
                     tokens = await GetAccessTokens(true);
-                    await SendNotificationAsync(notificationXml, tokens, registration);
-                    return;
+                    return await SendNotificationAsync(notificationXml, tokens, registration);
                 case HttpStatusCode.Gone:
                 case HttpStatusCode.NotFound:
-                    break; // TODO: get rid of it
+                    return false;
                 case HttpStatusCode.NotAcceptable:
                     break; // TODO: backoff
                 default:
@@ -103,21 +110,12 @@ public class PushService(
         {
             logger.LogError(ex, "Failed to send push notification to client!");
         }
+
+        return true;
     }
 
-    private async Task<List<NotificationRegistration>> GetRegistrationsAsync(NotificationEvent notificationEvent)
-    {
-        await using var scope = services.CreateAsyncScope();
-        await using var db = scope.ServiceProvider.GetRequiredService<NotificationDbContext>();
 
-        var subject = notificationEvent.SubjectDid.ToString();
-        var registrations = await db.Registrations.Where(r => r.Did == subject)
-            .ToListAsync();
-
-        return registrations;
-    }
-
-    private OAuthToken cache;
+    private OAuthToken? cache;
     private async Task<OAuthToken> GetAccessTokens(bool invalidateCache = false)
     {
         if (cache != null && !invalidateCache)

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using Microsoft.Toolkit.Uwp.Helpers;
+using UniSky.Models;
 using UniSky.Services;
 using Windows.ApplicationModel.Resources.Core;
 using Windows.UI.Xaml;
@@ -95,11 +96,23 @@ public class SettingsViewModel : ViewModelBase, ITypedSettings
         set => settingsService.ShowFeedContext = value;
     }
 
+    public NotificationOptions NotificationOptions
+    {
+        get => settingsService.NotificationOptions;
+        set => settingsService.NotificationOptions = value;
+    }
+
     public string InstallId
         => settingsService.InstallId;
 
     public bool IsDirty
         => ApplicationTheme != _initialTheme || ColourScheme != _initialColour || _initialTwitterLocale != UseTwitterLocale;
+
+    public bool NotificationsEnabled
+    {
+        get => NotificationOptions == 0;
+        set => NotificationOptions = value ? 0 : NotificationOptions.ExcludeEverything;
+    }
 
     public event PropertyChangedEventHandler SettingChanged
     {

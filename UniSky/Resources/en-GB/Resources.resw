@@ -416,7 +416,7 @@
     <value>Use separate windows for popups</value>
   </data>
   <data name="Share_Username" xml:space="preserve">
-    <value>@{0} on Bluesky</value>
+    <value>{0} on Bluesky</value>
     <comment>{0} = user handle</comment>
   </data>
   <data name="GalleryControl.TitleContent" xml:space="preserve">

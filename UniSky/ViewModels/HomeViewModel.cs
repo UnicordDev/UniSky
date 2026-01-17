@@ -17,6 +17,7 @@ using Windows.Foundation.Metadata;
 using Windows.Networking.PushNotifications;
 using Windows.Phone;
 using Windows.Security.Authentication.Web;
+using Windows.Security.Authentication.Web.Provider;
 using Windows.Security.Credentials;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
@@ -145,7 +146,6 @@ public partial class HomeViewModel : ViewModelBase
         {
             logger.LogError(ex, "Failed to start notifications service!");
         }
-
     }
 
     [RelayCommand]

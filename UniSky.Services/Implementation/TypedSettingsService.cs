@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using UniSky.Models;
 using Windows.System.Profile;
 using Windows.UI.Xaml;
 
@@ -38,6 +39,9 @@ public class TypedSettingsService : ITypedSettings
                 break;
             case SHOW_FEED_CONTEXT:
                 SettingChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ShowFeedContext)));
+                break;
+            case NOTIFICATION_OPTIONS:
+                SettingChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NotificationOptions)));
                 break;
         }
     }
@@ -93,5 +97,11 @@ public class TypedSettingsService : ITypedSettings
 
             return installId;
         }
+    }
+
+    public NotificationOptions NotificationOptions
+    {
+        get => (NotificationOptions)settings.Read<int>(NOTIFICATION_OPTIONS, 0);
+        set => settings.Save(NOTIFICATION_OPTIONS, (int)value);
     }
 }

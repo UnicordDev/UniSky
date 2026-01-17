@@ -80,7 +80,7 @@ public abstract partial class ViewModelBase : ObservableObject
         {
             if (o is Exception ex)
                 this.Error = new ExceptionViewModel(ex);
-            if (o is ATError e)
+            else if (o is ATError e)
                 this.Error = new ATErrorViewModel(e);
             else
                 this.Error = null;

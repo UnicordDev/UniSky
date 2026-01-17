@@ -34,23 +34,24 @@ public class SpacedustService(
 
     private async Task ConnectAsync(CancellationToken cancellationToken)
     {
-        await using var scope = services.CreateAsyncScope();
-        await using var db = scope.ServiceProvider.GetRequiredService<NotificationDbContext>();
-
-        if (cts != null)
-            await cts.CancelAsync();
-
-        cts = new CancellationTokenSource();
         var wantedDids = new HashSet<string>();
-        await foreach (var registation in db.Registrations)
-        {
-            wantedDids.Add(registation.Did);
-        }
 
-        if (wantedDids.Count == 0)
         {
-            logger.LogInformation("No DIDs to listen for. Not connecting.");
-            return;
+            await using var scope = services.CreateAsyncScope();
+            await using var db = scope.ServiceProvider.GetRequiredService<NotificationDbContext>();
+
+            if (cts != null)
+                await cts.CancelAsync();
+
+            cts = new CancellationTokenSource();
+            await foreach (var registation in db.Registrations)
+                wantedDids.Add(registation.Did);
+
+            if (wantedDids.Count == 0)
+            {
+                logger.LogInformation("No DIDs to listen for. Not connecting.");
+                return;
+            }
         }
 
         var parameters = new List<KeyValuePair<string, StringValues>>
@@ -67,7 +68,7 @@ public class SpacedustService(
 
         logger.LogInformation("Connected to Spacedust! Listening for {Dids} DIDs.", wantedDids.Count);
 
-        _ = Task.Run(() => MessageLoop(socket, cts.Token));
+        _ = Task.Run(() => MessageLoop(socket, cts.Token), cancellationToken);
     }
 
     private async Task MessageLoop(WebSocket socket, CancellationToken token = default)
@@ -98,7 +99,7 @@ public class SpacedustService(
                         if (jsonReader.TokenType == JsonTokenType.StartObject)
                         {
                             var doc = JsonDocument.ParseValue(ref jsonReader);
-                            _ = Task.Run(() => HandleMessage(doc));
+                            _ = Task.Run(() => HandleMessage(doc), token);
                         }
                     }
 
@@ -175,9 +176,11 @@ public class SpacedustService(
             sourceRecord.Did!,
             sourceRecord,
             subjectDid!,
-            subjectRecord!);
+            subjectRecord!,
+            null!);
 
         var message = new NotificationEventMessage(notificationEvent);
+
         await Task.WhenAll(WeakReferenceMessenger.Default.Send(message));
     }
 

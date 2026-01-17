@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -15,9 +16,27 @@ using Windows.System.UserProfile;
 
 namespace UniSky.Services;
 
-internal class BackgroundNotificationsService(ILogger<BackgroundNotificationsService> logger, ITypedSettings settings, IProtocolService protocolService) : INotificationsService
+internal class BackgroundNotificationsService : INotificationsService
 {
     public const string BADGE_BACKGROUND_TASK_NAME = nameof(BadgeBackgroundTask);
+    private readonly ILogger<BackgroundNotificationsService> logger;
+    private readonly ITypedSettings settings;
+    private readonly IProtocolService protocolService;
+
+    public BackgroundNotificationsService(ILogger<BackgroundNotificationsService> logger, ITypedSettings settings, IProtocolService protocolService)
+    {
+        this.logger = logger;
+        this.settings = settings;
+        this.protocolService = protocolService;
+
+        this.settings.SettingChanged += OnSettingChanged;
+    }
+
+    private void OnSettingChanged(object sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == "NotificationOptions")
+            Task.Run(RegisterPushNotificationsAsync);
+    }
 
     public async Task InitializeAsync()
     {
@@ -42,7 +61,7 @@ internal class BackgroundNotificationsService(ILogger<BackgroundNotificationsSer
                 languages.Add("twitter");
             languages.AddRange(GlobalizationPreferences.Languages);
 
-            var model = new RegistrationModel(protocol.Session.Did.ToString(), installId, uri, 0, [..languages]);
+            var model = new RegistrationModel(protocol.Session.Did.ToString(), installId, uri, settings.NotificationOptions, [.. languages]);
             var content = JsonSerializer.Serialize(model, JsonContext.Default.RegistrationModel);
 
             using var client = new HttpClient();

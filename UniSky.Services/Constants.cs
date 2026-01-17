@@ -53,5 +53,8 @@ public static class Constants
         public const bool SHOW_FEED_CONTEXT_DEFAULT = false;
 
         public const string INSTALL_ID = "InstallId_v1";
+
+        public const string NOTIFICATION_OPTIONS = "NotificationOptions_v1";
+        public const NotificationOptions NOTIFICATION_OPTIONS_DEFAULT = 0;
     }
 }

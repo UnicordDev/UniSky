@@ -6,7 +6,7 @@ public class Helpers
 {
     public static Func<ICacheEntry, Task<T>> CacheForTime<T>(TimeSpan timeSpan, Func<ICacheEntry, Task<T>> func)
     {
-        return (ICacheEntry entry) =>
+        return entry =>
         {
             entry.SetAbsoluteExpiration(timeSpan);
             return func(entry);
