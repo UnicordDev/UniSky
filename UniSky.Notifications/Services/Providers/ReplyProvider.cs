@@ -38,7 +38,7 @@ public class ReplyProvider(IMemoryCache cache) : INotificationProvider
             case ViewImages images:
                 {
                     var image = images.Images.FirstOrDefault();
-                    if (image == null || !Uri.TryCreate(image.Thumb, UriKind.Absolute, out var uri))
+                    if (image == null || !Uri.TryCreate(image.Thumb + "@jpeg", UriKind.Absolute, out var uri))
                         break;
 
                     builder.AddHeroImage(uri, image.Alt);
@@ -49,13 +49,13 @@ public class ReplyProvider(IMemoryCache cache) : INotificationProvider
                     if (!Uri.TryCreate(video.Thumbnail, UriKind.Absolute, out var uri))
                         break;
 
-                    builder.AddHeroImage(uri, video.Thumbnail);
+                    builder.AddHeroImage(uri, video.Thumbnail + "@jpeg");
                     break;
                 }
         }
 
         if (actor.Avatar != null)
-            builder.AddAppLogoOverride(new Uri(actor.Avatar), ToastGenericAppLogoCrop.Circle);
+            builder.AddAppLogoOverride(new Uri(actor.Avatar + "@jpeg"), ToastGenericAppLogoCrop.Circle);
 
         return true;
     }

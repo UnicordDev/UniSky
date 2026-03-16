@@ -122,6 +122,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Compression.cs" />
+    <Compile Include="ICdnUrlService.cs" />
     <Compile Include="IElementCaptureService.cs" />
     <Compile Include="IEmbedExtractor.cs" />
     <Compile Include="IEmbedThumbnailGenerator.cs" />

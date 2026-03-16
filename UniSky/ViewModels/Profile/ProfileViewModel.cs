@@ -1,31 +1,34 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FishyFlip.Lexicon;
 using FishyFlip.Lexicon.App.Bsky.Actor;
+using FishyFlip.Lexicon.App.Bsky.Graph;
 using FishyFlip.Models;
+using Microsoft.Extensions.DependencyInjection;
+using UniSky.Moderation;
 using UniSky.Pages;
 using UniSky.Services;
-using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml;
-using Microsoft.Extensions.DependencyInjection;
-using Windows.ApplicationModel.Resources;
-using System.Globalization;
-using System.Threading.Tasks;
-using FishyFlip.Lexicon.App.Bsky.Graph;
-using System;
-using UniSky.Moderation;
-using System.Collections.ObjectModel;
 using UniSky.ViewModels.Moderation;
+using Windows.ApplicationModel.Resources;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media.Animation;
 
 namespace UniSky.ViewModels.Profile;
 
 public partial class ProfileViewModel : ViewModelBase
 {
-    private static readonly IdnMapping mapper = new IdnMapping();
-    private static readonly ResourceLoader strings = ResourceLoader.GetForViewIndependentUse();
-
     private readonly IModerationService moderationService
         = ServiceContainer.Default.GetRequiredService<IModerationService>();
+    private readonly ITypedSettings settings
+        = ServiceContainer.Default.GetRequiredService<ITypedSettings>();
+    protected readonly ICdnUrlService urlService
+        = ServiceContainer.Scoped.GetService<ICdnUrlService>();
+
+    private static readonly ResourceLoader strings = ResourceLoader.GetForViewIndependentUse();
 
     protected ATIdentifier id;
     protected ATObject source;
@@ -209,7 +212,7 @@ public partial class ProfileViewModel : ViewModelBase
         this.id = id;
 
         this.IsMe = protocol.Session.Did.ToString() == id.ToString();
-        this.Handle = ConvertHandle(handle);
+        this.Handle = ProfileHelpers.ConvertHandle(handle);
 
         if (viewerState is ViewerState viewer)
         {
@@ -217,30 +220,20 @@ public partial class ProfileViewModel : ViewModelBase
             this.FollowsYou = viewer.FollowedBy != null;
         }
 
-        this.AvatarUrl = avatar;
-        this.Name = string.IsNullOrWhiteSpace(displayName) ? ConvertHandle(handle, true) : displayName;
+        this.AvatarUrl = urlService.ProcessCdnUrl(avatar);
+        this.Name = string.IsNullOrWhiteSpace(displayName) ? ProfileHelpers.ConvertHandle(handle, true) : displayName;
         this.Bio = bio?.Trim() ?? "";
-        this.BannerUrl = banner;
+        this.BannerUrl = urlService.ProcessCdnUrl(banner);
         this.Pronouns = pronouns?.Trim() ?? "";
-    }
 
-    private static string ConvertHandle(ATHandle handle, bool forDisplayName = false)
-    {
-        if (string.IsNullOrWhiteSpace(handle.Handle) || handle.Handle == "handle.invalid")
-            return strings.GetString("Profile_InvalidHandle");
-
-        return forDisplayName ? ConvertHandleString(handle) : $"@{ConvertHandleString(handle)}";
-    }
-
-    private static string ConvertHandleString(ATHandle handle)
-    {
-        try
+        if (settings.ShowPronounsAsLabel && !string.IsNullOrWhiteSpace(this.Pronouns))
         {
-            return mapper.GetUnicode(handle.Handle);
-        }
-        catch
-        {
-            return handle.Handle;
+            this.Labels.Add(new LabelViewModel()
+            {
+                Name = this.Pronouns,
+                AppliedBy = strings.GetString("AppName"),
+                Description = strings.GetString("PronounsLabelDescription")
+            });
         }
     }
 }

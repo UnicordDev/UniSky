@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FishyFlip.Lexicon.App.Bsky.Embed;
+using Microsoft.Extensions.DependencyInjection;
+using UniSky.Services;
 using Windows.System;
 using Windows.UI.ViewManagement;
 
@@ -10,6 +12,9 @@ namespace UniSky.ViewModels.Posts;
 
 public partial class PostEmbedExternalViewModel : PostEmbedViewModel
 {
+    private readonly ICdnUrlService urlService
+        = ServiceContainer.Scoped.GetService<ICdnUrlService>();
+
     private readonly Uri link;
 
     [ObservableProperty]
@@ -29,7 +34,7 @@ public partial class PostEmbedExternalViewModel : PostEmbedViewModel
 
             Title = external.Title;
             Description = external.Description;
-            ThumbnailUrl = external.Thumb ?? "";
+            ThumbnailUrl = urlService.ProcessCdnUrl(external.Thumb ?? "");
             Source = link.Host;
         }
     }

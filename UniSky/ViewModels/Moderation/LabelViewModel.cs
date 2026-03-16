@@ -7,6 +7,9 @@ namespace UniSky.ViewModels.Moderation;
 
 public partial class LabelViewModel : ViewModelBase
 {
+    private readonly ICdnUrlService urlService
+        = ServiceContainer.Scoped.GetService<ICdnUrlService>();
+
     [ObservableProperty]
     private string name;
     [ObservableProperty]
@@ -24,7 +27,7 @@ public partial class LabelViewModel : ViewModelBase
         {
             Name = strings.Name;
             Description = strings.Description;
-            Icon = label.LabelDef.DefinedByProfile?.Avatar;
+            Icon = urlService.ProcessCdnUrl(label.LabelDef.DefinedByProfile?.Avatar);
         }
         else
         {

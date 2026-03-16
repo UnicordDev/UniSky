@@ -92,6 +92,7 @@ sealed partial class App : Application
         collection.AddTransient<ISessionService, SessionService>();
         collection.AddTransient<IBadgeService, BadgeService>();
         collection.AddTransient<ITypedSettings, TypedSettingsService>();
+        collection.AddTransient<ICdnUrlService, CdnUrlService>();
 
         ServiceContainer.Default.ConfigureServices(collection.BuildServiceProvider());
 

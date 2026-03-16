@@ -56,5 +56,11 @@ public static class Constants
 
         public const string NOTIFICATION_OPTIONS = "NotificationOptions_v1";
         public const NotificationOptions NOTIFICATION_OPTIONS_DEFAULT = 0;
+
+        public const string SHOW_PRONOUNS_AS_LABEL = "PronounsLabel_v1";
+        public const bool SHOW_PRONOUNS_AS_LABEL_DEFAULT = true;
+
+        public const string ENABLE_WEBP = "WebP_v1";
+        public const bool ENABLE_WEBP_DEFAULT = true;
     }
 }

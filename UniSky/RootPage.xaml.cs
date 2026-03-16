@@ -67,7 +67,8 @@ public sealed partial class RootPage : Page
 
             dismissed = true;
             ExtendedProgressRing.IsActive = false;
-            BirdAnimation.RunBirdAnimation(ExtendedSplash, SheetRoot);
+            ExtendedSplashPath.Visibility = Visibility.Collapsed;
+            BirdAnimation.RunBirdAnimation(ExtendedSplashBackground, ExtendedSplashImage, SheetRoot, () => ExtendedSplash.Visibility = Visibility.Collapsed);
         });
     }
 }

@@ -33,7 +33,7 @@
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x64|arm</AppxBundlePlatforms>
+    <AppxBundlePlatforms>arm</AppxBundlePlatforms>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <GenerateTestArtifacts>False</GenerateTestArtifacts>
@@ -272,6 +272,7 @@
     <Compile Include="Helpers\StringExtensions.cs" />
     <Compile Include="Helpers\UIElementExtensions.cs" />
     <Compile Include="Helpers\UrlHelpers.cs" />
+    <Compile Include="Helpers\WebPHelpers.cs" />
     <Compile Include="Messages\MarkAsReadNotification.cs" />
     <Compile Include="Pages\BookmarksPage.xaml.cs">
       <DependentUpon>BookmarksPage.xaml</DependentUpon>
@@ -290,6 +291,7 @@
     </Compile>
     <Compile Include="Polyfill\IsExternalInit.cs" />
     <Compile Include="Services\BackgroundNotificationsService.cs" />
+    <Compile Include="Services\CdnUrlService.cs" />
     <Compile Include="Services\ImageCompressionService.cs" />
     <Compile Include="Services\IScrollToTop.cs" />
     <Compile Include="Services\XamlEmbedThumbnailGenerator.cs" />
@@ -329,6 +331,7 @@
     <Compile Include="ViewModels\Posts\PostEmbedVideoViewModel.cs" />
     <Compile Include="ViewModels\MenuItems\ProfileMenuItemViewModel.cs" />
     <Compile Include="ViewModels\Profile\ProfileFeedViewModel.cs" />
+    <Compile Include="ViewModels\Profile\ProfileHelpers.cs" />
     <Compile Include="ViewModels\Profile\ProfilePageViewModel.cs" />
     <Compile Include="ViewModels\Profile\ProfileViewModel.cs" />
     <Compile Include="ViewModels\Posts\PostEmbedImagesViewModel.cs" />
@@ -766,7 +769,9 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Controls\Editor\" />
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

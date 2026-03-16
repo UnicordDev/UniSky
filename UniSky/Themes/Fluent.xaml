@@ -10,11 +10,13 @@
                 <ResourceDictionary>
                     <ResourceDictionary.ThemeDictionaries>
                         <ResourceDictionary x:Key="Default">
+                            <Color x:Key="ApplicationPageBackgroundThemeColor">#FF080808</Color>
                             <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" Color="#FF080808" />
                             <Color x:Key="SystemListExtraLowColor">#10FFFFFF</Color>
                             <Color x:Key="SystemControlSeparatorColor">#FF404040</Color>
                         </ResourceDictionary>
                         <ResourceDictionary x:Key="Light">
+                            <Color x:Key="ApplicationPageBackgroundThemeColor">White</Color>
                             <Color x:Key="SystemControlSeparatorColor">#FFDEDEDE</Color>
                             <Color x:Key="SystemListExtraLowColor">#10000000</Color>
                         </ResourceDictionary>

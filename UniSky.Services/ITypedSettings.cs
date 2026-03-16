@@ -15,4 +15,6 @@ public interface ITypedSettings
     bool ShowFeedContext { get; set; }
     string InstallId { get; }
     NotificationOptions NotificationOptions { get; set; }
+    bool ShowPronounsAsLabel { get; set; }
+    bool EnableWebP { get; set; }
 }

@@ -29,7 +29,6 @@ public partial class PreviewPaneAuroraControl : UserControl
         set => SetValue(AnimationDurationProperty, value);
     }
 
-    // Using a DependencyProperty as the backing store for AnimationDuration.  This enables animation, styling, binding, etc...
     public static readonly DependencyProperty AnimationDurationProperty =
         DependencyProperty.Register("AnimationDuration", typeof(TimeSpan), typeof(PreviewPaneAuroraControl), new PropertyMetadata(TimeSpan.FromSeconds(0.5)));
 
@@ -130,11 +129,13 @@ public partial class PreviewPaneAuroraControl : UserControl
                 gradientStop.Color :
                 Color.FromArgb(gradientStop.Color.A, colorNew.R, colorNew.G, colorNew.B);
 
-            var colorAnimation = new ColorAnimation();
-            colorAnimation.From = color1;
-            colorAnimation.To = color4;
-            colorAnimation.Duration = new Duration(AnimationDuration);
-            colorAnimation.EnableDependentAnimation = true;
+            var colorAnimation = new ColorAnimation
+            {
+                From = color1,
+                To = color4,
+                Duration = new Duration(AnimationDuration),
+                EnableDependentAnimation = true
+            };
 
             Storyboard.SetTarget(colorAnimation, gradientStop);
             Storyboard.SetTargetProperty(colorAnimation, "Color");

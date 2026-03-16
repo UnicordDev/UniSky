@@ -45,7 +45,7 @@ public class LikeProvider(IMemoryCache cache) : INotificationProvider
             .AddText(post.Text, AdaptiveTextStyle.Body);
 
         if (actor.Avatar != null)
-            builder.AddAppLogoOverride(new Uri(actor.Avatar), ToastGenericAppLogoCrop.Circle);
+            builder.AddAppLogoOverride(new Uri(actor.Avatar + "@jpeg"), ToastGenericAppLogoCrop.Circle);
 
         return true;
     }

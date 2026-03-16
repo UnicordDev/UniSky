@@ -104,4 +104,16 @@ public class TypedSettingsService : ITypedSettings
         get => (NotificationOptions)settings.Read<int>(NOTIFICATION_OPTIONS, 0);
         set => settings.Save(NOTIFICATION_OPTIONS, (int)value);
     }
+
+    public bool ShowPronounsAsLabel
+    {
+        get => settings.Read(SHOW_PRONOUNS_AS_LABEL, SHOW_PRONOUNS_AS_LABEL_DEFAULT);
+        set => settings.Save(SHOW_PRONOUNS_AS_LABEL, value);
+    }
+
+    public bool EnableWebP
+    {
+        get => settings.Read(ENABLE_WEBP, ENABLE_WEBP_DEFAULT);
+        set => settings.Save(ENABLE_WEBP, value);
+    }
 }

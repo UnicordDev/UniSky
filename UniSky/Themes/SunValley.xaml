@@ -30,6 +30,8 @@
                         </ResourceDictionary>
                     </ResourceDictionary.ThemeDictionaries>
 
+                    <Color x:Key="ApplicationPageBackgroundThemeColor">White</Color>
+
                     <FontFamily x:Key="ContentControlThemeFontFamily">Segoe UI Variable</FontFamily>
                     <FontFamily x:Key="HeadingThemeFontFamily">Segoe UI Variable Display</FontFamily>
                     <FontFamily x:Key="MTCMediaFontFamily">Segoe UI Variable</FontFamily>

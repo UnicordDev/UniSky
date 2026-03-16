@@ -277,7 +277,7 @@
     <value>Blocked</value>
   </data>
   <data name="Profile_InvalidHandle" xml:space="preserve">
-    <value>Invalid Handle</value>
+    <value>⚠️ Invalid Handle</value>
   </data>
   <data name="Profile_BlockedUser" xml:space="preserve">
     <value>You are blocking this user</value>
@@ -532,5 +532,8 @@
   </data>
   <data name="BookmarksPageNoItemsSubtitle.Text" xml:space="preserve">
     <value>Bookmark some posts to get started.</value>
+  </data>
+  <data name="PronounsLabelDescription" xml:space="preserve">
+    <value>The user's self assigned pronouns field.</value>
   </data>
 </root>

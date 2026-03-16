@@ -11,6 +11,8 @@
     mc:Ignorable="d"
     NavigationCacheMode="Required"
     Background="{ThemeResource ApplicationRootPageBackgroundBrush}">
+    <Page.Resources>
+    </Page.Resources>
 
     <Grid>
         <!-- Elements that are being rendered to a RenderTargetBitmap are temporarily hosted inside this Canvas -->
@@ -27,12 +29,14 @@
         <overlay:OverlayRootControl x:Name="OverlayRoot"/>
 
         <Grid x:Name="ExtendedSplash" 
-                IsHitTestVisible="False"
-                Background="{ThemeResource SplashScreenBackground}">
+                IsHitTestVisible="False">
             <Grid.RowDefinitions>
                 <RowDefinition Height="2*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
+            <Border x:Name="ExtendedSplashBackground" 
+                    Grid.RowSpan="2" 
+                    Background="{ThemeResource SplashScreenBackground}"/>
             <Viewbox x:Name="ExtendedSplashContainer"
                      Grid.RowSpan="2"
                      StretchDirection="DownOnly">
@@ -44,8 +48,14 @@
                              VerticalAlignment="Center"
                              HorizontalAlignment="Center"
                              CacheMode="BitmapCache">
-                        <Path Data="{StaticResource BlueSkyLogoPath}"
-                              Fill="White"/>
+                        <Grid>
+                            <Path x:Name="ExtendedSplashPath1"
+                                  Data="{StaticResource BlueSkyLogoPath}"
+                                  Fill="{ThemeResource ApplicationPageBackgroundThemeBrush}"/>
+                            <Path x:Name="ExtendedSplashPath"
+                                  Data="{StaticResource BlueSkyLogoPath}"
+                                  Fill="White"/>
+                        </Grid>
                     </Viewbox>
                 </Grid>
             </Viewbox>

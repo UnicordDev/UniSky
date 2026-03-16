@@ -22,6 +22,9 @@ public partial class PostEmbedVideoViewModel : PostEmbedViewModel
 {
     private readonly ViewVideo video;
 
+    private readonly ICdnUrlService urlService
+        = ServiceContainer.Scoped.GetService<ICdnUrlService>();
+
     [ObservableProperty]
     private string thumbnailUrl;
     [ObservableProperty]
@@ -33,7 +36,7 @@ public partial class PostEmbedVideoViewModel : PostEmbedViewModel
         : base(video)
     {
         this.video = video;
-        this.ThumbnailUrl = video.Thumbnail;
+        this.ThumbnailUrl = urlService.ProcessCdnUrl(video.Thumbnail);
         this.Ratio = video.AspectRatio != null ?
             new AspectRatioConstraint(Math.Max((double)video.AspectRatio.Width / video.AspectRatio.Height, 0.5)) :
             new AspectRatioConstraint(16, 9);

@@ -16,12 +16,14 @@ public partial class ProfileMenuItemViewModel : MenuItemViewModel
     private readonly IProtocolService protocolService
         = ServiceContainer.Scoped.GetRequiredService<IProtocolService>();
 
+    private readonly ICdnUrlService urlService
+        = ServiceContainer.Scoped.GetService<ICdnUrlService>();
+
     private ProfileViewDetailed profile;
 
     public ProfileMenuItemViewModel(HomeViewModel parent)
         : base(parent, HomePages.Profile, "\uE77B", typeof(ProfilePage))
     {
-
     }
 
     public override async Task LoadAsync()
@@ -35,9 +37,10 @@ public partial class ProfileMenuItemViewModel : MenuItemViewModel
         Name = profile.DisplayName;
         if (profile.Avatar != null)
         {
+            var avatarUrl = urlService.ProcessCdnUrl(profile.Avatar);
             syncContext.Post(() =>
             {
-                AvatarUrl = new BitmapImage(new Uri(profile.Avatar))
+                AvatarUrl = new BitmapImage(new Uri(avatarUrl))
                 {
                     DecodePixelWidth = 24,
                     DecodePixelHeight = 24,
