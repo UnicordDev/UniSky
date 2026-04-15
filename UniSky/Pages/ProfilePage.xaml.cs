@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Numerics;
 using FishyFlip.Lexicon;
-using FishyFlip.Lexicon.App.Bsky.Actor;
 using FishyFlip.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Graphics.Canvas.Effects;

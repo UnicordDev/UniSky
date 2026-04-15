@@ -5,7 +5,6 @@ using FishyFlip.Models;
 using Microsoft.Extensions.DependencyInjection;
 using UniSky.Services;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace UniSky.ViewModels.Posts;

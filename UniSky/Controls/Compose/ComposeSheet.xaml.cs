@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using UniSky.Controls.Overlay;
 using UniSky.Controls.Sheet;
@@ -12,7 +11,6 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;

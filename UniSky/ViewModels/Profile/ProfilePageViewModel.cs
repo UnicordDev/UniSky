@@ -174,6 +174,7 @@ public partial class ProfilePageViewModel : ProfileViewModel
 
         lightness = await BitmapInterop.GetImageAverageBrightnessAsync(randomAccessStream)
             .ConfigureAwait(false);
+
         IsLight = lightness < 0.55f;
         Debug.WriteLine(lightness);
 

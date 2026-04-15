@@ -1,10 +1,8 @@
-﻿using FishyFlip.Models;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using UniSky.Services;
 using UniSky.ViewModels;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Navigation;
 
 using MUXC = Microsoft.UI.Xaml.Controls;

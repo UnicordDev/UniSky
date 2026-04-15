@@ -4,7 +4,6 @@
 
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
-using Windows.Foundation;
 using Rect = Windows.Foundation.Rect;
 using Size = Windows.Foundation.Size;
 

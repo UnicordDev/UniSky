@@ -29,7 +29,6 @@ using Windows.Media.Capture;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
-using Windows.System;
 
 namespace UniSky.ViewModels.Compose;
 

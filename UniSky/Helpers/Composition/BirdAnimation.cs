@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Numerics;
-using Microsoft.Toolkit.Uwp.UI.Animations.Behaviors;
 using Microsoft.Toolkit.Uwp.UI.Media.Geometry;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Hosting;
-using Windows.UI.Xaml.Media.Animation;
 
 namespace UniSky.Helpers.Composition;
 

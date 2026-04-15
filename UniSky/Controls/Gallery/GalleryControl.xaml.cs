@@ -1,15 +1,12 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Uwp.UI.Controls;
-using Microsoft.Toolkit.Uwp.UI.Extensions;
 using UniSky.Controls.Overlay;
 using UniSky.Services;
 using UniSky.ViewModels.Gallery;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Media.Imaging;
 
 namespace UniSky.Controls.Gallery;
 

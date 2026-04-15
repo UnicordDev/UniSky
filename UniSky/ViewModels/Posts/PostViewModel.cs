@@ -15,7 +15,6 @@ using FishyFlip.Lexicon.App.Bsky.Embed;
 using FishyFlip.Lexicon.App.Bsky.Feed;
 using FishyFlip.Lexicon.Com.Atproto.Repo;
 using FishyFlip.Models;
-using FishyFlip.Tools;
 using Humanizer;
 using Microsoft.Extensions.DependencyInjection;
 using UniSky.Controls.Compose;
