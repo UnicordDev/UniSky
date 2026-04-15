@@ -285,7 +285,7 @@ public partial class ComposeViewModel : ViewModelBase
             var properties = await image.StorageFile.GetBasicPropertiesAsync()
                 .AsTask().ConfigureAwait(false);
 
-            if (properties.Size > 1_000_000)
+            if (properties.Size > 2_000_000)
             {
                 var e = new InvalidOperationException("Attached image is too large!");
                 image.SetErrored(e);
