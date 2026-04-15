@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using UniSky.Helpers;
 using UniSky.Models;
-using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Imaging;
@@ -16,7 +15,7 @@ public class ImageCompressionService : IImageCompressionService
 {
     private static bool isHeifEncoderMissing = false;
 
-    public async Task<CompressedImageFile> CompressStorageFileAsync(IStorageFile input, int size = 4096)
+    public async Task<CompressedImageFile> CompressStorageFileAsync(IStorageFile input, int size = 4000)
     {
         return await CompressImageAsync(input, CheckHeifSupport(), size);
     }
@@ -24,7 +23,7 @@ public class ImageCompressionService : IImageCompressionService
     public async Task<CompressedImageStream> CompressSoftwareBitmapAsync(
         SoftwareBitmap softwareBitmap,
         IRandomAccessStream outputStream,
-        int size = 4096)
+        int size = 4000)
     {
         return await CompressSoftwareBitmapAsync(softwareBitmap,
                                                  outputStream,
@@ -91,7 +90,7 @@ public class ImageCompressionService : IImageCompressionService
 
                     var propertySet = new BitmapPropertySet()
                     {
-                        ["ImageQuality"] = new BitmapTypedValue(0.9, PropertyType.Single),
+                        ["ImageQuality"] = new BitmapTypedValue(0.9f, PropertyType.Single)
                     };
 
                     var encoder = await BitmapEncoder.CreateAsync(codec, outputStream, propertySet);
@@ -106,7 +105,7 @@ public class ImageCompressionService : IImageCompressionService
                             ?? contentType;
                     size = (int)Math.Floor(size * 0.75);
                 }
-                while (outputStream.Size > 1_000_000);
+                while (outputStream.Size > 2_000_000);
 
                 return new CompressedImageStream((int)Math.Ceiling(width), (int)Math.Ceiling(height), contentType, outputStream);
             }
