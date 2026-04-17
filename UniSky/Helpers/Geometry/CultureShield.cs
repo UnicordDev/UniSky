@@ -4,10 +4,29 @@
 
 using System.Globalization;
 
-namespace Microsoft.Toolkit.Uwp.UI.Media.Geometry
+namespace Microsoft.Toolkit.Uwp.UI.Media.Geometry;
+
+/// <summary>
+/// Class which can be used to encapsulate code statement(s) so that they are executed in a specific culture.
+/// <para />
+/// Usage example:
+/// <para />
+/// The following code block will be executed using the French culture.
+/// <para />
+/// using (new CultureShield("fr-FR"))
+/// <para />
+/// {
+/// <para />
+///    ...
+/// <para />
+/// }
+/// </summary>
+internal readonly ref struct CultureShield
 {
+    private readonly CultureInfo _prevCulture;
+
     /// <summary>
-    /// Class which can be used to encapsulate code statement(s) so that they are executed in a specific culture.
+    /// Initializes a new instance of the <see cref="CultureShield"/> struct so that the encapsulated code statement(s) can be executed using the specified culture.
     /// <para />
     /// Usage example:
     /// <para />
@@ -17,42 +36,22 @@ namespace Microsoft.Toolkit.Uwp.UI.Media.Geometry
     /// <para />
     /// {
     /// <para />
-    ///    ...
+    ///   ...
     /// <para />
     /// }
     /// </summary>
-    internal readonly ref struct CultureShield
+    /// <param name="culture">The culture in which the encapsulated code statement(s) are to be executed.</param>
+    internal CultureShield(string culture)
     {
-        private readonly CultureInfo _prevCulture;
+        _prevCulture = CultureInfo.CurrentCulture;
+        CultureInfo.CurrentCulture = new CultureInfo(culture);
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CultureShield"/> struct so that the encapsulated code statement(s) can be executed using the specified culture.
-        /// <para />
-        /// Usage example:
-        /// <para />
-        /// The following code block will be executed using the French culture.
-        /// <para />
-        /// using (new CultureShield("fr-FR"))
-        /// <para />
-        /// {
-        /// <para />
-        ///   ...
-        /// <para />
-        /// }
-        /// </summary>
-        /// <param name="culture">The culture in which the encapsulated code statement(s) are to be executed.</param>
-        internal CultureShield(string culture)
-        {
-            _prevCulture = CultureInfo.CurrentCulture;
-            CultureInfo.CurrentCulture = new CultureInfo(culture);
-        }
-
-        /// <summary>
-        /// Disposes the CultureShield object.
-        /// </summary>
-        public void Dispose()
-        {
-            CultureInfo.CurrentCulture = _prevCulture;
-        }
+    /// <summary>
+    /// Disposes the CultureShield object.
+    /// </summary>
+    public void Dispose()
+    {
+        CultureInfo.CurrentCulture = _prevCulture;
     }
 }

@@ -3,6 +3,8 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FishyFlip.Lexicon.App.Bsky.Embed;
 using FishyFlip.Models;
+using Microsoft.Extensions.DependencyInjection;
+using UniSky.Services;
 using UniSky.Services.Overlay;
 using Windows.Foundation;
 
@@ -43,20 +45,23 @@ public record ShowGalleryArgs(ATIdentifier Identifier = null,
 
 public partial class GalleryImageViewModel : ViewModelBase
 {
+    private readonly ICdnUrlService urlService
+        = ServiceContainer.Scoped.GetService<ICdnUrlService>();
+
     [ObservableProperty]
     private string imageUrl;
     [ObservableProperty]
     private string placeholderUrl;
     public GalleryImageViewModel(ViewImage image)
     {
-        ImageUrl = image.Fullsize;
-        PlaceholderUrl = image.Thumb;
+        ImageUrl = urlService.ProcessCdnUrl(image.Fullsize);
+        PlaceholderUrl = urlService.ProcessCdnUrl(image.Thumb);
     }
 
     public GalleryImageViewModel(ATIdentifier id, Image image)
     {
-        // TODO: this
-        ImageUrl = $"https://cdn.bsky.app/img/feed_fullsize/plain/{id}/{image.ImageValue.Ref.Link}@jpeg";
+        // TODO: use urlService to _generate_ this
+        ImageUrl = urlService.ProcessCdnUrl($"https://cdn.bsky.app/img/feed_fullsize/plain/{id}/{image.ImageValue.Ref.Link}");
         PlaceholderUrl = ImageUrl;
     }
 }

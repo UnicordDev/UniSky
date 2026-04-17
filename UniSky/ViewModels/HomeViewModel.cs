@@ -129,6 +129,10 @@ public partial class HomeViewModel : ViewModelBase
         using var loading = this.GetLoadingContext();
         var protocol = this.protocolService.Protocol;
 
+        await Task.WhenAll(
+            MenuItems.Concat(FooterMenuItems)
+                     .Select(s => s.LoadAsync()));
+
         try
         {
             await this.notificationsService.InitializeAsync();
@@ -137,10 +141,6 @@ public partial class HomeViewModel : ViewModelBase
         {
             logger.LogError(ex, "Failed to start notifications service!");
         }
-
-        await Task.WhenAll(
-            MenuItems.Concat(FooterMenuItems)
-                     .Select(s => s.LoadAsync()));
     }
 
     [RelayCommand]

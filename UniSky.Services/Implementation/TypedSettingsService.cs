@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using UniSky.Models;
 using Windows.System.Profile;
 using Windows.UI.Xaml;
 
@@ -37,6 +39,9 @@ public class TypedSettingsService : ITypedSettings
                 break;
             case SHOW_FEED_CONTEXT:
                 SettingChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ShowFeedContext)));
+                break;
+            case NOTIFICATION_OPTIONS:
+                SettingChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NotificationOptions)));
                 break;
         }
     }
@@ -78,5 +83,37 @@ public class TypedSettingsService : ITypedSettings
     {
         get => settings.Read(SHOW_FEED_CONTEXT, SHOW_FEED_CONTEXT_DEFAULT);
         set => settings.Save(SHOW_FEED_CONTEXT, value);
+    }
+
+    public string InstallId
+    {
+        get
+        {
+            if (!settings.TryRead(INSTALL_ID, out string installId))
+            {
+                installId = Guid.NewGuid().ToString();
+                settings.Save(INSTALL_ID, installId);
+            }
+
+            return installId;
+        }
+    }
+
+    public NotificationOptions NotificationOptions
+    {
+        get => (NotificationOptions)settings.Read<int>(NOTIFICATION_OPTIONS, 0);
+        set => settings.Save(NOTIFICATION_OPTIONS, (int)value);
+    }
+
+    public bool ShowPronounsAsLabel
+    {
+        get => settings.Read(SHOW_PRONOUNS_AS_LABEL, SHOW_PRONOUNS_AS_LABEL_DEFAULT);
+        set => settings.Save(SHOW_PRONOUNS_AS_LABEL, value);
+    }
+
+    public bool EnableWebP
+    {
+        get => settings.Read(ENABLE_WEBP, ENABLE_WEBP_DEFAULT);
+        set => settings.Save(ENABLE_WEBP, value);
     }
 }

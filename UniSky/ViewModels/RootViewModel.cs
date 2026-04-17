@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
 using FishyFlip;
-using FishyFlip.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using OwlCore.Diagnostics;
 using UniSky.Extensions;
 using UniSky.Pages;
 using UniSky.Services;
-using Windows.Storage;
 using Windows.UI.Xaml;
 
 namespace UniSky.ViewModels;

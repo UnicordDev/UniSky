@@ -13,7 +13,6 @@ using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.Media.Streaming.Adaptive;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 
 namespace UniSky.ViewModels.Posts;
@@ -21,6 +20,9 @@ namespace UniSky.ViewModels.Posts;
 public partial class PostEmbedVideoViewModel : PostEmbedViewModel
 {
     private readonly ViewVideo video;
+
+    private readonly ICdnUrlService urlService
+        = ServiceContainer.Scoped.GetService<ICdnUrlService>();
 
     [ObservableProperty]
     private string thumbnailUrl;
@@ -33,7 +35,7 @@ public partial class PostEmbedVideoViewModel : PostEmbedViewModel
         : base(video)
     {
         this.video = video;
-        this.ThumbnailUrl = video.Thumbnail;
+        this.ThumbnailUrl = urlService.ProcessCdnUrl(video.Thumbnail);
         this.Ratio = video.AspectRatio != null ?
             new AspectRatioConstraint(Math.Max((double)video.AspectRatio.Width / video.AspectRatio.Height, 0.5)) :
             new AspectRatioConstraint(16, 9);

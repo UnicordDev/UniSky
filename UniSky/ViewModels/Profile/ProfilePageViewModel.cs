@@ -167,13 +167,14 @@ public partial class ProfilePageViewModel : ProfileViewModel
         if (string.IsNullOrWhiteSpace(profile.Banner))
             return;
 
-        var randomAccessStreamRef = RandomAccessStreamReference.CreateFromUri(new Uri(profile.Banner));
+        var randomAccessStreamRef = RandomAccessStreamReference.CreateFromUri(new Uri(urlService.ProcessCdnUrl(profile.Banner)));
         using var randomAccessStream = await randomAccessStreamRef.OpenReadAsync()
             .AsTask()
             .ConfigureAwait(false);
 
         lightness = await BitmapInterop.GetImageAverageBrightnessAsync(randomAccessStream)
             .ConfigureAwait(false);
+
         IsLight = lightness < 0.55f;
         Debug.WriteLine(lightness);
 

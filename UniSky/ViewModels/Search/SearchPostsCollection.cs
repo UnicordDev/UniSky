@@ -71,7 +71,7 @@ public class SearchPostsCollection : ObservableCollection<PostViewModel>, ISuppo
 
         try
         {
-            var results = (await protocolService.Protocol.SearchPostsAsync(this.query, this.searchType, limit: count, cursor: this.cursor)
+            var results = (await protocolService.Protocol.SearchPostsAsync(Uri.EscapeDataString(this.query), this.searchType, limit: count, cursor: this.cursor)
                 .ConfigureAwait(false))
                 .HandleResult();
 

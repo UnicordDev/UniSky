@@ -4,22 +4,21 @@
 
 using Windows.UI.Composition;
 
-namespace Microsoft.Toolkit.Uwp.UI
+namespace Microsoft.Toolkit.Uwp.UI;
+
+/// <summary>
+/// Any user control can implement this interface to provide a custom alpha mask to it's parent DropShadowPanel
+/// </summary>
+public interface IAlphaMaskProvider
 {
     /// <summary>
-    /// Any user control can implement this interface to provide a custom alpha mask to it's parent DropShadowPanel
+    /// Gets a value indicating whether the AlphaMask needs to be retrieved after the element has loaded.
     /// </summary>
-    public interface IAlphaMaskProvider
-    {
-        /// <summary>
-        /// Gets a value indicating whether the AlphaMask needs to be retrieved after the element has loaded.
-        /// </summary>
-        bool WaitUntilLoaded { get; }
+    bool WaitUntilLoaded { get; }
 
-        /// <summary>
-        /// This method should return the appropiate alpha mask to be used in the shadow of this control
-        /// </summary>
-        /// <returns>The alpha mask as a composition brush</returns>
-        CompositionBrush GetAlphaMask();
-    }
+    /// <summary>
+    /// This method should return the appropiate alpha mask to be used in the shadow of this control
+    /// </summary>
+    /// <returns>The alpha mask as a composition brush</returns>
+    CompositionBrush GetAlphaMask();
 }

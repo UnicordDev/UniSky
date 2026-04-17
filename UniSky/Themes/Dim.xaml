@@ -169,6 +169,7 @@
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
 
+            <StaticResource x:Key="ApplicationPageBackgroundThemeColor" ResourceKey="RegionColor"></StaticResource>
             <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" Color="{StaticResource RegionColor}" />
             <SolidColorBrush x:Key="SystemControlSeparatorBrush" Color="#323e4e"/>
             <SolidColorBrush x:Key="SystemControlRevealSeparatorBrush" Color="#323e4e"/>

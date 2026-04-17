@@ -88,6 +88,11 @@ public partial class ComposeViewAttachmentViewModel : ViewModelBase
             syncContext.Post(() => this.Remove());
         }
 
+        await LoadThumbnailAsync();
+    }
+
+    private async Task LoadThumbnailAsync()
+    {
         try
         {
             if (this.StorageFile is not IStorageItemProperties properties)

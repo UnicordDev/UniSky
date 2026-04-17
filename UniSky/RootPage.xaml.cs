@@ -5,7 +5,6 @@ using UniSky.ViewModels;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using Windows.UI.Core;
 using System;
 
 namespace UniSky;
@@ -67,7 +66,8 @@ public sealed partial class RootPage : Page
 
             dismissed = true;
             ExtendedProgressRing.IsActive = false;
-            BirdAnimation.RunBirdAnimation(ExtendedSplash, SheetRoot);
+            ExtendedSplashPath.Visibility = Visibility.Collapsed;
+            BirdAnimation.RunBirdAnimation(ExtendedSplashBackground, ExtendedSplashImage, SheetRoot, () => ExtendedSplash.Visibility = Visibility.Collapsed);
         });
     }
 }

@@ -43,6 +43,9 @@ public partial class NotificationViewModel : ViewModelBase, IComparable, ICompar
         }
     }
 
+    private readonly ICdnUrlService urlService 
+        = ServiceContainer.Scoped.GetService<ICdnUrlService>();
+
     private readonly Post subjectPost;
     private readonly ATIdentifier subjectPostAuthor;
 
@@ -150,7 +153,7 @@ public partial class NotificationViewModel : ViewModelBase, IComparable, ICompar
                 break;
         }
 
-        AvatarUrl = mostRecentAuthor.AvatarUrl;
+        AvatarUrl = urlService.ProcessCdnUrl(mostRecentAuthor.AvatarUrl);
         NotificationSubtitle = subjectPost?.Text;
         if (subjectPost is { Embed: EmbedImages and { } images })
         {

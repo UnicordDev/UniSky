@@ -34,7 +34,7 @@ public class SettingsService : ISettingsService
         = new JsonSerializerOptions { TypeInfoResolver = SettingsJsonContext.Default };
     private readonly ApplicationDataContainer Settings = ApplicationData.Current.LocalSettings;
 
-    public event PropertyChangedEventHandler SettingChanged;
+    public event PropertyChangedEventHandler? SettingChanged;
 
     /// <summary>
     /// Determines whether a setting already exists.

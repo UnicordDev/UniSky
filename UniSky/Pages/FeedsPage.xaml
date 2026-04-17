@@ -74,18 +74,47 @@
                         </mux:RefreshContainer>
 
                         <!-- TODO: move this into a DataTemplate w/ selector of type FeedItemErrorViewModel or similar -->
-                        <StackPanel x:Name="TimelineLoadFailure"
-                             x:Load="{x:Bind IsErrored}"
-                             Padding="16"
-                             HorizontalAlignment="Center">
-                            <TextBlock FontFamily="{ThemeResource SymbolThemeFontFamily}" 
-                                FontSize="96" 
-                                Text="&#xE783;" 
-                                Margin="0,0,0,8"
-                                HorizontalAlignment="Center"/>
-                            <TextBlock Text="Unable to fetch timeline!" TextAlignment="Center" Style="{ThemeResource TitleTextBlockStyle}"/>
-                            <Button Content="Try again" HorizontalAlignment="Center" Style="{ThemeResource TextBlockButtonStyle}" />
-                        </StackPanel>
+                        <Grid x:Name="FeedLoadError"
+                              Visibility="{Binding Error, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
+                              Padding="20,16"
+                              VerticalAlignment="Top"
+                              MaxWidth="600">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Opacity="0.1"
+                                    Background="{ThemeResource SystemControlErrorTextForegroundBrush}"
+                                    Margin="-20,-16"
+                                    Grid.ColumnSpan="3"/>
+
+                            <Viewbox Width="16"
+                                            Height="16"
+                                            Margin="0,2,0,0"
+                                            VerticalAlignment="Top">
+                                <TextBlock FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE7BA;</TextBlock>
+                            </Viewbox>
+
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Failed to load feed!"
+                                               Style="{ThemeResource BaseTextBlockStyle}"
+                                               TextWrapping="Wrap"
+                                               Margin="8,0"
+                                               MaxLines="2"/>
+                                <TextBlock Text="{Binding Error.Message, FallbackValue=An unknown error occurred.}"
+                                               Style="{ThemeResource CaptionTextBlockStyle}"
+                                               TextWrapping="Wrap"
+                                               Margin="8,0"
+                                               MaxLines="2"/>
+                            </StackPanel>
+
+                            <Button Grid.Column="3"
+                                    Command="{Binding RefreshCommand}">
+                                Retry
+                            </Button>
+                        </Grid>
 
                     </Grid>
                 </DataTemplate>

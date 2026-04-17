@@ -4,154 +4,153 @@
 
 using Windows.UI.Xaml;
 
-namespace Microsoft.Toolkit.Uwp.UI.Controls
+namespace Microsoft.Toolkit.Uwp.UI.Controls;
+
+/// <summary>
+/// Dependency properties for the <see cref="ConstrainedBox"/> class.
+/// </summary>
+public partial class ConstrainedBox
 {
     /// <summary>
-    /// Dependency properties for the <see cref="ConstrainedBox"/> class.
+    /// Gets or sets the scale for the width of the panel. Should be a value between 0-1.0. Default is 1.0.
     /// </summary>
-    public partial class ConstrainedBox
+    public double ScaleX
     {
-        /// <summary>
-        /// Gets or sets the scale for the width of the panel. Should be a value between 0-1.0. Default is 1.0.
-        /// </summary>
-        public double ScaleX
+        get => (double)GetValue(ScaleXProperty);
+        set => SetValue(ScaleXProperty, value);
+    }
+
+    /// <summary>
+    /// Identifies the <see cref="ScaleX"/> property.
+    /// </summary>
+    public static readonly DependencyProperty ScaleXProperty =
+        DependencyProperty.Register(nameof(ScaleX), typeof(double), typeof(ConstrainedBox), new PropertyMetadata(1.0, ConstraintPropertyChanged));
+
+    /// <summary>
+    /// Gets or sets the scale for the height of the panel. Should be a value between 0-1.0. Default is 1.0.
+    /// </summary>
+    public double ScaleY
+    {
+        get => (double)GetValue(ScaleYProperty);
+        set => SetValue(ScaleYProperty, value);
+    }
+
+    /// <summary>
+    /// Identifies the <see cref="ScaleY"/> property.
+    /// </summary>
+    public static readonly DependencyProperty ScaleYProperty =
+        DependencyProperty.Register(nameof(ScaleY), typeof(double), typeof(ConstrainedBox), new PropertyMetadata(1.0, ConstraintPropertyChanged));
+
+    /// <summary>
+    /// Gets or sets the integer multiple that the width of the panel should be floored to. Default is null (no snap).
+    /// </summary>
+    public int MultipleX
+    {
+        get => (int)GetValue(MultipleXProperty);
+        set => SetValue(MultipleXProperty, value);
+    }
+
+    /// <summary>
+    /// Identifies the <see cref="MultipleX"/> property.
+    /// </summary>
+    public static readonly DependencyProperty MultipleXProperty =
+        DependencyProperty.Register(nameof(MultipleX), typeof(int), typeof(ConstrainedBox), new PropertyMetadata(null, ConstraintPropertyChanged));
+
+    /// <summary>
+    /// Gets or sets the integer multiple that the height of the panel should be floored to. Default is null (no snap).
+    /// </summary>
+    public int MultipleY
+    {
+        get => (int)GetValue(MultipleYProperty);
+        set => SetValue(MultipleYProperty, value);
+    }
+
+    /// <summary>
+    /// Identifies the <see cref="MultipleY"/> property.
+    /// </summary>
+    public static readonly DependencyProperty MultipleYProperty =
+        DependencyProperty.Register(nameof(MultipleY), typeof(int), typeof(ConstrainedBox), new PropertyMetadata(null, ConstraintPropertyChanged));
+
+    /// <summary>
+    /// Gets or sets aspect Ratio to use for the contents of the Panel (after scaling).
+    /// </summary>
+    public AspectRatioConstraint AspectRatio
+    {
+        get => (AspectRatioConstraint)GetValue(AspectRatioProperty);
+        set => SetValue(AspectRatioProperty, value);
+    }
+
+    /// <summary>
+    /// Identifies the <see cref="AspectRatio"/> property.
+    /// </summary>
+    public static readonly DependencyProperty AspectRatioProperty =
+        DependencyProperty.Register(nameof(AspectRatio), typeof(AspectRatioConstraint), typeof(ConstrainedBox), new PropertyMetadata(default(AspectRatioConstraint), ConstraintPropertyChanged));
+
+    private bool _propertyUpdating;
+
+    private static void ConstraintPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is ConstrainedBox panel && !panel._propertyUpdating)
         {
-            get => (double)GetValue(ScaleXProperty);
-            set => SetValue(ScaleXProperty, value);
+            panel._propertyUpdating = true;
+
+            panel.CoerceValues();
+
+            panel.InvalidateMeasure();
+
+            panel._propertyUpdating = false;
         }
+    }
 
-        /// <summary>
-        /// Identifies the <see cref="ScaleX"/> property.
-        /// </summary>
-        public static readonly DependencyProperty ScaleXProperty =
-            DependencyProperty.Register(nameof(ScaleX), typeof(double), typeof(ConstrainedBox), new PropertyMetadata(1.0, ConstraintPropertyChanged));
-
-        /// <summary>
-        /// Gets or sets the scale for the height of the panel. Should be a value between 0-1.0. Default is 1.0.
-        /// </summary>
-        public double ScaleY
+    private void CoerceValues()
+    {
+        // Check if scale properties are in range
+        if (!double.IsNaN(ScaleX))
         {
-            get => (double)GetValue(ScaleYProperty);
-            set => SetValue(ScaleYProperty, value);
-        }
-
-        /// <summary>
-        /// Identifies the <see cref="ScaleY"/> property.
-        /// </summary>
-        public static readonly DependencyProperty ScaleYProperty =
-            DependencyProperty.Register(nameof(ScaleY), typeof(double), typeof(ConstrainedBox), new PropertyMetadata(1.0, ConstraintPropertyChanged));
-
-        /// <summary>
-        /// Gets or sets the integer multiple that the width of the panel should be floored to. Default is null (no snap).
-        /// </summary>
-        public int MultipleX
-        {
-            get => (int)GetValue(MultipleXProperty);
-            set => SetValue(MultipleXProperty, value);
-        }
-
-        /// <summary>
-        /// Identifies the <see cref="MultipleX"/> property.
-        /// </summary>
-        public static readonly DependencyProperty MultipleXProperty =
-            DependencyProperty.Register(nameof(MultipleX), typeof(int), typeof(ConstrainedBox), new PropertyMetadata(null, ConstraintPropertyChanged));
-
-        /// <summary>
-        /// Gets or sets the integer multiple that the height of the panel should be floored to. Default is null (no snap).
-        /// </summary>
-        public int MultipleY
-        {
-            get => (int)GetValue(MultipleYProperty);
-            set => SetValue(MultipleYProperty, value);
-        }
-
-        /// <summary>
-        /// Identifies the <see cref="MultipleY"/> property.
-        /// </summary>
-        public static readonly DependencyProperty MultipleYProperty =
-            DependencyProperty.Register(nameof(MultipleY), typeof(int), typeof(ConstrainedBox), new PropertyMetadata(null, ConstraintPropertyChanged));
-
-        /// <summary>
-        /// Gets or sets aspect Ratio to use for the contents of the Panel (after scaling).
-        /// </summary>
-        public AspectRatioConstraint AspectRatio
-        {
-            get => (AspectRatioConstraint)GetValue(AspectRatioProperty);
-            set => SetValue(AspectRatioProperty, value);
-        }
-
-        /// <summary>
-        /// Identifies the <see cref="AspectRatio"/> property.
-        /// </summary>
-        public static readonly DependencyProperty AspectRatioProperty =
-            DependencyProperty.Register(nameof(AspectRatio), typeof(AspectRatioConstraint), typeof(ConstrainedBox), new PropertyMetadata(default(AspectRatioConstraint), ConstraintPropertyChanged));
-
-        private bool _propertyUpdating;
-
-        private static void ConstraintPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is ConstrainedBox panel && !panel._propertyUpdating)
+            if (ScaleX < 0)
             {
-                panel._propertyUpdating = true;
-
-                panel.CoerceValues();
-
-                panel.InvalidateMeasure();
-
-                panel._propertyUpdating = false;
+                ScaleX = 0;
             }
-        }
-
-        private void CoerceValues()
-        {
-            // Check if scale properties are in range
-            if (!double.IsNaN(ScaleX))
-            {
-                if (ScaleX < 0)
-                {
-                    ScaleX = 0;
-                }
-                else if (ScaleX > 1.0)
-                {
-                    ScaleX = 1.0;
-                }
-            }
-            else
+            else if (ScaleX > 1.0)
             {
                 ScaleX = 1.0;
             }
+        }
+        else
+        {
+            ScaleX = 1.0;
+        }
 
-            if (!double.IsNaN(ScaleY))
+        if (!double.IsNaN(ScaleY))
+        {
+            if (ScaleY < 0)
             {
-                if (ScaleY < 0)
-                {
-                    ScaleY = 0;
-                }
-                else if (ScaleY > 1.0)
-                {
-                    ScaleY = 1.0;
-                }
+                ScaleY = 0;
             }
-            else
+            else if (ScaleY > 1.0)
             {
                 ScaleY = 1.0;
             }
+        }
+        else
+        {
+            ScaleY = 1.0;
+        }
 
-            // Clear invalid values less than 0 for other properties
-            if (ReadLocalValue(MultipleXProperty) is int value && value <= 0)
-            {
-                ClearValue(MultipleXProperty);
-            }
+        // Clear invalid values less than 0 for other properties
+        if (ReadLocalValue(MultipleXProperty) is int value && value <= 0)
+        {
+            ClearValue(MultipleXProperty);
+        }
 
-            if (ReadLocalValue(MultipleYProperty) is int value2 && value2 <= 0)
-            {
-                ClearValue(MultipleYProperty);
-            }
+        if (ReadLocalValue(MultipleYProperty) is int value2 && value2 <= 0)
+        {
+            ClearValue(MultipleYProperty);
+        }
 
-            if (ReadLocalValue(AspectRatioProperty) is AspectRatioConstraint ratio && (ratio <= 0 || !IsPositiveRealNumber(ratio)))
-            {
-                ClearValue(AspectRatioProperty);
-            }
+        if (ReadLocalValue(AspectRatioProperty) is AspectRatioConstraint ratio && (ratio <= 0 || !IsPositiveRealNumber(ratio)))
+        {
+            ClearValue(AspectRatioProperty);
         }
     }
 }

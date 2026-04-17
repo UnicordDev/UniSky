@@ -24,7 +24,7 @@ public class XamlElementCaptureService : IElementCaptureService
 
     public async Task<SoftwareBitmap> CaptureElementAsync(Func<UIElement> elementFactory, Size targetSize)
     {
-        TaskCompletionSource<SoftwareBitmap> softwareBitmapCompletion = new TaskCompletionSource<SoftwareBitmap>();
+        var softwareBitmapCompletion = new TaskCompletionSource<SoftwareBitmap>();
         await dispatcher.RunAsync(CoreDispatcherPriority.Low, async () =>
         {
             var element = elementFactory();

@@ -15,7 +15,6 @@ using FishyFlip.Lexicon.App.Bsky.Embed;
 using FishyFlip.Lexicon.App.Bsky.Feed;
 using FishyFlip.Lexicon.Com.Atproto.Repo;
 using FishyFlip.Models;
-using FishyFlip.Tools;
 using Humanizer;
 using Microsoft.Extensions.DependencyInjection;
 using UniSky.Controls.Compose;
@@ -29,6 +28,8 @@ using UniSky.ViewModels.Profile;
 using UniSky.ViewModels.Text;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Resources;
+using Windows.Foundation;
+using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
 
 namespace UniSky.ViewModels.Posts;
@@ -249,7 +250,8 @@ public partial class PostViewModel : ViewModelBase
             IsBookmarked = false;
             BookmarkCount--;
             _ = (await protocol.DeleteBookmarkAsync(View.Uri).ConfigureAwait(false)).HandleResult();
-        } else
+        }
+        else
         {
             BookmarkCount++;
             IsBookmarked = true;
@@ -297,7 +299,7 @@ public partial class PostViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void Share()
+    private void Share(UIElement element = null)
     {
         void OnDataRequested(DataTransferManager sender, DataRequestedEventArgs args)
         {
@@ -319,6 +321,21 @@ public partial class PostViewModel : ViewModelBase
 
         var manager = DataTransferManager.GetForCurrentView();
         manager.DataRequested += OnDataRequested;
+
+        if (ApiInformation.IsApiContractPresent(typeof(UniversalApiContract).FullName, 5) && element != null)
+        {
+            var rect = element.TransformToVisual(Window.Current.Content);
+            var topLeft = rect.TransformPoint(new Point(0, 0));
+            var fwElement = (FrameworkElement)element;
+            //topLeft = new Point(topLeft.X + Window.Current.Bounds.X, topLeft.Y + Window.Current.Bounds.Y);
+            var shareUIOptions = new ShareUIOptions()
+            {
+                SelectionRect = new Rect(topLeft.X, topLeft.Y, fwElement.ActualWidth, fwElement.ActualHeight),
+            };
+
+            DataTransferManager.ShowShareUI(shareUIOptions);
+            return;
+        }
 
         DataTransferManager.ShowShareUI();
     }

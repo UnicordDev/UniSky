@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Numerics;
 using FishyFlip.Lexicon;
-using FishyFlip.Lexicon.App.Bsky.Actor;
 using FishyFlip.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Graphics.Canvas.Effects;
@@ -73,13 +72,9 @@ public sealed partial class ProfilePage : Page, IScrollToTop
         else
             this.DataContext = ViewModel = ActivatorUtilities.CreateInstance<ProfilePageViewModel>(ServiceContainer.Default);
 
-
         var animation = ConnectedAnimationService.GetForCurrentView()
                 .GetAnimation("ProfilePageImage");
-        if (animation != null)
-        {
-            animation.TryStart(ProfileImage, [DisplayNameBlock, HandleBlock]);
-        }
+        animation?.TryStart(ProfileImage, [DisplayNameBlock, HandleBlock]);
     }
 
     protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -151,6 +146,8 @@ public sealed partial class ProfilePage : Page, IScrollToTop
         _props = _compositor.CreatePropertySet();
         _props.InsertScalar(PROGRESS_NODE, 0);
 
+        _profileContainer.Clip = _compositor.CreateInsetClip();
+
         UpdateSizeDependentProperties();
 
         // grab the properties of the scroll view
@@ -176,12 +173,6 @@ public sealed partial class ProfilePage : Page, IScrollToTop
             BorderMode = EffectBorderMode.Hard,
             Optimization = EffectOptimization.Balanced,
             Source = new CompositionEffectSourceParameter("source")
-        };
-
-        var effect = new ExposureEffect()
-        {
-            Name = "tint",
-            Source = new CompositionEffectSourceParameter("source"),
         };
 
         var blurBrush = _compositor.CreateEffectFactory(blurEffect, ["blur.BlurAmount"])

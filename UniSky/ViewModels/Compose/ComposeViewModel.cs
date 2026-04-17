@@ -64,6 +64,7 @@ public partial class ComposeViewModel : ViewModelBase
 
     private readonly ResourceLoader resources;
     private readonly IProtocolService protocolService;
+    private readonly ICdnUrlService urlService;
     private readonly IImageCompressionService compressionService;
     private readonly ILogger<ComposeViewModel> logger;
 
@@ -94,6 +95,7 @@ public partial class ComposeViewModel : ViewModelBase
     public ComposeViewModel(IOverlayController sheetController,
                             IProtocolService protocolService,
                             IImageCompressionService compressionService,
+                            ICdnUrlService urlService,
                             ILogger<ComposeViewModel> logger,
                             ComposeSheetOptions options = null)
     {
@@ -101,6 +103,7 @@ public partial class ComposeViewModel : ViewModelBase
         this.logger = logger;
         this.SheetController = sheetController;
         this.compressionService = compressionService;
+        this.urlService = urlService;
         this.resources = ResourceLoader.GetForCurrentView();
 
         this.Text = "";
@@ -165,7 +168,7 @@ public partial class ComposeViewModel : ViewModelBase
                 .ConfigureAwait(false))
                 .HandleResult();
 
-            AvatarUrl = profile.Avatar;
+            AvatarUrl = urlService.ProcessCdnUrl(profile.Avatar);
         }
         catch (Exception ex)
         {
@@ -194,7 +197,7 @@ public partial class ComposeViewModel : ViewModelBase
             ProfileViewDetailed[] profiles = [];
             if (handles.Length > 0)
             {
-                var feedProfiles = (await protocol.Actor.GetProfilesAsync(handles.Cast<ATIdentifier>().ToList())
+                var feedProfiles = (await protocol.Actor.GetProfilesAsync([.. handles.Cast<ATIdentifier>()])
                     .ConfigureAwait(false))
                     .HandleResult();
 
@@ -282,7 +285,7 @@ public partial class ComposeViewModel : ViewModelBase
             var properties = await image.StorageFile.GetBasicPropertiesAsync()
                 .AsTask().ConfigureAwait(false);
 
-            if (properties.Size > 1_000_000)
+            if (properties.Size > 2_000_000)
             {
                 var e = new InvalidOperationException("Attached image is too large!");
                 image.SetErrored(e);

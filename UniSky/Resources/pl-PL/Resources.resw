@@ -416,7 +416,7 @@
     <value>Używaj oddzielnych okien dla wyskakujących okien</value>
   </data>
   <data name="Share_Username" xml:space="preserve">
-    <value>@{0} na Bluesky</value>
+    <value>{0} na Bluesky</value>
     <comment>{0} = nazwa użytkownika</comment>
   </data>
 <data name="ThreadPageTitleBlock.Text" xml:space="preserve">

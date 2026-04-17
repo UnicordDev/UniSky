@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using UniSky.Models;
 using Windows.UI.Xaml;
 
 namespace UniSky.Services;
@@ -12,4 +13,8 @@ public interface ITypedSettings
     bool UseTwitterLocale { get; set; }
     bool VideosInFeeds { get; set; }
     bool ShowFeedContext { get; set; }
+    string InstallId { get; }
+    NotificationOptions NotificationOptions { get; set; }
+    bool ShowPronounsAsLabel { get; set; }
+    bool EnableWebP { get; set; }
 }

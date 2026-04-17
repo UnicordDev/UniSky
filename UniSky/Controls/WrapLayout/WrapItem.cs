@@ -4,21 +4,20 @@
 
 using Windows.UI.Xaml;
 
-namespace Microsoft.Toolkit.Uwp.UI.Controls
+namespace Microsoft.Toolkit.Uwp.UI.Controls;
+
+internal class WrapItem
 {
-    internal class WrapItem
+    public WrapItem(int index)
     {
-        public WrapItem(int index)
-        {
-            this.Index = index;
-        }
-
-        public int Index { get; }
-
-        public UvMeasure? Measure { get; internal set; }
-
-        public UvMeasure? Position { get; internal set; }
-
-        public UIElement Element { get; internal set; }
+        this.Index = index;
     }
+
+    public int Index { get; }
+
+    public UvMeasure? Measure { get; internal set; }
+
+    public UvMeasure? Position { get; internal set; }
+
+    public UIElement Element { get; internal set; }
 }

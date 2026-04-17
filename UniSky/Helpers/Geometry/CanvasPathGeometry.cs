@@ -6,36 +6,35 @@ using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.Geometry;
 using Microsoft.Toolkit.Uwp.UI.Media.Geometry.Parsers;
 
-namespace Microsoft.Toolkit.Uwp.UI.Media.Geometry
+namespace Microsoft.Toolkit.Uwp.UI.Media.Geometry;
+
+/// <summary>
+/// Helper Class for creating Win2d objects.
+/// </summary>
+public static class CanvasPathGeometry
 {
     /// <summary>
-    /// Helper Class for creating Win2d objects.
+    /// Parses the Path data string and converts it to CanvasGeometry.
     /// </summary>
-    public static class CanvasPathGeometry
+    /// <param name="pathData">Path data</param>
+    /// <returns><see cref="CanvasGeometry"/></returns>
+    public static CanvasGeometry CreateGeometry(string pathData)
     {
-        /// <summary>
-        /// Parses the Path data string and converts it to CanvasGeometry.
-        /// </summary>
-        /// <param name="pathData">Path data</param>
-        /// <returns><see cref="CanvasGeometry"/></returns>
-        public static CanvasGeometry CreateGeometry(string pathData)
-        {
-            return CreateGeometry(null, pathData);
-        }
+        return CreateGeometry(null, pathData);
+    }
 
-        /// <summary>
-        /// Parses the Path data string and converts it to CanvasGeometry.
-        /// </summary>
-        /// <param name="resourceCreator"><see cref="ICanvasResourceCreator"/></param>
-        /// <param name="pathData">Path data</param>
-        /// <returns><see cref="CanvasGeometry"/></returns>
-        public static CanvasGeometry CreateGeometry(ICanvasResourceCreator resourceCreator, string pathData)
+    /// <summary>
+    /// Parses the Path data string and converts it to CanvasGeometry.
+    /// </summary>
+    /// <param name="resourceCreator"><see cref="ICanvasResourceCreator"/></param>
+    /// <param name="pathData">Path data</param>
+    /// <returns><see cref="CanvasGeometry"/></returns>
+    public static CanvasGeometry CreateGeometry(ICanvasResourceCreator resourceCreator, string pathData)
+    {
+        using (new CultureShield("en-US"))
         {
-            using (new CultureShield("en-US"))
-            {
-                // Get the CanvasGeometry from the path data
-                return CanvasGeometryParser.Parse(resourceCreator, pathData);
-            }
+            // Get the CanvasGeometry from the path data
+            return CanvasGeometryParser.Parse(resourceCreator, pathData);
         }
     }
 }

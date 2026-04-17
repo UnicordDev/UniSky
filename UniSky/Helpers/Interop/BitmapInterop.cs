@@ -18,7 +18,6 @@ namespace UniSky.Helpers.Interop;
 
 public class BitmapInterop
 {
-
     public enum BI_COMPRESSION : int
     {
         BI_RGB = 0,
@@ -108,33 +107,33 @@ public class BitmapInterop
 
         public BITMAPINFOHEADER(int width, int height, ushort bpp)
         {
-            biSize = (uint)Marshal.SizeOf(typeof(BITMAPINFOHEADER));
+            biSize = (uint)Marshal.SizeOf<BITMAPINFOHEADER>();
             biPlanes = 1;
             biCompression = BI_COMPRESSION.BI_RGB;
             biWidth = width;
             biHeight = height;
             biBitCount = bpp;
             biSizeImage = (uint)(width * height * (bpp >> 3));
-            biXPelsPerMeter = 0;
-            biYPelsPerMeter = 0;
-            biClrUsed = 0;
-            biClrImportant = 0;
+            //biXPelsPerMeter = 0;
+            //biYPelsPerMeter = 0;
+            //biClrUsed = 0;
+            //biClrImportant = 0;
             bV5RedMask = (uint)255 << 16;
             bV5GreenMask = (uint)255 << 8;
             bV5BlueMask = (uint)255;
             bV5AlphaMask = (uint)255 << 24;
             bV5CSType = 1934772034;
-            bV5Endpoints = new CIEXYZTRIPLE();
-            bV5Endpoints.ciexyzBlue = new CIEXYZ(0);
-            bV5Endpoints.ciexyzGreen = new CIEXYZ(0);
-            bV5Endpoints.ciexyzRed = new CIEXYZ(0);
-            bV5GammaRed = 0;
-            bV5GammaGreen = 0;
-            bV5GammaBlue = 0;
+            //bV5Endpoints = new CIEXYZTRIPLE();
+            //bV5Endpoints.ciexyzBlue = new CIEXYZ(0);
+            //bV5Endpoints.ciexyzGreen = new CIEXYZ(0);
+            //bV5Endpoints.ciexyzRed = new CIEXYZ(0);
+            //bV5GammaRed = 0;
+            //bV5GammaGreen = 0;
+            //bV5GammaBlue = 0;
             bV5Intent = 4;
-            bV5ProfileData = 0;
-            bV5ProfileSize = 0;
-            bV5Reserved = 0;
+            //bV5ProfileData = 0;
+            //bV5ProfileSize = 0;
+            //bV5Reserved = 0;
         }
 
         public uint OffsetToPixels

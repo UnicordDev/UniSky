@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using FishyFlip.Lexicon.App.Bsky.Feed;
 using FishyFlip.Models;
 using UniSky.Services;
@@ -46,6 +47,7 @@ public partial class FeedViewModel : ViewModelBase
         this.Items = new FeedItemCollection(this, type, id);
     }
 
+    [RelayCommand]
     public async Task RefreshAsync(Deferral? deferral = null)
     {
         this.Error = null!;

@@ -1,8 +1,13 @@
-using System.Text.Json.Serialization;
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using UniSky.Notifications;
 using UniSky.Notifications.Data;
+using UniSky.Notifications.Services;
+using UniSky.Notifications.Services.Providers;
 
 var builder = WebApplication.CreateSlimBuilder(args);
+
+builder.Configuration.AddIniFile("secrets.ini");
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
@@ -11,22 +16,26 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 
 builder.Services.AddDbContext<NotificationDbContext>(s => s.UseSqlite("Data Source=notifications.db"));
 
+builder.Services.AddHostedService<SpacedustService>();
+builder.Services.AddHostedService<PushService>();
+
+builder.Services.AddHttpClient();
+builder.Services.AddMemoryCache();
+
+builder.Services.AddNotificationProviders();
+
 var app = builder.Build();
 
-var notificationsApi = app.MapGroup("/push");
-notificationsApi.MapPost("/register/{id}", (int id) =>
-{
-    
+ApplyMigrations(app);
 
-    return Results.NoContent();
-});
+app.MapNotifications();
 
 app.Run();
 
-public record Todo(int Id, string? Title, DateOnly? DueBy = null, bool IsComplete = false);
-
-[JsonSerializable(typeof(Todo[]))]
-internal partial class AppJsonSerializerContext : JsonSerializerContext
+static void ApplyMigrations(WebApplication app)
 {
+    using var scope = app.Services.CreateScope();
+    using var dbContext = scope.ServiceProvider.GetRequiredService<NotificationDbContext>();
 
+    dbContext.Database.Migrate();
 }
