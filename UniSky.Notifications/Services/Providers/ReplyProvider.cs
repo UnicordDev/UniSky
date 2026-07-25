@@ -10,7 +10,7 @@ namespace UniSky.Notifications.Services.Providers;
 
 public class ReplyProvider(IMemoryCache cache) : INotificationProvider
 {
-    public async Task<bool> PopulateNotification(
+    public async Task<bool> PopulateModernNotification(
         ATProtocol at,
         NotificationEvent notification,
         ToastContentBuilder builder)

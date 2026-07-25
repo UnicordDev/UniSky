@@ -12,6 +12,7 @@ public class NotificationRegistration
     public string InstallId { get; set; } = null!;
     public string ChannelUrl { get; set; } = null!;
     public NotificationOptions Options { get; set; } = (NotificationOptions)0;
+    public string? PlatformVersion { get; set; } = "10.0";
 }
 
 public class NotificationDbContext : DbContext

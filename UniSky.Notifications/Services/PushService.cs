@@ -17,10 +17,8 @@ using UniSky.Notifications.Services.Providers;
 namespace UniSky.Notifications.Services;
 
 public class PushService(
-    IConfiguration configuration,
     ILogger<PushService> logger,
     ILogger<ATProtocol> protocolLogger,
-    IHttpClientFactory httpClientFactory,
     IServiceProvider services) : IHostedService, IRecipient<NotificationEventMessage>
 {
     private readonly ATProtocol at = new ATProtocolBuilder()
@@ -40,33 +38,32 @@ public class PushService(
             if (service == null)
                 return;
 
-            var tokens = await GetAccessTokens();
-
             var subject = notificationEvent.SubjectDid.ToString();
             var registrations = await db.Registrations.Where(r => r.Did == subject)
                 .ToListAsync();
 
             logger.LogInformation("Got {N} registrations for DID {DID}", registrations.Count, notificationEvent.SubjectDid);
 
+            var failed = new List<NotificationRegistration>();
             for (int i = 0; i < registrations.Count; i++)
             {
                 var registration = registrations[i];
-                var notification = new ToastContentBuilder()
-                    .AddArgument("Type", notificationEvent.SourceCollection)
-                    .AddArgument("Record", notificationEvent.SubjectRecordUri?.ToString());
 
-                if (!await service.PopulateNotification(at, notificationEvent with { Registration = registration }, notification))
-                    continue;
+                logger.LogInformation("Pushing to {Url}, {Version}", registration.ChannelUrl, registration.PlatformVersion);
 
-                var notificationXml = notification
-                    .GetToastContent()
-                    .GetContent();
-
-                if (!await SendNotificationAsync(notificationXml, tokens, registration))
-                    db.Remove(registrations[i]);
+                var pusher = services.GetKeyedService<IPushService>("v" + (registration.PlatformVersion ?? "10.0"));
+                var succeeded = pusher != null && await pusher.PushNotificationAsync(at, notificationEvent, service, registration);
+                if (!succeeded)
+                    failed.Add(registration);
             }
 
+            foreach(var reg in failed)
+                db.Remove(reg);
+
             await db.SaveChangesAsync();
+
+            if (failed.Count > 0)
+                await Task.WhenAll(WeakReferenceMessenger.Default.Send(new RegistrationsUpdatedMessage()));
         }
         catch (Exception ex)
         {
@@ -74,82 +71,9 @@ public class PushService(
         }
     }
 
-    private async Task<bool> SendNotificationAsync(string notificationXml, OAuthToken tokens, NotificationRegistration registration)
-    {
-        using var client = httpClientFactory.CreateClient();
-
-        using var request = new HttpRequestMessage(HttpMethod.Post, registration.ChannelUrl);
-        request.Headers.Add("Authorization", "Bearer " + tokens.AccessToken);
-        request.Headers.Add("X-WNS-RequestForStatus", "true");
-        request.Headers.Add("X-WNS-Type", "wns/toast");
-        request.Content = new StringContent(notificationXml, Encoding.UTF8, "text/xml");
-
-        try
-        {
-            using var response = await client.SendAsync(request);
-            if (response.IsSuccessStatusCode)
-                return true;
-
-            logger.LogWarning("Failed to post notification! {StatusCode}", response.StatusCode);
-
-            switch (response.StatusCode)
-            {
-                case HttpStatusCode.Unauthorized:
-                    tokens = await GetAccessTokens(true);
-                    return await SendNotificationAsync(notificationXml, tokens, registration);
-                case HttpStatusCode.Gone:
-                case HttpStatusCode.NotFound:
-                    return false;
-                case HttpStatusCode.NotAcceptable:
-                    break; // TODO: backoff
-                default:
-                    break;
-            }
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Failed to send push notification to client!");
-        }
-
-        return true;
-    }
-
-
-    private OAuthToken? cache;
-    private async Task<OAuthToken> GetAccessTokens(bool invalidateCache = false)
-    {
-        if (cache != null && !invalidateCache)
-            return cache;
-
-        var clientId = configuration["WNS:ClientId"]!;
-        var clientSecret = configuration["WNS:ClientSecret"]!;
-
-        var parameters = new List<KeyValuePair<string, StringValues>>
-        {
-            new("grant_type", "client_credentials"),
-            new("client_id", clientId),
-            new("client_secret", clientSecret),
-            new("scope", "notify.windows.com")
-        };
-
-        var query = QueryHelpers.AddQueryString("?", parameters)[1..];
-
-        using var client = httpClientFactory.CreateClient();
-        using var request = new HttpRequestMessage(HttpMethod.Post, "https://login.live.com/accesstoken.srf");
-        request.Content = new StringContent(query, Encoding.UTF8, "application/x-www-form-urlencoded");
-        using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-        response.EnsureSuccessStatusCode();
-
-        var result = await response.Content.ReadAsStringAsync();
-        var tokens = JsonSerializer.Deserialize(result, AppJsonSerializerContext.Default.OAuthToken)!;
-        return cache = tokens;
-    }
-
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         WeakReferenceMessenger.Default.Register(this);
-
-        await GetAccessTokens();
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

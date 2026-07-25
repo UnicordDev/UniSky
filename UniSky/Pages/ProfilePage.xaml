@@ -69,8 +69,7 @@
                           Background="{ThemeResource ProfilePageHeaderBannerBackgroundBrush}">
                         <controls:ConstrainedBox x:Name="ProfileBanner" AspectRatio="3:1">
                             <Grid>
-                                <aurora:PreviewPaneAuroraControl x:Name="PreviewPaneAurora"
-                                                                 x:Load="{x:Bind converters:Static.NullOrWhiteSpace(ViewModel.BannerUrl), Mode=OneWay}"
+                                <aurora:PreviewPaneAuroraControl 
                                                                  Color="{ThemeResource SystemAccentColor}"/>
                                 <Image Source="{Binding BannerUrl}"
                                        HorizontalAlignment="Center"

@@ -69,6 +69,11 @@ public partial class PostEmbedImagesViewModel : PostEmbedViewModel
 
         var firstRatio = embed.Images[0].AspectRatio;
         SetAspectRatio(firstRatio);
+
+        foreach (var image in Images)
+        {
+            image.PropertyChanged += OnImagePropertyChanged;
+        }
     }
 
     public PostEmbedImagesViewModel(ViewImages embed) : base(embed)
@@ -84,6 +89,11 @@ public partial class PostEmbedImagesViewModel : PostEmbedViewModel
 
         var firstRatio = embed.Images[0].AspectRatio;
         SetAspectRatio(firstRatio);
+
+        foreach (var image in Images)
+        {
+            image.PropertyChanged += OnImagePropertyChanged;
+        }
     }
 
     private void SetAspectRatio(AspectRatio firstRatio)

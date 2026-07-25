@@ -20,6 +20,12 @@ public enum NotificationOptions
     FollowingOnly = 65536
 }
 
-public record class RegistrationModel(string Did, string InstallId, string ChannelUrl, NotificationOptions Options, string[]? Locales = null)
+public record class RegistrationModel(
+    string Did, 
+    string InstallId,
+    string ChannelUrl,
+    NotificationOptions Options, 
+    string[]? Locales = null,
+    string PlatformVersion = "10.0")
 {
 }

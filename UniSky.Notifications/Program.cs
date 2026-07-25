@@ -7,7 +7,7 @@ using UniSky.Notifications.Services.Providers;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 
-builder.Configuration.AddIniFile("secrets.ini");
+builder.Configuration.AddIniFile("secrets.ini", optional: true);
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
@@ -18,6 +18,9 @@ builder.Services.AddDbContext<NotificationDbContext>(s => s.UseSqlite("Data Sour
 
 builder.Services.AddHostedService<SpacedustService>();
 builder.Services.AddHostedService<PushService>();
+
+builder.Services.AddKeyedSingleton<IPushService, PushServiceWin10>("v10.0");
+builder.Services.AddKeyedSingleton<IPushService, PushServiceWinPhone7>("v7.1");
 
 builder.Services.AddHttpClient();
 builder.Services.AddMemoryCache();

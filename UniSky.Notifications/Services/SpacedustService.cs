@@ -1,10 +1,7 @@
-﻿using System.Globalization;
-using System.Net.WebSockets;
+using System.Globalization;
 using System.Text.Json;
 using CommunityToolkit.Mvvm.Messaging;
 using FishyFlip.Models;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Primitives;
 using UniSky.Notifications.Data;
 using UniSky.Notifications.Messages;
 using UniSky.Notifications.Models;
@@ -13,121 +10,219 @@ namespace UniSky.Notifications.Services;
 
 public class SpacedustService(
     ILogger<SpacedustService> logger,
+    ILoggerFactory loggerFactory,
+    IConfiguration configuration,
     IServiceProvider services) : IHostedService, IRecipient<RegistrationsUpdatedMessage>
 {
-    private CancellationTokenSource? cts;
+    private const int DefaultMaxDidsPerConnection = 100;
+    private const string DefaultSpacedustUri = "wss://spacedust.microcosm.blue/subscribe";
+    private const int CompactionSlack = 2;
+
+    private sealed class Bucket
+    {
+        public HashSet<string> Dids { get; } = [];
+        public SpacedustConnection? Connection { get; set; }
+    }
+
+    private readonly SemaphoreSlim reconcileLock = new(1, 1);
+    private readonly List<Bucket> buckets = [];
+    private readonly Dictionary<string, Bucket> didToBucket = [];
+
+    private int MaxDidsPerConnection =>
+        Math.Max(1, configuration.GetValue("Spacedust:MaxDidsPerConnection", DefaultMaxDidsPerConnection));
+
+    private Uri SpacedustUri =>
+        new(configuration.GetValue("Spacedust:Uri", DefaultSpacedustUri)!);
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        await ConnectAsync(cancellationToken);
+        await ReconcileAsync();
 
         WeakReferenceMessenger.Default.Register<RegistrationsUpdatedMessage>(this);
     }
 
     public async Task StopAsync(CancellationToken cancellationToken)
     {
-        if (cts != null)
-            await cts.CancelAsync();
-
         WeakReferenceMessenger.Default.Unregister<RegistrationsUpdatedMessage>(this);
-    }
 
-    private async Task ConnectAsync(CancellationToken cancellationToken)
-    {
-        var wantedDids = new HashSet<string>();
-
-        {
-            await using var scope = services.CreateAsyncScope();
-            await using var db = scope.ServiceProvider.GetRequiredService<NotificationDbContext>();
-
-            if (cts != null)
-                await cts.CancelAsync();
-
-            cts = new CancellationTokenSource();
-            await foreach (var registation in db.Registrations)
-                wantedDids.Add(registation.Did);
-
-            if (wantedDids.Count == 0)
-            {
-                logger.LogInformation("No DIDs to listen for. Not connecting.");
-                return;
-            }
-        }
-
-        var parameters = new List<KeyValuePair<string, StringValues>>
-        {
-            new("wantedSubjectDids", new StringValues([.. wantedDids])),
-            new("instant", new StringValues("true"))
-        };
-
-        // TODO: configurable uri
-        var uri = new Uri(QueryHelpers.AddQueryString("wss://spacedust.microcosm.blue/subscribe", parameters));
-        var socket = new ClientWebSocket();
-        socket.Options.KeepAliveInterval = TimeSpan.Zero;
-        await socket.ConnectAsync(uri, cancellationToken);
-
-        logger.LogInformation("Connected to Spacedust! Listening for {Dids} DIDs.", wantedDids.Count);
-
-        _ = Task.Run(() => MessageLoop(socket, cts.Token), cancellationToken);
-    }
-
-    private async Task MessageLoop(WebSocket socket, CancellationToken token = default)
-    {
-        var jsonState = new JsonReaderState();
-        var buffer = WebSocket.CreateClientBuffer(16 * 1024, 16 * 1024);
+        await reconcileLock.WaitAsync(cancellationToken);
         try
         {
-            while (!token.IsCancellationRequested)
+            foreach (var bucket in buckets)
             {
-                var result = await socket.ReceiveAsync(buffer, token);
-
-                try
-                {
-
-                    if (result.MessageType == WebSocketMessageType.Close)
-                    {
-                        throw new Exception($"Socket closed. {result.CloseStatus} {result.CloseStatusDescription}");
-                    }
-
-                    var jsonReader = new Utf8JsonReader(
-                        buffer.Slice(0, result.Count),
-                        isFinalBlock: result.EndOfMessage,
-                        jsonState);
-
-                    while (jsonReader.Read())
-                    {
-                        if (jsonReader.TokenType == JsonTokenType.StartObject)
-                        {
-                            var doc = JsonDocument.ParseValue(ref jsonReader);
-                            _ = Task.Run(() => HandleMessage(doc), token);
-                        }
-                    }
-
-                    jsonState = jsonReader.CurrentState;
-                    if (result.EndOfMessage)
-                        jsonState = new JsonReaderState();
-                }
-                catch (JsonException e)
-                {
-                    logger.LogError(e, "JSON parsing failed!");
-                    throw;
-                }
+                if (bucket.Connection != null)
+                    await bucket.Connection.DisposeAsync();
             }
-        }
-        catch (TaskCanceledException e)
-        {
-            logger.LogInformation(e, "Spacedust loop canceled");
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e, "Spacedust loop failed, reconnecting...");
 
-            _ = Task.Run(() => ConnectAsync(CancellationToken.None));
+            buckets.Clear();
+            didToBucket.Clear();
         }
         finally
         {
-            await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, null, CancellationToken.None);
+            reconcileLock.Release();
         }
+    }
+
+    private async Task ReconcileAsync()
+    {
+        await reconcileLock.WaitAsync();
+        try
+        {
+            var wantedDids = await LoadWantedDidsAsync();
+
+            var removed = didToBucket.Keys.Where(did => !wantedDids.Contains(did)).ToArray();
+            var added = wantedDids.Where(did => !didToBucket.ContainsKey(did)).ToArray();
+
+            if (removed.Length == 0 && added.Length == 0)
+            {
+                logger.LogInformation("No registration changes. {Count} shard(s) unchanged.", buckets.Count);
+                return;
+            }
+
+            var dirty = new HashSet<Bucket>();
+
+            foreach (var did in removed)
+            {
+                if (didToBucket.Remove(did, out var bucket))
+                {
+                    bucket.Dids.Remove(did);
+                    dirty.Add(bucket);
+                }
+            }
+
+            var maxPerConnection = MaxDidsPerConnection;
+            foreach (var did in added)
+                dirty.Add(PlaceDid(did, maxPerConnection));
+
+            // Fragmentation from removals can leave many sparse buckets => more sockets than necessary.
+            // When that drift gets large, do a full re-pack instead of touching only the dirty buckets.
+            var minBuckets = (wantedDids.Count + maxPerConnection - 1) / maxPerConnection;
+            var nonEmptyBuckets = buckets.Count(b => b.Dids.Count > 0);
+            if (nonEmptyBuckets > minBuckets + CompactionSlack)
+            {
+                logger.LogInformation(
+                    "Compacting Spacedust shards ({Current} => {Target}).", nonEmptyBuckets, minBuckets);
+                await RebuildAllAsync(wantedDids);
+                return;
+            }
+
+            foreach (var bucket in dirty)
+                await ReconnectBucketAsync(bucket);
+
+            buckets.RemoveAll(b => b.Dids.Count == 0);
+
+            logger.LogInformation(
+                "Reconciled Spacedust shards: +{Added} -{Removed} DIDs across {Count} shard(s).",
+                added.Length, removed.Length, buckets.Count);
+        }
+        finally
+        {
+            reconcileLock.Release();
+        }
+    }
+
+    private async Task AddDidAsync(string did)
+    {
+        await reconcileLock.WaitAsync();
+        try
+        {
+            if (didToBucket.ContainsKey(did))
+                return;
+
+            var bucket = PlaceDid(did, MaxDidsPerConnection);
+            await ReconnectBucketAsync(bucket);
+
+            logger.LogInformation("Added DID to Spacedust; now {Count} shard(s).", buckets.Count);
+        }
+        finally
+        {
+            reconcileLock.Release();
+        }
+    }
+
+    private Bucket PlaceDid(string did, int maxPerConnection)
+    {
+        var bucket = buckets.FirstOrDefault(b => b.Dids.Count < maxPerConnection);
+        if (bucket == null)
+        {
+            bucket = new Bucket();
+            buckets.Add(bucket);
+        }
+
+        bucket.Dids.Add(did);
+        didToBucket[did] = bucket;
+        return bucket;
+    }
+
+    private async Task<HashSet<string>> LoadWantedDidsAsync()
+    {
+        var wantedDids = new HashSet<string>();
+
+        await using var scope = services.CreateAsyncScope();
+        await using var db = scope.ServiceProvider.GetRequiredService<NotificationDbContext>();
+
+        await foreach (var registration in db.Registrations)
+            wantedDids.Add(registration.Did);
+
+        return wantedDids;
+    }
+
+    private async Task ReconnectBucketAsync(Bucket bucket)
+    {
+        if (bucket.Connection != null)
+        {
+            await bucket.Connection.DisposeAsync();
+            bucket.Connection = null;
+        }
+
+        if (bucket.Dids.Count == 0)
+            return;
+
+        var connection = new SpacedustConnection(
+            bucket.Dids,
+            SpacedustUri,
+            loggerFactory.CreateLogger<SpacedustConnection>(),
+            HandleMessage);
+        connection.Start();
+        bucket.Connection = connection;
+    }
+
+    private async Task RebuildAllAsync(HashSet<string> wantedDids)
+    {
+        foreach (var bucket in buckets)
+        {
+            if (bucket.Connection != null)
+                await bucket.Connection.DisposeAsync();
+        }
+
+        buckets.Clear();
+        didToBucket.Clear();
+
+        if (wantedDids.Count == 0)
+        {
+            logger.LogInformation("No DIDs to listen for. Not connecting.");
+            return;
+        }
+
+        var maxPerConnection = MaxDidsPerConnection;
+        Bucket? current = null;
+        foreach (var did in wantedDids)
+        {
+            if (current == null || current.Dids.Count >= maxPerConnection)
+            {
+                current = new Bucket();
+                buckets.Add(current);
+            }
+
+            current.Dids.Add(did);
+            didToBucket[did] = current;
+        }
+
+        foreach (var bucket in buckets)
+            await ReconnectBucketAsync(bucket);
+
+        logger.LogInformation(
+            "Connected to Spacedust across {Count} shard(s) for {Dids} DIDs.", buckets.Count, wantedDids.Count);
     }
 
     private async Task HandleMessage(JsonDocument document)
@@ -186,6 +281,6 @@ public class SpacedustService(
 
     public void Receive(RegistrationsUpdatedMessage message)
     {
-        message.Reply(ConnectAsync(CancellationToken.None));
+        message.Reply(message.Did is string did ? AddDidAsync(did) : ReconcileAsync());
     }
 }

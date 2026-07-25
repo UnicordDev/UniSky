@@ -25,9 +25,16 @@ public static class NotificationsApi
         }
 
         // TODO: validate the host better than this
-        if (!channelUrl.Host.EndsWith(".windows.com", StringComparison.InvariantCultureIgnoreCase))
+        if (!channelUrl.Host.EndsWith(".windows.com", StringComparison.InvariantCultureIgnoreCase) &&
+            !channelUrl.Host.EndsWith(".relivewp.net", StringComparison.InvariantCultureIgnoreCase))
         {
             return TypedResults.BadRequest("Invalid channel url.");
+        }
+
+        // default to 10.0
+        if (reg.PlatformVersion is not null and not "10.0" and not "7.1")
+        {
+            return TypedResults.BadRequest("Invalid platform verison!");
         }
 
         var dbRegistration = await db.Registrations.FindAsync(reg.Did, reg.InstallId);
@@ -39,6 +46,7 @@ public static class NotificationsApi
                 InstallId = reg.InstallId,
                 ChannelUrl = reg.ChannelUrl,
                 Options = reg.Options,
+                PlatformVersion = reg.PlatformVersion
             };
 
             await db.Registrations.AddAsync(dbRegistration);
@@ -52,7 +60,7 @@ public static class NotificationsApi
         }
 
         await db.SaveChangesAsync();
-        await Task.WhenAll(WeakReferenceMessenger.Default.Send(new RegistrationsUpdatedMessage()));
+        await Task.WhenAll(WeakReferenceMessenger.Default.Send(new RegistrationsUpdatedMessage(reg.Did)));
 
         return TypedResults.Accepted((string?)null);
     }
