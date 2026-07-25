@@ -1,0 +1,159 @@
+<UserControl
+    x:Name="Root"
+    x:Class="UniSky.Controls.Sheet.SheetPresenter"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UniSky.Controls.Sheet"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:extensions="using:UniSky.Extensions"
+    xmlns:ui="using:Microsoft.Toolkit.Uwp.UI"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+    <UserControl.Resources>
+        <ExponentialEase x:Key="ExponentialEaseEnter"
+                         EasingMode="EaseOut"
+                         Exponent="7"/>
+        <ExponentialEase x:Key="ExponentialEaseExit"
+                         EasingMode="EaseIn"
+                         Exponent="5"/>
+
+        <ui:AttachedDropShadow x:Key="CommonShadow"
+                               x:Name="CommonShadow"
+                               BlurRadius="16"
+                               Color="{ThemeResource SheetRootShadowColor}"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <Border x:Name="DimBorder"
+                Opacity="0"
+                IsHitTestVisible="False"
+                Background="{ThemeResource SheetContentRootBackdropBackgroundBrush}"/>
+                
+        <ScrollViewer x:Name="Scroller"
+                      Background="Transparent"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      HorizontalContentAlignment="Stretch"
+                      VerticalContentAlignment="Stretch"
+                      HorizontalScrollMode="Disabled"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollMode="Enabled"
+                      VerticalScrollBarVisibility="Hidden"
+                      IsVerticalRailEnabled="True"
+                      IsVerticalScrollChainingEnabled="False"
+                      IsDeferredScrollingEnabled="False"
+                      ZoomMode="Disabled"
+                      VerticalSnapPointsType="MandatorySingle"
+                      VerticalSnapPointsAlignment="Near"
+                      ViewChanged="Scroller_ViewChanged">
+            <local:SheetContentPanel x:Name="ContentPanel">
+                <Border x:Name="SheetBorder"
+                        BorderBrush="{ThemeResource SheetContentBorderBrush}">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="CardTransform" Y="0"/>
+                    </Border.RenderTransform>
+                    <ContentControl x:Name="SheetRoot"
+                                    VerticalAlignment="Top"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    IsTabStop="False"
+                                    TabNavigation="Cycle"/>
+                </Border>
+            </local:SheetContentPanel>
+        </ScrollViewer>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="AdaptiveStates">
+                <VisualState x:Name="Small">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="SheetBorder.HorizontalAlignment" Value="Stretch"/>
+                        <Setter Target="SheetBorder.VerticalAlignment" Value="Stretch"/>
+                        <Setter Target="SheetBorder.MaxWidth" Value="Infinity"/>
+                        <Setter Target="SheetBorder.MaxHeight" Value="Infinity"/>
+                        <Setter Target="SheetBorder.(extensions:Hairline.BorderThickness)" Value="0"/>
+                        <Setter Target="SheetBorder.CornerRadius" Value="{ThemeResource SheetRootSmallCornerRadius}"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Medium">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="621" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="SheetBorder.HorizontalAlignment" Value="Stretch"/>
+                        <Setter Target="SheetBorder.VerticalAlignment" Value="Top"/>
+                        <Setter Target="SheetBorder.MaxWidth" Value="600"/>
+                        <Setter Target="SheetBorder.MaxHeight" Value="400"/>
+                        <Setter Target="SheetBorder.(extensions:Hairline.BorderThickness)" Value="1"/>
+                        <Setter Target="SheetBorder.CornerRadius" Value="{ThemeResource SheetRootMediumCornerRadius}"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+
+            <VisualStateGroup x:Name="CardStates">
+                <VisualState x:Name="CardNormal"/>
+                <VisualState x:Name="CardHidden">
+                    <VisualState.Setters>
+                        <Setter Target="SheetBorder.Opacity" Value="0"/>
+                        <Setter Target="DimBorder.Opacity" Value="0"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="CardShown">
+                    <VisualState.Storyboard>
+                        <Storyboard x:Name="ShowCardStoryboard"
+                                    Completed="ShowCardStoryboard_Completed">
+                            <DoubleAnimation From="24" To="0"
+                                             Storyboard.TargetName="CardTransform"
+                                             Storyboard.TargetProperty="Y"
+                                             Duration="00:00:00.5"
+                                             EasingFunction="{StaticResource ExponentialEaseEnter}"/>
+                            <DoubleAnimation From="0" To="1"
+                                             Storyboard.TargetName="SheetBorder"
+                                             Storyboard.TargetProperty="Opacity"
+                                             Duration="00:00:00.3"
+                                             EasingFunction="{StaticResource ExponentialEaseEnter}"
+                                             EnableDependentAnimation="True"/>
+                            <DoubleAnimation From="0" To="1"
+                                             Storyboard.TargetName="DimBorder"
+                                             Storyboard.TargetProperty="Opacity"
+                                             Duration="00:00:00.3"
+                                             EasingFunction="{StaticResource ExponentialEaseEnter}"
+                                             EnableDependentAnimation="True"/>
+                        </Storyboard>
+                    </VisualState.Storyboard>
+                </VisualState>
+                <VisualState x:Name="CardClosed">
+                    <VisualState.Storyboard>
+                        <Storyboard x:Name="HideCardStoryboard"
+                                    Completed="HideCardStoryboard_Completed">
+                            <DoubleAnimation To="24"
+                                             Storyboard.TargetName="CardTransform"
+                                             Storyboard.TargetProperty="Y"
+                                             Duration="00:00:00.15"
+                                             EasingFunction="{StaticResource ExponentialEaseExit}"/>
+                            <DoubleAnimation To="0"
+                                             Storyboard.TargetName="SheetBorder"
+                                             Storyboard.TargetProperty="Opacity"
+                                             Duration="00:00:00.15"
+                                             EasingFunction="{StaticResource ExponentialEaseExit}"
+                                             EnableDependentAnimation="True"/>
+                            <DoubleAnimation To="0"
+                                             Storyboard.TargetName="DimBorder"
+                                             Storyboard.TargetProperty="Opacity"
+                                             Duration="00:00:00.15"
+                                             EasingFunction="{StaticResource ExponentialEaseExit}"
+                                             EnableDependentAnimation="True"/>
+                        </Storyboard>
+                    </VisualState.Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
+</UserControl>

@@ -44,7 +44,6 @@ internal static class BirdAnimation
         var appLogoHeight = (int)Application.Current.Resources["BlueSkyLogoHeight"];
 
         if (ApiInformation.IsMethodPresent(typeof(Compositor).FullName, "CreateGeometricClip"))
-        // if (false)
         {
             var splashHideAnimation = compositor.CreateScalarKeyFrameAnimation();
             splashHideAnimation.InsertKeyFrame(0.0f, 1.0f);

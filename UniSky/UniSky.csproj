@@ -192,7 +192,14 @@
       <DependentUpon>SettingsSheet.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Overlay\OverlayControl.cs" />
+    <Compile Include="Controls\Profile\ProfileSheet.xaml.cs">
+      <DependentUpon>ProfileSheet.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Sheet\SheetContentPanel.cs" />
     <Compile Include="Controls\Sheet\SheetControl.cs" />
+    <Compile Include="Controls\Sheet\SheetPresenter.xaml.cs">
+      <DependentUpon>SheetPresenter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Sheet\SheetRootControl.xaml.cs">
       <DependentUpon>SheetRootControl.xaml</DependentUpon>
     </Compile>
@@ -541,6 +548,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\Settings\SettingsSheet.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Profile\ProfileSheet.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Sheet\SheetPresenter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

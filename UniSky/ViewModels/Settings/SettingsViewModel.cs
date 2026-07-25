@@ -1,5 +1,11 @@
 ﻿using System.ComponentModel;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Uwp.Helpers;
+using UniSky.Controls.Compose;
+using UniSky.Controls.Profile;
 using UniSky.Models;
 using UniSky.Services;
 using UniSky.Utilities;
@@ -25,7 +31,17 @@ public class SettingsViewModel : ViewModelBase, ITypedSettings
         _initialColour = (int)settingsService.RequestedColourScheme;
         _initialTwitterLocale = settingsService.UseTwitterLocale;
         _initialTheme = (int)themeService.GetThemeForDisplay();
+
+        OpenComposeSheetCommand = new AsyncRelayCommand(() => ShowSheetAsync<ComposeSheet>());
+        OpenProfileSheetCommand = new AsyncRelayCommand(() => ShowSheetAsync<ProfileSheet>());
     }
+
+    public ICommand OpenComposeSheetCommand { get; }
+    public ICommand OpenProfileSheetCommand { get; }
+
+    private static Task ShowSheetAsync<T>() where T : FrameworkElement, ISheetControl, new()
+        => ServiceContainer.Scoped.GetRequiredService<ISheetService>()
+            .ShowAsync<T>();
 
     private void OnSettingChanged(object sender, PropertyChangedEventArgs e)
     {

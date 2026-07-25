@@ -1,143 +1,153 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Toolkit.Uwp.UI;
 using UniSky.Services;
-using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
-using MUXC = Microsoft.UI.Xaml.Controls;
 
 namespace UniSky.Controls.Sheet;
 
-[ContentProperty(Name = nameof(ContentElement))]
 public sealed partial class SheetRootControl : UserControl, IOverlayRootControl
 {
-    public FrameworkElement ContentElement
+    private sealed class SheetStackEntry
     {
-        get => (FrameworkElement)GetValue(ContentElementProperty);
-        set => SetValue(ContentElementProperty, value);
+        public IOverlayController Controller { get; set; }
+        public IOverlayControl Control { get; set; }
+        public SheetPresenter Presenter { get; set; }
+    }
+    
+    public FrameworkElement BackgroundElement
+    {
+        get => (FrameworkElement)GetValue(BackgroundElementProperty);
+        set => SetValue(BackgroundElementProperty, value);
     }
 
-    public static readonly DependencyProperty ContentElementProperty =
-        DependencyProperty.Register("ContentElement", typeof(FrameworkElement), typeof(SheetRootControl), new PropertyMetadata(null));
+    public static readonly DependencyProperty BackgroundElementProperty =
+        DependencyProperty.Register("BackgroundElement", typeof(FrameworkElement), typeof(SheetRootControl), new PropertyMetadata(null));
 
-    public double TotalHeight
-    {
-        get => (double)GetValue(TotalHeightProperty);
-        set => SetValue(TotalHeightProperty, value);
-    }
+    private readonly List<SheetStackEntry> _stack = new List<SheetStackEntry>();
+    private readonly ISafeAreaService _safeAreaService;
 
-    // Using a DependencyProperty as the backing store for TotalHeight.  This enables animation, styling, binding, etc...
-    public static readonly DependencyProperty TotalHeightProperty =
-        DependencyProperty.Register("TotalHeight", typeof(double), typeof(SheetRootControl), new PropertyMetadata(0.0));
-
-    private IOverlayController _controller;
-    private TaskCompletionSource<object> _showTcs;
-    private TaskCompletionSource<bool> _hideTcs;
+    private bool _backRequestedHooked;
 
     public SheetRootControl()
     {
         this.InitializeComponent();
-        VisualStateManager.GoToState(this, "Closed", false);
+
+        _safeAreaService = ServiceContainer.Scoped.GetRequiredService<ISafeAreaService>();
+        _safeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
     }
 
-    protected override Size ArrangeOverride(Size finalSize)
+    private SheetStackEntry Top
+        => _stack.Count > 0 ? _stack[_stack.Count - 1] : null;
+
+
+    // gives the dispatcher a tick to avoid racing any layout ops
+    private Task YieldToDispatcherAsync()
+        => Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { }).AsTask();
+
+    private async Task ShowSheetAsync(IOverlayController controller, IOverlayControl control, object parameter)
     {
-        if (!double.IsInfinity(HostControl.MaxHeight))
+        await YieldToDispatcherAsync();
+
+        var previousTop = Top;
+
+        var presenter = new SheetPresenter();
+        presenter.SetContent((FrameworkElement)control);
+        presenter.UpdateSafeArea(_safeAreaService.State.Bounds);
+        presenter.DismissRequested += OnPresenterDismissRequested;
+
+        var entry = new SheetStackEntry()
         {
-            TotalHeight = 64;
-            SheetRoot.Height = Math.Max(0, HostControl.MaxHeight - (SheetBorder.Margin.Top + SheetBorder.Margin.Bottom) - (HostControl.Margin.Top + HostControl.Margin.Bottom));
-        }
-        else
-        {
-            TotalHeight = finalSize.Height;
-            SheetRoot.Height = Math.Max(0, finalSize.Height - (SheetBorder.Margin.Top + SheetBorder.Margin.Bottom) - (HostControl.Margin.Top + HostControl.Margin.Bottom));
-        }
+            Controller = controller,
+            Control = control,
+            Presenter = presenter
+        };
 
-        return base.ArrangeOverride(finalSize);
-    }
+        _stack.Add(entry);
+        SheetHost.Children.Add(presenter);
 
-
-    private void ShowSheet(IOverlayController controller, IOverlayControl control, object parameter)
-    {
-        if (_controller != null)
-        {
-            throw new InvalidOperationException("Attempting to show two sheets at once!");
-        }
-
-        _controller = controller;
-
-        SheetRoot.Child = (FrameworkElement)control;
+        presenter.SetBackdropTarget(previousTop?.Presenter ?? BackgroundElement);
         control.InvokeShowing(parameter);
+        
+        UpdateInteractivity();
 
-        VisualStateManager.GoToState(this, "Open", true);
+        await presenter.PresentAsync();
+        
+        if (Top != entry)
+            return;
 
-        var safeAreaService = ServiceContainer.Scoped.GetRequiredService<ISafeAreaService>();
-        safeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
-
-        var systemNavigationManager = SystemNavigationManager.GetForCurrentView();
-        systemNavigationManager.BackRequested += OnBackRequested;
+        await FocusSheetAsync(presenter);
+        control.InvokeShown();
     }
 
-    private bool HideSheet()
+    private async Task<bool> HideSheetAsync(IOverlayController controller)
     {
-        if (_controller == null)
+        var entry = Top;
+        if (entry == null || entry.Controller != controller)
             return false;
 
-        VisualStateManager.GoToState(this, "Closed", true);
+        await entry.Presenter.DismissAsync();
+        await YieldToDispatcherAsync();
 
-        var safeAreaService = ServiceContainer.Scoped.GetRequiredService<ISafeAreaService>();
-        safeAreaService.SafeAreaUpdated -= OnSafeAreaUpdated;
+        entry.Presenter.DismissRequested -= OnPresenterDismissRequested;
+        entry.Presenter.Teardown();
 
-        var systemNavigationManager = SystemNavigationManager.GetForCurrentView();
-        systemNavigationManager.BackRequested -= OnBackRequested;
+        _stack.Remove(entry);
+        SheetHost.Children.Remove(entry.Presenter);
 
-        _controller = null;
+        UpdateInteractivity();
+
+        entry.Control.InvokeHidden();
 
         return true;
     }
 
-    private void OnSafeAreaUpdated(object sender, SafeAreaUpdatedEventArgs e)
+    private async void OnPresenterDismissRequested(SheetPresenter sender, object args)
     {
-        TitleBar.Height = e.SafeArea.Bounds.Top;
-        SheetBorder.Margin = new Thickness(0, 16 + e.SafeArea.Bounds.Top, 0, 0);
-        HostControl.Margin = new Thickness(e.SafeArea.Bounds.Left, 0, e.SafeArea.Bounds.Right, e.SafeArea.Bounds.Bottom);
+        var entry = Top;
+        if (entry == null || entry.Presenter != sender)
+            return;
 
-        if (!double.IsInfinity(HostControl.MaxHeight))
+        if (!await entry.Controller.TryHideAsync())
+            await sender.PresentAsync();
+    }
+
+    private void UpdateInteractivity()
+    {
+        for (var i = 0; i < _stack.Count; i++)
+            _stack[i].Presenter.IsHitTestVisible = i == _stack.Count - 1;
+
+        var hasSheets = _stack.Count > 0;
+        SheetHost.Visibility = hasSheets ? Visibility.Visible : Visibility.Collapsed;
+
+        if (BackgroundElement != null)
         {
-            SheetRoot.Height = Math.Max(0, HostControl.MaxHeight - (SheetBorder.Margin.Top + SheetBorder.Margin.Bottom) - (HostControl.Margin.Top + HostControl.Margin.Bottom));
+            BackgroundElement.IsHitTestVisible = !hasSheets;
+            if (BackgroundElement is Control backgroundControl)
+                backgroundControl.IsTabStop = !hasSheets;
         }
-        else
+
+        var systemNavigationManager = SystemNavigationManager.GetForCurrentView();
+        if (hasSheets && !_backRequestedHooked)
         {
-            SheetRoot.Height = Math.Max(0, ActualHeight - (SheetBorder.Margin.Top + SheetBorder.Margin.Bottom) - (HostControl.Margin.Top + HostControl.Margin.Bottom));
+            systemNavigationManager.BackRequested += OnBackRequested;
+            _backRequestedHooked = true;
+        }
+        else if (!hasSheets && _backRequestedHooked)
+        {
+            systemNavigationManager.BackRequested -= OnBackRequested;
+            _backRequestedHooked = false;
         }
     }
 
-    private async void OnBackRequested(object sender, BackRequestedEventArgs e)
+    private static async Task FocusSheetAsync(SheetPresenter presenter)
     {
-        if (this._controller == null) return;
-
-        e.Handled = true;
-        await this._controller.TryHideAsync();
-    }
-
-    private async void RefreshContainer_RefreshRequested(MUXC.RefreshContainer sender, MUXC.RefreshRequestedEventArgs args)
-    {
-        if (this._controller == null) return;
-
-        var deferral = args.GetDeferral();
-        await this._controller.TryHideAsync();
-        deferral.Complete();
-    }
-
-    private async void ShowSheetStoryboard_Completed(object sender, object e)
-    {
-        var elementToFocus = FocusManager.FindFirstFocusableElement(SheetRoot.Child);
+        var elementToFocus = FocusManager.FindFirstFocusableElement(presenter.SheetContent);
         if (ApiInformation.IsMethodPresent(typeof(FocusManager).FullName, "TryFocusAsync")
             && elementToFocus is DependencyObject dep)
         {
@@ -147,42 +157,27 @@ public sealed partial class SheetRootControl : UserControl, IOverlayRootControl
         {
             controlToFocus.Focus(FocusState.Programmatic);
         }
-
-        if (SheetRoot.Child is IOverlayControl control)
-        {
-            control.InvokeShown();
-        }
-
-        CommonShadow.CastTo = CompositionBackdropContainer;
-        Effects.SetShadow(SheetBorder, CommonShadow);
-
-        _showTcs.SetResult(null);
     }
 
-    private void HideSheetStoryboard_Completed(object sender, object e)
+    private void OnSafeAreaUpdated(object sender, SafeAreaUpdatedEventArgs e)
     {
-        if (SheetRoot.Child is IOverlayControl control)
-        {
-            control.InvokeHidden();
-            SheetRoot.Child = null;
-        }
-
-        Effects.SetShadow(SheetBorder, null);
+        foreach (var entry in _stack)
+            entry.Presenter.UpdateSafeArea(e.SafeArea.Bounds);
     }
 
-    async Task IOverlayRootControl.ShowAsync(IOverlayController controller, IOverlayControl control, object param)
+    private async void OnBackRequested(object sender, BackRequestedEventArgs e)
     {
-        _hideTcs?.TrySetResult(false);
+        var entry = Top;
+        if (entry == null)
+            return;
 
-        _showTcs = new TaskCompletionSource<object>();
-        ShowSheet(controller, control, param);
-        await _showTcs.Task;
+        e.Handled = true;
+        await entry.Controller.TryHideAsync();
     }
 
-    Task<bool> IOverlayRootControl.HideAsync()
-    {
-        _showTcs?.TrySetResult(null);
+    Task IOverlayRootControl.ShowAsync(IOverlayController controller, IOverlayControl control, object param)
+        => ShowSheetAsync(controller, control, param);
 
-        return Task.FromResult(HideSheet());
-    }
+    Task<bool> IOverlayRootControl.HideAsync(IOverlayController controller)
+        => HideSheetAsync(controller);
 }

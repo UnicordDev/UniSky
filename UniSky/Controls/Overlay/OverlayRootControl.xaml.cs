@@ -96,8 +96,11 @@ public sealed partial class OverlayRootControl : UserControl, IOverlayRootContro
         return Task.CompletedTask;
     }
 
-    Task<bool> IOverlayRootControl.HideAsync()
+    Task<bool> IOverlayRootControl.HideAsync(IOverlayController controller)
     {
+        if (_controller != controller)
+            return Task.FromResult(false);
+
         return HideOverlayAsync();
     }
 }

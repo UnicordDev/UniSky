@@ -20,11 +20,12 @@
 
         <Border Background="{ThemeResource SplashScreenBackground}"/>
 
+        <Frame x:Name="RootFrame"
+               Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+               Navigated="RootFrame_Navigated"/>
+
         <sheet:SheetRootControl x:Name="SheetRoot"
-                                Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-            <Frame x:Name="RootFrame"
-                   Navigated="RootFrame_Navigated"/>
-        </sheet:SheetRootControl>
+                                BackgroundElement="{x:Bind RootFrame}"/>
 
         <overlay:OverlayRootControl x:Name="OverlayRoot"/>
 

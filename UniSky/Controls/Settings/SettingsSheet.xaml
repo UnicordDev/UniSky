@@ -81,6 +81,16 @@
                           Margin="0,0,0,4" 
                           IsOn="{Binding ShowFeedContext, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
+            <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Sheets debugger" />
+            <Button Content="Open compose sheet"
+                    HorizontalAlignment="Stretch"
+                    Margin="0,4,0,4"
+                    Command="{Binding OpenComposeSheetCommand}"/>
+            <Button Content="Open profile sheet"
+                    HorizontalAlignment="Stretch"
+                    Margin="0,0,0,4"
+                    Command="{Binding OpenProfileSheetCommand}"/>
+
             <TextBlock x:Uid="SettingsAboutHeaderBlock"
                        Style="{ThemeResource SubtitleTextBlockStyle}" Text="About"/>
             <TextBlock TextWrapping="Wrap">

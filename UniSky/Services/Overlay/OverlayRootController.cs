@@ -11,7 +11,7 @@ namespace UniSky.Services;
 interface IOverlayRootControl
 {
     Task ShowAsync(IOverlayController controller, IOverlayControl control, object param);
-    Task<bool> HideAsync();
+    Task<bool> HideAsync(IOverlayController controller);
 }
 
 internal class OverlayRootController : IOverlayController
@@ -55,7 +55,7 @@ internal class OverlayRootController : IOverlayController
             if (!await control.InvokeHidingAsync())
                 return false;
 
-            var retVal = await rootControl.HideAsync();
+            var retVal = await rootControl.HideAsync(this);
             if (retVal)
             {
                 if (ApiInformation.IsMethodPresent(typeof(FocusManager).FullName, "TryFocusAsync")
