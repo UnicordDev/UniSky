@@ -8,7 +8,10 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
+
+using MUXC = Microsoft.UI.Xaml.Controls;
 
 namespace UniSky.Pages;
 
@@ -38,6 +41,8 @@ public sealed partial class NotificationsPage : Page, IScrollToTop
 
         if (this.ViewModel == null)
             this.DataContext = this.ViewModel = ActivatorUtilities.CreateInstance<NotificationsPageViewModel>(ServiceContainer.Scoped, NavigationScopeHost.FindFor(this.Frame));
+
+        _ = this.ViewModel.EnsureLoadedAsync();
     }
 
     protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -60,7 +65,7 @@ public sealed partial class NotificationsPage : Page, IScrollToTop
     private void RootList_Loaded(object sender, RoutedEventArgs e)
     {
         _ = ConnectedAnimations.TryLandBackAsync(ConnectedAnimations.ThreadPost, RootList, "PrimaryContent");
-        _ = ConnectedAnimations.TryLandBackAsync(ConnectedAnimations.ProfileAvatar, RootList, "ProfileImage");
+        _ = ConnectedAnimations.TryLandBackAsync(ConnectedAnimations.ProfileAvatar, RootList, "ProfileEllipse");
 
         var themeService = ServiceContainer.Scoped.GetRequiredService<IThemeService>();
         if (themeService.GetTheme() == AppTheme.SunValley)
@@ -82,12 +87,23 @@ public sealed partial class NotificationsPage : Page, IScrollToTop
         scrollViewer.ChangeView(0, 0, 1);
     }
 
-    private async void Page_Loaded(object sender, RoutedEventArgs e)
+    private async void OnRefreshRequested(MUXC.RefreshContainer sender, MUXC.RefreshRequestedEventArgs args)
     {
+        var deferral = args.GetDeferral();
+
         try
         {
-            await this.ViewModel?.RefreshAsync();
+            await ViewModel.RefreshAsync();
         }
-        catch { }
+        finally
+        {
+            deferral.Complete();
+        }
+    }
+
+    private async void RefreshAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+    {
+        args.Handled = true;
+        await ViewModel.RefreshAsync();
     }
 }

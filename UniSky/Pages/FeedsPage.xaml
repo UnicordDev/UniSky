@@ -12,6 +12,7 @@
     xmlns:mux="using:Microsoft.UI.Xaml.Controls" 
     xmlns:feeds="using:UniSky.ViewModels.Feeds" 
     xmlns:extensions="using:UniSky.Extensions" xmlns:templates="using:UniSky.Templates"
+    xmlns:controls="using:UniSky.Controls"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance Type=viewmodels:FeedsViewModel}"
     NavigationCacheMode="Enabled"
@@ -74,48 +75,11 @@
                             </ListView>
                         </mux:RefreshContainer>
 
-                        <!-- TODO: move this into a DataTemplate w/ selector of type FeedItemErrorViewModel or similar -->
-                        <Grid x:Name="FeedLoadError"
-                              Visibility="{Binding Error, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
-                              Padding="20,16"
-                              VerticalAlignment="Top"
-                              MaxWidth="600">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Border Opacity="0.1"
-                                    Background="{ThemeResource SystemControlErrorTextForegroundBrush}"
-                                    Margin="-20,-16"
-                                    Grid.ColumnSpan="3"/>
-
-                            <Viewbox Width="16"
-                                            Height="16"
-                                            Margin="0,2,0,0"
-                                            VerticalAlignment="Top">
-                                <TextBlock FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE7BA;</TextBlock>
-                            </Viewbox>
-
-                            <StackPanel Grid.Column="1">
-                                <TextBlock Text="Failed to load feed!"
-                                               Style="{ThemeResource BaseTextBlockStyle}"
-                                               TextWrapping="Wrap"
-                                               Margin="8,0"
-                                               MaxLines="2"/>
-                                <TextBlock Text="{Binding Error.Message, FallbackValue=An unknown error occurred.}"
-                                               Style="{ThemeResource CaptionTextBlockStyle}"
-                                               TextWrapping="Wrap"
-                                               Margin="8,0"
-                                               MaxLines="2"/>
-                            </StackPanel>
-
-                            <Button Grid.Column="3"
-                                    Command="{Binding RefreshCommand}">
-                                Retry
-                            </Button>
-                        </Grid>
+                        <controls:LoadErrorControl x:Name="FeedLoadError"
+                                                   x:Uid="FeedsLoadError"
+                                                   Title="Failed to load feed!"
+                                                   Error="{Binding Error, Mode=OneWay}"
+                                                   RetryCommand="{Binding RefreshCommand}"/>
 
                     </Grid>
                 </DataTemplate>

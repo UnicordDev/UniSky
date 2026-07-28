@@ -82,6 +82,7 @@ sealed partial class App : Application
         collection.AddSingleton<INavigationServiceLocator, NavigationServiceLocator>();
         collection.AddSingleton<INotificationsService, BackgroundNotificationsService>();
         collection.AddSingleton<IModerationService, ModerationService>();
+        collection.AddSingleton<INotificationFeedService, NotificationFeedService>();
         collection.AddSingleton<IContentRevealService, ContentRevealService>();
         collection.AddSingleton<IEmbedExtractor, AngleSharpEmbedExtractor>();
         collection.AddSingleton<IImageCompressionService, ImageCompressionService>();

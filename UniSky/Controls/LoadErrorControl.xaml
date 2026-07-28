@@ -1,0 +1,49 @@
+﻿<UserControl
+    x:Class="UniSky.Controls.LoadErrorControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    MaxWidth="600"
+    VerticalAlignment="Top"
+    Visibility="Collapsed">
+
+    <Grid Padding="20,16">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Opacity="0.1"
+                Background="{ThemeResource SystemControlErrorTextForegroundBrush}"
+                Margin="-20,-16"
+                Grid.ColumnSpan="3"/>
+
+        <Viewbox Width="16"
+                 Height="16"
+                 Margin="0,2,0,0"
+                 VerticalAlignment="Top">
+            <TextBlock FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE7BA;</TextBlock>
+        </Viewbox>
+
+        <StackPanel Grid.Column="1">
+            <TextBlock Text="{x:Bind Title, Mode=OneWay}"
+                       Style="{ThemeResource BaseTextBlockStyle}"
+                       TextWrapping="Wrap"
+                       Margin="8,0"
+                       MaxLines="2"/>
+            <TextBlock Text="{x:Bind Message, Mode=OneWay}"
+                       Style="{ThemeResource CaptionTextBlockStyle}"
+                       TextWrapping="Wrap"
+                       Margin="8,0"
+                       MaxLines="2"/>
+        </StackPanel>
+
+        <Button x:Uid="LoadErrorRetryButton"
+                Grid.Column="2"
+                Content="Retry"
+                Command="{x:Bind RetryCommand, Mode=OneWay}"/>
+    </Grid>
+</UserControl>

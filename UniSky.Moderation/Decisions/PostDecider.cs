@@ -224,6 +224,15 @@ internal static class PostDecider
                                      IReadOnlyList<string> outlineTags,
                                      IReadOnlyList<string> languages,
                                      ProfileViewBasic? actor)
+        => HasMutedWord(mutedWords, text, facets, outlineTags, languages, actor?.Viewer?.Following != null);
+
+
+    internal static bool HasMutedWord(IReadOnlyList<MutedWord> mutedWords,
+                                      string text,
+                                      IReadOnlyList<Facet> facets,
+                                      IReadOnlyList<string> outlineTags,
+                                      IReadOnlyList<string> languages,
+                                      bool actorIsFollowed)
     {
         if (mutedWords.Count == 0 || string.IsNullOrWhiteSpace(text))
             return false;
@@ -242,7 +251,7 @@ internal static class PostDecider
                 continue;
 
             // following
-            if (mute.ActorTarget == "exclude-following" && actor?.Viewer?.Following != null)
+            if (mute.ActorTarget == "exclude-following" && actorIsFollowed)
                 continue;
 
             var mutedWord = mute.Value!.ToUpperInvariant();

@@ -322,6 +322,19 @@
     <Compile Include="Services\IScrollToTop.cs" />
     <Compile Include="Services\XamlEmbedThumbnailGenerator.cs" />
     <Compile Include="Services\NavigationServiceLocator.cs" />
+    <Compile Include="Controls\LoadErrorControl.xaml.cs">
+      <DependentUpon>LoadErrorControl.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataTemplates\NotificationItemTemplateSelector.cs" />
+    <Compile Include="DataTemplates\NotificationIconTemplateSelector.cs" />
+    <Compile Include="ViewModels\Notifications\INotificationItem.cs" />
+    <Compile Include="ViewModels\Notifications\PostNotificationViewModel.cs" />
+    <Compile Include="ViewModels\Notifications\AggregateNotificationViewModel.cs" />
+    <Compile Include="DataTemplates\NotificationTemplates.xaml.cs">
+      <DependentUpon>NotificationTemplates.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DataTemplates\FeedTemplates.xaml.cs">
       <DependentUpon>FeedTemplates.xaml</DependentUpon>
     </Compile>
@@ -349,7 +362,6 @@
     <Compile Include="ViewModels\MenuItems\NotificationsMenuItemViewModel.cs" />
     <Compile Include="ViewModels\Notifications\NotificationsCollection.cs" />
     <Compile Include="ViewModels\Notifications\NotificationsPageViewModel.cs" />
-    <Compile Include="ViewModels\Notifications\NotificationViewModel.cs" />
     <Compile Include="ViewModels\Posts\ContentWarningViewModel.cs" />
     <Compile Include="ViewModels\Posts\PostEmbedExternalViewModel.cs" />
     <Compile Include="ViewModels\Posts\PostEmbedPostViewModel.cs" />
@@ -631,6 +643,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="DataTemplates\FeedTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataTemplates\NotificationTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LoadErrorControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

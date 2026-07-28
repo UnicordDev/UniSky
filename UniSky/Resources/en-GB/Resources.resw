@@ -257,6 +257,80 @@
   <data name="Notification_Other" xml:space="preserve">
     <value>other</value>
   </data>
+  <data name="NotificationsPageNoItemsTitle.Text" xml:space="preserve">
+    <value>Nothing here yet!</value>
+  </data>
+  <data name="NotificationsPageNoItemsSubtitle.Text" xml:space="preserve">
+    <value>Likes, replies and follows will show up here.</value>
+  </data>
+  <data name="NotificationsLoadError.Title" xml:space="preserve">
+    <value>Failed to load notifications!</value>
+  </data>
+  <data name="FeedsLoadError.Title" xml:space="preserve">
+    <value>Failed to load feed!</value>
+  </data>
+  <data name="LoadErrorRetryButton.Content" xml:space="preserve">
+    <value>Retry</value>
+  </data>
+  <data name="LoadError_Unknown" xml:space="preserve">
+    <value>An unknown error occurred.</value>
+  </data>
+  <data name="Notification_LikeViaRepostSingle" xml:space="preserve">
+    <value>{0} liked your repost</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Notification_LikeViaRepostMultiple" xml:space="preserve">
+    <value>{0} and {1} liked your repost</value>
+    <comment>{0},{1} = user display name</comment>
+  </data>
+  <data name="Notification_RepostViaRepostSingle" xml:space="preserve">
+    <value>{0} reposted your repost</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Notification_RepostViaRepostMultiple" xml:space="preserve">
+    <value>{0} and {1} reposted your repost</value>
+    <comment>{0},{1} = user display name</comment>
+  </data>
+  <data name="Notification_FeedGenLikeSingle" xml:space="preserve">
+    <value>{0} liked your custom feed</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Notification_FeedGenLikeMultiple" xml:space="preserve">
+    <value>{0} and {1} liked your custom feed</value>
+    <comment>{0},{1} = user display name</comment>
+  </data>
+  <data name="Notification_FollowMultiple" xml:space="preserve">
+    <value>{0} and {1} followed you</value>
+    <comment>{0},{1} = user display name</comment>
+  </data>
+  <data name="Notification_SubscribedPost" xml:space="preserve">
+    <value>New post from {0}</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Notification_SubscribedPostMultiple" xml:space="preserve">
+    <value>{1} new posts from {0}</value>
+    <comment>{0} = user display name, {1} = count of further posts</comment>
+  </data>
+  <data name="Notification_AuthorOverflow" xml:space="preserve">
+    <value>+{0}</value>
+    <comment>{0} = number of authors beyond those shown as avatars</comment>
+  </data>
+  <data name="Notification_StarterPackJoined" xml:space="preserve">
+    <value>{0} signed up with your starter pack</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Notification_Verified" xml:space="preserve">
+    <value>{0} verified you</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Notification_Unverified" xml:space="preserve">
+    <value>{0} removed their verification from your account</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Notification_Unknown" xml:space="preserve">
+    <value>{0} interacted with you</value>
+    <comment>{0} = user display name. Fallback for a notification type this version doesn't know about.</comment>
+  </data>
   <data name="Notification_Quote" xml:space="preserve">
     <value>{0} quoted your post</value>
     <comment>{0} = user display name</comment>

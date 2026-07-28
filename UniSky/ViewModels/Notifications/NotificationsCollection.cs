@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Messaging;
-using FishyFlip;
-using FishyFlip.Lexicon.App.Bsky.Feed;
-using FishyFlip.Lexicon.App.Bsky.Notification;
-using FishyFlip.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using UniSky.Messages;
-using UniSky.Moderation;
 using UniSky.Services;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -22,52 +15,48 @@ using Windows.UI.Xaml.Data;
 
 namespace UniSky.ViewModels.Notifications;
 
-public class NotificationsCollection : ObservableCollection<NotificationViewModel>, ISupportIncrementalLoading
+public class NotificationsCollection(NotificationsPageViewModel parent, NotificationFeedFilter filter = NotificationFeedFilter.All) : ObservableCollection<INotificationItem>, ISupportIncrementalLoading
 {
+    private const int PageSize = 30;
+    private const int MaxAutoPageAttempts = 10;
+
     private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
     private readonly CoreDispatcher dispatcher = Window.Current.Dispatcher;
+    private readonly HashSet<string> seen = [];
 
-    private readonly NotificationsPageViewModel parent;
-    private readonly IProtocolService protocolService
-        = ServiceContainer.Scoped.GetRequiredService<IProtocolService>();
-    private readonly IModerationService moderationService
-        = ServiceContainer.Scoped.GetRequiredService<IModerationService>();
+    private readonly INotificationFeedService feedService
+        = ServiceContainer.Scoped.GetRequiredService<INotificationFeedService>();
     private readonly ILogger<NotificationsCollection> logger
         = ServiceContainer.Scoped.GetRequiredService<ILogger<NotificationsCollection>>();
 
     private string cursor;
-    private HashSet<string> contains;
+    private bool endOfFeed;
+    private bool isFirstPage = true;
+    private DateTime? pageSeenAt;
 
-    public NotificationsCollection(NotificationsPageViewModel parent)
-    {
-        this.parent = parent;
-        this.contains = new HashSet<string>();
-    }
-
-    public bool HasMoreItems { get; private set; } = true;
+    public bool HasMoreItems => !endOfFeed;
 
     public async Task RefreshAsync()
     {
-        var service = protocolService.Protocol;
+        if (!await semaphore.WaitAsync(10))
+            return;
 
-        if (await semaphore.WaitAsync(500))
+        try
         {
-            try
-            {
-                this.cursor = null;
-                await InternalLoadMoreItemsAsync(Count);
-            }
-            finally
-            {
-                semaphore.Release();
-            }
+            cursor = null;
+            endOfFeed = false;
+            isFirstPage = true;
+            pageSeenAt = null;
+            seen.Clear();
+
+            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Clear());
+            await InternalLoadMoreItemsAsync(PageSize);
         }
-
-        await service.Notification.UpdateSeenAsync(DateTime.Now);
-
-        WeakReferenceMessenger.Default.Send<MarkAsReadNotification>();
+        finally
+        {
+            semaphore.Release();
+        }
     }
-
 
     public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
     {
@@ -88,107 +77,101 @@ public class NotificationsCollection : ObservableCollection<NotificationViewMode
 
     private async Task<LoadMoreItemsResult> InternalLoadMoreItemsAsync(int count)
     {
-        var service = protocolService.Protocol;
         var viewModel = parent;
-        viewModel.Error = null;
+        viewModel.ClearError();
 
-        count = Math.Clamp(count, 5, 25);
+        count = Math.Clamp(count, 5, 100); // listNotifications caps out at 100
 
         using var context = viewModel.GetLoadingContext();
 
+        var added = 0;
+        var attempts = 0;
+
         try
         {
-            var moderator = new Moderator(moderationService.ModerationOptions);
-            var notificationsResponse = (await service.ListNotificationsAsync(limit: count, cursor: cursor)
-                .ConfigureAwait(false))
-                .HandleResult();
-
-            this.cursor = notificationsResponse.Cursor;
-
-            var notifications = notificationsResponse.Notifications
-                .Where(s => !moderator.ModerateNotification(s)
-                                      .GetUI(ModerationContext.ContentList)
-                                      .Filter)
-                .Where(s => !contains.Contains(s.Cid))
-                .ToList();
-
-            foreach (var notif in notifications)
-                contains.Add(notif.Cid);
-
-            var hydratePostIds = notifications.Where(n =>
-                n.Reason is (NotificationReason.Like or NotificationReason.Repost) &&
-                n.ReasonSubject is not null)
-                .Select(s => s.ReasonSubject)
-                .Distinct();
-
-            var posts = new Dictionary<string, PostView>();
-            if (hydratePostIds.Any())
+            while (added == 0 && !endOfFeed && attempts++ < MaxAutoPageAttempts)
             {
-                var p = (await service.GetPostsAsync(hydratePostIds.ToList())
-                    .ConfigureAwait(false))
-                    .HandleResult()
-                    .Posts;
+                var page = await feedService
+                    .FetchPageAsync(filter, cursor, count, pageSeenAt)
+                    .ConfigureAwait(false);
 
-                foreach (var post in p)
+                cursor = page.Cursor;
+                
+                if (string.IsNullOrWhiteSpace(cursor))
+                    endOfFeed = true;
+
+                if (isFirstPage)
                 {
-                    posts.TryAdd(post.Uri.ToString(), post);
+                    pageSeenAt = page.SeenAt;
+                    isFirstPage = false;
+
+                    if (filter == NotificationFeedFilter.All)
+                        await MarkAllReadAsync(page).ConfigureAwait(false);
                 }
+
+                added += await MaterialiseAsync(page).ConfigureAwait(false);
             }
 
-            var initialCount = Count;
+            viewModel.UpdateIsEmpty(Count == 0);
 
-            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                var groups = notifications
-                    .GroupBy(g => (g.Reason is (NotificationReason.Like or NotificationReason.Repost)) ? string.Join('-', g.Reason, g.ReasonSubject) : null);
-
-                foreach (var group in groups)
-                {
-                    NotificationViewModel viewModel;
-                    if (group.Key != null && (viewModel = this.FirstOrDefault(v => v.Subject != null && v.Key == group.Key)) != null)
-                    {
-                        viewModel.Add(group);
-                        continue;
-                    }
-
-                    Notification notification = null;
-                    PostView post = null;
-                    if (group.Key == null)
-                    {
-                        foreach (var ungroupedNotification in group)
-                        {
-                            notification = ungroupedNotification;
-                            if (notification.Reason is (NotificationReason.Like or NotificationReason.Repost))
-                                _ = posts.TryGetValue(notification.ReasonSubject.ToString(), out post);
-
-                            Add(new NotificationViewModel(parent.Navigation, notification, post));
-                        }
-
-                        continue;
-                    }
-
-                    notification = group.FirstOrDefault();
-                    post = null;
-
-                    if (notification.Reason is (NotificationReason.Like or NotificationReason.Repost))
-                        _ = posts.TryGetValue(notification.ReasonSubject.ToString(), out post);
-
-                    Add(new NotificationViewModel(parent.Navigation, group, post));
-                }
-
-                ArrayList.Adapter(this).Sort(); // ?????
-            });
-
-            if (notifications.Count == 0 || string.IsNullOrWhiteSpace(this.cursor))
-                HasMoreItems = false;
-
-            return new LoadMoreItemsResult() { Count = (uint)(Count - initialCount) };
+            return new LoadMoreItemsResult() { Count = (uint)added };
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Failed to load Notifications");
-            HasMoreItems = false;
+            logger.LogError(ex, "Failed to load notifications");
+            viewModel.OnLoadError(ex);
             return new LoadMoreItemsResult() { Count = 0 };
+        }
+    }
+
+    private async Task<int> MaterialiseAsync(NotificationFeedPage page)
+    {
+        var added = 0;
+
+        await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+        {
+            foreach (var group in page.Items)
+            {
+                if (group.Key is null || !seen.Add(group.Key))
+                    continue;
+
+                try
+                {
+                    var item = NotificationItem.Create(
+                        parent.Navigation, group, page, pageSeenAt,
+                        allowUnreadHighlight: filter == NotificationFeedFilter.All);
+
+                    if (item is null)
+                        continue;
+
+                    Add(item);
+                    added++;
+                }
+                catch (Exception ex)
+                {
+                    logger.LogWarning(ex, "Dropping notification {Key} ({Kind})", group.Key, group.Kind);
+                }
+            }
+        });
+
+        return added;
+    }
+
+    private async Task MarkAllReadAsync(NotificationFeedPage page)
+    {
+        try
+        {
+            var newest = page.Items.Count > 0 ? page.Items[0].IndexedAt : DateTime.MinValue;
+            var now = DateTime.UtcNow;
+            var syncedAt = newest > now ? newest : now;
+
+            await feedService.MarkAllReadAsync(syncedAt).ConfigureAwait(false);
+
+            WeakReferenceMessenger.Default.Send<MarkAsReadNotification>();
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Failed to mark notifications as read");
         }
     }
 }

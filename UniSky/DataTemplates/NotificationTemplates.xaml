@@ -1,0 +1,357 @@
+﻿<ResourceDictionary x:Class="UniSky.Templates.NotificationTemplates"
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:templates="using:UniSky.Templates"
+                    xmlns:datatemplates="using:UniSky.DataTemplates"
+                    xmlns:converters="using:UniSky.Converters"
+                    xmlns:extensions="using:UniSky.Extensions"
+                    xmlns:controls="using:UniSky.Controls"
+                    xmlns:labels="using:UniSky.Controls.Labels"
+                    xmlns:notifications="using:UniSky.ViewModels.Notifications"
+                    xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
+                    x:DefaultBindMode="OneWay">
+
+    <ResourceDictionary.MergedDictionaries>
+        <templates:FeedTemplates/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <DataTemplate x:Key="LikeNotificationIconTemplate">
+        <Viewbox Width="20" Height="20">
+            <TextBlock Foreground="{ThemeResource LikeBrush}"
+                       FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xEB52;</TextBlock>
+        </Viewbox>
+    </DataTemplate>
+
+    <DataTemplate x:Key="RepostNotificationIconTemplate">
+        <Viewbox Width="20" Height="20">
+            <TextBlock Foreground="{ThemeResource RetweetBrush}"
+                       FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE8EB;</TextBlock>
+        </Viewbox>
+    </DataTemplate>
+
+    <DataTemplate x:Key="FollowNotificationIconTemplate">
+        <Viewbox Width="20" Height="20">
+            <TextBlock Foreground="{ThemeResource SystemControlHighlightAccentBrush}"
+                       FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE8FA;</TextBlock>
+        </Viewbox>
+    </DataTemplate>
+
+    <DataTemplate x:Key="SubscribedPostNotificationIconTemplate">
+        <Viewbox Width="20" Height="20">
+            <TextBlock Foreground="{ThemeResource SystemControlHighlightAccentBrush}"
+                       FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xEA8F;</TextBlock>
+        </Viewbox>
+    </DataTemplate>
+
+    <DataTemplate x:Key="StarterPackNotificationIconTemplate">
+        <Viewbox Width="20" Height="20">
+            <TextBlock Foreground="{ThemeResource SystemControlHighlightAccentBrush}"
+                       FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE902;</TextBlock>
+        </Viewbox>
+    </DataTemplate>
+
+    <DataTemplate x:Key="VerifiedNotificationIconTemplate">
+        <Viewbox Width="20" Height="20">
+            <TextBlock Foreground="{ThemeResource SystemControlHighlightAccentBrush}"
+                       FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE73E;</TextBlock>
+        </Viewbox>
+    </DataTemplate>
+
+    <DataTemplate x:Key="UnverifiedNotificationIconTemplate">
+        <Viewbox Width="20" Height="20">
+            <TextBlock Foreground="{ThemeResource SystemControlErrorTextForegroundBrush}"
+                       FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE711;</TextBlock>
+        </Viewbox>
+    </DataTemplate>
+
+    <DataTemplate x:Key="DefaultNotificationIconTemplate">
+        <Viewbox Width="20" Height="20">
+            <TextBlock Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                       FontFamily="{ThemeResource SymbolThemeFontFamily}">&#xE946;</TextBlock>
+        </Viewbox>
+    </DataTemplate>
+
+    <datatemplates:NotificationIconTemplateSelector x:Key="NotificationIconTemplateSelector"
+                                                    LikeTemplate="{StaticResource LikeNotificationIconTemplate}"
+                                                    RepostTemplate="{StaticResource RepostNotificationIconTemplate}"
+                                                    FollowTemplate="{StaticResource FollowNotificationIconTemplate}"
+                                                    SubscribedPostTemplate="{StaticResource SubscribedPostNotificationIconTemplate}"
+                                                    StarterPackTemplate="{StaticResource StarterPackNotificationIconTemplate}"
+                                                    VerifiedTemplate="{StaticResource VerifiedNotificationIconTemplate}"
+                                                    UnverifiedTemplate="{StaticResource UnverifiedNotificationIconTemplate}"
+                                                    DefaultTemplate="{StaticResource DefaultNotificationIconTemplate}"/>
+
+    <DataTemplate x:Key="PostNotificationTemplate"
+                  x:DataType="notifications:PostNotificationViewModel">
+        <Grid>
+            <Border x:Name="UnreadTint"
+                    x:Load="{x:Bind ShowUnreadHighlight, Mode=OneWay}"
+                    Background="{ThemeResource SystemControlHighlightAccentBrush}"
+                    Opacity="0.08"
+                    IsHitTestVisible="False"/>
+
+            <Button Style="{ThemeResource CleanButtonStyle}"
+                    Command="{x:Bind OpenThreadCommand}"
+                    CommandParameter="{Binding ElementName=PrimaryContent}"
+                    ContextFlyout="{StaticResource FeedItemMoreButtonFlyout}"
+                    BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
+                    extensions:Hairline.BorderThickness="{Binding Borders, Mode=OneWay}">
+                <StackPanel HorizontalAlignment="Stretch"
+                            Padding="12,8,12,4">
+
+                    <Grid x:Name="NotificationContainer"
+                          Margin="36,0,0,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Viewbox Height="12">
+                            <TextBlock Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                                       FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                       Text="{x:Bind NotificationGlyph}"/>
+                        </Viewbox>
+
+                        <TextBlock Grid.Column="1"
+                                   Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                                   FontSize="12"
+                                   Margin="8,0"
+                                   MaxLines="1"
+                                   TextTrimming="CharacterEllipsis"
+                                   Text="{x:Bind NotificationTitle}"/>
+                    </Grid>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Margin="0,0,12,0"
+                              Grid.RowSpan="4">
+                            <Button Command="{x:Bind Author.OpenProfileCommand}"
+                                    CommandParameter="{Binding ElementName=ProfileEllipse}"
+                                    Style="{ThemeResource CleanButtonStyle}"
+                                    Padding="0"
+                                    Margin="-1,0,0,0"
+                                    VerticalAlignment="Top">
+                                <Ellipse x:Name="ProfileEllipse"
+                                         Width="42"
+                                         Height="42">
+                                    <Ellipse.Fill>
+                                        <ImageBrush>
+                                            <ImageBrush.ImageSource>
+                                                <BitmapImage UriSource="{Binding Author.AvatarUrl}"
+                                                             DecodePixelWidth="42"
+                                                             DecodePixelHeight="42"
+                                                             DecodePixelType="Logical"/>
+                                            </ImageBrush.ImageSource>
+                                        </ImageBrush>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </Button>
+                        </Grid>
+
+                        <StackPanel Grid.Column="1">
+                            <StackPanel x:Name="PrimaryContent">
+                                <Button Command="{x:Bind Author.OpenProfileCommand}"
+                                        CommandParameter="{Binding ElementName=ProfileEllipse}"
+                                        Style="{ThemeResource CleanButtonStyle}"
+                                        Padding="0"
+                                        VerticalAlignment="Top"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Stretch">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Foreground="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
+                                                   VerticalAlignment="Top"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   MaxLines="1">
+                                            <Run Text="{x:Bind Author.Name, Mode=OneWay}"
+                                                 FontWeight="Bold"
+                                                 Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+                                            <Run Text="{x:Bind Author.Handle, Mode=OneWay}"/>
+                                        </TextBlock>
+
+                                        <TextBlock x:Name="DateBlock"
+                                                   x:Phase="4"
+                                                   Grid.Column="1"
+                                                   Margin="4,0,0,0"
+                                                   Style="{ThemeResource CaptionTextBlockStyle}"
+                                                   Foreground="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                                                   Typography.NumeralAlignment="Tabular"
+                                                   Text="{x:Bind Date}"/>
+                                    </Grid>
+                                </Button>
+
+                                <labels:LabelsControl x:Name="LabelViewer"
+                                                      x:Load="{x:Bind converters:Static.Any(Labels)}"
+                                                      x:Phase="3"
+                                                      Labels="{x:Bind Labels}"
+                                                      Margin="0,4,0,2"/>
+
+                                <controls:FacetTextBlock x:Name="MainContent"
+                                                         x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Text)}"
+                                                         Inlines="{x:Bind RichText.Facets}"
+                                                         TextWrapping="Wrap"
+                                                         Margin="0,0,0,4"
+                                                         VerticalAlignment="Top"/>
+
+                                <controls:SpoilerControl x:Name="EmbedContentContainer"
+                                                         x:Load="{x:Bind converters:Static.NotNull(Embed)}"
+                                                         x:Phase="2"
+                                                         Warning="{x:Bind Warning, Mode=OneWay}"
+                                                         WarningTemplate="{StaticResource PostContentWarningTemplate}"
+                                                         IsHidden="{x:Bind Warning.IsHidden, Mode=TwoWay}"
+                                                         CanOverride="{x:Bind Warning.CanOverride, Mode=OneWay}"
+                                                         Margin="0,4">
+                                    <ContentControl x:Name="EmbedContent"
+                                                    HorizontalAlignment="Stretch"
+                                                    HorizontalContentAlignment="Stretch"
+                                                    ContentTemplateSelector="{StaticResource PostEmbedTemplateSelector}"
+                                                    Content="{x:Bind Embed}"/>
+                                </controls:SpoilerControl>
+                            </StackPanel>
+                            
+                            <ContentControl x:Name="InteractionsContent"
+                                            x:Phase="1"
+                                            Content="{x:Bind}"
+                                            ContentTemplate="{StaticResource InteractionsTemplate}"
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Stretch"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Button>
+        </Grid>
+    </DataTemplate>
+    
+    <DataTemplate x:Key="NotificationAuthorTemplate">
+        <Button Command="{Binding OpenProfileCommand}"
+                Style="{ThemeResource CleanButtonStyle}"
+                Padding="0"
+                Margin="0,0,4,0"
+                VerticalAlignment="Top">
+            <Ellipse Width="24"
+                     Height="24">
+                <Ellipse.Fill>
+                    <ImageBrush>
+                        <ImageBrush.ImageSource>
+                            <BitmapImage UriSource="{Binding AvatarUrl}"
+                                         DecodePixelWidth="24"
+                                         DecodePixelHeight="24"
+                                         DecodePixelType="Logical"/>
+                        </ImageBrush.ImageSource>
+                    </ImageBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+        </Button>
+    </DataTemplate>
+
+    <DataTemplate x:Key="AggregateNotificationTemplate"
+                  x:DataType="notifications:AggregateNotificationViewModel">
+        <Grid>
+            <Border x:Name="UnreadTint"
+                    x:Load="{x:Bind ShowUnreadHighlight, Mode=OneWay}"
+                    Background="{ThemeResource SystemControlHighlightAccentBrush}"
+                    Opacity="0.08"
+                    IsHitTestVisible="False"/>
+
+            <Button Style="{ThemeResource CleanButtonStyle}"
+                    Command="{x:Bind OpenSubjectCommand}"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
+                    extensions:Hairline.BorderThickness="0,0,0,1">
+                <Grid Margin="12,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="34"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Column="1"
+                               Margin="8,0,2,0"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Right"
+                               Style="{ThemeResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                               Typography.NumeralAlignment="Tabular"
+                               Text="{x:Bind Timestamp}"/>
+                    
+                    <ContentControl Grid.RowSpan="4"
+                                    VerticalAlignment="Top"
+                                    Margin="0,0,10,0"
+                                    IsTabStop="False"
+                                    Content="{x:Bind Kind}"
+                                    ContentTemplateSelector="{StaticResource NotificationIconTemplateSelector}"/>
+
+                    <StackPanel Grid.Row="0"
+                                Grid.Column="1"
+                                Orientation="Horizontal"
+                                Margin="0,0,0,6">
+                        <ItemsControl ItemsSource="{x:Bind Authors}"
+                                      ItemTemplate="{StaticResource NotificationAuthorTemplate}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+
+                        <TextBlock x:Name="OverflowTextBlock"
+                                   x:Load="{x:Bind HasOverflow}"
+                                   VerticalAlignment="Center"
+                                   Style="{ThemeResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                                   Text="{x:Bind OverflowLabel}"/>
+                    </StackPanel>
+
+                    <Grid Grid.Row="1" Grid.Column="1">
+                        <TextBlock Style="{ThemeResource BaseTextBlockStyle}"
+                                   Text="{x:Bind Title}"
+                                   TextWrapping="Wrap"
+                                   MaxLines="2"/>
+                    </Grid>
+
+                    <TextBlock x:Name="SubjectTextBlock"
+                               x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(SubjectText)}"
+                               Grid.Row="2"
+                               Grid.Column="1"
+                               Margin="0,2,0,0"
+                               Style="{ThemeResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                               Text="{x:Bind SubjectText}"
+                               TextWrapping="Wrap"
+                               MaxLines="2"/>
+
+                    <toolkit:ConstrainedBox x:Name="SubjectEmbedContainer"
+                                            x:Load="{x:Bind converters:Static.NotNull(SubjectEmbed)}"
+                                            AspectRatio="3:1"
+                                            Margin="0,6,0,0"
+                                            Grid.Row="3"
+                                            Grid.Column="1">
+                        <ContentControl HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Stretch"
+                                        IsTabStop="False"
+                                        ContentTemplateSelector="{StaticResource PostEmbedTemplateSelector}"
+                                        Content="{x:Bind SubjectEmbed}"/>
+                    </toolkit:ConstrainedBox>
+                </Grid>
+            </Button>
+        </Grid>
+    </DataTemplate>
+
+    <datatemplates:NotificationItemTemplateSelector x:Key="NotificationItemTemplateSelector"
+                                                    PostNotificationTemplate="{StaticResource PostNotificationTemplate}"
+                                                    AggregateNotificationTemplate="{StaticResource AggregateNotificationTemplate}"/>
+
+</ResourceDictionary>

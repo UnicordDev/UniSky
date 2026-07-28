@@ -132,6 +132,8 @@
     <Compile Include="Implementation\BadgeService.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="IBadgeService.cs" />
+    <Compile Include="INotificationFeedService.cs" />
+    <Compile Include="Implementation\NotificationFeedService.cs" />
     <Compile Include="INotificationsService.cs" />
     <Compile Include="ILoginService.cs" />
     <Compile Include="INavigationService.cs" />
