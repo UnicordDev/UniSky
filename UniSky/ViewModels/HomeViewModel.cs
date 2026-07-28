@@ -84,10 +84,10 @@ public partial class HomeViewModel : ViewModelBase
             [HomePages.Home] = new MenuItemViewModel(this, HomePages.Home, HOME_ICON_GLYPH, typeof(FeedsPage)),
             [HomePages.Search] = new MenuItemViewModel(this, HomePages.Search, SEARCH_ICON_GLYPH, typeof(SearchPage)),
             [HomePages.Notifications] = new NotificationsMenuItemViewModel(this),
-            [HomePages.Feeds] = new MenuItemViewModel(this, HomePages.Feeds, FEEDS_ICON_GLYPH, typeof(Page)),
-            [HomePages.Lists] = new MenuItemViewModel(this, HomePages.Lists, LISTS_ICON_GLYPH, typeof(Page)),
+            [HomePages.Feeds] = new MenuItemViewModel(this, HomePages.Feeds, FEEDS_ICON_GLYPH, typeof(FeedsListPage)),
+            [HomePages.Lists] = new MenuItemViewModel(this, HomePages.Lists, LISTS_ICON_GLYPH, typeof(ListsPage)),
             [HomePages.Bookmarks] = new MenuItemViewModel(this, HomePages.Bookmarks, BOOKMARKS_ICON_GLYPH, typeof(BookmarksPage)),
-            [HomePages.Chat] = new MenuItemViewModel(this, HomePages.Chat, CHAT_ICON_GLYPH, typeof(Page)),
+            [HomePages.Chat] = new MenuItemViewModel(this, HomePages.Chat, CHAT_ICON_GLYPH, typeof(ChatsPage)),
             [HomePages.Profile] = new ProfileMenuItemViewModel(this),
             [HomePages.Settings] = new MenuItemViewModel(this, HomePages.Settings, SETTINGS_ICON_GLYPH, typeof(Page))
         };

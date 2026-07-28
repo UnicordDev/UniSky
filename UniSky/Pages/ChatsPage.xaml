@@ -1,0 +1,85 @@
+<Page
+    x:Class="UniSky.Pages.ChatsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UniSky.Pages"
+    xmlns:extensions="using:UniSky.Extensions"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:w1803="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 6)"
+    mc:Ignorable="d"
+    NavigationCacheMode="Required"
+    w1803:KeyboardAcceleratorPlacementMode="Hidden">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition x:Name="TitleBarPadding" Height="0"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border x:Name="HeaderBackground"
+                Grid.RowSpan="2"
+                MaxWidth="600"
+                Background="{ThemeResource GenericPageHeaderBackgroundBrush}"
+                BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
+                extensions:Hairline.BorderThickness="1,0,1,1"/>
+
+        <Border Grid.Row="1"
+                Padding="{ThemeResource GenericPageHeaderMargin}"
+                MaxWidth="600">
+            <TextBlock x:Uid="ChatsPageTitleBlock"
+                       Margin="12,4,12,12"
+                       Text="CHATS"
+                       Style="{ThemeResource BaseTextBlockStyle}"/>
+        </Border>
+
+        <Grid Grid.Row="2"
+              MaxWidth="600"
+              Margin="24,80,24,0"
+              VerticalAlignment="Top"
+              HorizontalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="&#xE8F2;"
+                       FontSize="48"
+                       FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                       VerticalAlignment="Center"/>
+            <StackPanel Margin="16,0,0,0" VerticalAlignment="Center" Grid.Column="1">
+                <TextBlock x:Uid="ChatsPageNotSupportedTitle" 
+                    TextWrapping="Wrap" 
+                    Text="Chats aren't supported yet!" 
+                    Style="{ThemeResource TitleTextBlockStyle}"/>
+                <TextBlock x:Uid="PageNotSupportedSubtitle" 
+                    Text="We're working on it! Check back later." 
+                    Style="{ThemeResource BodyTextBlockStyle}"/>
+            </StackPanel>
+        </Grid>
+
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Small">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="HeaderBackground.(extensions:Hairline.BorderThickness)" Value="0"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Medium">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="621" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="HeaderBackground.(extensions:Hairline.BorderThickness)" Value="1,0"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
+</Page>

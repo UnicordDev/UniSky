@@ -286,8 +286,20 @@
     <Compile Include="Pages\BookmarksPage.xaml.cs">
       <DependentUpon>BookmarksPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\ChatsPage.xaml.cs">
+      <DependentUpon>ChatsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\FeedsListPage.xaml.cs">
+      <DependentUpon>FeedsListPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ListsPage.xaml.cs">
+      <DependentUpon>ListsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\NotificationsPage.xaml.cs">
       <DependentUpon>NotificationsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\ProfilePage.xaml.cs">
       <DependentUpon>ProfilePage.xaml</DependentUpon>
@@ -622,7 +634,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\ChatsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\FeedsListPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\ListsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\NotificationsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\SettingsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

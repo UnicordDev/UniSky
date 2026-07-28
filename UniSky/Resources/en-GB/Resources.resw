@@ -427,6 +427,30 @@
   <data name="NotificationsPageTitleBlock.Text" xml:space="preserve">
     <value>NOTIFICATIONS</value>
   </data>
+  <data name="ChatsPageTitleBlock.Text" xml:space="preserve">
+    <value>CHATS</value>
+  </data>
+  <data name="ListsPageTitleBlock.Text" xml:space="preserve">
+    <value>LISTS</value>
+  </data>
+  <data name="SettingsPageTitleBlock.Text" xml:space="preserve">
+    <value>SETTINGS</value>
+  </data>
+  <data name="FeedsListPageTitleBlock.Text" xml:space="preserve">
+    <value>FEEDS</value>
+  </data>
+  <data name="ChatsPageNotSupportedTitle.Text" xml:space="preserve">
+    <value>Chats aren't supported yet!</value>
+  </data>
+  <data name="FeedsListPageNotSupportedTitle.Text" xml:space="preserve">
+    <value>Feeds aren't supported yet!</value>
+  </data>
+  <data name="ListsPageNotSupportedTitle.Text" xml:space="preserve">
+    <value>Lists aren't supported yet!</value>
+  </data>
+  <data name="PageNotSupportedSubtitle.Text" xml:space="preserve">
+    <value>We're working on it! Check back later.</value>
+  </data>
   <data name="SearchPageSearchBox.PlaceholderText" xml:space="preserve">
     <value>Find something cool...</value>
     <comment>Can really be anything</comment>
