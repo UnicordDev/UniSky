@@ -26,7 +26,7 @@ public sealed partial class GalleryControl : StandardOverlayControl
 
         var viewModel = ActivatorUtilities.CreateInstance<GalleryViewModel>(ServiceContainer.Scoped, gallery);
         DataContext = viewModel;
-        FlippyView.SelectedIndex = viewModel.SelectedIndex;
+        // FlippyView.SelectedIndex = viewModel.SelectedIndex;
     }
 
     // TODO: this doesn't really work
