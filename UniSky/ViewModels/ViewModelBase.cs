@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FishyFlip.Models;
+using UniSky.Services.Navigation;
 using UniSky.ViewModels.Error;
 
 namespace UniSky.ViewModels;
@@ -33,6 +34,7 @@ public abstract partial class ViewModelBase : ObservableObject
     /// </summary>
     [ObservableProperty]
     private bool _isLoading;
+
     /// <summary>
     /// Holds the error state of the current ViewModel.
     /// </summary>
@@ -48,18 +50,41 @@ public abstract partial class ViewModelBase : ObservableObject
 
     protected SynchronizationContext syncContext;
 
+    private readonly INavigationContext _navigation;
+
     public ViewModelBase()
+        : this(null)
+    {
+    }
+
+    /// <param name="navigation">
+    /// The scope this viewmodel navigates within, handed down by whoever created it.
+    /// </param>
+    public ViewModelBase(INavigationContext navigation)
         : base()
     {
+        this._navigation = navigation;
         this.syncContext = SynchronizationContext.Current;
         Debug.Assert(syncContext != null, "Synchronisation context was null! Make sure you're creating this ViewModel on the UI thread.");
     }
 
     /// <summary>
+    /// Where this viewmodel's navigation requests go.
+    /// </summary>
+    public INavigationContext Navigation
+        => _navigation ?? NavigationScopes.ShellForCurrentView;
+
+    /// <summary>
+    /// Raises a navigation request against this viewmodel's scope.
+    /// </summary>
+    /// <returns><see langword="true"/> if something handled it.</returns>
+    protected bool Navigate(NavigationRequest request)
+        => request != null && (Navigation?.Navigate(request) ?? false);
+
+    /// <summary>
     /// Retruns an object implementing <see cref="IDisposable"/> that sets <see cref="IsLoading"/> to 
     /// <see langword="true"/>, then upon <see cref="IDisposable.Dispose"/> reverts the value to <see langword="false"/>.
     /// </summary>
-    /// <returns></returns>
     public IDisposable GetLoadingContext()
         => new LoadingContext(this);
 

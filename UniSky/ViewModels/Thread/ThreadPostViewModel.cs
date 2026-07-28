@@ -1,6 +1,7 @@
 ﻿using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FishyFlip.Lexicon.App.Bsky.Feed;
+using UniSky.Services.Navigation;
 using UniSky.ViewModels.Posts;
 using Windows.Globalization.DateTimeFormatting;
 
@@ -17,12 +18,18 @@ public partial class ThreadPostViewModel : PostViewModel
     [ObservableProperty]
     private string longDate;
 
-    public ThreadPostViewModel(ThreadViewPost threadPost, bool isSelected = false) : base(threadPost.Post, false)
+    public ThreadPostViewModel(INavigationContext navigation, ThreadViewPost threadPost, bool isSelected = false)
+        : this(navigation, threadPost.Post, isSelected)
+    {
+        this.HasParent = threadPost.Parent != null;
+    }
+    
+    public ThreadPostViewModel(INavigationContext navigation, PostView post, bool isSelected = false)
+        : base(navigation, post, false)
     {
         this.IsSelected = isSelected;
-        this.HasParent = threadPost.Parent != null;
 
-        var date = threadPost.Post.IndexedAt.GetValueOrDefault();
+        var date = post.IndexedAt.GetValueOrDefault();
         this.LongDate = dateTimeFormatter.Format(new DateTimeOffset(date));
     }
 }

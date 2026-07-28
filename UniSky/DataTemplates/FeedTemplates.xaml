@@ -4,7 +4,6 @@
                     xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
                     xmlns:not1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract, 7)"
                     xmlns:i="using:Microsoft.Xaml.Interactivity" 
-                    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
                     xmlns:controls="using:UniSky.Controls"
                     xmlns:labels="using:UniSky.Controls.Labels" 
                     xmlns:datatemplates="using:UniSky.DataTemplates"
@@ -23,6 +22,7 @@
 
     <datatemplates:PostEmbedTemplateSelector x:Key="PostEmbedTemplateSelector"
                                              ImagesEmbedTemplate="{StaticResource ImagesEmbedContentTemplate}"
+                                             ImagesCarouselEmbedTemplate="{StaticResource ImagesCarouselEmbedContentTemplate}"
                                              VideoEmbedTemplate="{StaticResource VideoEmbedContentTemplate}"
                                              InlineVideoEmbedTemplate="{StaticResource InlineVideoEmbedContentTemplate}"
                                              PostEmbedTemplate="{StaticResource PostEmbedContentTemplate}"
@@ -31,12 +31,37 @@
 
     <datatemplates:PostEmbedTemplateSelector x:Key="PostEmbedChildTemplateSelector"
                                              ImagesEmbedTemplate="{StaticResource ImagesEmbedContentTemplate}"
+                                             ImagesCarouselEmbedTemplate="{StaticResource ImagesCarouselEmbedContentTemplate}"
                                              VideoEmbedTemplate="{StaticResource VideoEmbedContentTemplate}"
                                              InlineVideoEmbedTemplate="{StaticResource InlineVideoEmbedContentTemplate}"
                                              PostEmbedTemplate="{StaticResource PostEmbedContentTemplate}"
                                              ExternalEmbedTemplate="{StaticResource ExternalEmbedContentTemplate}"/>
 
     <converters:VisibilityConverter x:Key="VisibilityConverter"/>
+    
+    <MenuFlyout x:Key="FeedItemRetweetFlyout">
+        <MenuFlyoutItem x:Uid="PostRetweetItem"
+                        Text="Repost"
+                        Command="{Binding RetweetCommand}"
+                        Visibility="{Binding IsRetweeted, Converter={StaticResource VisibilityConverter}, ConverterParameter=Invert}">
+            <MenuFlyoutItem.Icon>
+                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE8EB;"/>
+            </MenuFlyoutItem.Icon>
+        </MenuFlyoutItem>
+        <MenuFlyoutItem x:Uid="PostUndoRetweetItem"
+                        Text="Undo Repost"
+                        Command="{Binding RetweetCommand}"
+                        Visibility="{Binding IsRetweeted, Converter={StaticResource VisibilityConverter}}">
+            <MenuFlyoutItem.Icon>
+                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE7A7;"/>
+            </MenuFlyoutItem.Icon>
+        </MenuFlyoutItem>
+        <MenuFlyoutItem x:Uid="PostQRTItem" Text="Quote post..." Command="{Binding QuoteTweetCommand}">
+            <MenuFlyoutItem.Icon>
+                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE789;"/>
+            </MenuFlyoutItem.Icon>
+        </MenuFlyoutItem>
+    </MenuFlyout>
 
     <MenuFlyout x:Key="FeedItemMoreButtonFlyout"
                 w1809:Placement="BottomEdgeAlignedRight"
@@ -58,8 +83,27 @@
                         Text="Report Post"
                         Icon="ReportHacked"/>
     </MenuFlyout>
+    
+    <MenuFlyout x:Key="FeedItemMoreFlyout"
+                w1809:Placement="BottomEdgeAlignedRight"
+                not1809:Placement="Bottom">
+        <MenuFlyoutItem x:Uid="FeedMoreShareItem" Text="Share" Command="{Binding ShareCommand}">
+            <MenuFlyoutItem.Icon>
+                <FontIcon Glyph="&#xE72D;" FontFamily="{ThemeResource SymbolThemeFontFamily}"/>
+            </MenuFlyoutItem.Icon>
+        </MenuFlyoutItem>
+        <MenuFlyoutItem x:Uid="FeedMoreCopyTextItem" Text="Copy Text" Icon="Copy" Command="{Binding CopyTextCommand}"/>
+        <MenuFlyoutItem x:Uid="FeedMoreCopyLinkItem" Text="Copy Link" Icon="Link" Command="{Binding CopyLinkCommand}"/>
+        <MenuFlyoutSeparator/>
+        <MenuFlyoutItem x:Uid="FeedMoreMuteItem" Text="Mute Thread" Icon="Mute"/>
+        <MenuFlyoutItem x:Uid="FeedMoreHidePostItem" Text="Hide Post" Icon="Clear"/>
+        <MenuFlyoutSeparator/>
+        <MenuFlyoutItem x:Uid="FeedMoreReportPostItem" Foreground="{ThemeResource SystemControlErrorTextForegroundBrush}"
+                        Text="Report Post"
+                        Icon="ReportHacked"/>
+    </MenuFlyout>
 
-    <Style x:Key="FeedItemActionButtonStyle" 
+    <Style x:Key="FeedItemActionButtonStyle"
            TargetType="Button" 
            BasedOn="{StaticResource DefaultButtonStyle}">
         <Setter Property="Padding" Value="8"/>
@@ -448,6 +492,75 @@
                 </toolkit:ConstrainedBox>
             </Grid>
         </UserControl>
+    </DataTemplate> 
+
+    <DataTemplate x:Key="CarouselImageTemplate"
+                  x:DataType="posts:PostEmbedImageViewModel">
+        <toolkit:ConstrainedBox AspectRatio="{Binding Ratio}"
+                                VerticalAlignment="Stretch"> 
+            <Button Margin="2"
+                    Padding="0"
+                    Style="{ThemeResource CleanButtonStyle}"
+                    Command="{Binding Parent.ShowImageGalleryCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                    Tag="{Binding}">
+                <Image Stretch="UniformToFill"
+                       Source="{Binding ThumbnailUrl}"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"/>
+            </Button>
+        </toolkit:ConstrainedBox>
+    </DataTemplate>
+ 
+    <DataTemplate x:Key="ImagesCarouselEmbedContentTemplate"
+                  x:DataType="posts:PostEmbedImagesViewModel">
+        <UserControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                     HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                     PointerEntered="OnCarouselPointerEntered"
+                     PointerExited="OnCarouselPointerExited"
+                     PointerCanceled="OnCarouselPointerExited">
+            <Grid Margin="-2">
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="ChevronStates">
+                        <VisualState x:Name="ChevronsHidden"/>
+                        <VisualState x:Name="ChevronsVisible">
+                            <VisualState.Setters>
+                                <Setter Target="PART_ScrollBack.Opacity" Value="1"/>
+                                <Setter Target="PART_ScrollForward.Opacity" Value="1"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+
+                <toolkit:ConstrainedBox AspectRatio="{Binding AspectRatio}"
+                                        HorizontalAlignment="Stretch">
+                    <Grid>
+                        <ListView x:Name="PART_Strip"
+                                  Style="{ThemeResource ImageCarouselListViewStyle}"
+                                  ItemsSource="{Binding Images}"
+                                  ItemTemplate="{StaticResource CarouselImageTemplate}"/>
+
+
+                        <Button x:Name="PART_ScrollBack"
+                                AutomationProperties.AccessibilityView="Raw"
+                                Style="{ThemeResource CarouselChevronButtonStyle}"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Content="&#xE76B;"
+                                Command="{Binding ScrollCarouselBackCommand}"
+                                CommandParameter="{Binding ElementName=PART_Strip}"/>
+                        <Button x:Name="PART_ScrollForward"
+                                AutomationProperties.AccessibilityView="Raw"
+                                Style="{ThemeResource CarouselChevronButtonStyle}"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Content="&#xE76C;"
+                                Command="{Binding ScrollCarouselForwardCommand}"
+                                CommandParameter="{Binding ElementName=PART_Strip}"/>
+                    </Grid>
+                </toolkit:ConstrainedBox>
+            </Grid>
+        </UserControl>
     </DataTemplate>
 
     <DataTemplate x:Key="InlineVideoEmbedContentTemplate" x:DataType="posts:PostEmbedVideoViewModel">
@@ -464,7 +577,6 @@
             </MediaPlayerElement>
         </toolkit:ConstrainedBox>
     </DataTemplate>
-
 
     <DataTemplate x:Key="VideoEmbedContentTemplate" x:DataType="posts:PostEmbedVideoViewModel">
         <toolkit:ConstrainedBox AspectRatio="{Binding Ratio}">
@@ -499,7 +611,8 @@
     <DataTemplate x:Key="FeedItemContentTemplate"
                   x:DataType="posts:PostViewModel">
         <Button Style="{ThemeResource CleanButtonStyle}"
-                Command="{x:Bind OpenThreadCommand}" 
+                Command="{x:Bind OpenThreadCommand}"
+                CommandParameter="{Binding ElementName=PrimaryContent}"
                 ContextFlyout="{StaticResource FeedItemMoreButtonFlyout}"
                 BorderBrush="{ThemeResource SystemControlRevealSeparatorBrush}"
                 extensions:Hairline.BorderThickness="{Binding Borders, Mode=OneWay}">
@@ -595,65 +708,67 @@
                     </Grid>
 
                     <StackPanel Grid.Column="1">
-                        <Button Command="{x:Bind Author.OpenProfileCommand}"
-                                CommandParameter="{Binding ElementName=ProfileEllipse}"
-                                Style="{ThemeResource CleanButtonStyle}"
-                                Padding="0"
-                                VerticalAlignment="Top"
-                                HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Stretch">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Foreground="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"                  
-                                       VerticalAlignment="Top"
-                                       TextTrimming="CharacterEllipsis"
-                                       MaxLines="1">                
-                                     <Run Text="{x:Bind Author.Name, Mode=OneWay}"           
-                                          FontWeight="Bold"                        
-                                          Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>                    
-                                     <Run Text="{x:Bind Author.Handle, Mode=OneWay}"/>
-                                </TextBlock>
+                        <StackPanel x:Name="PrimaryContent">
+                            <Button Command="{x:Bind Author.OpenProfileCommand}"
+                                    CommandParameter="{Binding ElementName=ProfileEllipse}"
+                                    Style="{ThemeResource CleanButtonStyle}"
+                                    Padding="0"
+                                    VerticalAlignment="Top"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Foreground="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
+                                           VerticalAlignment="Top"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1">
+                                         <Run Text="{x:Bind Author.Name, Mode=OneWay}"
+                                              FontWeight="Bold"
+                                              Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+                                         <Run Text="{x:Bind Author.Handle, Mode=OneWay}"/>
+                                    </TextBlock>
 
-                                <TextBlock x:Name="DateBlock"
-                                       x:Phase="4"
-                                       Grid.Column="1"
-                                       Margin="4,0,0,0"
-                                       Foreground="{ThemeResource SystemControlForegroundBaseLowBrush}"
-                                       Typography.NumeralAlignment="Tabular"
-                                       Text="{x:Bind Date}"/>
-                            </Grid>
-                        </Button>
+                                    <TextBlock x:Name="DateBlock"
+                                           x:Phase="4"
+                                           Grid.Column="1"
+                                           Margin="4,0,0,0"
+                                           Foreground="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                                           Typography.NumeralAlignment="Tabular"
+                                           Text="{x:Bind Date}"/>
+                                </Grid>
+                            </Button>
 
-                        <labels:LabelsControl x:Name="LabelViewer"
-                                              x:Load="{x:Bind converters:Static.Any(Labels)}"
-                                              x:Phase="3"
-                                              Labels="{x:Bind Labels}"
-                                              Margin="0,4,0,2"/>
+                            <labels:LabelsControl x:Name="LabelViewer"
+                                                  x:Load="{x:Bind converters:Static.Any(Labels)}"
+                                                  x:Phase="3"
+                                                  Labels="{x:Bind Labels}"
+                                                  Margin="0,4,0,2"/>
 
-                        <controls:FacetTextBlock x:Name="MainContent"
-                                                x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Text)}"
-                                                Inlines="{x:Bind RichText.Facets}"
-                                                TextWrapping="Wrap"
-                                                Margin="0,0,0,4"
-                                                VerticalAlignment="Top"/>
+                            <controls:FacetTextBlock x:Name="MainContent"
+                                                    x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Text)}"
+                                                    Inlines="{x:Bind RichText.Facets}"
+                                                    TextWrapping="Wrap"
+                                                    Margin="0,0,0,4"
+                                                    VerticalAlignment="Top"/>
 
-                        <controls:SpoilerControl x:Name="EmbedContentContainer"
-                                                 x:Load="{x:Bind converters:Static.NotNull(Embed)}"
-                                                 x:Phase="2"
-                                                 Warning="{x:Bind Warning, Mode=OneWay}"
-                                                 WarningTemplate="{StaticResource PostContentWarningTemplate}"
-                                                 IsHidden="{x:Bind Warning.IsHidden, Mode=TwoWay}"
-                                                 CanOverride="{x:Bind Warning.CanOverride, Mode=OneWay}"
-                                                 Margin="0,4">
-                            <ContentControl x:Name="EmbedContent"
-                                            HorizontalAlignment="Stretch"
-                                            HorizontalContentAlignment="Stretch"
-                                            ContentTemplateSelector="{StaticResource PostEmbedTemplateSelector}"
-                                            Content="{x:Bind Embed}"/>
-                        </controls:SpoilerControl>
+                            <controls:SpoilerControl x:Name="EmbedContentContainer"
+                                                     x:Load="{x:Bind converters:Static.NotNull(Embed)}"
+                                                     x:Phase="2"
+                                                     Warning="{x:Bind Warning, Mode=OneWay}"
+                                                     WarningTemplate="{StaticResource PostContentWarningTemplate}"
+                                                     IsHidden="{x:Bind Warning.IsHidden, Mode=TwoWay}"
+                                                     CanOverride="{x:Bind Warning.CanOverride, Mode=OneWay}"
+                                                     Margin="0,4">
+                                <ContentControl x:Name="EmbedContent"
+                                                HorizontalAlignment="Stretch"
+                                                HorizontalContentAlignment="Stretch"
+                                                ContentTemplateSelector="{StaticResource PostEmbedTemplateSelector}"
+                                                Content="{x:Bind Embed}"/>
+                            </controls:SpoilerControl>
+                        </StackPanel>
 
                         <ContentControl x:Name="InteractionsContent"
                                         x:Phase="1"
@@ -699,26 +814,8 @@
             <Button x:Name="RetweetButton"
                     x:Uid="PostRetweetButton"
                     Grid.Column="1"
-                    Style="{StaticResource FeedItemActionButtonStyle}">
-                <Button.Flyout>
-                    <MenuFlyout>
-                        <MenuFlyoutItem x:Uid="PostRetweetItem" x:Name="RetweetItem" Text="Repost" Command="{x:Bind RetweetCommand}">
-                            <MenuFlyoutItem.Icon>
-                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8EB;"/>
-                            </MenuFlyoutItem.Icon>
-                        </MenuFlyoutItem>
-                        <MenuFlyoutItem x:Uid="PostUndoRetweetItem" x:Name="UndoRetweetItem" Text="Undo Repost" Command="{x:Bind RetweetCommand}">
-                            <MenuFlyoutItem.Icon>
-                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE7A7;"/>
-                            </MenuFlyoutItem.Icon>
-                        </MenuFlyoutItem>
-                        <MenuFlyoutItem x:Uid="PostQRTItem" Text="Quote post..." Command="{x:Bind QuoteTweetCommand}">
-                            <MenuFlyoutItem.Icon>
-                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE789;"/>
-                            </MenuFlyoutItem.Icon>
-                        </MenuFlyoutItem>
-                    </MenuFlyout>
-                </Button.Flyout>
+                    Style="{StaticResource FeedItemActionButtonStyle}"
+                    Flyout="{StaticResource FeedItemRetweetFlyout}">
                 <StackPanel Orientation="Horizontal">
                     <Viewbox Height="14">
                         <TextBlock x:Name="RetweetsIcon">&#xE8EB;</TextBlock>
@@ -785,28 +882,8 @@
                     Style="{StaticResource FeedItemActionButtonStyle}"
                     HorizontalAlignment="Right"
                     Grid.Column="4"
-                    Margin="8,0,0,0">
-                <Button.Flyout>
-                    <MenuFlyout w1809:Placement="BottomEdgeAlignedRight"  not1809:Placement="Bottom">
-                        <MenuFlyoutItem x:Uid="FeedMoreShareItem" Text="Share"
-                            Command="{Binding ShareCommand}"
-                            CommandParameter="{Binding ElementName=MoreButton}">
-                                <MenuFlyoutItem.Icon>
-                                    <FontIcon Glyph="&#xE72D;" FontFamily="{ThemeResource SymbolThemeFontFamily}"/>
-                                </MenuFlyoutItem.Icon>
-                        </MenuFlyoutItem>
-                        <MenuFlyoutItem x:Uid="FeedMoreCopyTextItem" Text="Copy Text" Icon="Copy" Command="{Binding CopyTextCommand}"/>
-                        <MenuFlyoutItem x:Uid="FeedMoreCopyLinkItem" Text="Copy Link" Icon="Link" Command="{Binding CopyLinkCommand}"/>
-                        <MenuFlyoutSeparator/>
-                        <MenuFlyoutItem x:Uid="FeedMoreMuteItem" Text="Mute Thread" Icon="Mute"/>
-                        <MenuFlyoutItem x:Uid="FeedMoreHidePostItem" Text="Hide Post" Icon="Clear"/>
-                        <MenuFlyoutSeparator/>
-                        <MenuFlyoutItem x:Uid="FeedMoreReportPostItem" Foreground="{ThemeResource SystemControlErrorTextForegroundBrush}" 
-                        Text="Report Post"
-                        Icon="ReportHacked"/>
-                    </MenuFlyout>
-                </Button.Flyout>
-
+                    Margin="8,0,0,0"
+                    Flyout="{StaticResource FeedItemMoreFlyout}">
                 <Viewbox Height="14">
                     <TextBlock>&#xE712;</TextBlock>
                 </Viewbox>
@@ -847,16 +924,9 @@
                     <i:ChangePropertyAction TargetObject="{Binding ElementName=RetweetsIcon}" 
                                                 PropertyName="Foreground"
                                                 Value="{StaticResource RetweetBrush}"/>
-                    <i:ChangePropertyAction TargetObject="{Binding ElementName=RetweetsText}" 
+                    <i:ChangePropertyAction TargetObject="{Binding ElementName=RetweetsText}"
                                                 PropertyName="Foreground"
                                                 Value="{StaticResource RetweetBrush}"/>
-
-                    <i:ChangePropertyAction TargetObject="{Binding ElementName=RetweetItem}"
-                                                PropertyName="Visibility"
-                                                Value="Collapsed"/>
-                    <i:ChangePropertyAction TargetObject="{Binding ElementName=UndoRetweetItem}"
-                                                PropertyName="Visibility"
-                                                Value="Visible"/>
                 </i:DataTriggerBehavior>
                 <i:DataTriggerBehavior Binding="{x:Bind IsRetweeted}"
                                             ComparisonCondition="Equal"
@@ -864,16 +934,9 @@
                     <i:ChangePropertyAction TargetObject="{Binding ElementName=RetweetsIcon}" 
                                                 PropertyName="Foreground"
                                                 Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
-                    <i:ChangePropertyAction TargetObject="{Binding ElementName=RetweetsText}" 
+                    <i:ChangePropertyAction TargetObject="{Binding ElementName=RetweetsText}"
                                                 PropertyName="Foreground"
                                                 Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
-
-                    <i:ChangePropertyAction TargetObject="{Binding ElementName=RetweetItem}"
-                                                PropertyName="Visibility"
-                                                Value="Visible"/>
-                    <i:ChangePropertyAction TargetObject="{Binding ElementName=UndoRetweetItem}"
-                                                PropertyName="Visibility"
-                                                Value="Collapsed"/>
                 </i:DataTriggerBehavior>
                 <i:DataTriggerBehavior Binding="{x:Bind IsBookmarked}"
                                             ComparisonCondition="Equal"

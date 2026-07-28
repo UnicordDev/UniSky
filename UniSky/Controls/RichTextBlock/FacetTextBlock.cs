@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Uwp.UI.Extensions;
+using UniSky.Navigation;
 using UniSky.Pages;
 using UniSky.Services;
+using UniSky.Services.Navigation;
 using UniSky.ViewModels.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -15,8 +17,8 @@ namespace UniSky.Controls;
 [TemplatePart(Name = "PART_TextBlock", Type = typeof(TextBlock))]
 public sealed class FacetTextBlock : Control
 {
-    private static readonly DependencyProperty HyperlinkUrlProperty =
-        DependencyProperty.RegisterAttached("HyperlinkUrl", typeof(Uri), typeof(FacetTextBlock), new PropertyMetadata(null));
+    private static readonly DependencyProperty HyperlinkRouteProperty =
+        DependencyProperty.RegisterAttached("HyperlinkRoute", typeof(NavigationRoute), typeof(FacetTextBlock), new PropertyMetadata(null));
 
     public TextWrapping TextWrapping
     {
@@ -87,7 +89,7 @@ public sealed class FacetTextBlock : Control
                 };
 
                 hyperlink.Click += Hyperlink_Click;
-                hyperlink.SetValue(HyperlinkUrlProperty, new Uri("unisky:///profile/" + mention.Did.ToString()));
+                hyperlink.SetValue(HyperlinkRouteProperty, NavigationRoute.Profile(mention.Did.ToString()));
 
                 text.Inlines.Add(hyperlink);
                 continue;
@@ -103,7 +105,7 @@ public sealed class FacetTextBlock : Control
                 };
 
                 hyperlink.Click += Hyperlink_Click;
-                hyperlink.SetValue(HyperlinkUrlProperty, new Uri("unisky:///tag/" + tag.Tag));
+                hyperlink.SetValue(HyperlinkRouteProperty, NavigationRoute.Tag(tag.Tag));
 
                 text.Inlines.Add(hyperlink);
                 continue;
@@ -115,9 +117,20 @@ public sealed class FacetTextBlock : Control
             {
                 var hyperlink = new Hyperlink()
                 {
-                    NavigateUri = uri,
                     Inlines = { new Run() { Text = inline.Text } }
                 };
+
+                // A bsky.app or at:// link points at something we can show ourselves; anything else
+                // goes to the shell as before.
+                if (NavigationRoute.TryParse(uri, out var linkRoute))
+                {
+                    hyperlink.Click += Hyperlink_Click;
+                    hyperlink.SetValue(HyperlinkRouteProperty, linkRoute);
+                }
+                else
+                {
+                    hyperlink.NavigateUri = uri;
+                }
 
                 text.Inlines.Add(hyperlink);
                 continue;
@@ -127,23 +140,11 @@ public sealed class FacetTextBlock : Control
         }
     }
 
-    // TODO: move this somewhere better
     private void Hyperlink_Click(Hyperlink sender, HyperlinkClickEventArgs args)
     {
-        if (sender.GetValue(HyperlinkUrlProperty) is not Uri { Scheme: "unisky" } uri)
+        if (sender.GetValue(HyperlinkRouteProperty) is not NavigationRoute route)
             return;
 
-        var service = ServiceContainer.Scoped.GetRequiredService<INavigationServiceLocator>()
-            .GetNavigationService("Home");
-
-        var path = uri.PathAndQuery.Split('/', StringSplitOptions.RemoveEmptyEntries);
-        switch (path.FirstOrDefault()?.ToLowerInvariant())
-        {
-            case "profile":
-                service.Navigate<ProfilePage>(uri);
-                break;
-            case "tag":
-                break;
-        }
+        NavigationScopeHost.FindFor(this)?.Navigate(new NavigationRequest(route));
     }
 }

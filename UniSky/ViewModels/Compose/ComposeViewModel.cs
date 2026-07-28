@@ -473,7 +473,9 @@ public partial class ComposeViewModel : ViewModelBase
             if (AttachedFiles.Any(t => t.AttachmentType == ComposeViewAttachmentType.Video))
                 throw new InvalidOperationException(resources.GetString("E_UnableToAddImageToVideoPost"));
 
-            if (AttachedFiles.Where(t => t.AttachmentType == ComposeViewAttachmentType.Image).Count() + 1 > 4)
+            // app.bsky.embed.images caps at four. posting more needs an app.bsky.embed.gallery
+            // record, which FishyFlip can't serialise yet.
+            if (AttachedFiles.Where(t => t.AttachmentType == ComposeViewAttachmentType.Image).Count() + 1 > PostEmbedImagesViewModel.GridImages)
                 throw new InvalidOperationException(resources.GetString("E_TooManyPhotos"));
         }
 

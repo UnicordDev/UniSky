@@ -106,7 +106,7 @@ public class BookmarksCollection : ObservableCollection<PostViewModel>, ISupport
 
                         if (ids.Contains(post.Cid)) continue;
 
-                        Add(new PostViewModel(post));
+                        Add(new PostViewModel(parent.Navigation, post));
                         ids.Add(post.Cid);
                     }
                 });

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using UniSky.Controls.Overlay;
@@ -24,14 +24,12 @@ public sealed partial class GalleryControl : StandardOverlayControl
         if (args.Parameter is not ShowGalleryArgs gallery)
             throw new InvalidOperationException("Must specify gallery arguments");
 
-        DataContext = ActivatorUtilities.CreateInstance<GalleryViewModel>(ServiceContainer.Scoped, gallery);
+        var viewModel = ActivatorUtilities.CreateInstance<GalleryViewModel>(ServiceContainer.Scoped, gallery);
+        DataContext = viewModel;
+        FlippyView.SelectedIndex = viewModel.SelectedIndex;
     }
 
-    protected override void OnShown(RoutedEventArgs args)
-    {
-        base.OnShown(args);
-    }
-
+    // TODO: this doesn't really work
     private void MainImage_Loaded(object sender, RoutedEventArgs e)
     {
         if (Controller.IsStandalone)
@@ -43,8 +41,6 @@ public sealed partial class GalleryControl : StandardOverlayControl
 
         if (source.Tag != selected)
             return;
-
-        var container = FlippyView.ContainerFromIndex(vm.SelectedIndex);
 
         var animation = ConnectedAnimationService.GetForCurrentView()
             .GetAnimation("GalleryView");

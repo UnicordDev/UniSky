@@ -17,7 +17,7 @@ public partial class ProfileFeedViewModel : FeedViewModel
     private bool selected;
 
     public ProfileFeedViewModel(ProfilePageViewModel parent, string filterType, ATObject profile, IProtocolService protocolService)
-        : base(FeedType.Author, protocolService)
+        : base(parent.Navigation, FeedType.Author, protocolService)
     {
         this.parent = parent;
         this.parent.PropertyChanged += OnParentPropertyChanged;

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.11.35303.130
+# Visual Studio Version 18
+VisualStudioVersion = 18.7.11925.98 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniSky", "UniSky\UniSky.csproj", "{FEBDF715-48BB-46F2-ABC6-6FF32131B5B0}"
 EndProject
@@ -27,6 +27,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniSky.Notifications", "UniSky.Notifications\UniSky.Notifications.csproj", "{765E2009-89B0-4088-A092-5E3857908A2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniSky.Navigation.Test", "Test\UniSky.Navigation.Test\UniSky.Navigation.Test.csproj", "{964BCFB2-C702-4724-B535-2242C5C5076F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -192,6 +194,26 @@ Global
 		{765E2009-89B0-4088-A092-5E3857908A2B}.Release|x64.Build.0 = Release|Any CPU
 		{765E2009-89B0-4088-A092-5E3857908A2B}.Release|x86.ActiveCfg = Release|Any CPU
 		{765E2009-89B0-4088-A092-5E3857908A2B}.Release|x86.Build.0 = Release|Any CPU
+		{964BCFB2-C702-4724-B535-2242C5C5076F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{964BCFB2-C702-4724-B535-2242C5C5076F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{964BCFB2-C702-4724-B535-2242C5C5076F}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{964BCFB2-C702-4724-B535-2242C5C5076F}.Debug|ARM.Build.0 = Debug|Any CPU
+		{964BCFB2-C702-4724-B535-2242C5C5076F}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{964BCFB2-C702-4724-B535-2242C5C5076F}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{964BCFB2-C702-4724-B535-2242C5C5076F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{964BCFB2-C702-4724-B535-2242C5C5076F}.Debug|x64.Build.0 = Debug|Any CPU
+		{964BCFB2-C702-4724-B535-2242C5C5076F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{964BCFB2-C702-4724-B535-2242C5C5076F}.Debug|x86.Build.0 = Debug|Any CPU
+		{964BCFB2-C702-4724-B535-2242C5C5076F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{964BCFB2-C702-4724-B535-2242C5C5076F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{964BCFB2-C702-4724-B535-2242C5C5076F}.Release|ARM.ActiveCfg = Release|Any CPU
+		{964BCFB2-C702-4724-B535-2242C5C5076F}.Release|ARM.Build.0 = Release|Any CPU
+		{964BCFB2-C702-4724-B535-2242C5C5076F}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{964BCFB2-C702-4724-B535-2242C5C5076F}.Release|ARM64.Build.0 = Release|Any CPU
+		{964BCFB2-C702-4724-B535-2242C5C5076F}.Release|x64.ActiveCfg = Release|Any CPU
+		{964BCFB2-C702-4724-B535-2242C5C5076F}.Release|x64.Build.0 = Release|Any CPU
+		{964BCFB2-C702-4724-B535-2242C5C5076F}.Release|x86.ActiveCfg = Release|Any CPU
+		{964BCFB2-C702-4724-B535-2242C5C5076F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -199,6 +221,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{5EF62660-8AA6-478B-B0D8-D94B7D401D2D} = {ECEAFC3C-3660-493A-80E9-2FD4FDA92A48}
 		{765E2009-89B0-4088-A092-5E3857908A2B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{964BCFB2-C702-4724-B535-2242C5C5076F} = {ECEAFC3C-3660-493A-80E9-2FD4FDA92A48}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ED6590DF-960E-4A50-AF64-6EFD821A4920}

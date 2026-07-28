@@ -88,7 +88,7 @@ public class SearchPostsCollection : ObservableCollection<PostViewModel>, ISuppo
                         continue;
 
                     if (!ids.Contains(item.Cid))
-                        Add(new PostViewModel(item));
+                        Add(new PostViewModel(parent.Navigation, item));
                 }
             });
 

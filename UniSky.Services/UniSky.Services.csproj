@@ -123,6 +123,7 @@
   <ItemGroup>
     <Compile Include="Compression.cs" />
     <Compile Include="ICdnUrlService.cs" />
+    <Compile Include="IContentRevealService.cs" />
     <Compile Include="IElementCaptureService.cs" />
     <Compile Include="IEmbedExtractor.cs" />
     <Compile Include="IEmbedThumbnailGenerator.cs" />
@@ -143,6 +144,22 @@
     <Compile Include="ITypedSettings.cs" />
     <Compile Include="Implementation\LoginService.cs" />
     <Compile Include="ModerationService.cs" />
+    <Compile Include="Navigation\ConnectedAnimationRequest.cs" />
+    <Compile Include="Navigation\IActivationCoordinator.cs" />
+    <Compile Include="Navigation\IConnectedAnimationCoordinator.cs" />
+    <Compile Include="Navigation\IBackHandler.cs" />
+    <Compile Include="Navigation\IBackNavigationCoordinator.cs" />
+    <Compile Include="Navigation\INavigationContext.cs" />
+    <Compile Include="Navigation\INavigationScope.cs" />
+    <Compile Include="Navigation\INavigationScopeRegistry.cs" />
+    <Compile Include="Navigation\IRouteTable.cs" />
+    <Compile Include="Navigation\NavigationCompletedEventArgs.cs" />
+    <Compile Include="Navigation\NavigationIntent.cs" />
+    <Compile Include="Navigation\NavigationRequest.cs" />
+    <Compile Include="Navigation\NavigationRequestedEventArgs.cs" />
+    <Compile Include="Navigation\NavigationScopeKind.cs" />
+    <Compile Include="Navigation\NavigationScopes.cs" />
+    <Compile Include="Navigation\NavigationSource.cs" />
     <Compile Include="Overlay\IOverlayControl.cs" />
     <Compile Include="Overlay\IOverlayController.cs" />
     <Compile Include="Overlay\OverlayHidingEventArgs.cs" />

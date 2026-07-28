@@ -146,7 +146,7 @@ public class FeedItemCollection : ObservableCollection<PostViewModel>, ISupportI
             {
                 foreach (var item in posts)
                 {
-                    var vm = new PostViewModel(item);
+                    var vm = new PostViewModel(this.parent.Navigation, item);
                     var ui = vm.Moderation.GetUI(ModerationContext.ContentList);
                     if (ui.Filter)
                     {
@@ -174,7 +174,7 @@ public class FeedItemCollection : ObservableCollection<PostViewModel>, ISupportI
 
                             if (!ids.Contains(parent.Cid))
                             {
-                                Add(new PostViewModel(parent, true));
+                                Add(new PostViewModel(this.parent.Navigation, parent, true));
 
                                 vm.HasParent = true;
                                 Add(vm);

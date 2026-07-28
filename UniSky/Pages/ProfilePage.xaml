@@ -30,6 +30,7 @@
                   Style="{StaticResource FeedListViewStyle}"
                   ItemsSource="{Binding SelectedFeed.Items}" 
                   ItemTemplate="{StaticResource FeedItemContentTemplate}"
+                  Loaded="RootList_Loaded"
                   w1809:ScrollViewer.CanContentRenderOutsideBounds="False">
             <ListView.Header>
                 <Grid x:Name="ProfileContainer"
@@ -68,9 +69,10 @@
                           Grid.ColumnSpan="2"
                           Background="{ThemeResource ProfilePageHeaderBannerBackgroundBrush}">
                         <controls:ConstrainedBox x:Name="ProfileBanner" AspectRatio="3:1">
-                            <Grid>
-                                <aurora:PreviewPaneAuroraControl 
-                                                                 Color="{ThemeResource SystemAccentColor}"/>
+                            <Grid Background="{ThemeResource SystemAccentColorDark2}">
+                                <aurora:PreviewPaneAuroraControl x:Name="FallbackHeader"
+                                                                 x:Load="{x:Bind converters:Static.NullOrWhiteSpace(ViewModel.BannerUrl), Mode=OneWay}"
+                                                                 Color="{ThemeResource SystemAccentColorDark1}"/>
                                 <Image Source="{Binding BannerUrl}"
                                        HorizontalAlignment="Center"
                                        Stretch="UniformToFill"/>

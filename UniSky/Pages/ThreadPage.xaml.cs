@@ -1,8 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using UniSky.Navigation;
 using UniSky.Services;
+using UniSky.Services.Navigation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using FishyFlip.Lexicon.App.Bsky.Feed;
 using FishyFlip.Models;
 using UniSky.ViewModels.Thread;
 using Microsoft.Toolkit.Uwp.UI.Extensions;
@@ -11,6 +14,8 @@ namespace UniSky.Pages;
 
 public sealed partial class ThreadPage : Page
 {
+    private NavigationRoute _animationOrigin;
+
     public ThreadViewModel ViewModel
     {
         get => (ThreadViewModel)GetValue(ViewModelProperty);
@@ -33,11 +38,30 @@ public sealed partial class ThreadPage : Page
         safeAreaService.SetTitlebarTheme(ElementTheme.Default);
         safeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
 
-        if (e.Parameter is not (ATUri))
+        if (e.Parameter is not NavigationRequest request || !request.Route.TryToAtUri(out var uri))
             return;
 
-        if (e.Parameter is ATUri uri)
-            this.DataContext = ViewModel = ActivatorUtilities.CreateInstance<ThreadViewModel>(ServiceContainer.Default, uri);
+        _animationOrigin = request.Animation?.Origin;
+
+        if (request.Payload is PostView postView)
+            this.DataContext = ViewModel = ActivatorUtilities.CreateInstance<ThreadViewModel>(
+                ServiceContainer.Default, NavigationScopeHost.FindFor(this.Frame), uri, postView);
+        else
+            this.DataContext = ViewModel = ActivatorUtilities.CreateInstance<ThreadViewModel>(
+                ServiceContainer.Default, NavigationScopeHost.FindFor(this.Frame), uri);
+    }
+
+    protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+    {
+        base.OnNavigatingFrom(e);
+
+        if (e.NavigationMode != NavigationMode.Back || _animationOrigin == null || ViewModel?.Selected == null)
+            return;
+
+        ConnectedAnimations.PrepareFromList(
+            ConnectedAnimations.ThreadPost, RootList, ViewModel.Selected, "PrimaryContent");
+        ServiceContainer.Scoped.GetRequiredService<IConnectedAnimationCoordinator>()
+            .PrepareBack(ConnectedAnimations.ThreadPost, _animationOrigin);
     }
 
     protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -60,6 +84,20 @@ public sealed partial class ThreadPage : Page
     private void Page_Loaded(object sender, RoutedEventArgs e)
     {
         HandleScrolling();
+
+        if (ViewModel?.Selected != null)
+        {
+            _ = ConnectedAnimations.TryStartFromListAsync(
+                ConnectedAnimations.ThreadPost,
+                RootList,
+                ViewModel.Selected,
+                "PrimaryContent",
+                ConnectedAnimationDirection.Forward);
+        }
+        else
+        {
+            ConnectedAnimations.Cancel(ConnectedAnimations.ThreadPost);
+        }
     }
 
     private void HandleScrolling()

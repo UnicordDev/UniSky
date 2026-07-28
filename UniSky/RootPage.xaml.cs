@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using UniSky.Helpers.Composition;
+using UniSky.Navigation;
 using UniSky.Services;
+using UniSky.Services.Navigation;
 using UniSky.ViewModels;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -12,6 +14,7 @@ namespace UniSky;
 public sealed partial class RootPage : Page
 {
     private bool dismissed;
+    private ShellNavigationHandler _shellHandler;
 
     public RootViewModel ViewModel
     {
@@ -42,6 +45,15 @@ public sealed partial class RootPage : Page
         var serviceLocator = ServiceContainer.Scoped.GetRequiredService<INavigationServiceLocator>();
         var service = serviceLocator.GetNavigationService("Root");
         service.Frame = RootFrame;
+
+        var shell = NavigationScopeHost.EnsureScope(ShellRoot);
+        if (shell != null && _shellHandler == null)
+        {
+            _shellHandler = ActivatorUtilities.CreateInstance<ShellNavigationHandler>(ServiceContainer.Scoped, shell);
+
+            ServiceContainer.Scoped.GetRequiredService<IBackNavigationCoordinator>()
+                .Register(new NavigationBackHandler(shell), BackPriority.Navigation);
+        }
 
         var timer = new DispatcherTimer()
         {

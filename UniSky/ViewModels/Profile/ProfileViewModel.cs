@@ -9,16 +9,17 @@ using FishyFlip.Lexicon.App.Bsky.Graph;
 using FishyFlip.Models;
 using Microsoft.Extensions.DependencyInjection;
 using UniSky.Moderation;
+using UniSky.Navigation;
 using UniSky.Pages;
 using UniSky.Services;
+using UniSky.Services.Navigation;
 using UniSky.ViewModels.Moderation;
 using Windows.ApplicationModel.Resources;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media.Animation;
 
 namespace UniSky.ViewModels.Profile;
 
-public partial class ProfileViewModel : ViewModelBase
+public partial class ProfileViewModel : ViewModelBase, IRoutable
 {
     private readonly IModerationService moderationService
         = ServiceContainer.Default.GetRequiredService<IModerationService>();
@@ -31,6 +32,9 @@ public partial class ProfileViewModel : ViewModelBase
 
     protected ATIdentifier id;
     protected ATObject source;
+
+    public NavigationRoute Route
+        => id == null ? null : NavigationRoute.Profile(id);
 
     [ObservableProperty]
     private string name;
@@ -65,6 +69,12 @@ public partial class ProfileViewModel : ViewModelBase
         => strings.GetString(IsFollowing ? "Profile_Following" : "Profile_Follow");
 
     public ProfileViewModel()
+        : this((INavigationContext)null)
+    {
+    }
+
+    public ProfileViewModel(INavigationContext navigation)
+        : base(navigation)
     {
         this.id = null;
         this.AvatarUrl = "ms-appx:///Assets/Default/Avatar.png";
@@ -75,6 +85,12 @@ public partial class ProfileViewModel : ViewModelBase
     }
 
     public ProfileViewModel(ATObject obj)
+        : this(null, obj)
+    {
+    }
+
+    public ProfileViewModel(INavigationContext navigation, ATObject obj)
+        : base(navigation)
     {
         this.source = obj;
         this.Labels = [];
@@ -169,15 +185,11 @@ public partial class ProfileViewModel : ViewModelBase
             }
         }
     }
-
+    
     [RelayCommand]
     private void OpenProfile(UIElement element)
-    {
-        var service = ServiceContainer.Scoped.GetRequiredService<INavigationServiceLocator>()
-            .GetNavigationService("Home");
-
-        service.Navigate<ProfilePage>(this.source, new ContinuumNavigationTransitionInfo() { ExitElement = element });
-    }
+        => Navigate(Routes.Profile(this.id, this.source)
+            ?.WithAnimation(ConnectedAnimations.ProfileAvatar, element));
 
     [RelayCommand]
     private async Task FollowAsync()

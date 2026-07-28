@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using System.Numerics;
 using Microsoft.Toolkit.Uwp.UI.Media.Geometry;
+using UniSky.Extensions;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Composition;
@@ -252,7 +253,7 @@ public sealed class AttachedDropShadow : AttachedShadowBase
                 // alpha mask even if Content happens to extend any of the other classes
                 if (context.Element is IAlphaMaskProvider maskedControl)
                 {
-                    if (maskedControl.WaitUntilLoaded && !context.Element.IsLoaded)
+                    if (maskedControl.WaitUntilLoaded && !context.Element.IsLive())
                     {
                         context.Element.Loaded += CustomMaskedElement_Loaded;
                     }

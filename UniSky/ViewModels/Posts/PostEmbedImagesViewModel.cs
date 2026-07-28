@@ -9,6 +9,7 @@ using FishyFlip.Lexicon.App.Bsky.Embed;
 using FishyFlip.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Uwp.UI.Controls;
+using Microsoft.Toolkit.Uwp.UI.Extensions;
 using UniSky.Controls.Gallery;
 using UniSky.Services;
 using UniSky.Services.Overlay;
@@ -20,6 +21,24 @@ namespace UniSky.ViewModels.Posts;
 
 public partial class PostEmbedImagesViewModel : PostEmbedViewModel
 {
+    /// <summary>
+    /// The most images the fixed 2x2 grid layout can display, which is also the
+    /// <c>app.bsky.embed.images</c> lexicon's own limit.
+    /// </summary>
+    public const int GridImages = 4;
+
+    /// <summary>
+    /// The schema ceiling on <c>app.bsky.embed.gallery</c> items. Note the lexicon separately
+    /// documents a soft limit of 10 for authoring UIs.
+    /// </summary>
+    public const int MaxGalleryImages = 20;
+
+    // how tall the carousel strip is relative to the post column. tuning knob.
+    private const double CarouselRatio = 2.0;
+
+    // how much of a viewport a chevron click moves, leaving a sliver of context behind.
+    private const double CarouselStep = 0.9;
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsOne), nameof(IsTwo), nameof(IsThree), nameof(IsFour))]
     private int count;
@@ -54,6 +73,13 @@ public partial class PostEmbedImagesViewModel : PostEmbedViewModel
     public bool IsThree => Count == 3;
     public bool IsFour => Count == 4;
 
+    /// <summary>
+    /// Render as a horizontally scrolling strip rather than the grid. Set for gallery embeds, which
+    /// carousel at any item count; an <c>app.bsky.embed.images</c> embed never does, since it can
+    /// only ever hold <see cref="GridImages"/> images.
+    /// </summary>
+    public bool IsCarousel { get; }
+
     public PostEmbedImagesViewModel(ATIdentifier id, EmbedImages embed) : base(embed)
     {
         this.id = id;
@@ -63,7 +89,7 @@ public partial class PostEmbedImagesViewModel : PostEmbedViewModel
         Images = [.. embed.Images.Select(i => new PostEmbedImageViewModel(this, id, i))];
 
         // this would be problematic
-        Debug.Assert(Images.Length > 0 && Images.Length <= 4);
+        Debug.Assert(Images.Length > 0 && Images.Length <= MaxGalleryImages);
         Debug.Assert(embed.Images.Count == Images.Length);
         Debug.Assert(Images.Length == Count);
 
@@ -76,14 +102,19 @@ public partial class PostEmbedImagesViewModel : PostEmbedViewModel
         }
     }
 
-    public PostEmbedImagesViewModel(ViewImages embed) : base(embed)
+    /// <param name="isCarousel">
+    /// Set by the <c>app.bsky.embed.gallery</c> adapter, which synthesises a <see cref="ViewImages"/>
+    /// and wants the scrolling strip regardless of how many items it holds.
+    /// </param>
+    public PostEmbedImagesViewModel(ViewImages embed, bool isCarousel = false) : base(embed)
     {
         this.embedView = embed;
+        this.IsCarousel = isCarousel;
         Count = embed.Images.Count;
         Images = [.. embed.Images.Select(i => new PostEmbedImageViewModel(this, i))];
 
         // this would be problematic
-        Debug.Assert(Images.Length > 0 && Images.Length <= 4);
+        Debug.Assert(Images.Length > 0 && Images.Length <= MaxGalleryImages);
         Debug.Assert(embed.Images.Count == Images.Length);
         Debug.Assert(Images.Length == Count);
 
@@ -98,7 +129,14 @@ public partial class PostEmbedImagesViewModel : PostEmbedViewModel
 
     private void SetAspectRatio(AspectRatio firstRatio)
     {
-        if (Images.Length == 1 && firstRatio == null)
+        if (IsCarousel)
+        {
+            // a fixed height strip; each image sizes itself along it from its own ratio
+            AspectRatio = new AspectRatioConstraint(CarouselRatio);
+            MaxWidth = double.PositiveInfinity;
+            MaxHeight = double.PositiveInfinity;
+        }
+        else if (Images.Length == 1 && firstRatio == null)
         {
             AspectRatio = new();
             MaxWidth = double.PositiveInfinity;
@@ -114,7 +152,7 @@ public partial class PostEmbedImagesViewModel : PostEmbedViewModel
                 2 => 2.0,
                 3 => 2.0,
                 4 => 3.0 / 2.0,
-                _ => throw new NotImplementedException()
+                _ => CarouselRatio
             });
 
             if (Images.Length == 1)
@@ -128,7 +166,7 @@ public partial class PostEmbedImagesViewModel : PostEmbedViewModel
                 MaxHeight = double.PositiveInfinity;
             }
         }
-    } 
+    }
 
     private void OnImagePropertyChanged(object sender, PropertyChangedEventArgs e)
     {
@@ -145,23 +183,37 @@ public partial class PostEmbedImagesViewModel : PostEmbedViewModel
     }
 
     [RelayCommand]
+    private void ScrollCarouselBack(ListView list)
+        => ScrollCarousel(list, -1);
+
+    [RelayCommand]
+    private void ScrollCarouselForward(ListView list)
+        => ScrollCarousel(list, +1);
+
+    private static void ScrollCarousel(ListView list, int direction)
+    {
+        if (list?.FindDescendant<ScrollViewer>() is not { } scroller)
+            return;
+
+        var target = scroller.HorizontalOffset + (direction * scroller.ViewportWidth * CarouselStep);
+        scroller.ChangeView(Math.Clamp(target, 0, scroller.ScrollableWidth), null, null);
+    }
+
+    [RelayCommand]
     private async Task ShowImageGalleryAsync(object parameter)
     {
-        var settingsService = ServiceContainer.Scoped.GetRequiredService<ITypedSettings>();
+        // No connected animation into the gallery. The flip view applies its scroll offset on the
+        // compositor thread, so for anything but the first image the UI thread doesn't know where
+        // the destination actually is until the scroller reports itself settled. Since
+        // ConnectedAnimation.TryStart samples the destination on the UI thread, the animation
+        // either flew off to the side or played only once the image had already arrived, and no
+        // amount of picking a better moment to start it helped.
         if (parameter is Control control)
             parameter = control.Tag;
-        else
-            control = null;
 
         var idx = Array.IndexOf(Images, parameter);
         if (idx == -1)
             idx = 0;
-
-        if (control != null && !settingsService.UseMultipleWindows)
-        {
-            ConnectedAnimationService.GetForCurrentView()
-                .PrepareToAnimate("GalleryView", control);
-        }
 
         var genericOverlay = ServiceContainer.Scoped.GetRequiredService<IStandardOverlayService>();
         await genericOverlay.ShowAsync<GalleryControl>(new ShowGalleryArgs(id, embedView, embed, idx));

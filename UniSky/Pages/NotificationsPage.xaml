@@ -10,6 +10,7 @@
     xmlns:converters="using:UniSky.Converters" 
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d"
+    NavigationCacheMode="Required"
     Loaded="Page_Loaded">
 
     <Page.Resources>

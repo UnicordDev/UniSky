@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using UniSky.Navigation;
 using UniSky.Services;
+using UniSky.Services.Navigation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -31,8 +33,8 @@ public sealed partial class SheetRootControl : UserControl, IOverlayRootControl
 
     private readonly List<SheetStackEntry> _stack = new List<SheetStackEntry>();
     private readonly ISafeAreaService _safeAreaService;
-
-    private bool _backRequestedHooked;
+    private readonly IBackNavigationCoordinator _backCoordinator;
+    private readonly IDisposable _backRegistration;
 
     public SheetRootControl()
     {
@@ -40,6 +42,29 @@ public sealed partial class SheetRootControl : UserControl, IOverlayRootControl
 
         _safeAreaService = ServiceContainer.Scoped.GetRequiredService<ISafeAreaService>();
         _safeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
+
+        _backCoordinator = ServiceContainer.Scoped.GetRequiredService<IBackNavigationCoordinator>();
+        _backRegistration = _backCoordinator.Register(new SheetBackHandler(this), BackPriority.Sheet);
+    }
+
+    private sealed class SheetBackHandler(SheetRootControl owner) : IBackHandler
+    {
+        public bool CanGoBack
+            => owner.Top != null;
+
+        public bool TryGoBack()
+        {
+            var entry = owner.Top;
+            if (entry == null)
+                return false;
+
+            if (NavigationScopeHost.GetScopeInstance(entry.Presenter) is { CanGoBack: true } scope)
+                return scope.GoBack();
+                
+            // always consume the back gesture, even if we refuse to close
+            _ = entry.Controller.TryHideAsync();
+            return true;
+        }
     }
 
     private SheetStackEntry Top
@@ -71,6 +96,12 @@ public sealed partial class SheetRootControl : UserControl, IOverlayRootControl
         _stack.Add(entry);
         SheetHost.Children.Add(presenter);
 
+        // a sheet is its own navigation scope, and anything in it belongs to the sheet
+        NavigationScopeHost.SetKind(presenter, NavigationScopeKind.Sheet);
+        NavigationScopeHost.SetPolicy(presenter, NavigationScopePolicy.Contain);
+        NavigationScopeHost.SetScope(presenter, $"sheet:{_stack.Count}");
+        NavigationScopeHost.EnsureScope(presenter);
+
         presenter.SetBackdropTarget(previousTop?.Presenter ?? BackgroundElement);
         control.InvokeShowing(parameter);
         
@@ -96,6 +127,8 @@ public sealed partial class SheetRootControl : UserControl, IOverlayRootControl
 
         entry.Presenter.DismissRequested -= OnPresenterDismissRequested;
         entry.Presenter.Teardown();
+
+        NavigationScopeHost.Detach(entry.Presenter);
 
         _stack.Remove(entry);
         SheetHost.Children.Remove(entry.Presenter);
@@ -132,17 +165,7 @@ public sealed partial class SheetRootControl : UserControl, IOverlayRootControl
                 backgroundControl.IsTabStop = !hasSheets;
         }
 
-        var systemNavigationManager = SystemNavigationManager.GetForCurrentView();
-        if (hasSheets && !_backRequestedHooked)
-        {
-            systemNavigationManager.BackRequested += OnBackRequested;
-            _backRequestedHooked = true;
-        }
-        else if (!hasSheets && _backRequestedHooked)
-        {
-            systemNavigationManager.BackRequested -= OnBackRequested;
-            _backRequestedHooked = false;
-        }
+        _backCoordinator.Invalidate();
     }
 
     private static async Task FocusSheetAsync(SheetPresenter presenter)
@@ -163,16 +186,6 @@ public sealed partial class SheetRootControl : UserControl, IOverlayRootControl
     {
         foreach (var entry in _stack)
             entry.Presenter.UpdateSafeArea(e.SafeArea.Bounds);
-    }
-
-    private async void OnBackRequested(object sender, BackRequestedEventArgs e)
-    {
-        var entry = Top;
-        if (entry == null)
-            return;
-
-        e.Handled = true;
-        await entry.Controller.TryHideAsync();
     }
 
     Task IOverlayRootControl.ShowAsync(IOverlayController controller, IOverlayControl control, object param)

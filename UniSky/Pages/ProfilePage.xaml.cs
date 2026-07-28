@@ -6,7 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Graphics.Canvas.Effects;
 using Microsoft.Toolkit.Uwp.UI.Animations.Expressions;
 using Microsoft.Toolkit.Uwp.UI.Extensions;
+using UniSky.Navigation;
 using UniSky.Services;
+using UniSky.Services.Navigation;
 using UniSky.ViewModels.Profile;
 using Windows.UI.Composition;
 using Windows.UI.Xaml;
@@ -42,6 +44,9 @@ public sealed partial class ProfilePage : Page, IScrollToTop
     private Visual _subTextContainer;
     private Visual _scrolledDisplayNameContainer;
     private SpriteVisual _blurredBackgroundImageVisual;
+    private bool _scrollEffectInitialized;
+    private NavigationRoute _currentRoute;
+    private NavigationRoute _animationOrigin;
 
     public ProfilePageViewModel ViewModel
     {
@@ -65,16 +70,35 @@ public sealed partial class ProfilePage : Page, IScrollToTop
         safeAreaService.SetTitlebarTheme(ElementTheme.Default);
         safeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
 
-        if (e.Parameter is Uri { Scheme: "unisky" } uri)
-            HandleUniskyProtocol(uri);
-        else if (e.Parameter is ATObject basic)
-            this.DataContext = ViewModel = ActivatorUtilities.CreateInstance<ProfilePageViewModel>(ServiceContainer.Default, basic);
-        else
-            this.DataContext = ViewModel = ActivatorUtilities.CreateInstance<ProfilePageViewModel>(ServiceContainer.Default);
+        var scope = NavigationScopeHost.FindFor(this.Frame);
+        var route = (e.Parameter as NavigationRequest)?.Route;
+        
+        if (e.NavigationMode != NavigationMode.Back)
+            _animationOrigin = (e.Parameter as NavigationRequest)?.Animation?.Origin;
 
-        var animation = ConnectedAnimationService.GetForCurrentView()
-                .GetAnimation("ProfilePageImage");
-        animation?.TryStart(ProfileImage, [DisplayNameBlock, HandleBlock]);
+        if (ViewModel != null && Equals(_currentRoute, route))
+            return;
+
+        _currentRoute = route;
+
+        if (e.Parameter is NavigationRequest { Payload: ATObject profile })
+            this.DataContext = ViewModel = ActivatorUtilities.CreateInstance<ProfilePageViewModel>(ServiceContainer.Default, scope, profile);
+        else if (e.Parameter is NavigationRequest request && ATIdentifier.TryCreate(request.Route.Actor ?? "", out var actor))
+            this.DataContext = ViewModel = ActivatorUtilities.CreateInstance<ProfilePageViewModel>(ServiceContainer.Default, scope, actor);
+        else
+            this.DataContext = ViewModel = ActivatorUtilities.CreateInstance<ProfilePageViewModel>(ServiceContainer.Default, scope);
+    }
+
+    protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+    {
+        base.OnNavigatingFrom(e);
+        
+        if (e.NavigationMode != NavigationMode.Back || _animationOrigin == null)
+            return;
+
+        ConnectedAnimations.Prepare(ConnectedAnimations.ProfileAvatar, ProfileImage);
+        ServiceContainer.Scoped.GetRequiredService<IConnectedAnimationCoordinator>()
+            .PrepareBack(ConnectedAnimations.ProfileAvatar, _animationOrigin);
     }
 
     protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -84,20 +108,44 @@ public sealed partial class ProfilePage : Page, IScrollToTop
         safeAreaService.SetTitlebarTheme(ElementTheme.Default);
     }
 
-    private void HandleUniskyProtocol(Uri uri)
-    {
-        var path = uri.PathAndQuery.Split('/', StringSplitOptions.RemoveEmptyEntries);
-        if (path.Length < 2 || !string.Equals(path[0], "profile", StringComparison.InvariantCultureIgnoreCase))
-        {
-            this.Frame.Navigate(typeof(FeedsPage));
-        }
-
-        if (ATDid.TryCreate(path[1], out var did))
-            this.DataContext = ViewModel = ActivatorUtilities.CreateInstance<ProfilePageViewModel>(ServiceContainer.Default, did);
-    }
-
     private void Page_Loaded(object sender, RoutedEventArgs e)
     {
+        if (!TryStartAvatarAnimation())
+            InitializeScrollEffect();
+    }
+
+    private void RootList_Loaded(object sender, RoutedEventArgs e)
+    {
+        _ = ConnectedAnimations.TryLandBackAsync(ConnectedAnimations.ThreadPost, RootList, "PrimaryContent");
+        _ = ConnectedAnimations.TryLandBackAsync(ConnectedAnimations.ProfileAvatar, RootList, "ProfileEllipse");
+    }
+
+    private bool TryStartAvatarAnimation()
+    {
+        var animation = ConnectedAnimations.Get(ConnectedAnimations.ProfileAvatar);
+        if (animation == null)
+            return false;
+
+        animation.Completed += OnAvatarAnimationCompleted;
+
+        if (ConnectedAnimations.TryStart(
+                ConnectedAnimations.ProfileAvatar,
+                ProfileImage,
+                ConnectedAnimationDirection.Forward,
+                DisplayNameBlock,
+                HandleBlock))
+        {
+            return true;
+        }
+        
+        animation.Completed -= OnAvatarAnimationCompleted;
+        animation.Cancel();
+        return false;
+    }
+
+    private void OnAvatarAnimationCompleted(ConnectedAnimation sender, object args)
+    {
+        sender.Completed -= OnAvatarAnimationCompleted;
         InitializeScrollEffect();
     }
 
@@ -113,6 +161,11 @@ public sealed partial class ProfilePage : Page, IScrollToTop
 
     private void InitializeScrollEffect()
     {
+        if (_scrollEffectInitialized)
+            return;
+
+        _scrollEffectInitialized = true;
+
         // Retrieve the ScrollViewer that the GridView is using internally
         var scrollViewer = RootList.FindDescendant<ScrollViewer>();
 

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Uwp.UI.Extensions;
+using UniSky.Navigation;
 using UniSky.Services;
+using UniSky.Services.Navigation;
 using UniSky.ViewModels.Profile;
 using UniSky.ViewModels.Search;
 using Windows.Foundation;
@@ -42,7 +44,7 @@ public sealed partial class SearchPage : Page, IScrollToTop
         safeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
 
         if (this.ViewModel == null)
-            this.DataContext = this.ViewModel = ActivatorUtilities.CreateInstance<SearchPageViewModel>(ServiceContainer.Scoped);
+            this.DataContext = this.ViewModel = ActivatorUtilities.CreateInstance<SearchPageViewModel>(ServiceContainer.Scoped, NavigationScopeHost.FindFor(this.Frame));
     }
 
     protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -97,6 +99,9 @@ public sealed partial class SearchPage : Page, IScrollToTop
 
     private void RootList_Loaded(object sender, RoutedEventArgs e)
     {
+        _ = ConnectedAnimations.TryLandBackAsync(ConnectedAnimations.ThreadPost, RootList, "PrimaryContent");
+        _ = ConnectedAnimations.TryLandBackAsync(ConnectedAnimations.ProfileAvatar, RootList, "ProfileImage");
+
         var themeService = ServiceContainer.Scoped.GetRequiredService<IThemeService>();
         if (themeService.GetTheme() == AppTheme.SunValley)
             return;

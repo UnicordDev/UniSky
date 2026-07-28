@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
+using FishyFlip.Models;
 using UniSky.Moderation;
 using UniSky.Services;
 
@@ -9,6 +10,10 @@ public partial class ContentWarningViewModel : ViewModelBase
 {
     private readonly IModerationService moderationService
         = ServiceContainer.Default.GetRequiredService<IModerationService>();
+    private readonly IContentRevealService revealService
+        = ServiceContainer.Default.GetRequiredService<IContentRevealService>();
+
+    private readonly ATUri uri;
 
     [ObservableProperty]
     private string warning;
@@ -21,9 +26,11 @@ public partial class ContentWarningViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool canOverride = true;
-
-    public ContentWarningViewModel(ModerationUI mediaFilter)
+    
+    public ContentWarningViewModel(ModerationUI mediaFilter, ATUri uri = null)
     {
+        this.uri = uri;
+
         var cause = mediaFilter.Blurs.FirstOrDefault();
         if (cause == null)
             return;
@@ -49,7 +56,12 @@ public partial class ContentWarningViewModel : ViewModelBase
             Warning = "Hidden";
         }
 
-        IsHidden = true;
         CanOverride = !mediaFilter.NoOverride;
+    
+        // TODO: sync event
+        IsHidden = !revealService.IsRevealed(uri);
     }
+    
+    partial void OnIsHiddenChanged(bool value)
+        => revealService.SetRevealed(uri, !value);
 }

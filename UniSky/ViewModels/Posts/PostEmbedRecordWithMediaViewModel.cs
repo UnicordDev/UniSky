@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using FishyFlip.Lexicon.App.Bsky.Embed;
+using UniSky.Services.Navigation;
 
 namespace UniSky.ViewModels.Posts;
 
@@ -10,9 +11,9 @@ public partial class PostEmbedRecordWithMediaViewModel : PostEmbedViewModel
     [ObservableProperty]
     private PostEmbedViewModel media;
 
-    public PostEmbedRecordWithMediaViewModel(ViewRecordWithMedia embed, bool isNested) : base(embed)
+    public PostEmbedRecordWithMediaViewModel(INavigationContext navigation, ViewRecordWithMedia embed, bool isNested) : base(navigation, embed)
     {
-        Record = !isNested ? PostViewModel.CreateEmbedViewModel(embed.Record, isNested) : null;
-        Media = PostViewModel.CreateEmbedViewModel(embed.Media, true);
+        Record = !isNested ? PostViewModel.CreateEmbedViewModel(navigation, embed.Record, isNested) : null;
+        Media = PostViewModel.CreateEmbedViewModel(navigation, embed.Media, true);
     }
 }

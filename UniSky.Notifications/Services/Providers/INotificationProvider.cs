@@ -17,10 +17,10 @@ public interface INotificationProvider
         if (!await PopulateModernNotification(at, notification, contentBuilder))
             return false;
 
-        var title = contentBuilder.Visual.BindingGeneric.Children
+        var title = contentBuilder.Content.Visual.BindingGeneric.Children
             .OfType<AdaptiveText>()
             .FirstOrDefault(t => t.HintStyle == AdaptiveTextStyle.Title);
-        var body = contentBuilder.Visual.BindingGeneric.Children
+        var body = contentBuilder.Content.Visual.BindingGeneric.Children
             .OfType<AdaptiveText>()
             .FirstOrDefault(t => t.HintStyle == AdaptiveTextStyle.Body);
 

@@ -161,7 +161,7 @@ public class NotificationsCollection : ObservableCollection<NotificationViewMode
                             if (notification.Reason is (NotificationReason.Like or NotificationReason.Repost))
                                 _ = posts.TryGetValue(notification.ReasonSubject.ToString(), out post);
 
-                            Add(new NotificationViewModel(notification, post));
+                            Add(new NotificationViewModel(parent.Navigation, notification, post));
                         }
 
                         continue;
@@ -173,7 +173,7 @@ public class NotificationsCollection : ObservableCollection<NotificationViewMode
                     if (notification.Reason is (NotificationReason.Like or NotificationReason.Repost))
                         _ = posts.TryGetValue(notification.ReasonSubject.ToString(), out post);
 
-                    Add(new NotificationViewModel(group, post));
+                    Add(new NotificationViewModel(parent.Navigation, group, post));
                 }
 
                 ArrayList.Adapter(this).Sort(); // ?????

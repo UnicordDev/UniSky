@@ -1,10 +1,13 @@
 ﻿using System;
+using CommunityToolkit.WinUI.Notifications;
 using Humanizer.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using UniSky.Extensions;
 using UniSky.Helpers.Localisation;
+using UniSky.Navigation;
 using UniSky.Services;
+using UniSky.Services.Navigation;
 using UniSky.Services.Overlay;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
@@ -79,9 +82,16 @@ sealed partial class App : Application
         collection.AddSingleton<INavigationServiceLocator, NavigationServiceLocator>();
         collection.AddSingleton<INotificationsService, BackgroundNotificationsService>();
         collection.AddSingleton<IModerationService, ModerationService>();
+        collection.AddSingleton<IContentRevealService, ContentRevealService>();
         collection.AddSingleton<IEmbedExtractor, AngleSharpEmbedExtractor>();
         collection.AddSingleton<IImageCompressionService, ImageCompressionService>();
+        collection.AddSingleton<IRouteTable, RouteTable>();
+        collection.AddSingleton<IActivationCoordinator, ActivationCoordinator>();
 
+        // scopes are per-thread i.e. per CoreWindow
+        collection.AddScoped<INavigationScopeRegistry, NavigationScopeRegistry>();
+        collection.AddScoped<IBackNavigationCoordinator, BackNavigationCoordinator>();
+        collection.AddScoped<IConnectedAnimationCoordinator, ConnectedAnimationCoordinator>();
         collection.AddScoped<ISafeAreaService, ApplicationViewSafeAreaService>();
         collection.AddScoped<ISheetService, SheetService>();
         collection.AddScoped<IStandardOverlayService, StandardOverlayService>();
@@ -103,10 +113,59 @@ sealed partial class App : Application
 
     protected override void OnActivated(IActivatedEventArgs args)
     {
-        if (args is ProtocolActivatedEventArgs e)
+        switch (args)
         {
-            this.OnProtocolActivated(e);
+            case ProtocolActivatedEventArgs e:
+                this.OnProtocolActivated(e);
+                break;
+            case ToastNotificationActivatedEventArgs toast:
+                this.OnToastActivated(toast);
+                break;
         }
+    }
+
+    /// <summary>
+    /// Turns an activation URI into a queued navigation request.
+    /// </summary>
+    private void QueueActivationRequest(string target, NavigationSource source)
+    {
+        if (string.IsNullOrEmpty(target) || !NavigationRoute.TryParse(target, out var route))
+            return;
+
+        ServiceContainer.Default.GetRequiredService<IActivationCoordinator>()
+            .Enqueue(new NavigationRequest(route) { Source = source });
+    }
+
+    /// <summary>
+    /// Puts the root frame in place if this activation is what started the app, and activates the
+    /// window whether or not that succeeded.
+    /// </summary>
+    private void EnsureRootFrameActivated(SplashScreen splashScreen)
+    {
+        try
+        {
+            if (Window.Current.Content is Frame)
+                return;
+
+            var rootFrame = new Frame();
+            rootFrame.NavigationFailed += OnNavigationFailed;
+            rootFrame.Navigate(typeof(RootPage), splashScreen);
+            Window.Current.Content = rootFrame;
+        }
+        finally
+        {
+            Window.Current.Activate();
+        }
+    }
+
+    private void OnToastActivated(ToastNotificationActivatedEventArgs e)
+    {
+        Hairline.Initialize();
+        EnsureRootFrameActivated(null);
+
+        var arguments = ToastArguments.Parse(e.Argument);
+        if (arguments.TryGetValue("Record", out var record))
+            QueueActivationRequest(record, NavigationSource.Toast);
     }
 
     /// <summary>
@@ -127,9 +186,7 @@ sealed partial class App : Application
         // just ensure that the window is active
         if (Window.Current.Content is not Frame rootFrame)
         {
-            // Create a Frame to act as the navigation context and navigate to the first page
             rootFrame = new Frame();
-
             rootFrame.NavigationFailed += OnNavigationFailed;
 
             if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
@@ -145,33 +202,31 @@ sealed partial class App : Application
         {
             CoreApplication.EnablePrelaunch(true);
 
-            if (rootFrame.Content == null)
+            try
             {
-                // When the navigation stack isn't restored navigate to the first page,
-                // configuring the new page by passing required information as a navigation
-                // parameter
-                rootFrame.Navigate(typeof(RootPage), e.SplashScreen);
+                if (rootFrame.Content == null)
+                {
+                    // When the navigation stack isn't restored navigate to the first page,
+                    // configuring the new page by passing required information as a navigation
+                    // parameter
+                    rootFrame.Navigate(typeof(RootPage), e.SplashScreen);
+                }
+            }
+            finally
+            {
+                // Ensure the current window is active
+                Window.Current.Activate();
             }
 
-            // Ensure the current window is active
-            Window.Current.Activate();
+            QueueActivationRequest(e.Arguments, NavigationSource.Protocol);
         }
     }
 
     private void OnProtocolActivated(ProtocolActivatedEventArgs e)
     {
         Hairline.Initialize();
-
-        if (Window.Current.Content is not Frame rootFrame)
-        {
-            rootFrame = new Frame();
-            rootFrame.NavigationFailed += OnNavigationFailed;
-            rootFrame.Navigate(typeof(RootPage), e.SplashScreen);
-            Window.Current.Content = rootFrame;
-        }
-
-        // Ensure the current window is active
-        Window.Current.Activate();
+        EnsureRootFrameActivated(e.SplashScreen);
+        QueueActivationRequest(e.Uri?.ToString(), NavigationSource.Protocol);
     }
 
     /// <summary>

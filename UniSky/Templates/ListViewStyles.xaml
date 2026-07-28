@@ -86,4 +86,79 @@
         </Setter>
     </Style>
 
+    <Style x:Key="ImageCarouselItemContainerStyle" TargetType="ListViewItem">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Margin" Value="0"/>
+        <!-- ListViewItem defaults to 88x44; that would floor narrow carousel items. -->
+        <Setter Property="MinWidth" Value="0"/>
+        <Setter Property="MinHeight" Value="0"/>
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="UseSystemFocusVisuals" Value="False"/>
+    </Style>
+
+    <!-- The horizontally scrolling image strip used for posts with more images than the grid can
+         show. Note the snap point properties are set directly on the ScrollViewer rather than via
+         ScrollViewer.* attached properties on the ListView: the default ListView template forwards
+         scroll mode, rails, chaining and zoom, but NOT HorizontalSnapPointsType or
+         HorizontalSnapPointsAlignment, so setting those from outside is silently a no-op.
+
+         Snapping is Optional rather than Mandatory on purpose. With Near alignment the snap points
+         sit at item leading edges, so the last one lands at (ExtentWidth - lastItemWidth) — past the
+         maximum scroll offset of (ExtentWidth - ViewportWidth) whenever the last image is narrower
+         than the viewport. Mandatory snapping would then drag you back off the end of the strip. -->
+    <Style x:Key="ImageCarouselListViewStyle" TargetType="ListView">
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="TabNavigation" Value="Local"/>
+        <Setter Property="IsSwipeEnabled" Value="False"/>
+        <Setter Property="SelectionMode" Value="None"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="ItemContainerStyle" Value="{StaticResource ImageCarouselItemContainerStyle}"/>
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <ItemsStackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListView">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <Border.Resources>
+                            <SolidColorBrush Color="Transparent" x:Key="ListViewItemRevealBackground"/>
+                            <SolidColorBrush Color="Transparent" x:Key="ListViewItemBackgroundPointerOver"/>
+                            <SolidColorBrush Color="Transparent" x:Key="ListViewItemBackgroundPressed"/>
+                            <Thickness x:Key="ListViewItemRevealBorderThemeThickness">0</Thickness>
+                        </Border.Resources>
+                        <ScrollViewer x:Name="ScrollViewer"
+                                      AutomationProperties.AccessibilityView="Raw"
+                                      BringIntoViewOnFocusChange="False"
+                                      HorizontalScrollMode="Enabled"
+                                      HorizontalScrollBarVisibility="Hidden"
+                                      VerticalScrollMode="Disabled"
+                                      VerticalScrollBarVisibility="Disabled"
+                                      IsHorizontalRailEnabled="True"
+                                      IsVerticalRailEnabled="False"
+                                      IsHorizontalScrollChainingEnabled="True"
+                                      IsVerticalScrollChainingEnabled="True"
+                                      HorizontalSnapPointsType="OptionalSingle"
+                                      HorizontalSnapPointsAlignment="Near"
+                                      IsDeferredScrollingEnabled="False"
+                                      ZoomMode="Disabled">
+                            <ItemsPresenter Padding="{TemplateBinding Padding}"/>
+                        </ScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

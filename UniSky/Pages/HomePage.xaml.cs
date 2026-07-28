@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using UniSky.Navigation;
 using UniSky.Services;
 using UniSky.ViewModels;
 using Windows.UI.Xaml;
@@ -7,13 +8,8 @@ using Windows.UI.Xaml.Navigation;
 
 using MUXC = Microsoft.UI.Xaml.Controls;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
-
 namespace UniSky.Pages;
 
-/// <summary>
-/// An empty page that can be used on its own or navigated to within a Frame.
-/// </summary>
 public sealed partial class HomePage : Page
 {
     public HomeViewModel ViewModel
@@ -38,10 +34,13 @@ public sealed partial class HomePage : Page
         safeAreaService.SetTitlebarTheme(ElementTheme.Default);
         safeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
 
+        var region = NavigationScopeHost.EnsureScope(FrameContent);
+
         if (e.Parameter is not HomeViewModel)
             return;
 
         DataContext = ViewModel = (HomeViewModel)e.Parameter;
+        ViewModel.AttachToRegion(region);
     }
 
     private void OnSafeAreaUpdated(object sender, SafeAreaUpdatedEventArgs e)

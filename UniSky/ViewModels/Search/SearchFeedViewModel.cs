@@ -3,6 +3,7 @@ using System.Collections;
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using UniSky.Services;
+using UniSky.Services.Navigation;
 using Windows.ApplicationModel.Resources;
 
 namespace UniSky.ViewModels.Search;
@@ -21,6 +22,7 @@ public partial class SearchFeedViewModel : ViewModelBase
     private bool selected;
 
     public SearchFeedViewModel(SearchPageViewModel parent, string type, IProtocolService protocolService)
+        : base(parent.Navigation)
     {
         this.parent = parent;
         this.parent.PropertyChanged += OnParentPropertyChanged;

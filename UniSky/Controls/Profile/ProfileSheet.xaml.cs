@@ -1,5 +1,6 @@
 using UniSky.Controls.Overlay;
 using UniSky.Controls.Sheet;
+using UniSky.Navigation;
 using UniSky.Pages;
 using UniSky.Services;
 
@@ -16,6 +17,7 @@ public sealed partial class ProfileSheet : SheetControl
 
     private void OnShowing(IOverlayControl sender, OverlayShowingEventArgs args)
     {
+        SheetNavigationScope.Attach(ContentFrame, this);
         ContentFrame.Navigate(typeof(ProfilePage));
     }
 }

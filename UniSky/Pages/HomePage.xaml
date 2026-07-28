@@ -11,6 +11,7 @@
     xmlns:viewmodels="using:UniSky.ViewModels" 
     xmlns:converters="using:UniSky.Converters"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" xmlns:unisky="using:UniSky.Controls"
+    xmlns:nav="using:UniSky.Navigation"
     mc:Ignorable="d"
     DataContext="{x:Bind ViewModel}"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
@@ -153,6 +154,8 @@
                         ui:UIElementExtensions.ClipToBounds="True">
                         <ContentControl x:Name="FrameContent"
                                     Content="{x:Bind ViewModel.SelectedMenuItem.Content, Mode=OneWay}"
+                                    nav:NavigationScopeHost.Kind="Region"
+                                    nav:NavigationScopeHost.Scope="home"
                                     HorizontalAlignment="Stretch"
                                     HorizontalContentAlignment="Stretch"
                                     VerticalAlignment="Stretch"
@@ -245,10 +248,10 @@
                     </Grid>
 
                 </Border>
-
-                <unisky:TitleBar x:Name="TitleBarControl" 
-                                 IsBackButtonVisible="{x:Bind ViewModel.SelectedMenuItem.Content.CanGoBack, Mode=OneWay}"
-                                 BackButtonCommand="{x:Bind ViewModel.SelectedMenuItem.GoBackCommand, Mode=OneWay}"
+                
+                <unisky:TitleBar x:Name="TitleBarControl"
+                                 IsBackButtonVisible="{x:Bind ViewModel.CanGoBack, Mode=OneWay}"
+                                 BackButtonCommand="{x:Bind ViewModel.GoBackCommand, Mode=OneWay}"
                                  VerticalAlignment="Top"/>
             </Grid>
 

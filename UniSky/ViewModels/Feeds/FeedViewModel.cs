@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using FishyFlip.Lexicon.App.Bsky.Feed;
 using FishyFlip.Models;
 using UniSky.Services;
+using UniSky.Services.Navigation;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 
@@ -31,14 +32,15 @@ public partial class FeedViewModel : ViewModelBase
     [ObservableProperty]
     private FeedItemCollection items = null!;
 
-    protected FeedViewModel(FeedType type, IProtocolService protocolService)
+    protected FeedViewModel(INavigationContext navigation, FeedType type, IProtocolService protocolService)
+        : base(navigation)
     {
         this.type = type;
         this.protocolService = protocolService;
     }
 
-    public FeedViewModel(FeedType type, ATUri? id, GeneratorView? record, IProtocolService protocolService)
-        : this(type, protocolService)
+    public FeedViewModel(INavigationContext navigation, FeedType type, ATUri? id, GeneratorView? record, IProtocolService protocolService)
+        : this(navigation, type, protocolService)
     {
         this.id = id;
         this.generator = record;

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Uwp.UI.Extensions;
+using UniSky.Navigation;
 using UniSky.Services;
+using UniSky.Services.Navigation;
 using UniSky.ViewModels;
 using UniSky.ViewModels.Feeds;
 using Windows.UI.Xaml;
@@ -31,8 +33,9 @@ public sealed partial class FeedsPage : Page, IScrollToTop
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
-
-        this.ViewModel = ActivatorUtilities.CreateInstance<FeedsViewModel>(ServiceContainer.Scoped);
+        
+        if (this.ViewModel == null)
+            this.ViewModel = ActivatorUtilities.CreateInstance<FeedsViewModel>(ServiceContainer.Scoped, NavigationScopeHost.FindFor(this.Frame));
 
         var safeAreaService = ServiceContainer.Scoped.GetRequiredService<ISafeAreaService>();
         safeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
@@ -58,6 +61,14 @@ public sealed partial class FeedsPage : Page, IScrollToTop
     private void PivotHeaderText_Tapped(object sender, TappedRoutedEventArgs e)
     {
         ScrollToTop();
+    }
+    
+    private void FeedList_Loaded(object sender, RoutedEventArgs e)
+    {
+        var list = (ListView)sender;
+
+        _ = ConnectedAnimations.TryLandBackAsync(ConnectedAnimations.ThreadPost, list, "PrimaryContent");
+        _ = ConnectedAnimations.TryLandBackAsync(ConnectedAnimations.ProfileAvatar, list, "ProfileEllipse");
     }
 
     private async void RefreshAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)

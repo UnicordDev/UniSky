@@ -8,13 +8,16 @@
     xmlns:viewmodels="using:UniSky.ViewModels"
     xmlns:pages="using:UniSky.Pages"
     xmlns:sheet="using:UniSky.Controls.Sheet" xmlns:overlay="using:UniSky.Controls.Overlay"
+    xmlns:nav="using:UniSky.Navigation"
     mc:Ignorable="d"
     NavigationCacheMode="Required"
     Background="{ThemeResource ApplicationRootPageBackgroundBrush}">
     <Page.Resources>
     </Page.Resources>
 
-    <Grid>
+    <Grid x:Name="ShellRoot"
+          nav:NavigationScopeHost.Kind="Shell"
+          nav:NavigationScopeHost.Scope="root">
         <!-- Elements that are being rendered to a RenderTargetBitmap are temporarily hosted inside this Canvas -->
         <Canvas x:Name="RenderTargetRoot"/>
 

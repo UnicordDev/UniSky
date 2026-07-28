@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using UniSky.Controls.Compose;
 using UniSky.Extensions;
 using UniSky.Services;
+using UniSky.Services.Navigation;
 using UniSky.ViewModels.Feeds;
 
 namespace UniSky.ViewModels;
@@ -27,8 +28,10 @@ public partial class FeedsViewModel : ViewModelBase
     private int selectedFeed;
 
     public FeedsViewModel(
+        INavigationContext navigation,
         IProtocolService protocolService,
         ILogger<FeedsViewModel> logger)
+        : base(navigation)
     {
         this.protocolService = protocolService;
         this.logger = logger;
@@ -85,11 +88,11 @@ public partial class FeedsViewModel : ViewModelBase
                             continue;
                         }
 
-                        Feeds.Add(new FeedViewModel(FeedType.Custom, generatedFeed.Uri, generatedFeed, this.protocolService));
+                        Feeds.Add(new FeedViewModel(Navigation, FeedType.Custom, generatedFeed.Uri, generatedFeed, this.protocolService));
                     }
                     else if (feed is { TypeValue: "timeline", Value: "following" })
                     {
-                        Feeds.Add(new FeedViewModel(FeedType.Following, null, null, this.protocolService));
+                        Feeds.Add(new FeedViewModel(Navigation, FeedType.Following, null, null, this.protocolService));
                     }
                     else
                     {

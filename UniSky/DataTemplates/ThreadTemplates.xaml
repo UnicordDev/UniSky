@@ -53,95 +53,95 @@
             </Grid>
 
             <StackPanel Grid.Column="1">
-                <Button Command="{x:Bind Author.OpenProfileCommand}"
-                        CommandParameter="{Binding ElementName=ProfileEllipse}"
-                        Style="{ThemeResource CleanButtonStyle}"
-                        Padding="0"
-                        VerticalAlignment="Top"
-                        HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Stretch">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                <StackPanel x:Name="PrimaryContent">
+                    <Button Command="{x:Bind Author.OpenProfileCommand}"
+                            CommandParameter="{Binding ElementName=ProfileEllipse}"
+                            Style="{ThemeResource CleanButtonStyle}"
+                            Padding="0"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                        <Button Command="{x:Bind Author.OpenProfileCommand}"
-                                CommandParameter="{Binding ElementName=ProfileEllipse}"
-                                Style="{ThemeResource CleanButtonStyle}"
-                                Padding="0"
-                                Grid.Column="0"
-                                Grid.RowSpan="2"
-                                VerticalAlignment="Top">
-                            <Ellipse x:Name="ProfileEllipse"
-                                Width="42" 
-                                Height="42">
-                                <Ellipse.Fill>
-                                    <ImageBrush>
-                                        <ImageBrush.ImageSource>
-                                            <BitmapImage UriSource="{Binding Author.AvatarUrl}"
-                                                    DecodePixelWidth="42"
-                                                    DecodePixelHeight="42"
-                                                    DecodePixelType="Logical"/>
-                                        </ImageBrush.ImageSource>
-                                    </ImageBrush>
-                                </Ellipse.Fill>
-                            </Ellipse>
-                        </Button>
-
-
-                        <StackPanel Grid.Column="1"
+                            <Button Command="{x:Bind Author.OpenProfileCommand}"
+                                    CommandParameter="{Binding ElementName=ProfileEllipse}"
+                                    Style="{ThemeResource CleanButtonStyle}"
+                                    Padding="0"
+                                    Grid.Column="0"
                                     Grid.RowSpan="2"
-                                    VerticalAlignment="Center"
-                                    Margin="8,0,0,0">
-                            <TextBlock FontWeight="Bold"                        
-                                        Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"                 
-                                        VerticalAlignment="Bottom"
-                                        TextTrimming="CharacterEllipsis"
-                                        Text="{x:Bind Author.Name, Mode=OneWay}"/>
+                                    VerticalAlignment="Top">
+                                <Ellipse x:Name="ProfileEllipse"
+                                    Width="42"
+                                    Height="42">
+                                    <Ellipse.Fill>
+                                        <ImageBrush>
+                                            <ImageBrush.ImageSource>
+                                                <BitmapImage UriSource="{Binding Author.AvatarUrl}"
+                                                        DecodePixelWidth="42"
+                                                        DecodePixelHeight="42"
+                                                        DecodePixelType="Logical"/>
+                                            </ImageBrush.ImageSource>
+                                        </ImageBrush>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </Button>
 
-                            <TextBlock Foreground="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"                 
-                                        Style="{ThemeResource CaptionTextBlockStyle}"
-                                        VerticalAlignment="Top"
-                                        TextTrimming="CharacterEllipsis"
-                                        Text="{x:Bind Author.Handle, Mode=OneWay}"/>
-                        </StackPanel>
-                    </Grid>
-                </Button>
 
-                <labels:LabelsControl x:Name="LabelViewer"
-                                      x:Phase="3"
-                                      x:Load="{x:Bind converters:Static.Any(Labels)}"
-                                      Labels="{x:Bind Labels}"
-                                      Margin="0,6,0,0"/>
+                            <StackPanel Grid.Column="1"
+                                        Grid.RowSpan="2"
+                                        VerticalAlignment="Center"
+                                        Margin="8,0,0,0">
+                                <TextBlock FontWeight="Bold"
+                                            Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                                            VerticalAlignment="Bottom"
+                                            TextTrimming="CharacterEllipsis"
+                                            Text="{x:Bind Author.Name, Mode=OneWay}"/>
 
-                <controls:FacetTextBlock x:Name="MainContent"
-                                        x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Text)}"
-                                        Inlines="{x:Bind RichText.Facets}"
-                                        FontSize="16"
-                                        TextWrapping="Wrap"
-                                        IsTextSelectionEnabled="True"
-                                        Margin="0,4,0,4"
-                                        VerticalAlignment="Top"/>
+                                <TextBlock Foreground="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
+                                            Style="{ThemeResource CaptionTextBlockStyle}"
+                                            VerticalAlignment="Top"
+                                            TextTrimming="CharacterEllipsis"
+                                            Text="{x:Bind Author.Handle, Mode=OneWay}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Button>
 
-                <controls:SpoilerControl x:Name="EmbedContentContainer"
-                                         x:Load="{x:Bind converters:Static.NotNull(Embed)}"
-                                         x:Phase="2"
-                                         Warning="{x:Bind Warning, Mode=OneWay}"
-                                         WarningTemplate="{StaticResource PostContentWarningTemplate}"
-                                         CanOverride="{x:Bind Warning.CanOverride, Mode=OneWay}"
-                                         IsHidden="{x:Bind Warning.IsHidden, Mode=TwoWay}"
-                                         Margin="0,4,0,0">
-                    <ContentControl x:Name="EmbedContent"
-                                    HorizontalAlignment="Stretch"
-                                    HorizontalContentAlignment="Stretch"
-                                    ContentTemplateSelector="{StaticResource PostEmbedTemplateSelector}"
-                                    Content="{x:Bind Embed}"/>
-                </controls:SpoilerControl>
+                    <labels:LabelsControl x:Name="LabelViewer"
+                                          x:Load="{x:Bind converters:Static.Any(Labels)}"
+                                          Labels="{x:Bind Labels}"
+                                          Margin="0,6,0,0"/>
+
+                    <controls:FacetTextBlock x:Name="MainContent"
+                                            x:Load="{x:Bind converters:Static.NotNullOrWhiteSpace(Text)}"
+                                            Inlines="{x:Bind RichText.Facets}"
+                                            FontSize="16"
+                                            TextWrapping="Wrap"
+                                            IsTextSelectionEnabled="True"
+                                            Margin="0,4,0,4"
+                                            VerticalAlignment="Top"/>
+
+                    <controls:SpoilerControl x:Name="EmbedContentContainer"
+                                             x:Load="{x:Bind converters:Static.NotNull(Embed)}"
+                                             Warning="{x:Bind Warning, Mode=OneWay}"
+                                             WarningTemplate="{StaticResource PostContentWarningTemplate}"
+                                             CanOverride="{x:Bind Warning.CanOverride, Mode=OneWay}"
+                                             IsHidden="{x:Bind Warning.IsHidden, Mode=TwoWay}"
+                                             Margin="0,4,0,0">
+                        <ContentControl x:Name="EmbedContent"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Stretch"
+                                        ContentTemplateSelector="{StaticResource PostEmbedTemplateSelector}"
+                                        Content="{x:Bind Embed}"/>
+                    </controls:SpoilerControl>
+                </StackPanel>
 
                 <TextBlock x:Name="DateBlock"
                             x:Phase="4"

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Uwp.UI.Extensions;
+using UniSky.Navigation;
 using UniSky.Services;
+using UniSky.Services.Navigation;
 using UniSky.ViewModels.Bookmarks;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -35,7 +37,7 @@ public sealed partial class BookmarksPage : Page, IScrollToTop
         safeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
 
         if (this.ViewModel == null)
-            this.DataContext = this.ViewModel = ActivatorUtilities.CreateInstance<BookmarksPageViewModel>(ServiceContainer.Scoped);
+            this.DataContext = this.ViewModel = ActivatorUtilities.CreateInstance<BookmarksPageViewModel>(ServiceContainer.Scoped, NavigationScopeHost.FindFor(this.Frame));
     }
 
     protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -57,6 +59,9 @@ public sealed partial class BookmarksPage : Page, IScrollToTop
 
     private void RootList_Loaded(object sender, RoutedEventArgs e)
     {
+        _ = ConnectedAnimations.TryLandBackAsync(ConnectedAnimations.ThreadPost, RootList, "PrimaryContent");
+        _ = ConnectedAnimations.TryLandBackAsync(ConnectedAnimations.ProfileAvatar, RootList, "ProfileEllipse");
+
         var themeService = ServiceContainer.Scoped.GetRequiredService<IThemeService>();
         if (themeService.GetTheme() == AppTheme.SunValley)
             return;

@@ -19,11 +19,13 @@
   <Application>
     <Namespace Name="UniSky.ViewModels" Activate="Required Public" />
     <Namespace Name="UniSky.Services" Activate="Required Public" />
-    
+    <Namespace Name="UniSky.Navigation" Activate="Required Public" />
+
     <Namespace Name="Microsoft.Extensions.Options" Activate="Required Public" />
     <Namespace Name="Microsoft.Extensions.Logging" Activate="Required Public" />
-    
+
     <Namespace Name="Microsoft.Toolkit.Uwp.UI.Animations.Expressions" Dynamic="Required PublicAndInternal" />
     <Namespace Name="Microsoft.Toolkit.Uwp.Notifications" Dynamic="Required All" />
+    <Namespace Name="CommunityToolkit.WinUI.Notifications" Dynamic="Required All" />
   </Application>
 </Directives>

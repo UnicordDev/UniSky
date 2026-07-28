@@ -7,8 +7,10 @@ using FishyFlip.Lexicon.App.Bsky.Feed;
 using Humanizer;
 using Microsoft.Extensions.DependencyInjection;
 using UniSky.Moderation;
+using UniSky.Navigation;
 using UniSky.Pages;
 using UniSky.Services;
+using UniSky.Services.Navigation;
 using UniSky.ViewModels.Profile;
 using UniSky.ViewModels.Text;
 
@@ -35,14 +37,14 @@ public partial class PostEmbedPostViewModel : PostEmbedViewModel
     public ViewRecord View { get; }
     public Post Post { get; }
 
-    public PostEmbedPostViewModel(ViewRecord view, Post post) : base(view)
+    public PostEmbedPostViewModel(INavigationContext navigation, ViewRecord view, Post post) : base(navigation, view)
     {
         this.View = view;
         this.Post = post;
 
         Text = post.Text;
         RichText = new RichTextViewModel(post.Text, post.Facets ?? []);
-        Author = new ProfileViewModel(view.Author);
+        Author = new ProfileViewModel(navigation, view.Author);
 
         // TODO: this better
         var moderator = new Moderator(moderationService.ModerationOptions);
@@ -50,10 +52,10 @@ public partial class PostEmbedPostViewModel : PostEmbedViewModel
         var media = decision.GetUI(ModerationContext.ContentMedia);
         if (media.Blur)
         {
-            Warning = new ContentWarningViewModel(media);
+            Warning = new ContentWarningViewModel(media, view.Uri);
         }
 
-        Embed = PostViewModel.CreateEmbedViewModel(view.Embeds?.FirstOrDefault(), true);
+        Embed = PostViewModel.CreateEmbedViewModel(navigation, view.Embeds?.FirstOrDefault(), true);
 
         var timeSinceIndex = DateTime.Now - (view.IndexedAt.Value.ToLocalTime());
         var date = timeSinceIndex.Humanize(1, minUnit: Humanizer.Localisation.TimeUnit.Second);
@@ -62,9 +64,5 @@ public partial class PostEmbedPostViewModel : PostEmbedViewModel
 
     [RelayCommand]
     private void OpenThread()
-    {
-        var navigationService = ServiceContainer.Scoped.GetRequiredService<INavigationServiceLocator>()
-            .GetNavigationService("Home");
-        navigationService.Navigate<ThreadPage>(this.View.Uri);
-    }
+        => Navigate(Routes.Thread(this.View.Uri));
 }

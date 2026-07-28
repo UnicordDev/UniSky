@@ -3,7 +3,9 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using UniSky.Navigation;
 using UniSky.Services;
+using UniSky.Services.Navigation;
 using Windows.ApplicationModel.Resources;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -39,10 +41,21 @@ public partial class MenuItemViewModel : ViewModelBase
 
             var frame = new Frame();
             frame.ContentTransitions = [new NavigationThemeTransition()];
+            
+            NavigationScopeHost.SetKind(frame, NavigationScopeKind.Content);
+            NavigationScopeHost.SetScope(frame, $"home:{Page}");
+            NavigationScopeHost.EnsureScope(frame);
+
             frame.SourcePageType = FrameType;
             return _contentCache = frame;
         }
     }
+
+    /// <summary>
+    /// This tab's navigation scope. Becomes the home region's active child while the tab is selected.
+    /// </summary>
+    public INavigationScope Scope
+        => NavigationScopeHost.GetScopeInstance(Content);
 
     public MenuItemViewModel(HomeViewModel parent, HomePages page, string iconGlyph, Type frameType)
     {

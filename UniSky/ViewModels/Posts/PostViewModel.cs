@@ -20,8 +20,10 @@ using Microsoft.Extensions.DependencyInjection;
 using UniSky.Controls.Compose;
 using UniSky.Helpers;
 using UniSky.Moderation;
+using UniSky.Navigation;
 using UniSky.Pages;
 using UniSky.Services;
+using UniSky.Services.Navigation;
 using UniSky.ViewModels.Compose;
 using UniSky.ViewModels.Moderation;
 using UniSky.ViewModels.Profile;
@@ -34,7 +36,7 @@ using Windows.UI.Xaml;
 
 namespace UniSky.ViewModels.Posts;
 
-public partial class PostViewModel : ViewModelBase
+public partial class PostViewModel : ViewModelBase, IRoutable
 {
     private ATUri like;
     private ATUri repost;
@@ -101,6 +103,9 @@ public partial class PostViewModel : ViewModelBase
     private ContentWarningViewModel warning;
 
     public ATUri Uri { get; }
+    
+    public NavigationRoute Route
+        => NavigationRoute.TryFromAtUri(Uri, out var route) ? route : null;
 
     public Post Post { get; }
     public PostView View { get; }
@@ -129,19 +134,19 @@ public partial class PostViewModel : ViewModelBase
 
     public ObservableCollection<LabelViewModel> Labels { get; } = [];
 
-    public PostViewModel(FeedViewPost feedPost, bool hasParent = false)
-        : this(feedPost.Post)
+    public PostViewModel(INavigationContext navigation, FeedViewPost feedPost, bool hasParent = false)
+        : this(navigation, feedPost.Post)
     {
         HasParent = hasParent;
 
         if (feedPost.Reason is ReasonRepost { By: ProfileViewBasic { } by })
         {
-            RetweetedBy = new ProfileViewModel(by);
+            RetweetedBy = new ProfileViewModel(navigation, by);
         }
 
         if (feedPost.Reply is ReplyRef { Parent: PostView { Author: ProfileViewBasic { } author } })
         {
-            ReplyTo = new ProfileViewModel(author);
+            ReplyTo = new ProfileViewModel(navigation, author);
         }
 
         if (feedPost.FeedContext != null && settingsService.ShowFeedContext)
@@ -156,7 +161,8 @@ public partial class PostViewModel : ViewModelBase
         }
     }
 
-    public PostViewModel(PostView view, bool hasChild = false)
+    public PostViewModel(INavigationContext navigation, PostView view, bool hasChild = false)
+        : base(navigation)
     {
         if (view.Record is not Post post)
             throw new InvalidOperationException();
@@ -171,15 +177,15 @@ public partial class PostViewModel : ViewModelBase
         HasChild = hasChild;
 
         RichText = new RichTextViewModel(post.Text, post.Facets ?? []);
-        Author = new ProfileViewModel(view.Author);
+        Author = new ProfileViewModel(navigation, view.Author);
 
         var media = Moderation.GetUI(ModerationContext.ContentMedia);
         if (media.Blur)
         {
-            Warning = new ContentWarningViewModel(media);
+            Warning = new ContentWarningViewModel(media, view.Uri);
         }
 
-        Embed = CreateEmbedViewModel(view.Embed, false);
+        Embed = CreateEmbedViewModel(navigation, view.Embed, false);
 
         var timeSinceIndex = DateTime.Now - (view.IndexedAt.Value.ToLocalTime());
         var date = timeSinceIndex.Humanize(1, minUnit: Humanizer.Localisation.TimeUnit.Second);
@@ -339,14 +345,11 @@ public partial class PostViewModel : ViewModelBase
 
         DataTransferManager.ShowShareUI();
     }
-
+    
     [RelayCommand]
-    private void OpenThread()
-    {
-        var navigationService = ServiceContainer.Scoped.GetRequiredService<INavigationServiceLocator>()
-            .GetNavigationService("Home");
-        navigationService.Navigate<ThreadPage>(this.Uri);
-    }
+    private void OpenThread(UIElement element)
+        => Navigate(Routes.Thread(this.Uri, this.View)
+            ?.WithAnimation(ConnectedAnimations.ThreadPost, element));
 
     [RelayCommand]
     private async Task Retweet()
@@ -391,7 +394,7 @@ public partial class PostViewModel : ViewModelBase
         return n.ToMetric(decimals: 2);
     }
 
-    internal static PostEmbedViewModel CreateEmbedViewModel(ATObject embed, bool isNested = false)
+    internal static PostEmbedViewModel CreateEmbedViewModel(INavigationContext navigation, ATObject embed, bool isNested = false)
     {
         if (embed is null)
             return null;
@@ -404,13 +407,18 @@ public partial class PostViewModel : ViewModelBase
             ViewVideo video => new PostEmbedVideoViewModel(video),
             ViewExternal external => new PostEmbedExternalViewModel(external),
             ViewRecordWithMedia recordWithMedia => isNested ?
-                CreateEmbedViewModel(recordWithMedia.Media, isNested) :
-                new PostEmbedRecordWithMediaViewModel(recordWithMedia, isNested),
+                CreateEmbedViewModel(navigation, recordWithMedia.Media, isNested) :
+                new PostEmbedRecordWithMediaViewModel(navigation, recordWithMedia, isNested),
             ViewRecordDef and { Record: ViewRecord viewRecord } when !isNested => viewRecord.Value switch
             {
-                Post post => new PostEmbedPostViewModel(viewRecord, post),
+                Post post => new PostEmbedPostViewModel(navigation, viewRecord, post),
                 _ => null
             },
+            // FishyFlip has no lexicon types for app.bsky.embed.gallery, so it arrives unparsed.
+            // GalleryEmbed turns it back into a ViewImages nothing downstream needs to know about.
+            UnknownATObject { Type: GalleryEmbed.ViewType } gallery
+                when GalleryEmbed.TryCreateViewImages(gallery, out var galleryImages)
+                => new PostEmbedImagesViewModel(galleryImages, isCarousel: true),
             _ => null
         };
     }

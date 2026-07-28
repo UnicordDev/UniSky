@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using UniSky.Services;
+using UniSky.Services.Navigation;
 
 namespace UniSky.ViewModels.Bookmarks;
 
@@ -13,7 +14,8 @@ public partial class BookmarksPageViewModel : ViewModelBase
     [ObservableProperty]
     private bool isEmpty;
 
-    public BookmarksPageViewModel(IProtocolService protocolService)
+    public BookmarksPageViewModel(INavigationContext navigation, IProtocolService protocolService)
+        : base(navigation)
     {
         this.protocolService = protocolService;
         this.bookmarks = new BookmarksCollection(this);

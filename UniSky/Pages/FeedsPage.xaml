@@ -57,8 +57,9 @@
                         <mux:RefreshContainer RefreshRequested="OnRefreshRequested">
                             <ListView x:Name="PART_FeedList"
                                       Style="{StaticResource FeedListViewStyle}"
-                                      ItemsSource="{x:Bind Items}" 
-                                      ItemTemplate="{StaticResource FeedItemContentTemplate}">
+                                      ItemsSource="{x:Bind Items}"
+                                      ItemTemplate="{StaticResource FeedItemContentTemplate}"
+                                      Loaded="FeedList_Loaded">
                                 <ListView.FooterTemplate>
                                     <DataTemplate>
                                         <Grid HorizontalAlignment="Stretch">

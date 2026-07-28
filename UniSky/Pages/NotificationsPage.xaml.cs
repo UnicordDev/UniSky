@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Uwp.UI.Extensions;
+using UniSky.Navigation;
 using UniSky.Services;
+using UniSky.Services.Navigation;
 using UniSky.ViewModels.Notifications;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -35,7 +37,7 @@ public sealed partial class NotificationsPage : Page, IScrollToTop
         safeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
 
         if (this.ViewModel == null)
-            this.DataContext = this.ViewModel = ActivatorUtilities.CreateInstance<NotificationsPageViewModel>(ServiceContainer.Scoped);
+            this.DataContext = this.ViewModel = ActivatorUtilities.CreateInstance<NotificationsPageViewModel>(ServiceContainer.Scoped, NavigationScopeHost.FindFor(this.Frame));
     }
 
     protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -55,12 +57,11 @@ public sealed partial class NotificationsPage : Page, IScrollToTop
             TitleBarPadding.Height = new GridLength(e.SafeArea.Bounds.Top);
     }
 
-    private void RootList_ItemClick(object sender, ItemClickEventArgs e)
-    {
-    }
-
     private void RootList_Loaded(object sender, RoutedEventArgs e)
     {
+        _ = ConnectedAnimations.TryLandBackAsync(ConnectedAnimations.ThreadPost, RootList, "PrimaryContent");
+        _ = ConnectedAnimations.TryLandBackAsync(ConnectedAnimations.ProfileAvatar, RootList, "ProfileImage");
+
         var themeService = ServiceContainer.Scoped.GetRequiredService<IThemeService>();
         if (themeService.GetTheme() == AppTheme.SunValley)
             return;

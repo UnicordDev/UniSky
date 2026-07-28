@@ -12,6 +12,7 @@ using UniSky.Controls.Settings;
 using UniSky.Extensions;
 using UniSky.Pages;
 using UniSky.Services;
+using UniSky.Services.Navigation;
 using Windows.Foundation.Metadata;
 using Windows.Phone;
 using Windows.UI.Core;
@@ -45,9 +46,18 @@ public partial class HomeViewModel : ViewModelBase
     private const string BOOKMARKS_ICON_GLYPH = "\uE840";
 
     private readonly ILogger<HomeViewModel> logger;
-    private readonly INavigationService homeNavigationService;
     private readonly IProtocolService protocolService;
     private readonly INotificationsService notificationsService;
+    private readonly IBackNavigationCoordinator backCoordinator;
+
+    public bool CanGoBack
+        => backCoordinator?.CanGoBack ?? false;
+
+    /// <summary>
+    /// The tab host's navigation scope
+    /// </summary>
+    private INavigationScope HomeScope
+        => ServiceContainer.Scoped.GetRequiredService<INavigationScopeRegistry>().Find("home");
 
     private readonly Dictionary<HomePages, MenuItemViewModel> AvailableMenuItems;
 
@@ -61,13 +71,10 @@ public partial class HomeViewModel : ViewModelBase
     public ObservableCollection<MenuItemViewModel> PinnedMenuItems { get; } = [];
 
     public HomeViewModel(
-        INavigationServiceLocator navigationServiceLocator,
         IProtocolService protocolService,
         INotificationsService notificationsService,
         ILogger<HomeViewModel> logger)
     {
-        this.homeNavigationService = navigationServiceLocator.GetNavigationService("Home");
-
         this.logger = logger;
         this.protocolService = protocolService;
         this.notificationsService = notificationsService;
@@ -113,10 +120,46 @@ public partial class HomeViewModel : ViewModelBase
 
         SelectedMenuItem = AvailableMenuItems[HomePages.Home];
 
-        var navigationManager = SystemNavigationManager.GetForCurrentView();
-        navigationManager.BackRequested += OnBackRequested;
+        this.backCoordinator = ServiceContainer.Scoped.GetRequiredService<IBackNavigationCoordinator>();
+        this.backCoordinator.CanGoBackChanged += OnCanGoBackChanged;
 
         Task.Run(LoadAsync);
+    }
+    internal void AttachToRegion(INavigationScope region)
+    {
+        if (region == null)
+            return;
+
+        region.Requesting -= OnRegionRequesting;
+        region.Requesting += OnRegionRequesting;
+        region.ActiveChild = SelectedMenuItem?.Scope;
+
+        ServiceContainer.Scoped.GetRequiredService<IActivationCoordinator>()
+            .SetTarget(region);
+    }
+
+    /// <summary>
+    /// Claims the routes that name a tab rather than a page.
+    /// </summary>
+    private void OnRegionRequesting(INavigationScope sender, NavigationRequestedEventArgs args)
+    {
+        if (args.Request.Intent is not (NavigationIntent.Default or NavigationIntent.Root))
+            return;
+
+        HomePages? target = args.Request.Route.Kind switch
+        {
+            RouteKinds.Home => HomePages.Home,
+            RouteKinds.Search => HomePages.Search,
+            RouteKinds.Notifications => HomePages.Notifications,
+            RouteKinds.Bookmarks => HomePages.Bookmarks,
+            _ => null
+        };
+
+        if (target is not HomePages page || !AvailableMenuItems.TryGetValue(page, out var item))
+            return;
+
+        SelectedMenuItem = item;
+        args.Handled = true;
     }
 
     private async Task LoadAsync()
@@ -146,23 +189,17 @@ public partial class HomeViewModel : ViewModelBase
     [RelayCommand]
     private void GoBack()
     {
-        this.homeNavigationService.GoBack();
+        this.backCoordinator.TryGoBack();
     }
+
+    private void OnCanGoBackChanged(object sender, EventArgs e)
+        => this.OnPropertyChanged(nameof(CanGoBack));
 
     [RelayCommand]
     private async Task OpenSettingsAsync()
     {
         var sheetService = ServiceContainer.Scoped.GetRequiredService<ISheetService>();
         await sheetService.ShowAsync<SettingsSheet>();
-    }
-
-    private void OnBackRequested(object sender, BackRequestedEventArgs e)
-    {
-        if (homeNavigationService.CanGoBack)
-        {
-            e.Handled = true;
-            homeNavigationService.GoBack();
-        }
     }
 
     partial void OnSelectedMenuItemChanged(MenuItemViewModel oldValue, MenuItemViewModel newValue)
@@ -184,9 +221,10 @@ public partial class HomeViewModel : ViewModelBase
 
         this.syncContext.Post(() =>
         {
-            var serviceLocator = ServiceContainer.Scoped.GetRequiredService<INavigationServiceLocator>();
-            var service = serviceLocator.GetNavigationService("Home");
-            service.Frame = newValue.Content;
+            if (HomeScope is { } scope)
+                scope.ActiveChild = newValue.Scope;
+
+            this.backCoordinator.Invalidate();
         });
     }
 

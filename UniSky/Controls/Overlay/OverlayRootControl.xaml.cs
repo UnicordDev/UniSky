@@ -2,16 +2,18 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using UniSky.Services;
+using UniSky.Services.Navigation;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace UniSky.Controls.Overlay;
 
 public sealed partial class OverlayRootControl : UserControl, IOverlayRootControl
 {
+    private readonly IBackNavigationCoordinator _backCoordinator;
+    private readonly IDisposable _backRegistration;
+
     private IOverlayController _controller;
 
     public OverlayRootControl()
@@ -22,6 +24,25 @@ public sealed partial class OverlayRootControl : UserControl, IOverlayRootContro
 
         var safeAreaService = ServiceContainer.Scoped.GetRequiredService<ISafeAreaService>();
         safeAreaService.SafeAreaUpdated += OnSafeAreaUpdated;
+
+        _backCoordinator = ServiceContainer.Scoped.GetRequiredService<IBackNavigationCoordinator>();
+        _backRegistration = _backCoordinator.Register(new OverlayBackHandler(this), BackPriority.Overlay);
+    }
+
+    private sealed class OverlayBackHandler(OverlayRootControl owner) : IBackHandler
+    {
+        public bool CanGoBack
+            => owner._controller != null;
+
+        public bool TryGoBack()
+        {
+            var controller = owner._controller;
+            if (controller == null)
+                return false;
+
+            _ = controller.TryHideAsync();
+            return true;
+        }
     }
 
     private void ShowOverlay(IOverlayController controller, IOverlayControl control, object parameter)
@@ -38,28 +59,17 @@ public sealed partial class OverlayRootControl : UserControl, IOverlayRootContro
 
         VisualStateManager.GoToState(this, "Open", true);
 
-        var systemNavigationManager = SystemNavigationManager.GetForCurrentView();
-        systemNavigationManager.BackRequested += OnBackRequested;
+        _backCoordinator.Invalidate();
     }
 
     private Task<bool> HideOverlayAsync()
     {
         VisualStateManager.GoToState(this, "Closed", true);
 
-        var systemNavigationManager = SystemNavigationManager.GetForCurrentView();
-        systemNavigationManager.BackRequested -= OnBackRequested;
-
         _controller = null;
+        _backCoordinator.Invalidate();
 
         return Task.FromResult(true);
-    }
-
-    private async void OnBackRequested(object sender, BackRequestedEventArgs e)
-    {
-        if (this._controller == null) return;
-
-        e.Handled = true;
-        await _controller.TryHideAsync();
     }
 
     private void OnSafeAreaUpdated(object sender, SafeAreaUpdatedEventArgs e)

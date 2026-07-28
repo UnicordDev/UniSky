@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using UniSky.Services;
+using UniSky.Services.Navigation;
 
 namespace UniSky.ViewModels.Search;
 
@@ -16,7 +17,8 @@ public partial class SearchPageViewModel : ViewModelBase
 
     public ObservableCollection<SearchFeedViewModel> SearchFeeds { get; }
 
-    public SearchPageViewModel(IProtocolService protocolService)
+    public SearchPageViewModel(INavigationContext navigation, IProtocolService protocolService)
+        : base(navigation)
     {
         this.protocolService = protocolService;
         this.SearchFeeds = [

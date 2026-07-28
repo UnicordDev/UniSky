@@ -9,8 +9,11 @@ using FishyFlip.Lexicon.App.Bsky.Notification;
 using FishyFlip.Models;
 using Humanizer;
 using Microsoft.Extensions.DependencyInjection;
+using UniSky.Helpers;
+using UniSky.Navigation;
 using UniSky.Pages;
 using UniSky.Services;
+using UniSky.Services.Navigation;
 using UniSky.ViewModels.Posts;
 using UniSky.ViewModels.Profile;
 using Windows.ApplicationModel.Resources;
@@ -83,7 +86,8 @@ public partial class NotificationViewModel : ViewModelBase, IComparable, ICompar
         => Notifications.OrderByDescending(d => d.IndexedAt.Value)
                         .FirstOrDefault();
 
-    public NotificationViewModel(Notification notification, PostView post = null)
+    public NotificationViewModel(INavigationContext navigation, Notification notification, PostView post = null)
+        : base(navigation)
     {
         this.subjectPost = post?.Record as Post ?? notification.Record as Post;
         this.subjectPostAuthor = post?.Author?.Did ?? notification.Author.Did;
@@ -94,8 +98,8 @@ public partial class NotificationViewModel : ViewModelBase, IComparable, ICompar
         Update();
     }
 
-    public NotificationViewModel(IEnumerable<Notification> notifications, PostView post = null)
-        : this(notifications.FirstOrDefault(), post)
+    public NotificationViewModel(INavigationContext navigation, IEnumerable<Notification> notifications, PostView post = null)
+        : this(navigation, notifications.FirstOrDefault(), post)
     {
         foreach (var item in notifications)
             Notifications.Add(item);
@@ -117,7 +121,7 @@ public partial class NotificationViewModel : ViewModelBase, IComparable, ICompar
     {
         var resources = ResourceLoader.GetForCurrentView();
         var other = resources.GetString("Notification_Other");
-        var mostRecentAuthor = new ProfileViewModel(MostRecent.Author);
+        var mostRecentAuthor = new ProfileViewModel(Navigation, MostRecent.Author);
 
         switch (Reason)
         {
@@ -159,17 +163,19 @@ public partial class NotificationViewModel : ViewModelBase, IComparable, ICompar
         {
             NotificationEmbed = new PostEmbedImagesViewModel(subjectPostAuthor, images);
         }
+        else if (subjectPost is { Embed: UnknownATObject { Type: GalleryEmbed.RecordType } gallery } &&
+                 GalleryEmbed.TryCreateViewImages(gallery, subjectPostAuthor, out var galleryImages))
+        {
+            // the record form, so the CDN urls get built from each blob ref and the post author
+            NotificationEmbed = new PostEmbedImagesViewModel(galleryImages, isCarousel: true);
+        }
     }
 
     [RelayCommand]
     private void GoToSubject()
     {
         if (subjectPost != null)
-        {
-            var navigationService = ServiceContainer.Scoped.GetRequiredService<INavigationServiceLocator>()
-                .GetNavigationService("Home");
-            navigationService.Navigate<ThreadPage>(MostRecent.ReasonSubject ?? MostRecent.Uri);
-        }
+            Navigate(Routes.Thread(MostRecent.ReasonSubject ?? MostRecent.Uri));
     }
 
     public int CompareTo(object obj)

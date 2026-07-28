@@ -84,7 +84,7 @@ public class SearchProfileCollection : ObservableCollection<ProfileViewModel>, I
                         continue;
 
                     if (!ids.Contains(item.Did.ToString()))
-                        Add(new ProfileViewModel(item));
+                        Add(new ProfileViewModel(parent.Navigation, item));
                 }
             });
 

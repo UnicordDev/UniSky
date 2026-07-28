@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using UniSky.Extensions;
 using UniSky.Helpers.Interop;
 using UniSky.Services;
+using UniSky.Services.Navigation;
 using Windows.Foundation.Metadata;
 using Windows.Phone;
 using Windows.Storage.Streams;
@@ -59,19 +60,23 @@ public partial class ProfilePageViewModel : ProfileViewModel
 
     public ObservableCollection<ProfileFeedViewModel> Feeds { get; }
 
-    public ProfilePageViewModel() : this((ATDid)null) { }
+    public ProfilePageViewModel() : this(null, (ATIdentifier)null) { }
 
-    public ProfilePageViewModel(ATDid did)
+    public ProfilePageViewModel(INavigationContext navigation) : this(navigation, (ATIdentifier)null) { }
+
+
+    public ProfilePageViewModel(INavigationContext navigation, ATIdentifier actor)
+        : base(navigation)
     {
-        this.id = did ?? ServiceContainer.Scoped.GetRequiredService<IProtocolService>().Protocol.Session?.Did;
+        this.id = actor ?? ServiceContainer.Scoped.GetRequiredService<IProtocolService>().Protocol.Session?.Did;
 
         Feeds = [];
         SelectedFeed = null;
         Task.Run(LoadAsync);
     }
 
-    public ProfilePageViewModel(ATObject profile)
-        : base(profile)
+    public ProfilePageViewModel(INavigationContext navigation, ATObject profile)
+        : base(navigation, profile)
     {
         var protocol = ServiceContainer.Scoped.GetRequiredService<IProtocolService>();
         if (profile is ProfileViewDetailed detailed)

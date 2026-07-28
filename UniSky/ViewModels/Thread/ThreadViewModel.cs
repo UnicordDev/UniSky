@@ -11,6 +11,7 @@ using FishyFlip.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using UniSky.Extensions;
 using UniSky.Services;
+using UniSky.Services.Navigation;
 
 namespace UniSky.ViewModels.Thread;
 
@@ -23,10 +24,14 @@ public partial class ThreadViewModel : ViewModelBase
 
     public ObservableCollection<ThreadPostViewModel> Posts { get; }
 
-    public ThreadViewModel(ATUri uri)
+    public ThreadViewModel(INavigationContext navigation, ATUri uri, PostView seed = null)
+        : base(navigation)
     {
         this.uri = uri;
         this.Posts = [];
+        
+        if (seed != null)
+            this.Posts.Add(this.Selected = new ThreadPostViewModel(navigation, seed, true));
 
         Task.Run(LoadAsync);
     }
@@ -82,16 +87,20 @@ public partial class ThreadViewModel : ViewModelBase
 
             syncContext.Post(() =>
             {
+                var index = 0;
                 foreach (var item in GetParents(tvp))
-                    Posts.Add(new ThreadPostViewModel(item) { HasChild = true });
-
-                Posts.Add(Selected = new ThreadPostViewModel(tvp, true));
+                    Posts.Insert(index++, new ThreadPostViewModel(Navigation, item) { HasChild = true });
+                    
+                if (Selected == null)
+                    Posts.Insert(index, Selected = new ThreadPostViewModel(Navigation, tvp, true));
+                else
+                    Selected.HasParent = tvp.Parent != null;
 
                 foreach (var list in replies)
                 {
                     for (int i = 0; i < list.Length; i++)
                     {
-                        Posts.Add(new ThreadPostViewModel(list[i])
+                        Posts.Add(new ThreadPostViewModel(Navigation, list[i])
                         {
                             HasChild = list.Length > 1 && (i < (list.Length - 1))
                         });

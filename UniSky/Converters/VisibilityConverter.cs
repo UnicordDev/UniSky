@@ -10,6 +10,18 @@ public class VisibilityConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {
+        var visibility = ConvertCore(value);
+
+        if (parameter is string s && s.Equals("Invert", StringComparison.OrdinalIgnoreCase))
+        {
+            return visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        return visibility;
+    }
+
+    private static Visibility ConvertCore(object value)
+    {
         if (value is null)
         {
             return Visibility.Collapsed;
