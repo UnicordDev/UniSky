@@ -62,5 +62,8 @@ public static class Constants
 
         public const string ENABLE_WEBP = "WebP_v1";
         public const bool ENABLE_WEBP_DEFAULT = true;
+
+        public const string CONNECTED_ANIMATIONS = "ConnectedAnimations_v1";
+        public const bool CONNECTED_ANIMATIONS_DEFAULT = false;
     }
 }

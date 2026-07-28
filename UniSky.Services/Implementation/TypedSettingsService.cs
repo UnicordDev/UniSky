@@ -43,6 +43,9 @@ public class TypedSettingsService : ITypedSettings
             case NOTIFICATION_OPTIONS:
                 SettingChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NotificationOptions)));
                 break;
+            case CONNECTED_ANIMATIONS:
+                SettingChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EnableConnectedAnimations)));
+                break;
         }
     }
 
@@ -115,5 +118,11 @@ public class TypedSettingsService : ITypedSettings
     {
         get => settings.Read(ENABLE_WEBP, ENABLE_WEBP_DEFAULT);
         set => settings.Save(ENABLE_WEBP, value);
+    }
+
+    public bool EnableConnectedAnimations
+    {
+        get => settings.Read(CONNECTED_ANIMATIONS, CONNECTED_ANIMATIONS_DEFAULT);
+        set => settings.Save(CONNECTED_ANIMATIONS, value);
     }
 }

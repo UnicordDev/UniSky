@@ -17,4 +17,5 @@ public interface ITypedSettings
     NotificationOptions NotificationOptions { get; set; }
     bool ShowPronounsAsLabel { get; set; }
     bool EnableWebP { get; set; }
+    bool EnableConnectedAnimations { get; set; }
 }

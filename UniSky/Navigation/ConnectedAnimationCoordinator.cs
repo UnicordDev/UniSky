@@ -10,7 +10,7 @@ internal sealed class ConnectedAnimationCoordinator : IConnectedAnimationCoordin
 
     public void PrepareBack(string key, NavigationRoute origin)
     {
-        if (string.IsNullOrEmpty(key) || origin == null)
+        if (string.IsNullOrEmpty(key) || origin == null || !ConnectedAnimations.IsEnabled)
             return;
 
         if (_key != null && _key != key)

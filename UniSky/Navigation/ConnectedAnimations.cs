@@ -26,9 +26,12 @@ public static class ConnectedAnimations
     public const string ProfileAvatar = "profile.avatar";
     public const string ThreadPost = "thread.post";
 
+    public static bool IsEnabled
+        => ServiceContainer.Scoped.GetService<ITypedSettings>()?.EnableConnectedAnimations ?? false;
+
     public static void Prepare(ConnectedAnimationRequest request)
     {
-        if (request == null)
+        if (request == null || !IsEnabled)
             return;
 
         ConnectedAnimationService.GetForCurrentView()
@@ -37,7 +40,7 @@ public static class ConnectedAnimations
     
     public static void Prepare(string key, UIElement source)
     {
-        if (string.IsNullOrEmpty(key) || source == null)
+        if (string.IsNullOrEmpty(key) || source == null || !IsEnabled)
             return;
 
         ConnectedAnimationService.GetForCurrentView()
@@ -46,7 +49,7 @@ public static class ConnectedAnimations
     
     public static void PrepareFromList(string key, ListViewBase list, object item, string elementName)
     {
-        if (string.IsNullOrEmpty(key) || list == null || item == null || string.IsNullOrEmpty(elementName))
+        if (string.IsNullOrEmpty(key) || list == null || item == null || string.IsNullOrEmpty(elementName) || !IsEnabled)
             return;
 
         list.PrepareConnectedAnimation(key, item, elementName);
@@ -126,7 +129,7 @@ public static class ConnectedAnimations
         ListViewBase list,
         string elementName)
     {
-        if (coordinator == null || !coordinator.TryPeekBack(key, out var origin))
+        if (!IsEnabled || coordinator == null || !coordinator.TryPeekBack(key, out var origin))
             return false;
 
         var item = RouteMatch.Find(list?.ItemsSource as IEnumerable ?? list?.Items, origin);

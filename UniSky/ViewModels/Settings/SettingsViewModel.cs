@@ -132,6 +132,7 @@ public class SettingsViewModel : ViewModelBase, ITypedSettings
     }
     public bool ShowPronounsAsLabel { get => settingsService.ShowPronounsAsLabel; set => settingsService.ShowPronounsAsLabel = value; }
     public bool EnableWebP { get => settingsService.EnableWebP; set => settingsService.EnableWebP = value; }
+    public bool EnableConnectedAnimations { get => settingsService.EnableConnectedAnimations; set => settingsService.EnableConnectedAnimations = value; }
     public bool CanEnableWebP =>
         WebPHelpers.HasWebPCodec;
 

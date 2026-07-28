@@ -156,13 +156,14 @@ internal sealed class FrameNavigationScope : INavigationScope, INavigationNode<N
 
         
         // at this point we _are_ navigating. so connected animations get kicked off here
-        ConnectedAnimations.Prepare(request.Animation);
+        var animation = ConnectedAnimations.IsEnabled ? request.Animation : null;
+        ConnectedAnimations.Prepare(animation);
         var transition = request.Transition
-            ?? (request.Animation != null ? new SuppressNavigationTransitionInfo() : null);
+            ?? (animation != null ? new SuppressNavigationTransitionInfo() : null);
 
         var success = _frame.Navigate(pageType, request, transition);
         if (!success)
-            ConnectedAnimations.Cancel(request.Animation?.Key);
+            ConnectedAnimations.Cancel(animation?.Key);
 
         if (success)
         {
