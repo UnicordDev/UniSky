@@ -781,6 +781,9 @@
     <PackageReference Include="Humanizer.Core.pl">
       <Version>2.14.1</Version>
     </PackageReference>
+    <PackageReference Include="Humanizer.Core.es">
+      <Version>2.14.1</Version>
+    </PackageReference>
     <PackageReference Include="ksemenenko.ColorThief">
       <Version>1.1.1.4</Version>
     </PackageReference>
