@@ -1,0 +1,536 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="PostsRun.Text" xml:space="preserve">
+    <value>publicaciones</value>
+  </data>
+  <data name="FollowersRun.Text" xml:space="preserve">
+    <value>seguidores</value>
+    <comment>n users following person, not doing plural because it will almost always be &gt; 10</comment>
+  </data>
+  <data name="FollowingRun.Text" xml:space="preserve">
+    <value>siguiendo</value>
+    <comment>n users followed by person, not doing plural because it will almost always be &gt; 10</comment>
+  </data>
+  <data name="Feed_Posts" xml:space="preserve">
+    <value>Publicaciones</value>
+  </data>
+  <data name="Feed_Replies" xml:space="preserve">
+    <value>Publicaciones &amp; Respuestas</value>
+  </data>
+  <data name="Feed_Media" xml:space="preserve">
+    <value>Multimedia</value>
+  </data>
+  <data name="RetweetedByRun.Text" xml:space="preserve">
+    <value>Republicado por</value>
+  </data>
+  <data name="PostReplyButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Respuestas</value>
+  </data>
+  <data name="PostRetweetButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Republicar</value>
+  </data>
+  <data name="PostLikeButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Me gusta</value>
+  </data>
+  <data name="ReplyingToRun.Text" xml:space="preserve">
+    <value>En respuesta a</value>
+  </data>
+  <data name="AppName" xml:space="preserve">
+    <value>Unisky</value>
+  </data>
+  <data name="AppTitle.Text" xml:space="preserve">
+    <value>Unisky</value>
+  </data>
+  <data name="TimeUnit_Day" xml:space="preserve">
+    <value>d</value>
+  </data>
+  <data name="TimeUnit_Hour" xml:space="preserve">
+    <value>h</value>
+  </data>
+  <data name="TimeUnit_Millisecond" xml:space="preserve">
+    <value>ms</value>
+  </data>
+  <data name="TimeUnit_Minute" xml:space="preserve">
+    <value>m</value>
+  </data>
+  <data name="TimeUnit_Month" xml:space="preserve">
+    <value>M</value>
+  </data>
+  <data name="TimeUnit_Second" xml:space="preserve">
+    <value>s</value>
+  </data>
+  <data name="TimeUnit_Week" xml:space="preserve">
+    <value>sem</value>
+  </data>
+  <data name="TimeUnit_Year" xml:space="preserve">
+    <value>a</value>
+  </data>
+  <data name="E_NonImageOrVideo" xml:space="preserve">
+    <value>Solo se soportan imágenes y videos.</value>
+  </data>
+  <data name="E_ReplyToNonPost" xml:space="preserve">
+    <value>¿Intentando responder a algo que no es una publicación?</value>
+  </data>
+  <data name="E_TooManyPhotos" xml:space="preserve">
+    <value>No se pueden agregar más de 4 imágenes.</value>
+  </data>
+  <data name="E_TooManyVideos" xml:space="preserve">
+    <value>No se puede agregar más de un video.</value>
+  </data>
+  <data name="E_UnableToAddImageToVideoPost" xml:space="preserve">
+    <value>No se puede agregar una imagen a una publicación con un video.</value>
+  </data>
+  <data name="E_UnableToAddVideoToImagePost" xml:space="preserve">
+    <value>No se puede agregar un video a una publicación con imágenes.</value>
+  </data>
+  <data name="ComposePrimaryTextBox.PlaceholderText" xml:space="preserve">
+    <value>¿Qué hay de nuevo?</value>
+  </data>
+  <data name="ComposeSheetPrimaryText.Text" xml:space="preserve">
+    <value>Publicar</value>
+  </data>
+  <data name="ComposeSheetSecondaryText.Text" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="ComposeSheet.TitleContent" xml:space="preserve">
+    <value>NUEVA PUBLICACIÓN</value>
+  </data>
+  <data name="E_FileUnavailable" xml:space="preserve">
+    <value>Lo sentimos, este archivo no está disponible.</value>
+  </data>
+  <data name="E_VideosUnsupported" xml:space="preserve">
+    <value>Lo sentimos, por el momento no se soportan videos.</value>
+  </data>
+  <data name="UploadToBluesky" xml:space="preserve">
+    <value>Adjuntar a publicación</value>
+  </data>
+  <data name="Search_New" xml:space="preserve">
+    <value>Último</value>
+  </data>
+  <data name="Search_Hot" xml:space="preserve">
+    <value>Destacado</value>
+  </data>
+  <data name="Search_People" xml:space="preserve">
+    <value>Personas</value>
+  </data>
+  <data name="Profile_Follow" xml:space="preserve">
+    <value>Seguir</value>
+    <comment>Click to follow the user</comment>
+  </data>
+  <data name="Profile_Following" xml:space="preserve">
+    <value>Seguido por</value>
+    <comment>Currently following the user</comment>
+  </data>
+  <data name="Notification_LikedTweetSingle" xml:space="preserve">
+    <value>{0} le ha dado me gusta a tu publicación</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Notification_LikedTweetMultiple" xml:space="preserve">
+    <value>{0} y {1} le han dado me gusta a tu publicación</value>
+    <comment>{0},{1} = user display name</comment>
+  </data>
+  <data name="Notification_Follow" xml:space="preserve">
+    <value>{0} te ha seguido</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Notification_Mention" xml:space="preserve">
+    <value>{0} te ha mencionado</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Notification_Other" xml:space="preserve">
+    <value>otros</value> 
+  </data>
+  <data name="Notification_Quote" xml:space="preserve">
+    <value>{0} ha citado tu publicación</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Notification_Reply" xml:space="preserve">
+    <value>{0} te ha respondido</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Notification_RetweetMultiple" xml:space="preserve">
+    <value>{0} y {1} han republicado</value>
+    <comment>{0},{1} = user display name</comment>
+  </data>
+  <data name="Notification_RetweetSingle" xml:space="preserve">
+    <value>{0} ha republicado</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Profile_Blocked" xml:space="preserve">
+    <value>Bloqueado</value>
+  </data>
+  <data name="Profile_InvalidHandle" xml:space="preserve">
+    <value>Nombre de usuario inválido</value>
+  </data>
+  <data name="Profile_BlockedUser" xml:space="preserve">
+    <value>Has bloqueado a este usuario</value>
+  </data>
+  <data name="Profile_BlockedByUser" xml:space="preserve">
+    <value>Este usuario te ha bloqueado</value>
+  </data>
+  <data name="ComposeAddAltTextDialog.PrimaryButtonText" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="ComposeAddAltTextDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="ComposeAddAltTextDialog.Title" xml:space="preserve">
+    <value>AGREGAR TEXTO ALTERNATIVO</value>
+  </data>
+  <data name="ComposeAddAltTextTextBox.PlaceholderText" xml:space="preserve">
+    <value>¡Describe a tu imagen! Puedes detallarte tanto como quieras.</value>
+  </data>
+  <data name="ComposeDiscardDraftDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Descartar</value>
+  </data>
+  <data name="ComposeDiscardDraftDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="ComposeDiscardDraftDialog.Title" xml:space="preserve">
+    <value>¿Descartar borrador?</value>
+  </data>
+  <data name="ComposeDiscardDraftInfoBlock.Text" xml:space="preserve">
+    <value>¿Seguro que quieres descartar este borrador? ¡Esto no se puede deshacer!</value>
+  </data>
+  <data name="FeedMoreCopyLinkItem.Text" xml:space="preserve">
+    <value>Copiar enlace</value>
+  </data>
+  <data name="FeedMoreCopyTextItem.Text" xml:space="preserve">
+    <value>Copiar texto</value>
+  </data>
+  <data name="FeedMoreHidePostItem.Text" xml:space="preserve">
+    <value>Ocular publicación</value>
+  </data>
+  <data name="FeedMoreMuteItem.Text" xml:space="preserve">
+    <value>Silenciar hilo</value>
+  </data>
+  <data name="FeedMoreReportPostItem.Text" xml:space="preserve">
+    <value>Reportar publicación</value>
+  </data>
+  <data name="FeedMoreShareItem.Text" xml:space="preserve">
+    <value>Compartir</value>
+  </data>
+  <data name="Feed_Following" xml:space="preserve">
+    <value>Siguiendo</value>
+  </data>
+  <data name="LoginAdvancedButton.Content" xml:space="preserve">
+    <value>Avanzado</value>
+    <comment>Shows the hostname/PDS server textbox</comment>
+  </data>
+  <data name="LoginButton.Content" xml:space="preserve">
+    <value>Iniciar Sesión</value>
+  </data>
+  <data name="LoginHostBox.Header" xml:space="preserve">
+    <value>Servidor</value>
+  </data>
+  <data name="LoginPageHeader.Text" xml:space="preserve">
+    <value>Ingrese su nombre de usuario y contraseña para comenzar.</value>
+    <comment>Taken from Windows XP's Welcome Screen, try to keep that reference if possible :)</comment>
+  </data>
+  <data name="LoginPasswordBox.Header" xml:space="preserve">
+    <value>Contraseña</value>
+  </data>
+  <data name="LoginUsernameBox.Header" xml:space="preserve">
+    <value>Nombre de usuario o correo electrónico</value>
+  </data>
+  <data name="NotificationsPageTitleBlock.Text" xml:space="preserve">
+    <value>NOTIFICACIONES</value>
+  </data>
+  <data name="SearchPageSearchBox.PlaceholderText" xml:space="preserve">
+    <value>Busca lo que quieras...</value>
+    <comment>Can really be anything</comment>
+  </data>
+  <data name="SearchPageTitleBlock.Text" xml:space="preserve">
+    <value>BUSCAR</value>
+  </data>
+  <data name="SettingsAboutHeaderBlock.Text" xml:space="preserve">
+    <value>Acerca de</value>
+  </data>
+  <data name="SettingsAboutVersionRun.Text" xml:space="preserve">
+    <value>Versión</value>
+    <comment>Version 1.0.0.0-abcdefg (branch)</comment>
+  </data>
+  <data name="SettingsAppThemeItem_Fluent.Content" xml:space="preserve">
+    <value>Fluido</value>
+  </data>
+  <data name="SettingsAppThemeItem_OLED.Content" xml:space="preserve">
+    <value>OLED</value>
+  </data>
+  <data name="SettingsAppThemeItem_Performance.Content" xml:space="preserve">
+    <value>Rendimiento</value>
+  </data>
+  <data name="SettingsAppThemeItem_SunValley.Content" xml:space="preserve">
+    <value>Sun Valley</value>
+  </data>
+  <data name="SettingsAutoRefreshFeedsSwitch.Header" xml:space="preserve">
+    <value>Refrescar feed automáticamente (experimental)</value>
+  </data>
+  <data name="SettingsColorSchemeBox.Header" xml:space="preserve">
+    <value>Esquema de color</value>
+  </data>
+  <data name="SettingsColourSchemeItem_Dark.Content" xml:space="preserve">
+    <value>Oscuro</value>
+  </data>
+  <data name="SettingsColourSchemeItem_Default.Content" xml:space="preserve">
+    <value>Predeterminado</value>
+  </data>
+  <data name="SettingsColourSchemeItem_Light.Content" xml:space="preserve">
+    <value>Claro</value>
+  </data>
+  <data name="SettingsNeedsRelaunchDialog.Title" xml:space="preserve">
+    <value>REQUIERE REINICIAR</value>
+  </data>
+  <data name="SettingsNeedsRelaunchInfoBlock.Text" xml:space="preserve">
+    <value>Unisky necesita reiniciarse para que algunos cambios tomen efecto. ¿Desea reiniciar ahora?</value>
+  </data>
+  <data name="SettingsOptionsHeaderBlock.Text" xml:space="preserve">
+    <value>Opciones</value>
+  </data>
+  <data name="SettingsSheet.SecondaryButtonContent" xml:space="preserve">
+    <value>Cerrar</value>
+  </data>
+  <data name="SettingsSheet.TitleContent" xml:space="preserve">
+    <value>AJUSTES</value>
+  </data>
+  <data name="SettingsThemeBox.Header" xml:space="preserve">
+    <value>Tema</value>
+  </data>
+  <data name="SettingsUseMultipleWindowsSwitch.Header" xml:space="preserve">
+    <value>Usar ventanas individuales para ventanas emergentes</value>
+  </data>
+  <data name="Share_Username" xml:space="preserve">
+    <value>@{0} en Bluesky</value>
+    <comment>{0} = user handle</comment>
+  </data>
+  <data name="GalleryControl.TitleContent" xml:space="preserve">
+    <value>GALERÍA</value>
+  </data>
+  <data name="ThreadPageTitleBlock.Text" xml:space="preserve">
+    <value>PUBLICACIÓN</value>
+  </data>
+  <data name="GlobalLabel_GRAPHIC_MEDIA_Description" xml:space="preserve">
+    <value>Contenido que puede ser perturbador o inapropiado.</value>
+  </data>
+  <data name="GlobalLabel_GRAPHIC_MEDIA_Name" xml:space="preserve">
+    <value>Contenido gráfico</value>
+  </data>
+  <data name="GlobalLabel_HIDE_Description" xml:space="preserve">
+    <value>Este contenido ha sido ocultado por el Grupo de Moderación de Bluesky.</value>
+  </data>
+  <data name="GlobalLabel_HIDE_Name" xml:space="preserve">
+    <value>Contenido Bloqueado</value>
+  </data>
+  <data name="GlobalLabel_NO_UNAUTHENTICATED_Description" xml:space="preserve">
+    <value>El contenido de este usuario solo es visible a usuarios que han iniciado sesión. Ten en cuenta que esto no es seguro y que no todos los clientes de Bluesky respetarán esto.</value>
+  </data>
+  <data name="GlobalLabel_NO_UNAUTHENTICATED_Name" xml:space="preserve">
+    <value>Requiere iniciar sesión</value>
+  </data>
+  <data name="GlobalLabel_NUDITY_Description" xml:space="preserve">
+    <value>Desnudez artística, no sexual, etc.</value>
+  </data>
+  <data name="GlobalLabel_NUDITY_Name" xml:space="preserve">
+    <value>Desnudez</value>
+  </data>
+  <data name="GlobalLabel_PORN_Description" xml:space="preserve">
+    <value>Contenido erótico, sexual, etc.</value>
+  </data>
+  <data name="GlobalLabel_PORN_Name" xml:space="preserve">
+    <value>Contenido adulto</value>
+  </data>
+  <data name="GlobalLabel_SEXUAL_Description" xml:space="preserve">
+    <value>Contenido sexual no explícito.</value>
+  </data>
+  <data name="GlobalLabel_SEXUAL_Name" xml:space="preserve">
+    <value>Sugestivo</value>
+  </data>
+  <data name="GlobalLabel_WARN_Description" xml:space="preserve">
+    <value>Este contenido ha recibido una advertencia general por parte del Grupo de Moderación de Bluesky.</value>
+  </data>
+  <data name="GlobalLabel_WARN_Name" xml:space="preserve">
+    <value>Advertencia de Contenido</value>
+  </data>
+  <data name="HomePage_Chat" xml:space="preserve">
+    <value>Chat</value>
+  </data>
+  <data name="HomePage_Feeds" xml:space="preserve">
+    <value>Feeds</value>
+  </data>
+  <data name="HomePage_Home" xml:space="preserve">
+    <value>Inicio</value>
+  </data>
+  <data name="HomePage_Lists" xml:space="preserve">
+    <value>Listas</value>
+  </data>
+  <data name="HomePage_Notifications" xml:space="preserve">
+    <value>Notificaciones</value>
+  </data>
+  <data name="HomePage_Profile" xml:space="preserve">
+    <value>Perfil</value>
+  </data>
+  <data name="HomePage_Search" xml:space="preserve">
+    <value>Buscar</value>
+  </data>
+  <data name="HomePage_Bookmarks" xml:space="preserve">
+    <value>Marcadores</value>
+  </data>
+  <data name="HomePage_Settings" xml:space="preserve">
+    <value>Ajustes</value>
+  </data>
+  <data name="FeedContextLabel_AppliedBy" xml:space="preserve">
+    <value>Feed Actual (esto no es una etiqueta)</value>
+  </data>
+  <data name="FeedContextLabel_Description" xml:space="preserve">
+    <value>Contexto agregado por el feed actual para indicar por qué una publicación fue incluida.</value>
+  </data>
+  <data name="SettingsShowFeedContextSwitch.Header" xml:space="preserve">
+    <value>Mostrar etiquetas de contexto en feeds (experimental)</value>
+  </data>
+  <data name="SettingsUseTwitterLocaleSwitch.Header" xml:space="preserve">
+    <value>Usar localización de Twitter (experimental)</value>
+  </data>
+  <data name="SettingsVideosInFeedsSwitch.Header" xml:space="preserve">
+    <value>Mostrar videos alineadamente en feeds</value>
+  </data>
+  <data name="SettingsNeedsRelaunchDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Ahora no</value>
+  </data>
+  <data name="SettingsNeedsRelaunchDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Reiniciar</value>
+  </data>
+  <data name="PostRetweetItem.Text" xml:space="preserve">
+    <value>Republicar</value>
+  </data>
+  <data name="PostQRTItem.Text" xml:space="preserve">
+    <value>Citar publicación...</value>
+  </data>
+  <data name="PostUndoRetweetItem.Text" xml:space="preserve">
+    <value>Deshacer republicación</value>
+  </data>
+  <data name="BookmarksPageTitleBlock.Text" xml:space="preserve">
+    <value>MARCADORES</value>
+  </data>
+  <data name="BookmarksPageNoItemsTitle.Text" xml:space="preserve">
+    <value>¡No has marcado ninguna publicación!</value>
+  </data>
+  <data name="BookmarksPageNoItemsSubtitle.Text" xml:space="preserve">
+    <value>Marca algunas publicaciones para comenzar.</value>
+  </data>
+</root>
