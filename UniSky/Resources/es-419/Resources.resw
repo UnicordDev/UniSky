@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PostsRun.Text" xml:space="preserve">
-    <value>publicaciones</value>
+    <value>posts</value>
   </data>
   <data name="FollowersRun.Text" xml:space="preserve">
     <value>seguidores</value>
@@ -129,22 +129,22 @@
     <comment>n users followed by person, not doing plural because it will almost always be &gt; 10</comment>
   </data>
   <data name="Feed_Posts" xml:space="preserve">
-    <value>Publicaciones</value>
+    <value>Posts</value>
   </data>
   <data name="Feed_Replies" xml:space="preserve">
-    <value>Publicaciones &amp; Respuestas</value>
+    <value>Posts &amp; Respuestas</value>
   </data>
   <data name="Feed_Media" xml:space="preserve">
     <value>Multimedia</value>
   </data>
   <data name="RetweetedByRun.Text" xml:space="preserve">
-    <value>Republicado por</value>
+    <value>Reposteado por</value>
   </data>
   <data name="PostReplyButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Respuestas</value>
   </data>
   <data name="PostRetweetButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>Republicar</value>
+    <value>Repostear</value>
   </data>
   <data name="PostLikeButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Me gusta</value>
@@ -183,10 +183,10 @@
     <value>a</value>
   </data>
   <data name="E_NonImageOrVideo" xml:space="preserve">
-    <value>Solo se soportan imágenes y videos.</value>
+    <value>Solo hay soporte para imágenes y videos.</value>
   </data>
   <data name="E_ReplyToNonPost" xml:space="preserve">
-    <value>¿Intentando responder a algo que no es una publicación?</value>
+    <value>¿Intentando responder a algo que no es un post?</value>
   </data>
   <data name="E_TooManyPhotos" xml:space="preserve">
     <value>No se pueden agregar más de 4 imágenes.</value>
@@ -195,10 +195,10 @@
     <value>No se puede agregar más de un video.</value>
   </data>
   <data name="E_UnableToAddImageToVideoPost" xml:space="preserve">
-    <value>No se puede agregar una imagen a una publicación con un video.</value>
+    <value>No se puede agregar una imagen a un post con un video.</value>
   </data>
   <data name="E_UnableToAddVideoToImagePost" xml:space="preserve">
-    <value>No se puede agregar un video a una publicación con imágenes.</value>
+    <value>No se puede agregar un video a un post con imágenes.</value>
   </data>
   <data name="ComposePrimaryTextBox.PlaceholderText" xml:space="preserve">
     <value>¿Qué hay de nuevo?</value>
@@ -210,16 +210,16 @@
     <value>Cancelar</value>
   </data>
   <data name="ComposeSheet.TitleContent" xml:space="preserve">
-    <value>NUEVA PUBLICACIÓN</value>
+    <value>NUEVO POST</value>
   </data>
   <data name="E_FileUnavailable" xml:space="preserve">
     <value>Lo sentimos, este archivo no está disponible.</value>
   </data>
   <data name="E_VideosUnsupported" xml:space="preserve">
-    <value>Lo sentimos, por el momento no se soportan videos.</value>
+    <value>Lo sentimos, por el momento no hay soporte para videos.</value>
   </data>
   <data name="UploadToBluesky" xml:space="preserve">
-    <value>Adjuntar a publicación</value>
+    <value>Adjuntar a post</value>
   </data>
   <data name="Search_New" xml:space="preserve">
     <value>Último</value>
@@ -239,11 +239,11 @@
     <comment>Currently following the user</comment>
   </data>
   <data name="Notification_LikedTweetSingle" xml:space="preserve">
-    <value>{0} le ha dado me gusta a tu publicación</value>
+    <value>{0} le ha dado me gusta a tu post</value>
     <comment>{0} = user display name</comment>
   </data>
   <data name="Notification_LikedTweetMultiple" xml:space="preserve">
-    <value>{0} y {1} le han dado me gusta a tu publicación</value>
+    <value>{0} y {1} le han dado me gusta a tu post</value>
     <comment>{0},{1} = user display name</comment>
   </data>
   <data name="Notification_Follow" xml:space="preserve">
@@ -257,8 +257,82 @@
   <data name="Notification_Other" xml:space="preserve">
     <value>otros</value> 
   </data>
+  <data name="NotificationsPageNoItemsTitle.Text" xml:space="preserve">
+    <value>¡Aún no hay nada aquí!</value>
+  </data>
+  <data name="NotificationsPageNoItemsSubtitle.Text" xml:space="preserve">
+    <value>Aquí verás cuando alguien interactue contigo o con tu contenido.</value>
+  </data>
+  <data name="NotificationsLoadError.Title" xml:space="preserve">
+    <value>¡No se pudieron cargar las notificaciones!</value>
+  </data>
+  <data name="FeedsLoadError.Title" xml:space="preserve">
+    <value>¡No se pudo cargar este feed!</value>
+  </data>
+  <data name="LoadErrorRetryButton.Content" xml:space="preserve">
+    <value>Intentar de nuevo</value>
+  </data>
+  <data name="LoadError_Unknown" xml:space="preserve">
+    <value>Ha ocurrido un error desconocido.</value>
+  </data>
+  <data name="Notification_LikeViaRepostSingle" xml:space="preserve">
+    <value>{0} le ha dado me gusta a tu repost</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Notification_LikeViaRepostMultiple" xml:space="preserve">
+    <value>{0} y {1} le han dado me gusta a tu repost</value>
+    <comment>{0},{1} = user display name</comment>
+  </data>
+  <data name="Notification_RepostViaRepostSingle" xml:space="preserve">
+    <value>{0} reposteo tu repost</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Notification_RepostViaRepostMultiple" xml:space="preserve">
+    <value>{0} y {1} han reposteado tu repost</value>
+    <comment>{0},{1} = user display name</comment>
+  </data>
+  <data name="Notification_FeedGenLikeSingle" xml:space="preserve">
+    <value>{0} le ha dado me gusta a tu feed personalizado</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Notification_FeedGenLikeMultiple" xml:space="preserve">
+    <value>{0} y {1} le han dado me gusta a tu feed personalizado</value>
+    <comment>{0},{1} = user display name</comment>
+  </data>
+  <data name="Notification_FollowMultiple" xml:space="preserve">
+    <value>{0} y {1} te han seguido</value>
+    <comment>{0},{1} = user display name</comment>
+  </data>
+  <data name="Notification_SubscribedPost" xml:space="preserve">
+    <value>Nuevo post de {0}</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Notification_SubscribedPostMultiple" xml:space="preserve">
+    <value>{1} nuevos posts de {0}</value>
+    <comment>{0} = user display name, {1} = count of further posts</comment>
+  </data>
+  <data name="Notification_AuthorOverflow" xml:space="preserve">
+    <value>+{0}</value>
+    <comment>{0} = number of authors beyond those shown as avatars</comment>
+  </data>
+  <data name="Notification_StarterPackJoined" xml:space="preserve">
+    <value>{0} se ha registrado con tu paquete de inicio</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Notification_Verified" xml:space="preserve">
+    <value>{0} te ha verificado</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Notification_Unverified" xml:space="preserve">
+    <value>{0} ha quitado su verificación de tu cuenta</value>
+    <comment>{0} = user display name</comment>
+  </data>
+  <data name="Notification_Unknown" xml:space="preserve">
+    <value>{0} ha interactuado contigo</value>
+    <comment>{0} = user display name. Fallback for a notification type this version doesn't know about.</comment>
+  </data>
   <data name="Notification_Quote" xml:space="preserve">
-    <value>{0} ha citado tu publicación</value>
+    <value>{0} ha citado tu post</value>
     <comment>{0} = user display name</comment>
   </data>
   <data name="Notification_Reply" xml:space="preserve">
@@ -266,11 +340,11 @@
     <comment>{0} = user display name</comment>
   </data>
   <data name="Notification_RetweetMultiple" xml:space="preserve">
-    <value>{0} y {1} han republicado</value>
+    <value>{0} y {1} han reposteado</value>
     <comment>{0},{1} = user display name</comment>
   </data>
   <data name="Notification_RetweetSingle" xml:space="preserve">
-    <value>{0} ha republicado</value>
+    <value>{0} ha reposteado</value>
     <comment>{0} = user display name</comment>
   </data>
   <data name="Profile_Blocked" xml:space="preserve">
@@ -295,7 +369,7 @@
     <value>AGREGAR TEXTO ALTERNATIVO</value>
   </data>
   <data name="ComposeAddAltTextTextBox.PlaceholderText" xml:space="preserve">
-    <value>¡Describe a tu imagen! Puedes detallarte tanto como quieras.</value>
+    <value>¡Describe a tu imagen! Puedes ir a tanto detalle como quieras.</value>
   </data>
   <data name="ComposeDiscardDraftDialog.PrimaryButtonText" xml:space="preserve">
     <value>Descartar</value>
@@ -316,13 +390,13 @@
     <value>Copiar texto</value>
   </data>
   <data name="FeedMoreHidePostItem.Text" xml:space="preserve">
-    <value>Ocular publicación</value>
+    <value>Ocular post</value>
   </data>
   <data name="FeedMoreMuteItem.Text" xml:space="preserve">
     <value>Silenciar hilo</value>
   </data>
   <data name="FeedMoreReportPostItem.Text" xml:space="preserve">
-    <value>Reportar publicación</value>
+    <value>Reportar post</value>
   </data>
   <data name="FeedMoreShareItem.Text" xml:space="preserve">
     <value>Compartir</value>
@@ -352,6 +426,30 @@
   </data>
   <data name="NotificationsPageTitleBlock.Text" xml:space="preserve">
     <value>NOTIFICACIONES</value>
+  </data>
+  <data name="ChatsPageTitleBlock.Text" xml:space="preserve">
+    <value>MENSAJES</value>
+  </data>
+  <data name="ListsPageTitleBlock.Text" xml:space="preserve">
+    <value>LISTAS</value>
+  </data>
+  <data name="SettingsPageTitleBlock.Text" xml:space="preserve">
+    <value>AJUSTES</value>
+  </data>
+  <data name="FeedsListPageTitleBlock.Text" xml:space="preserve">
+    <value>FEEDS</value>
+  </data>
+  <data name="ChatsPageNotSupportedTitle.Text" xml:space="preserve">
+    <value>¡Aún no tenemos soporte para mensajes!</value>
+  </data>
+  <data name="FeedsListPageNotSupportedTitle.Text" xml:space="preserve">
+    <value>¡Aún no tenemos soporte para feeds!</value>
+  </data>
+  <data name="ListsPageNotSupportedTitle.Text" xml:space="preserve">
+    <value>¡Aún no tenemos soporte para listas!</value>
+  </data>
+  <data name="PageNotSupportedSubtitle.Text" xml:space="preserve">
+    <value>¡Estamos en ello! Vuelve más tarde.</value>
   </data>
   <data name="SearchPageSearchBox.PlaceholderText" xml:space="preserve">
     <value>Busca lo que quieras...</value>
@@ -423,7 +521,7 @@
     <value>GALERÍA</value>
   </data>
   <data name="ThreadPageTitleBlock.Text" xml:space="preserve">
-    <value>PUBLICACIÓN</value>
+    <value>POST</value>
   </data>
   <data name="GlobalLabel_GRAPHIC_MEDIA_Description" xml:space="preserve">
     <value>Contenido que puede ser perturbador o inapropiado.</value>
@@ -495,10 +593,10 @@
     <value>Ajustes</value>
   </data>
   <data name="FeedContextLabel_AppliedBy" xml:space="preserve">
-    <value>Feed Actual (esto no es una etiqueta)</value>
+    <value>Feed Actual (esta no es una etiqueta)</value>
   </data>
   <data name="FeedContextLabel_Description" xml:space="preserve">
-    <value>Contexto agregado por el feed actual para indicar por qué una publicación fue incluida.</value>
+    <value>Contexto agregado por el feed actual para indicar por qué un post fue incluida.</value>
   </data>
   <data name="SettingsShowFeedContextSwitch.Header" xml:space="preserve">
     <value>Mostrar etiquetas de contexto en feeds (experimental)</value>
@@ -516,21 +614,24 @@
     <value>Reiniciar</value>
   </data>
   <data name="PostRetweetItem.Text" xml:space="preserve">
-    <value>Republicar</value>
+    <value>Repostear</value>
   </data>
   <data name="PostQRTItem.Text" xml:space="preserve">
-    <value>Citar publicación...</value>
+    <value>Citar post...</value>
   </data>
   <data name="PostUndoRetweetItem.Text" xml:space="preserve">
-    <value>Deshacer republicación</value>
+    <value>Deshacer repost</value>
   </data>
   <data name="BookmarksPageTitleBlock.Text" xml:space="preserve">
     <value>MARCADORES</value>
   </data>
   <data name="BookmarksPageNoItemsTitle.Text" xml:space="preserve">
-    <value>¡No has marcado ninguna publicación!</value>
+    <value>¡No has marcado ningún post!</value>
   </data>
   <data name="BookmarksPageNoItemsSubtitle.Text" xml:space="preserve">
-    <value>Marca algunas publicaciones para comenzar.</value>
+    <value>Marca algunos posts para comenzar.</value>
+  </data>
+  <data name="PronounsLabelDescription" xml:space="preserve">
+    <value>El campo autoasignado de pronombres del usuario.</value>
   </data>
 </root>
